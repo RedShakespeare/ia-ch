@@ -19,7 +19,7 @@
 // convert std::string's to c strings, rather than std::string::c_str().
 static const char* to_c_str(const std::string& str)
 {
-        return str.empty() ? nullptr : str.c_str();
+    return str.empty() ? nullptr : str.c_str();
 }
 
 // -----------------------------------------------------------------------------
@@ -29,148 +29,148 @@ namespace xml
 {
 void load_file(const std::string& path, Doc& to_doc)
 {
-        TRACE << "Loading xml file at: " << path << "\n";
+    TRACE << "Loading xml file at: " << path << "\n";
 
-        const tinyxml2::XMLError load_result = to_doc.LoadFile(path.c_str());
+    const tinyxml2::XMLError load_result = to_doc.LoadFile(path.c_str());
 
-        if (load_result != tinyxml2::XML_SUCCESS) {
-                TRACE_ERROR_RELEASE
-                        << "Failed to find or read xml file at: "
-                        << path
-                        << "\n"
-                        << "tinyxml2 reported error: "
-                        << to_doc.ErrorName()
-                        << "\n";
+    if (load_result != tinyxml2::XML_SUCCESS) {
+        TRACE_ERROR_RELEASE
+            << "Failed to find or read xml file at: "
+            << path
+            << "\n"
+            << "tinyxml2 reported error: "
+            << to_doc.ErrorName()
+            << "\n";
 
-                PANIC;
-        }
+        PANIC;
+    }
 }
 
 Element* first_child(Doc& doc)
 {
-        return doc.FirstChildElement();
+    return doc.FirstChildElement();
 }
 
 Element* first_child(Element* e, const std::string& name)
 {
-        return e->FirstChildElement(to_c_str(name));
+    return e->FirstChildElement(to_c_str(name));
 }
 
 bool has_child(Element* e, const std::string& name)
 {
-        return e->FirstChildElement(to_c_str(name)) != nullptr;
+    return e->FirstChildElement(to_c_str(name)) != nullptr;
 }
 
 Element* next_sibling(Element* e, const std::string& name)
 {
-        return e->NextSiblingElement(to_c_str(name));
+    return e->NextSiblingElement(to_c_str(name));
 }
 
 std::string get_text_str(const Element* const e)
 {
-        std::string str;
+    std::string str;
 
-        const char* c_str = e->GetText();
+    const char* c_str = e->GetText();
 
-        if (c_str) {
-                str = c_str;
-        }
+    if (c_str) {
+        str = c_str;
+    }
 
-        return str;
+    return str;
 }
 
 bool get_text_bool(const Element* const e)
 {
-        bool value = false;
+    bool value = false;
 
-        const tinyxml2::XMLError result = e->QueryBoolText(&value);
+    const tinyxml2::XMLError result = e->QueryBoolText(&value);
 
-        if (result != tinyxml2::XML_SUCCESS) {
-                TRACE_ERROR_RELEASE
-                        << "While parsing boolean value from "
-                        << "xml element \""
-                        << e->Value()
-                        << "\", tinyxml2 reported error code: "
-                        << result << "\n";
+    if (result != tinyxml2::XML_SUCCESS) {
+        TRACE_ERROR_RELEASE
+            << "While parsing boolean value from "
+            << "xml element \""
+            << e->Value()
+            << "\", tinyxml2 reported error code: "
+            << result << "\n";
 
-                PANIC;
-        }
+        PANIC;
+    }
 
-        return value;
+    return value;
 }
 
 int get_text_int(const Element* const e)
 {
-        int value = false;
+    int value = false;
 
-        const tinyxml2::XMLError result = e->QueryIntText(&value);
+    const tinyxml2::XMLError result = e->QueryIntText(&value);
 
-        if (result != tinyxml2::XML_SUCCESS) {
-                TRACE_ERROR_RELEASE
-                        << "While parsing integer value from "
-                        << "xml element \""
-                        << e->Value()
-                        << "\", tinyxml2 reported error code: "
-                        << result << "\n";
+    if (result != tinyxml2::XML_SUCCESS) {
+        TRACE_ERROR_RELEASE
+            << "While parsing integer value from "
+            << "xml element \""
+            << e->Value()
+            << "\", tinyxml2 reported error code: "
+            << result << "\n";
 
-                PANIC;
-        }
+        PANIC;
+    }
 
-        return value;
+    return value;
 }
 
 std::string get_attribute_str(const Element* const e, const std::string& name)
 {
-        return e->Attribute(to_c_str(name));
+    return e->Attribute(to_c_str(name));
 }
 
 int get_attribute_int(const Element* const e, const std::string& name)
 {
-        int result = 0;
+    int result = 0;
 
-        const int conv_result = e->QueryAttribute(to_c_str(name), &result);
+    const int conv_result = e->QueryAttribute(to_c_str(name), &result);
 
-        if (conv_result != tinyxml2::XML_SUCCESS) {
-                TRACE_ERROR_RELEASE
-                        << "While parsing integer value from "
-                        << "xml element \""
-                        << e->Value()
-                        << "\", attribute \""
-                        << name
-                        << "\", tinyxml2 reported error code: "
-                        << result << "\n";
+    if (conv_result != tinyxml2::XML_SUCCESS) {
+        TRACE_ERROR_RELEASE
+            << "While parsing integer value from "
+            << "xml element \""
+            << e->Value()
+            << "\", attribute \""
+            << name
+            << "\", tinyxml2 reported error code: "
+            << result << "\n";
 
-                PANIC;
-        }
+        PANIC;
+    }
 
-        return result;
+    return result;
 }
 
 bool try_get_attribute_str(const Element* const e, const std::string& name, std::string& result)
 {
-        const char* str = e->Attribute(name.c_str());
+    const char* str = e->Attribute(name.c_str());
 
-        if (str) {
-                result = str;
+    if (str) {
+        result = str;
 
-                return true;
-        }
+        return true;
+    }
 
-        return false;
+    return false;
 }
 
 bool try_get_attribute_int(const Element* const e, const std::string& name, int& result)
 {
-        auto conv_result = e->QueryAttribute(name.c_str(), &result);
+    auto conv_result = e->QueryAttribute(name.c_str(), &result);
 
-        return (conv_result == tinyxml2::XML_SUCCESS);
+    return (conv_result == tinyxml2::XML_SUCCESS);
 }
 
 bool try_get_attribute_bool(const Element* const e, const std::string& name, bool& result)
 {
-        auto conv_result = e->QueryAttribute(name.c_str(), &result);
+    auto conv_result = e->QueryAttribute(name.c_str(), &result);
 
-        return (conv_result == tinyxml2::XML_SUCCESS);
+    return (conv_result == tinyxml2::XML_SUCCESS);
 }
 
 }  // namespace xml

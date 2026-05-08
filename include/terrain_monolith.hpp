@@ -25,28 +25,28 @@ namespace terrain
 class Monolith : public Terrain
 {
 public:
-        Monolith(const P& p, const TerrainData* data);
-        Monolith() = delete;
-        ~Monolith() = default;
+    Monolith(const P& p, const TerrainData* data);
+    Monolith() = delete;
+    ~Monolith() = default;
 
-        std::string name(Article article) const override;
+    std::string name(Article article) const override;
 
-        Color color_default() const override;
+    Color color_default() const override;
 
-        std::optional<map::MinimapAppearance> minimap_appearance() const override;
+    std::optional<map::MinimapAppearance> minimap_appearance() const override;
 
-        void bump(actor::Actor& actor_bumping) override;
+    void bump(actor::Actor& actor_bumping) override;
 
-        void hit(
-                DmgType dmg_type,
-                actor::Actor* actor,
-                const P& from_pos,
-                int dmg) override;
+    void hit(
+        DmgType dmg_type,
+        actor::Actor* actor,
+        const P& from_pos,
+        int dmg) override;
 
 private:
-        void activate();
+    void activate();
 
-        bool m_is_activated {false};
+    bool m_is_activated {false};
 };
 
 }  // namespace terrain

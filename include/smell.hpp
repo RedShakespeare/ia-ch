@@ -18,10 +18,10 @@ namespace smell
 {
 struct Smell
 {
-        // Pointer to a message stored elsewhere (typically in monster data)
-        const std::string* msg_ptr {nullptr};
+    // Pointer to a message stored elsewhere (typically in monster data)
+    const std::string* msg_ptr {nullptr};
 
-        int strength_pct {0};
+    int strength_pct {0};
 };
 
 void init();

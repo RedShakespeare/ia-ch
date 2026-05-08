@@ -19,15 +19,15 @@ class MapBuilder;
 
 enum class MapType
 {
-        deep_one_lair,
-        magic_pool,
-        egypt,
-        high_priest,
-        intro_forest,
-        rat_cave,
-        mi_go_outpost,
-        std,
-        trapez
+    deep_one_lair,
+    magic_pool,
+    egypt,
+    high_priest,
+    intro_forest,
+    rat_cave,
+    mi_go_outpost,
+    std,
+    trapez
 };
 
 // -----------------------------------------------------------------------------
@@ -45,14 +45,14 @@ std::unique_ptr<MapBuilder> make(MapType map_type);
 class MapBuilder
 {
 public:
-        virtual ~MapBuilder() = default;
+    virtual ~MapBuilder() = default;
 
-        void build();
+    void build();
 
 private:
-        virtual bool build_specific() = 0;
+    virtual bool build_specific() = 0;
 
-        virtual std::unique_ptr<MapController> map_controller() const;
+    virtual std::unique_ptr<MapController> map_controller() const;
 };
 
 // -----------------------------------------------------------------------------
@@ -61,29 +61,29 @@ private:
 class MapBuilderTemplateLevel : public MapBuilder
 {
 public:
-        virtual ~MapBuilderTemplateLevel() = default;
+    virtual ~MapBuilderTemplateLevel() = default;
 
 protected:
-        const Array2<char>& get_template() const
-        {
-                return m_template;
-        }
+    const Array2<char>& get_template() const
+    {
+        return m_template;
+    }
 
 private:
-        bool build_specific() final;
+    bool build_specific() final;
 
-        virtual LevelTemplId template_id() const = 0;
+    virtual LevelTemplId template_id() const = 0;
 
-        virtual bool allow_transform_template() const
-        {
-                return true;
-        }
+    virtual bool allow_transform_template() const
+    {
+        return true;
+    }
 
-        virtual void handle_template_pos(const P& p, char c) = 0;
+    virtual void handle_template_pos(const P& p, char c) = 0;
 
-        virtual void on_template_built() {}
+    virtual void on_template_built() {}
 
-        Array2<char> m_template {P(0, 0)};
+    Array2<char> m_template {P(0, 0)};
 };
 
 // -----------------------------------------------------------------------------
@@ -92,12 +92,12 @@ private:
 class MapBuilderStd : public MapBuilder
 {
 public:
-        ~MapBuilderStd() = default;
+    ~MapBuilderStd() = default;
 
 private:
-        bool build_specific() override;
+    bool build_specific() override;
 
-        std::unique_ptr<MapController> map_controller() const override;
+    std::unique_ptr<MapController> map_controller() const override;
 };
 
 // -----------------------------------------------------------------------------
@@ -106,23 +106,23 @@ private:
 class MapBuilderDeepOneLair : public MapBuilderTemplateLevel
 {
 public:
-        MapBuilderDeepOneLair();
+    MapBuilderDeepOneLair();
 
-        ~MapBuilderDeepOneLair() = default;
+    ~MapBuilderDeepOneLair() = default;
 
 private:
-        LevelTemplId template_id() const override
-        {
-                return LevelTemplId::deep_one_lair;
-        }
+    LevelTemplId template_id() const override
+    {
+        return LevelTemplId::deep_one_lair;
+    }
 
-        void handle_template_pos(const P& p, char c) override;
+    void handle_template_pos(const P& p, char c) override;
 
-        void on_template_built() override;
+    void on_template_built() override;
 
-        std::unique_ptr<MapController> map_controller() const override;
+    std::unique_ptr<MapController> map_controller() const override;
 
-        const char m_passage_symbol;
+    const char m_passage_symbol;
 };
 
 // -----------------------------------------------------------------------------
@@ -131,19 +131,19 @@ private:
 class MapBuilderMagicPool : public MapBuilderTemplateLevel
 {
 public:
-        MapBuilderMagicPool();
+    MapBuilderMagicPool();
 
-        ~MapBuilderMagicPool() = default;
+    ~MapBuilderMagicPool() = default;
 
 private:
-        LevelTemplId template_id() const override
-        {
-                return LevelTemplId::magic_pool;
-        }
+    LevelTemplId template_id() const override
+    {
+        return LevelTemplId::magic_pool;
+    }
 
-        void handle_template_pos(const P& p, char c) override;
+    void handle_template_pos(const P& p, char c) override;
 
-        void on_template_built() override;
+    void on_template_built() override;
 };
 
 // -----------------------------------------------------------------------------
@@ -152,27 +152,27 @@ private:
 class MapBuilderIntroForest : public MapBuilderTemplateLevel
 {
 public:
-        MapBuilderIntroForest() = default;
+    MapBuilderIntroForest() = default;
 
-        ~MapBuilderIntroForest() = default;
+    ~MapBuilderIntroForest() = default;
 
 private:
-        LevelTemplId template_id() const override
-        {
-                return LevelTemplId::intro_forest;
-        }
+    LevelTemplId template_id() const override
+    {
+        return LevelTemplId::intro_forest;
+    }
 
-        bool allow_transform_template() const override
-        {
-                return false;
-        }
+    bool allow_transform_template() const override
+    {
+        return false;
+    }
 
-        void handle_template_pos(const P& p, char c) override;
+    void handle_template_pos(const P& p, char c) override;
 
-        void on_template_built() override;
+    void on_template_built() override;
 
-        std::vector<P> m_possible_grave_positions {};
-        std::vector<P> m_possible_statue_positions {};
+    std::vector<P> m_possible_grave_positions {};
+    std::vector<P> m_possible_statue_positions {};
 };
 
 // -----------------------------------------------------------------------------
@@ -181,21 +181,21 @@ private:
 class MapBuilderMiGoOutpost : public MapBuilderTemplateLevel
 {
 public:
-        MapBuilderMiGoOutpost() = default;
+    MapBuilderMiGoOutpost() = default;
 
-        ~MapBuilderMiGoOutpost() = default;
+    ~MapBuilderMiGoOutpost() = default;
 
 private:
-        LevelTemplId template_id() const override
-        {
-                return LevelTemplId::mi_go_outpost;
-        }
+    LevelTemplId template_id() const override
+    {
+        return LevelTemplId::mi_go_outpost;
+    }
 
-        void handle_template_pos(const P& p, char c) override;
+    void handle_template_pos(const P& p, char c) override;
 
-        void on_template_built() override;
+    void on_template_built() override;
 
-        std::vector<P> m_possible_mon_positions {};
+    std::vector<P> m_possible_mon_positions {};
 };
 
 // -----------------------------------------------------------------------------
@@ -204,23 +204,23 @@ private:
 class MapBuilderEgypt : public MapBuilderTemplateLevel
 {
 public:
-        MapBuilderEgypt();
+    MapBuilderEgypt();
 
-        ~MapBuilderEgypt() = default;
+    ~MapBuilderEgypt() = default;
 
 private:
-        LevelTemplId template_id() const override
-        {
-                return LevelTemplId::egypt;
-        }
+    LevelTemplId template_id() const override
+    {
+        return LevelTemplId::egypt;
+    }
 
-        void handle_template_pos(const P& p, char c) override;
+    void handle_template_pos(const P& p, char c) override;
 
-        void on_template_built() override;
+    void on_template_built() override;
 
-        std::unique_ptr<MapController> map_controller() const override;
+    std::unique_ptr<MapController> map_controller() const override;
 
-        const char m_stair_symbol;
+    const char m_stair_symbol;
 };
 
 // -----------------------------------------------------------------------------
@@ -229,24 +229,24 @@ private:
 class MapBuilderRatCave : public MapBuilderTemplateLevel
 {
 public:
-        MapBuilderRatCave() = default;
+    MapBuilderRatCave() = default;
 
-        ~MapBuilderRatCave() = default;
+    ~MapBuilderRatCave() = default;
 
 private:
-        LevelTemplId template_id() const override
-        {
-                return LevelTemplId::rat_cave;
-        }
+    LevelTemplId template_id() const override
+    {
+        return LevelTemplId::rat_cave;
+    }
 
-        bool allow_transform_template() const override
-        {
-                return false;
-        }
+    bool allow_transform_template() const override
+    {
+        return false;
+    }
 
-        void handle_template_pos(const P& p, char c) override;
+    void handle_template_pos(const P& p, char c) override;
 
-        void on_template_built() override;
+    void on_template_built() override;
 };
 
 // -----------------------------------------------------------------------------
@@ -255,26 +255,26 @@ private:
 class MapBuilderBoss : public MapBuilderTemplateLevel
 {
 public:
-        MapBuilderBoss() = default;
+    MapBuilderBoss() = default;
 
-        ~MapBuilderBoss() = default;
+    ~MapBuilderBoss() = default;
 
 private:
-        LevelTemplId template_id() const override
-        {
-                return LevelTemplId::high_priest;
-        }
+    LevelTemplId template_id() const override
+    {
+        return LevelTemplId::high_priest;
+    }
 
-        bool allow_transform_template() const override
-        {
-                return false;
-        }
+    bool allow_transform_template() const override
+    {
+        return false;
+    }
 
-        void handle_template_pos(const P& p, char c) override;
+    void handle_template_pos(const P& p, char c) override;
 
-        void on_template_built() override;
+    void on_template_built() override;
 
-        std::unique_ptr<MapController> map_controller() const override;
+    std::unique_ptr<MapController> map_controller() const override;
 };
 
 // -----------------------------------------------------------------------------
@@ -283,17 +283,17 @@ private:
 class MapBuilderTrapez : public MapBuilderTemplateLevel
 {
 public:
-        MapBuilderTrapez() = default;
+    MapBuilderTrapez() = default;
 
-        virtual ~MapBuilderTrapez() = default;
+    virtual ~MapBuilderTrapez() = default;
 
 private:
-        LevelTemplId template_id() const override
-        {
-                return LevelTemplId::trapez;
-        }
+    LevelTemplId template_id() const override
+    {
+        return LevelTemplId::trapez;
+    }
 
-        void handle_template_pos(const P& p, char c) override;
+    void handle_template_pos(const P& p, char c) override;
 };
 
 #endif  // MAP_BUILDER_HPP

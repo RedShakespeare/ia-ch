@@ -17,16 +17,16 @@ class Color;
 class ViewMinimap : public State
 {
 public:
-        ViewMinimap() = default;
+    ViewMinimap() = default;
 
-        StateId id() const override
-        {
-                return StateId::view_minimap;
-        }
+    StateId id() const override
+    {
+        return StateId::view_minimap;
+    }
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 };
 
 // -----------------------------------------------------------------------------

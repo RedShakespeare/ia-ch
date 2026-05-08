@@ -13,24 +13,24 @@
 class MainMenuState : public State
 {
 public:
-        MainMenuState();
+    MainMenuState();
 
-        ~MainMenuState();
+    ~MainMenuState();
 
-        void draw() override;
+    void draw() override;
 
-        void cycle_graphics(io::GraphicsCycle cycle);
+    void cycle_graphics(io::GraphicsCycle cycle);
 
-        void update() override;
+    void update() override;
 
-        void on_start() override;
+    void on_start() override;
 
-        void on_resume() override;
+    void on_resume() override;
 
-        StateId id() const override;
+    StateId id() const override;
 
 private:
-        MenuBrowser m_browser;
+    MenuBrowser m_browser;
 };
 
 #endif  // MAIN_MENU_HPP

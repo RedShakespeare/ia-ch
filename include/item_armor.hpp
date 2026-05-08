@@ -20,43 +20,43 @@ struct ItemData;
 class Armor : public Item
 {
 public:
-        Armor(ItemData* item_data);
+    Armor(ItemData* item_data);
 
-        ~Armor() = default;
+    ~Armor() = default;
 
-        Color interface_color() const override
-        {
-                return colors::gray();
-        }
+    Color interface_color() const override
+    {
+        return colors::gray();
+    }
 
-        std::string name_info_str(ItemNameIdentified id_type) const override;
+    std::string name_info_str(ItemNameIdentified id_type) const override;
 
-        void hit(int dmg);
+    void hit(int dmg);
 };
 
 class ArmorAsbSuit : public Armor
 {
 public:
-        ArmorAsbSuit(ItemData* const item_data) :
-                Armor(item_data) {}
+    ArmorAsbSuit(ItemData* const item_data) :
+        Armor(item_data) {}
 
-        ~ArmorAsbSuit() = default;
+    ~ArmorAsbSuit() = default;
 
-        void on_equip_hook(Verbose verbose) override;
+    void on_equip_hook(Verbose verbose) override;
 
 private:
-        void on_unequip_hook() override;
+    void on_unequip_hook() override;
 };
 
 class ArmorMiGo : public Armor
 {
 public:
-        ArmorMiGo(ItemData* const item_data) :
-                Armor(item_data) {}
+    ArmorMiGo(ItemData* const item_data) :
+        Armor(item_data) {}
 
-        ~ArmorMiGo() = default;
+    ~ArmorMiGo() = default;
 
-        void on_equip_hook(Verbose verbose) override;
+    void on_equip_hook(Verbose verbose) override;
 };
 
 }  // namespace item

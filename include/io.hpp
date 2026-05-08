@@ -32,63 +32,63 @@ inline constexpr char g_filled_rect_char = 1;
 
 enum class GraphicsCycle
 {
-        fast,
-        slow,
+    fast,
+    slow,
 
-        END
+    END
 };
 
 enum class DrawBg
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 struct TileDrawObj
 {
-        void draw() const;
+    void draw() const;
 
-        gfx::TileId tile {gfx::TileId::END};
+    gfx::TileId tile {gfx::TileId::END};
 
-        Panel panel {Panel::screen};
-        P pos {-1, -1};
+    Panel panel {Panel::screen};
+    P pos {-1, -1};
 
-        Color color {colors::black()};
-        Color bg_color = {colors::black()};
-        DrawBg draw_bg {DrawBg::yes};
+    Color color {colors::black()};
+    Color bg_color = {colors::black()};
+    DrawBg draw_bg {DrawBg::yes};
 };
 
 struct CharacterDrawObj
 {
-        void draw() const;
+    void draw() const;
 
-        char character {0};
+    char character {0};
 
-        Panel panel {Panel::screen};
-        P pos {-1, -1};
+    Panel panel {Panel::screen};
+    P pos {-1, -1};
 
-        Color color {colors::black()};
-        Color bg_color = {colors::black()};
-        DrawBg draw_bg {DrawBg::yes};
+    Color color {colors::black()};
+    Color bg_color = {colors::black()};
+    DrawBg draw_bg {DrawBg::yes};
 };
 
 struct MapDrawObj
 {
-        void draw() const;
+    void draw() const;
 
-        gfx::TileId tile {gfx::TileId::END};
-        char character {0};
-        P pos {-1, -1};
-        Color color {colors::black()};
-        Color color_bg {colors::black()};
+    gfx::TileId tile {gfx::TileId::END};
+    char character {0};
+    P pos {-1, -1};
+    Color color {colors::black()};
+    Color color_bg {colors::black()};
 };
 
 struct InputData
 {
-        int key {-1};
-        bool is_shift_held {false};
-        bool is_ctrl_held {false};
-        bool is_alt_held {false};
+    int key {-1};
+    bool is_shift_held {false};
+    bool is_ctrl_held {false};
+    bool is_alt_held {false};
 };
 
 void init_sdl();
@@ -150,60 +150,60 @@ void draw_tile(const TileDrawObj& obj);
 void draw_character(const CharacterDrawObj& obj);
 
 void draw_text(
-        Text text,
-        Panel panel,
-        P pos,
-        Color color,
-        DrawBg draw_bg = DrawBg::yes,
-        const Color& bg_color = colors::black());
+    Text text,
+    Panel panel,
+    P pos,
+    Color color,
+    DrawBg draw_bg = DrawBg::yes,
+    const Color& bg_color = colors::black());
 
 void draw_text_center(
-        const std::string& str,
-        Panel panel,
-        P pos,
-        const Color& color,
-        DrawBg draw_bg = DrawBg::yes,
-        const Color& bg_color = colors::black(),
-        bool is_pixel_pos_adj_allowed = true);
+    const std::string& str,
+    Panel panel,
+    P pos,
+    const Color& color,
+    DrawBg draw_bg = DrawBg::yes,
+    const Color& bg_color = colors::black(),
+    bool is_pixel_pos_adj_allowed = true);
 
 void draw_text_right(
-        const std::string& str,
-        Panel panel,
-        P pos,
-        const Color& color,
-        DrawBg draw_bg = DrawBg::yes,
-        const Color& bg_color = colors::black());
+    const std::string& str,
+    Panel panel,
+    P pos,
+    const Color& color,
+    DrawBg draw_bg = DrawBg::yes,
+    const Color& bg_color = colors::black());
 
 void cover_cell(Panel panel, const P& offset);
 
 void cover_panel(
-        Panel panel,
-        const Color& color = colors::black());
+    Panel panel,
+    const Color& color = colors::black());
 
 void cover_area(
-        Panel panel,
-        const R& area,
-        const Color& color = colors::black());
+    Panel panel,
+    const R& area,
+    const Color& color = colors::black());
 
 void cover_area(
-        Panel panel,
-        const P& offset,
-        const P& dims,
-        const Color& color = colors::black());
+    Panel panel,
+    const P& offset,
+    const P& dims,
+    const Color& color = colors::black());
 
 void draw_rectangle(
-        R px_rect,
-        const Color& color);
+    R px_rect,
+    const Color& color);
 
 void draw_rectangle_filled(
-        R px_rect,
-        const Color& color,
-        uint8_t alpha = SDL_ALPHA_OPAQUE);
+    R px_rect,
+    const Color& color,
+    uint8_t alpha = SDL_ALPHA_OPAQUE);
 
 void draw_rectangle_filled_mod_blending(
-        R px_rect,
-        const Color& color,
-        uint8_t alpha = SDL_ALPHA_OPAQUE);
+    R px_rect,
+    const Color& color,
+    uint8_t alpha = SDL_ALPHA_OPAQUE);
 
 void draw_logo(Color color);
 

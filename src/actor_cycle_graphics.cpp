@@ -17,14 +17,14 @@ namespace actor
 {
 void cycle_graphics(Actor& actor, const io::GraphicsCycle cycle)
 {
-        if (actor::is_player(&actor) && (cycle == io::GraphicsCycle::fast)) {
-                actor::player_state::g_lantern_color =
-                        rnd::coin_toss()
-                        ? colors::yellow().shaded(rnd::range(20, 40))
-                        : colors::yellow();
-        }
+    if (actor::is_player(&actor) && (cycle == io::GraphicsCycle::fast)) {
+        actor::player_state::g_lantern_color =
+            rnd::coin_toss()
+            ? colors::yellow().shaded(rnd::range(20, 40))
+            : colors::yellow();
+    }
 
-        actor.m_properties.cycle_graphics(cycle);
+    actor.m_properties.cycle_graphics(cycle);
 }
 
 }  // namespace actor

@@ -39,32 +39,32 @@ void load();
 class Scroll : public item::Item
 {
 public:
-        Scroll(item::ItemData* item_data);
+    Scroll(item::ItemData* item_data);
 
-        ~Scroll() = default;
+    ~Scroll() = default;
 
-        Color interface_color() const override
-        {
-                return colors::magenta();
-        }
+    Color interface_color() const override
+    {
+        return colors::magenta();
+    }
 
-        std::string name_info_str(ItemNameIdentified id_type) const override;
+    std::string name_info_str(ItemNameIdentified id_type) const override;
 
-        ConsumeItem activate(actor::Actor* actor) override;
+    ConsumeItem activate(actor::Actor* actor) override;
 
-        std::string real_name() const;
+    std::string real_name() const;
 
-        std::string domain_str() const;
+    std::string domain_str() const;
 
-        std::vector<std::string> descr_hook() const override;
+    std::vector<std::string> descr_hook() const override;
 
-        ItemPrePickResult pre_pickup_hook() override;
+    ItemPrePickResult pre_pickup_hook() override;
 
-        void identify(Verbose verbose) override;
+    void identify(Verbose verbose) override;
 
-        void reveal_domain() const;
+    void reveal_domain() const;
 
-        Spell* make_spell() const;
+    Spell* make_spell() const;
 };
 
 }  // namespace scroll

@@ -118,337 +118,337 @@ inline constexpr int g_exorcist_fervor_destroy_mirror = 6;
 // these things silently.
 enum class Verbose
 {
-        no,
-        yes,
+    no,
+    yes,
 };
 
 enum class UpdateScreen
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class InvType
 {
-        slots,
-        backpack
+    slots,
+    backpack
 };
 
 enum class AllowAction
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class DidAction
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class WasDestroyed
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class ItemPrePickResult
 {
-        do_pickup,
-        destroy_item,
-        do_nothing
+    do_pickup,
+    destroy_item,
+    do_nothing
 };
 
 enum class PassTime
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class ConsumeItem
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class ItemNameType
 {
-        plain,
-        a,
-        plural,
-        END
+    plain,
+    a,
+    plural,
+    END
 };
 
 enum class ItemNameInfo
 {
-        none,
-        yes
+    none,
+    yes
 };
 
 enum class ItemNameAttackInfo
 {
-        none,
-        main_attack_mode,
-        melee,
-        ranged,
-        thrown
+    none,
+    main_attack_mode,
+    melee,
+    ranged,
+    thrown
 };
 
 enum class ItemNameIdentified
 {
-        use_item_status,
-        force_identified
+    use_item_status,
+    force_identified
 };
 
 enum class ItemNameDmg
 {
-        average,
-        range,
+    average,
+    range,
 };
 
 enum class AbbrevItemAttackInfo
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class Article
 {
-        a,
-        the
+    a,
+    the
 };
 
 enum class Material
 {
-        empty,
-        stone,
-        metal,
-        plant,  // Grass, bushes, reeds, vines, fungi...
-        wood,   // Trees, doors, benches...
-        cloth,  // Carpet, silk (cocoons)...
-        fluid
+    empty,
+    stone,
+    metal,
+    plant,  // Grass, bushes, reeds, vines, fungi...
+    wood,   // Trees, doors, benches...
+    cloth,  // Carpet, silk (cocoons)...
+    fluid
 };
 
 enum class LiquidType
 {
-        water,
-        mud,
-        magic_water
+    water,
+    mud,
+    magic_water
 };
 
 enum class Condition
 {
-        breaking,
-        shoddy,
-        fine
+    breaking,
+    shoddy,
+    fine
 };
 
 enum class DmgType
 {
-        piercing,
-        slashing,
-        blunt,
-        kicking,
-        explosion,
-        shotgun,
-        fire,
-        electric,
-        spirit,
-        light,
-        pure,
-        control_object_spell,
-        END
+    piercing,
+    slashing,
+    blunt,
+    kicking,
+    explosion,
+    shotgun,
+    fire,
+    electric,
+    spirit,
+    light,
+    pure,
+    control_object_spell,
+    END
 };
 
 enum class ForceInterruptActions
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 constexpr bool is_physical_dmg_type(const DmgType type)
 {
-        switch (type) {
-        case DmgType::piercing:
-                return true;
+    switch (type) {
+    case DmgType::piercing:
+        return true;
 
-        case DmgType::slashing:
-                return true;
+    case DmgType::slashing:
+        return true;
 
-        case DmgType::blunt:
-                return true;
+    case DmgType::blunt:
+        return true;
 
-        case DmgType::kicking:
-                return true;
+    case DmgType::kicking:
+        return true;
 
-        case DmgType::explosion:
-                return true;
+    case DmgType::explosion:
+        return true;
 
-        case DmgType::shotgun:
-                return true;
+    case DmgType::shotgun:
+        return true;
 
-        case DmgType::fire:
-                return false;
-
-        case DmgType::electric:
-                return false;
-
-        case DmgType::spirit:
-                return false;
-
-        case DmgType::light:
-                return false;
-
-        case DmgType::pure:
-                return false;
-
-        case DmgType::control_object_spell:
-                return false;  // Shouldn't really matter...
-
-        case DmgType::END:
-                return false;
-        }
-
+    case DmgType::fire:
         return false;
+
+    case DmgType::electric:
+        return false;
+
+    case DmgType::spirit:
+        return false;
+
+    case DmgType::light:
+        return false;
+
+    case DmgType::pure:
+        return false;
+
+    case DmgType::control_object_spell:
+        return false;  // Shouldn't really matter...
+
+    case DmgType::END:
+        return false;
+    }
+
+    return false;
 }
 
 enum class AttackMode
 {
-        none,
-        melee,
-        thrown,
-        ranged
+    none,
+    melee,
+    thrown,
+    ranged
 };
 
 enum class AllowWound
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class MonShockLvl
 {
-        none,
-        unsettling,
-        frightening,
-        terrifying,
-        mind_shattering,
-        END
+    none,
+    unsettling,
+    frightening,
+    terrifying,
+    mind_shattering,
+    END
 };
 
 enum class ShockSrc
 {
-        see_mon,
+    see_mon,
 
-        use_strange_item,
+    use_strange_item,
 
-        cast_intr_spell_blood,
-        cast_intr_spell_channeling,
-        cast_intr_spell_corruption,
-        cast_intr_spell_illusion,
-        cast_intr_spell_mind,
-        cast_intr_spell_time,
-        cast_intr_spell_warding,
-        // For misc spells that do not belong to a domain:
-        cast_intr_spell_general,
+    cast_intr_spell_blood,
+    cast_intr_spell_channeling,
+    cast_intr_spell_corruption,
+    cast_intr_spell_illusion,
+    cast_intr_spell_mind,
+    cast_intr_spell_time,
+    cast_intr_spell_warding,
+    // For misc spells that do not belong to a domain:
+    cast_intr_spell_general,
 
-        time,
+    time,
 
-        take_damage,
+    take_damage,
 
-        misc,
+    misc,
 
-        END
+    END
 };
 
 enum class MonRoamingAllowed
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class GameEntryMode
 {
-        new_game,
-        load_game
+    new_game,
+    load_game
 };
 
 enum class IsWin
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class SpawnRate
 {
-        never,
-        extremely_rare,
-        very_rare,
-        rare,
-        common,
-        very_common
+    never,
+    extremely_rare,
+    very_rare,
+    rare,
+    common,
+    very_common
 };
 
 enum class VerDir
 {
-        up,
-        down
+    up,
+    down
 };
 
 enum class ActorState
 {
-        alive,
-        corpse,
-        destroyed
+    alive,
+    corpse,
+    destroyed
 };
 
 enum class ShouldCtrlTele
 {
-        if_tele_ctrl_prop,
-        never,
-        always
+    if_tele_ctrl_prop,
+    never,
+    always
 };
 
 enum class Axis
 {
-        hor,
-        ver
+    hor,
+    ver
 };
 
 enum class IsSubRoom
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 // NOTE: Order matters here, higher value --> bigger area.
 enum class LightSize
 {
-        none,
-        single,  // Single position
-        small,   // Including adjacent positions, i.e. 3x3
-        fov
+    none,
+    single,  // Single position
+    small,   // Including adjacent positions, i.e. 3x3
+    fov
 };
 
 enum class ItemType
 {
-        general,
-        melee_wpn,
-        ranged_wpn,
-        throwing_wpn,
-        ammo,
-        ammo_mag,
-        scroll,
-        potion,
-        device,
-        rod,
-        armor,
-        head_wear,
-        explosive,
+    general,
+    melee_wpn,
+    ranged_wpn,
+    throwing_wpn,
+    ammo,
+    ammo_mag,
+    scroll,
+    potion,
+    device,
+    rod,
+    armor,
+    head_wear,
+    explosive,
 
-        END_OF_EXTRINSIC_ITEMS,
-        melee_wpn_intr,
-        ranged_wpn_intr
+    END_OF_EXTRINSIC_ITEMS,
+    melee_wpn_intr,
+    ranged_wpn_intr
 };
 
 #endif  // GLOBAL_HPP

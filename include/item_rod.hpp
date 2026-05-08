@@ -28,9 +28,9 @@ namespace rod
 {
 struct RodLook
 {
-        std::string name_plain;
-        std::string name_a;
-        Color color;
+    std::string name_plain;
+    std::string name_a;
+    Color color;
 };
 
 void init();
@@ -41,186 +41,186 @@ void load();
 class Rod : public item::Item
 {
 public:
-        Rod(item::ItemData* const item_data) :
-                Item(item_data) {}
+    Rod(item::ItemData* const item_data) :
+        Item(item_data) {}
 
-        virtual ~Rod() = default;
+    virtual ~Rod() = default;
 
-        void save_hook() const final;
+    void save_hook() const final;
 
-        void load_hook() final;
+    void load_hook() final;
 
-        ConsumeItem activate(actor::Actor* actor) final;
+    ConsumeItem activate(actor::Actor* actor) final;
 
-        Color interface_color() const final;
+    Color interface_color() const final;
 
-        std::string name_info_str(ItemNameIdentified id_type) const final;
+    std::string name_info_str(ItemNameIdentified id_type) const final;
 
-        void on_std_turn_in_inv_hook(InvType inv_type) final;
+    void on_std_turn_in_inv_hook(InvType inv_type) final;
 
-        std::vector<std::string> descr_hook() const final;
+    std::vector<std::string> descr_hook() const final;
 
-        void identify(Verbose verbose) final;
+    void identify(Verbose verbose) final;
 
-        virtual std::string real_name() const = 0;
+    virtual std::string real_name() const = 0;
 
 protected:
-        virtual std::string descr_identified() const = 0;
+    virtual std::string descr_identified() const = 0;
 
-        virtual void run_effect() = 0;
+    virtual void run_effect() = 0;
 
-        virtual int nr_turns_to_recharge() const;
+    virtual int nr_turns_to_recharge() const;
 
-        void set_max_charge_turns_left();
+    void set_max_charge_turns_left();
 
 private:
-        int m_nr_charge_turns_left {0};
+    int m_nr_charge_turns_left {0};
 };
 
 class Opening : public Rod
 {
 public:
-        Opening(item::ItemData* const item_data) :
-                Rod(item_data) {}
+    Opening(item::ItemData* const item_data) :
+        Rod(item_data) {}
 
-        ~Opening() = default;
+    ~Opening() = default;
 
-        std::string real_name() const override;
+    std::string real_name() const override;
 
 protected:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        void run_effect() override;
+    void run_effect() override;
 };
 
 class CloudMinds : public Rod
 {
 public:
-        CloudMinds(item::ItemData* const item_data) :
-                Rod(item_data) {}
+    CloudMinds(item::ItemData* const item_data) :
+        Rod(item_data) {}
 
-        ~CloudMinds() = default;
+    ~CloudMinds() = default;
 
-        std::string real_name() const override;
+    std::string real_name() const override;
 
 protected:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        int nr_turns_to_recharge() const override;
+    int nr_turns_to_recharge() const override;
 
-        void run_effect() override;
+    void run_effect() override;
 };
 
 class Shockwave : public Rod
 {
 public:
-        Shockwave(item::ItemData* const item_data) :
-                Rod(item_data) {}
+    Shockwave(item::ItemData* const item_data) :
+        Rod(item_data) {}
 
-        ~Shockwave() = default;
+    ~Shockwave() = default;
 
-        std::string real_name() const override;
+    std::string real_name() const override;
 
 protected:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        void run_effect() override;
+    void run_effect() override;
 };
 
 class Deafening : public Rod
 {
 public:
-        Deafening(item::ItemData* const item_data) :
-                Rod(item_data) {}
+    Deafening(item::ItemData* const item_data) :
+        Rod(item_data) {}
 
-        ~Deafening() = default;
+    ~Deafening() = default;
 
-        std::string real_name() const override;
+    std::string real_name() const override;
 
 protected:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        void run_effect() override;
+    void run_effect() override;
 };
 
 class DoorCreation : public Rod
 {
 public:
-        DoorCreation(item::ItemData* const item_data) :
-                Rod(item_data) {}
+    DoorCreation(item::ItemData* const item_data) :
+        Rod(item_data) {}
 
-        ~DoorCreation() = default;
+    ~DoorCreation() = default;
 
-        std::string real_name() const override;
+    std::string real_name() const override;
 
 protected:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        void run_effect() override;
+    void run_effect() override;
 };
 
 class Unbinding : public Rod
 {
 public:
-        Unbinding(item::ItemData* const item_data) :
-                Rod(item_data) {}
+    Unbinding(item::ItemData* const item_data) :
+        Rod(item_data) {}
 
-        ~Unbinding() = default;
+    ~Unbinding() = default;
 
-        std::string real_name() const override;
+    std::string real_name() const override;
 
 protected:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        void run_effect() override;
+    void run_effect() override;
 };
 
 class Mist : public Rod
 {
 public:
-        Mist(item::ItemData* const item_data) :
-                Rod(item_data) {}
+    Mist(item::ItemData* const item_data) :
+        Rod(item_data) {}
 
-        ~Mist() = default;
+    ~Mist() = default;
 
-        std::string real_name() const override;
+    std::string real_name() const override;
 
 protected:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        void run_effect() override;
+    void run_effect() override;
 };
 
 class MiGoHypno : public Rod
 {
 public:
-        MiGoHypno(item::ItemData* const item_data) :
-                Rod(item_data) {}
+    MiGoHypno(item::ItemData* const item_data) :
+        Rod(item_data) {}
 
-        ~MiGoHypno() = default;
+    ~MiGoHypno() = default;
 
-        std::string real_name() const override;
+    std::string real_name() const override;
 
 protected:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        void run_effect() override;
+    void run_effect() override;
 };
 
 class Displacement : public Rod
 {
 public:
-        Displacement(item::ItemData* const item_data) :
-                Rod(item_data) {}
+    Displacement(item::ItemData* const item_data) :
+        Rod(item_data) {}
 
-        ~Displacement() = default;
+    ~Displacement() = default;
 
-        std::string real_name() const override;
+    std::string real_name() const override;
 
 protected:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        void run_effect() override;
+    void run_effect() override;
 };
 
 }  // namespace rod

@@ -20,77 +20,77 @@
 class Color
 {
 public:
-        Color();
+    Color();
 
-        Color(const Color& other) = default;
+    Color(const Color& other) = default;
 
-        Color(uint8_t r, uint8_t g, uint8_t b);
+    Color(uint8_t r, uint8_t g, uint8_t b);
 
-        Color(const SDL_Color& sdl_color);
+    Color(const SDL_Color& sdl_color);
 
-        ~Color() = default;
+    ~Color() = default;
 
-        Color& operator=(const Color& other)
-        {
-                if (&other == this) {
-                        return *this;
-                }
-
-                m_sdl_color = other.m_sdl_color;
-
-                return *this;
+    Color& operator=(const Color& other)
+    {
+        if (&other == this) {
+            return *this;
         }
 
-        bool operator==(const Color& other) const
-        {
-                return (
-                        m_sdl_color.r == other.m_sdl_color.r &&
-                        m_sdl_color.g == other.m_sdl_color.g &&
-                        m_sdl_color.b == other.m_sdl_color.b);
-        }
+        m_sdl_color = other.m_sdl_color;
 
-        bool operator!=(const Color& other) const
-        {
-                return (
-                        m_sdl_color.r != other.m_sdl_color.r ||
-                        m_sdl_color.g != other.m_sdl_color.g ||
-                        m_sdl_color.b != other.m_sdl_color.b);
-        }
+        return *this;
+    }
 
-        Color with_brightness(int pct) const;
+    bool operator==(const Color& other) const
+    {
+        return (
+            m_sdl_color.r == other.m_sdl_color.r &&
+            m_sdl_color.g == other.m_sdl_color.g &&
+            m_sdl_color.b == other.m_sdl_color.b);
+    }
 
-        Color shaded(int pct) const;
+    bool operator!=(const Color& other) const
+    {
+        return (
+            m_sdl_color.r != other.m_sdl_color.r ||
+            m_sdl_color.g != other.m_sdl_color.g ||
+            m_sdl_color.b != other.m_sdl_color.b);
+    }
 
-        Color tinted(int pct) const;
+    Color with_brightness(int pct) const;
 
-        void clear();
+    Color shaded(int pct) const;
 
-        SDL_Color sdl_color() const
-        {
-                return m_sdl_color;
-        }
+    Color tinted(int pct) const;
 
-        uint8_t r() const
-        {
-                return m_sdl_color.r;
-        }
+    void clear();
 
-        uint8_t g() const
-        {
-                return m_sdl_color.g;
-        }
+    SDL_Color sdl_color() const
+    {
+        return m_sdl_color;
+    }
 
-        uint8_t b() const
-        {
-                return m_sdl_color.b;
-        }
+    uint8_t r() const
+    {
+        return m_sdl_color.r;
+    }
 
-        void set_rgb(uint8_t r, uint8_t g, uint8_t b);
+    uint8_t g() const
+    {
+        return m_sdl_color.g;
+    }
 
-        void randomize_rgb(int range);
+    uint8_t b() const
+    {
+        return m_sdl_color.b;
+    }
+
+    void set_rgb(uint8_t r, uint8_t g, uint8_t b);
+
+    void randomize_rgb(int range);
 
 private:
-        SDL_Color m_sdl_color;
+    SDL_Color m_sdl_color;
 };
 
 //-----------------------------------------------------------------------------
@@ -163,14 +163,14 @@ const Color& mon_temp_property();
 //-----------------------------------------------------------------------------
 struct ColoredString
 {
-        ColoredString() = default;
+    ColoredString() = default;
 
-        ColoredString(std::string the_str, const Color& the_color) :
-                str(std::move(the_str)),
-                color(the_color) {}
+    ColoredString(std::string the_str, const Color& the_color) :
+        str(std::move(the_str)),
+        color(the_color) {}
 
-        std::string str;
-        Color color {colors::white()};
+    std::string str;
+    Color color {colors::white()};
 };
 
 #endif  // COLORS_HPP

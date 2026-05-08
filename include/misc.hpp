@@ -21,21 +21,21 @@ class Array2;
 // Takes a boolean map array, and populates a vector with positions inside the
 // given area matching the specified value to store (true/false).
 std::vector<P> to_vec(
-        const Array2<bool>& a,
-        bool value_to_store,
-        const R& area_to_parse);
+    const Array2<bool>& a,
+    bool value_to_store,
+    const R& area_to_parse);
 
 bool is_pos_inside(const P& pos, const R& area);
 
 bool is_area_inside(
-        const R& inner,
-        const R& outer,
-        bool count_equal_as_inside);
+    const R& inner,
+    const R& outer,
+    bool count_equal_as_inside);
 
 bool is_pos_adj(
-        const P& pos1,
-        const P& pos2,
-        bool count_same_cell_as_adj);
+    const P& pos1,
+    const P& pos2,
+    bool count_same_cell_as_adj);
 
 P closest_pos(const P& p, const std::vector<P>& positions);
 

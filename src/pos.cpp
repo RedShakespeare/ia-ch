@@ -9,54 +9,54 @@
 #include "direction.hpp"
 
 P::P(const Dir dir) :
-        x(0),
-        y(0)
+    x(0),
+    y(0)
 {
-        set(dir_utils::offset(dir));
+    set(dir_utils::offset(dir));
 }
 
 P& P::operator=(const Dir dir)
 {
-        set(dir_utils::offset(dir));
+    set(dir_utils::offset(dir));
 
-        return *this;
+    return *this;
 }
 
 P& P::operator+=(const Dir dir)
 {
-        *this += dir_utils::offset(dir);
+    *this += dir_utils::offset(dir);
 
-        return *this;
+    return *this;
 }
 
 P& P::operator-=(const Dir dir)
 {
-        const auto reversed_dir = dir_utils::reversed_dir(dir);
+    const auto reversed_dir = dir_utils::reversed_dir(dir);
 
-        *this += dir_utils::offset(reversed_dir);
+    *this += dir_utils::offset(reversed_dir);
 
-        return *this;
+    return *this;
 }
 
 P P::operator+(const Dir dir) const
 {
-        auto result = *this;
+    auto result = *this;
 
-        result += dir;
+    result += dir;
 
-        return result;
+    return result;
 }
 
 Dir P::to_dir() const
 {
-        return dir_utils::dir(*this);
+    return dir_utils::dir(*this);
 }
 
 P P::operator-(Dir dir) const
 {
-        auto result = *this;
+    auto result = *this;
 
-        result -= dir;
+    result -= dir;
 
-        return result;
+    return result;
 }

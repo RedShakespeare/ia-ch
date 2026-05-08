@@ -15,8 +15,8 @@ class Actor;
 
 struct SneakParameters
 {
-        const actor::Actor* actor_sneaking {nullptr};
-        const actor::Actor* actor_searching {nullptr};
+    const actor::Actor* actor_sneaking {nullptr};
+    const actor::Actor* actor_searching {nullptr};
 };
 
 int calc_total_sneak_ability(const SneakParameters& data);

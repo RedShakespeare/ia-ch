@@ -11,17 +11,17 @@ namespace item_curse
 {
 enum class Id
 {
-        hit_chance_penalty,
-        increased_shock,
-        heavy,
-        shriek,
-        teleport,
-        summon,
-        fire,
-        cannot_read,
-        light_sensitive,
+    hit_chance_penalty,
+    increased_shock,
+    heavy,
+    shriek,
+    teleport,
+    summon,
+    fire,
+    cannot_read,
+    light_sensitive,
 
-        END
+    END
 };
 
 }  // namespace item_curse

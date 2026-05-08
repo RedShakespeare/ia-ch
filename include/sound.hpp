@@ -20,15 +20,15 @@ class Actor;
 
 enum class SndVol
 {
-        low,
-        high,
-        global
+    low,
+    high,
+    global
 };
 
 enum class AlertsMon
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 // This can be used for configuring sounds so that the sound message is ignored
@@ -41,18 +41,18 @@ enum class AlertsMon
 //
 enum class IgnoreMsgIfOriginSeen
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 class SndHeardEffect
 {
 public:
-        SndHeardEffect() = default;
+    SndHeardEffect() = default;
 
-        virtual ~SndHeardEffect() = default;
+    virtual ~SndHeardEffect() = default;
 
-        virtual void run(actor::Actor& actor) const = 0;
+    virtual void run(actor::Actor& actor) const = 0;
 };
 
 // -----------------------------------------------------------------------------
@@ -61,96 +61,96 @@ public:
 class Snd
 {
 public:
-        // TODO: This constructor is terrible, consider just using a default
-        // constructor and require configuration by separate function calls.
-        Snd(
-                std::string msg,
-                audio::SfxId sfx,
-                IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
-                const P& origin,
-                actor::Actor* actor_who_made_sound,
-                SndVol vol,
-                AlertsMon alerting_mon,
-                std::shared_ptr<SndHeardEffect> snd_heard_effect = nullptr);
+    // TODO: This constructor is terrible, consider just using a default
+    // constructor and require configuration by separate function calls.
+    Snd(
+        std::string msg,
+        audio::SfxId sfx,
+        IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
+        const P& origin,
+        actor::Actor* actor_who_made_sound,
+        SndVol vol,
+        AlertsMon alerting_mon,
+        std::shared_ptr<SndHeardEffect> snd_heard_effect = nullptr);
 
-        Snd() = default;
+    Snd() = default;
 
-        ~Snd();
+    ~Snd();
 
-        void run();
+    void run();
 
-        const std::string& msg() const
-        {
-                return m_msg;
-        }
+    const std::string& msg() const
+    {
+        return m_msg;
+    }
 
-        void clear_msg()
-        {
-                m_msg = "";
-        }
+    void clear_msg()
+    {
+        m_msg = "";
+    }
 
-        audio::SfxId sfx() const
-        {
-                return m_sfx;
-        }
+    audio::SfxId sfx() const
+    {
+        return m_sfx;
+    }
 
-        void clear_sfx()
-        {
-                m_sfx = audio::SfxId::END;
-        }
+    void clear_sfx()
+    {
+        m_sfx = audio::SfxId::END;
+    }
 
-        bool is_msg_ignored_if_origin_seen() const
-        {
-                return m_is_msg_ignored_if_origin_seen == IgnoreMsgIfOriginSeen::yes;
-        }
+    bool is_msg_ignored_if_origin_seen() const
+    {
+        return m_is_msg_ignored_if_origin_seen == IgnoreMsgIfOriginSeen::yes;
+    }
 
-        bool is_alerting_mon() const
-        {
-                return m_is_alerting_mon == AlertsMon::yes;
-        }
+    bool is_alerting_mon() const
+    {
+        return m_is_alerting_mon == AlertsMon::yes;
+    }
 
-        void set_alerts_mon(AlertsMon alerts)
-        {
-                m_is_alerting_mon = alerts;
-        }
+    void set_alerts_mon(AlertsMon alerts)
+    {
+        m_is_alerting_mon = alerts;
+    }
 
-        P origin() const
-        {
-                return m_origin;
-        }
+    P origin() const
+    {
+        return m_origin;
+    }
 
-        actor::Actor* actor_who_made_sound() const
-        {
-                return m_actor_who_made_sound;
-        }
+    actor::Actor* actor_who_made_sound() const
+    {
+        return m_actor_who_made_sound;
+    }
 
-        SndVol volume() const
-        {
-                return m_vol;
-        }
+    SndVol volume() const
+    {
+        return m_vol;
+    }
 
-        void add_string(const std::string& str)
-        {
-                m_msg += str;
-        }
+    void add_string(const std::string& str)
+    {
+        m_msg += str;
+    }
 
-        void on_heard(actor::Actor& actor);
+    void on_heard(actor::Actor& actor);
 
-        bool did_player_hear_sound() const
-        {
-                return m_did_player_hear_sound;
-        }
+    bool did_player_hear_sound() const
+    {
+        return m_did_player_hear_sound;
+    }
 
 private:
-        std::string m_msg;
-        audio::SfxId m_sfx {audio::SfxId::END};
-        IgnoreMsgIfOriginSeen m_is_msg_ignored_if_origin_seen {IgnoreMsgIfOriginSeen::no};
-        P m_origin;
-        actor::Actor* m_actor_who_made_sound {nullptr};
-        SndVol m_vol {SndVol::low};
-        AlertsMon m_is_alerting_mon {AlertsMon::no};
-        std::shared_ptr<SndHeardEffect> m_snd_heard_effect;
-        bool m_did_player_hear_sound {false};
+    std::string m_msg;
+    audio::SfxId m_sfx {audio::SfxId::END};
+    IgnoreMsgIfOriginSeen m_is_msg_ignored_if_origin_seen {IgnoreMsgIfOriginSeen::no};
+    P m_origin;
+    actor::Actor* m_actor_who_made_sound {nullptr};
+    SndVol m_vol {SndVol::low};
+    AlertsMon m_is_alerting_mon {AlertsMon::no};
+    std::shared_ptr<SndHeardEffect> m_snd_heard_effect;
+    bool m_did_player_hear_sound {false};
 };
 
 // -----------------------------------------------------------------------------

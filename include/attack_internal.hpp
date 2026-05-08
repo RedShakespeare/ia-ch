@@ -27,9 +27,9 @@ namespace attack
 {
 enum class HitSize
 {
-        minor,
-        medium,
-        major
+    minor,
+    medium,
+    major
 };
 
 HitSize relative_hit_size(int dmg);
@@ -37,9 +37,9 @@ HitSize relative_hit_size(int dmg);
 std::string hit_size_punctuation_str(HitSize hit_size);
 
 void try_apply_attack_property_on_actor(
-        const ItemAttackProp& att_prop,
-        actor::Actor& actor,
-        DmgType dmg_type);
+    const ItemAttackProp& att_prop,
+    actor::Actor& actor,
+    DmgType dmg_type);
 
 }  // namespace attack
 

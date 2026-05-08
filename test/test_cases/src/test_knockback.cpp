@@ -20,54 +20,54 @@
 
 TEST_CASE("Creatures are not nailed to occupied terrain blocking los")
 {
-        const P pos_l(5, 7);
-        const P pos_r(6, 7);
+    const P pos_l(5, 7);
+    const P pos_r(6, 7);
 
-        test_utils::init_all();
+    test_utils::init_all();
 
-        map::update_terrain(
-                terrain::make(terrain::Id::floor, pos_l));
+    map::update_terrain(
+        terrain::make(terrain::Id::floor, pos_l));
 
-        map::update_terrain(
-                terrain::make(terrain::Id::vines, pos_r));
+    map::update_terrain(
+        terrain::make(terrain::Id::vines, pos_r));
 
-        map::update_terrain(
-                terrain::make(terrain::Id::wall, pos_r.with_x_offset(1)));
+    map::update_terrain(
+        terrain::make(terrain::Id::wall, pos_r.with_x_offset(1)));
 
-        actor::Actor* other_actor = actor::make("MON_ZOMBIE", pos_r);
+    actor::Actor* other_actor = actor::make("MON_ZOMBIE", pos_r);
 
-        map::g_player->m_pos = pos_l;
+    map::g_player->m_pos = pos_l;
 
-        knockback::run(
-                *map::g_player,
-                pos_l.with_x_offset(-1),
-                knockback::KnockbackSource::spike_gun);
+    knockback::run(
+        *map::g_player,
+        pos_l.with_x_offset(-1),
+        knockback::KnockbackSource::spike_gun);
 
-        // Target cell is occupied, nothing should happen
-        REQUIRE(map::g_player->m_pos == pos_l);
-        REQUIRE(!map::g_player->m_properties.has(prop::Id::nailed));
+    // Target cell is occupied, nothing should happen
+    REQUIRE(map::g_player->m_pos == pos_l);
+    REQUIRE(!map::g_player->m_properties.has(prop::Id::nailed));
 
-        // Kill the other actor, and knock the player again
-        other_actor->m_state = ActorState::corpse;
+    // Kill the other actor, and knock the player again
+    other_actor->m_state = ActorState::corpse;
 
-        knockback::run(
-                *map::g_player,
-                pos_l.with_x_offset(-1),
-                knockback::KnockbackSource::spike_gun);
+    knockback::run(
+        *map::g_player,
+        pos_l.with_x_offset(-1),
+        knockback::KnockbackSource::spike_gun);
 
-        // Now the player should be knocked back, but not nailed
-        REQUIRE(map::g_player->m_pos == pos_r);
-        REQUIRE(!map::g_player->m_properties.has(prop::Id::nailed));
+    // Now the player should be knocked back, but not nailed
+    REQUIRE(map::g_player->m_pos == pos_r);
+    REQUIRE(!map::g_player->m_properties.has(prop::Id::nailed));
 
-        // Knock the player into the wall
-        knockback::run(
-                *map::g_player,
-                pos_r.with_x_offset(-1),
-                knockback::KnockbackSource::spike_gun);
+    // Knock the player into the wall
+    knockback::run(
+        *map::g_player,
+        pos_r.with_x_offset(-1),
+        knockback::KnockbackSource::spike_gun);
 
-        // Now the player should not be knocked back, but be nailed
-        REQUIRE(map::g_player->m_pos == pos_r);
-        REQUIRE(map::g_player->m_properties.has(prop::Id::nailed));
+    // Now the player should not be knocked back, but be nailed
+    REQUIRE(map::g_player->m_pos == pos_r);
+    REQUIRE(map::g_player->m_properties.has(prop::Id::nailed));
 
-        test_utils::cleanup_all();
+    test_utils::cleanup_all();
 }

@@ -24,19 +24,19 @@ std::vector<std::string> split_by_space(const std::string& line);
 std::vector<std::string> split_by_newline(const std::string& line);
 
 std::string replace_all(
-        const std::string& line,
-        const std::string& from,
-        const std::string& to);
+    const std::string& line,
+    const std::string& from,
+    const std::string& to);
 
 std::string pad_before(
-        const std::string& str,
-        size_t tot_w,
-        char c = ' ');
+    const std::string& str,
+    size_t tot_w,
+    char c = ' ');
 
 std::string pad_after(
-        const std::string& str,
-        size_t tot_w,
-        char c = ' ');
+    const std::string& str,
+    size_t tot_w,
+    char c = ' ');
 
 std::string first_to_lower(const std::string& str);
 std::string first_to_upper(const std::string& str);

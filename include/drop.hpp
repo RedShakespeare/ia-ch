@@ -30,10 +30,10 @@ namespace item_drop
 item::Item* drop_item_on_map(const P& intended_pos, item::Item& item);
 
 void drop_item_from_inv(
-        actor::Actor& actor,
-        InvType inv_type,
-        size_t idx,
-        int nr_items_to_drop = -1);
+    actor::Actor& actor,
+    InvType inv_type,
+    size_t idx,
+    int nr_items_to_drop = -1);
 
 }  // namespace item_drop
 

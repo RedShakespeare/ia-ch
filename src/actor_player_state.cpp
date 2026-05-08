@@ -49,44 +49,44 @@ bool g_did_warn_encumbered {false};
 
 void init()
 {
-        g_active_medical_bag = nullptr;
-        g_equip_armor_countdown = 0;
-        g_remove_armor_countdown = 0;
-        g_is_dropping_armor_from_body = false;
-        g_item_equipping = nullptr;
-        g_active_explosive.reset();
-        g_last_thrown_item = nullptr;
-        g_unarmed_wpn.reset();
+    g_active_medical_bag = nullptr;
+    g_equip_armor_countdown = 0;
+    g_remove_armor_countdown = 0;
+    g_is_dropping_armor_from_body = false;
+    g_item_equipping = nullptr;
+    g_active_explosive.reset();
+    g_last_thrown_item = nullptr;
+    g_unarmed_wpn.reset();
 
-        g_target = nullptr;
+    g_target = nullptr;
 
-        g_wait_turns_left = -1;
+    g_wait_turns_left = -1;
 
-        g_auto_move_dir = Dir::END;
-        g_has_taken_auto_move_step = false;
+    g_auto_move_dir = Dir::END;
+    g_has_taken_auto_move_step = false;
 
-        g_insanity = 0;
-        g_shock = 0.0;
-        g_shock_tmp = 0.0;
-        g_nr_turns_until_insanity = -1;
+    g_insanity = 0;
+    g_shock = 0.0;
+    g_shock_tmp = 0.0;
+    g_nr_turns_until_insanity = -1;
 
-        g_player_total_shock_taken = 0.0;
+    g_player_total_shock_taken = 0.0;
 
-        for (size_t src_idx = 0; src_idx < (size_t)ShockSrc::END; ++src_idx) {
-                g_player_total_shock_from_src[src_idx] = 0.0;
-        }
+    for (size_t src_idx = 0; src_idx < (size_t)ShockSrc::END; ++src_idx) {
+        g_player_total_shock_from_src[src_idx] = 0.0;
+    }
 
-        g_nr_turns_until_r_spell = -1;
-        g_nr_turns_until_meditative_focused = -1;
+    g_nr_turns_until_r_spell = -1;
+    g_nr_turns_until_meditative_focused = -1;
 
-        g_exorcist_fervor = 0;
+    g_exorcist_fervor = 0;
 
-        g_lantern_color = {};
+    g_lantern_color = {};
 
-        g_seen_mon_to_warn_about = nullptr;
-        g_allow_print_mon_warning = false;
+    g_seen_mon_to_warn_about = nullptr;
+    g_allow_print_mon_warning = false;
 
-        g_did_warn_encumbered = false;
+    g_did_warn_encumbered = false;
 }
 
 }  // namespace actor::player_state

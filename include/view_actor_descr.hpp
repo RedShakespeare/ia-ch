@@ -20,30 +20,30 @@ class Actor;
 class ViewActorDescr : public InfoScreenState
 {
 public:
-        ViewActorDescr(actor::Actor& actor) :
-                m_actor(actor) {}
+    ViewActorDescr(actor::Actor& actor) :
+        m_actor(actor) {}
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
-        StateId id() const override;
+    StateId id() const override;
 
 private:
-        std::string title() const override;
+    std::string title() const override;
 
-        InfoScreenType type() const override
-        {
-                return InfoScreenType::single_screen;
-        }
+    InfoScreenType type() const override
+    {
+        return InfoScreenType::single_screen;
+    }
 
-        actor::Actor& m_actor;
+    actor::Actor& m_actor;
 
-        int get_lines_total() const override
-        {
-                // Doesn't matter, the descriptions are expected to always fit on a single page.
-                return 0;
-        }
+    int get_lines_total() const override
+    {
+        // Doesn't matter, the descriptions are expected to always fit on a single page.
+        return 0;
+    }
 };
 
 #endif  // VIEW_ACTOR_DESCR_HPP

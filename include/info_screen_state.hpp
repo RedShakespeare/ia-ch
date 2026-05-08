@@ -13,27 +13,27 @@
 
 enum class InfoScreenType
 {
-        scrolling,
-        single_screen
+    scrolling,
+    single_screen
 };
 
 class InfoScreenState : public State
 {
 public:
-        InfoScreenState() = default;
+    InfoScreenState() = default;
 
-        void update() override;
+    void update() override;
 
 protected:
-        void draw_interface() const;
+    void draw_interface() const;
 
-        virtual std::string title() const = 0;
+    virtual std::string title() const = 0;
 
-        virtual InfoScreenType type() const = 0;
+    virtual InfoScreenType type() const = 0;
 
-        virtual int get_lines_total() const = 0;
+    virtual int get_lines_total() const = 0;
 
-        int m_top_idx {0};
+    int m_top_idx {0};
 };
 
 #endif  // INFO_SCREEN_STATE_HPP

@@ -20,14 +20,14 @@ class Array2;
 namespace populate_mon
 {
 void make_group_at(
-        const std::string& id,
-        const std::vector<P>& sorted_free_cells,
-        Array2<bool>* blocked_out,
-        MonRoamingAllowed roaming_allowed);
+    const std::string& id,
+    const std::vector<P>& sorted_free_cells,
+    Array2<bool>* blocked_out,
+    MonRoamingAllowed roaming_allowed);
 
 std::vector<P> make_sorted_free_cells(
-        const P& origin,
-        const Array2<bool>& blocked);
+    const P& origin,
+    const Array2<bool>& blocked);
 
 // Unwalkable terrain or too close to the player
 Array2<bool> forbidden_spawn_positions();

@@ -19,33 +19,33 @@ struct ItemData;
 class Ammo : public Item
 {
 public:
-        Ammo(ItemData* const item_data) :
-                Item(item_data) {}
+    Ammo(ItemData* const item_data) :
+        Item(item_data) {}
 
-        virtual ~Ammo() = default;
+    virtual ~Ammo() = default;
 
-        Color interface_color() const override
-        {
-                return colors::white();
-        }
+    Color interface_color() const override
+    {
+        return colors::white();
+    }
 };
 
 class AmmoMag : public Ammo
 {
 public:
-        AmmoMag(ItemData* item_data);
+    AmmoMag(ItemData* item_data);
 
-        ~AmmoMag() = default;
+    ~AmmoMag() = default;
 
-        std::string name_info_str(ItemNameIdentified id_type) const override;
+    std::string name_info_str(ItemNameIdentified id_type) const override;
 
-        void set_full_ammo();
+    void set_full_ammo();
 
-        void save_hook() const override;
+    void save_hook() const override;
 
-        void load_hook() override;
+    void load_hook() override;
 
-        int m_ammo;
+    int m_ammo;
 };
 
 }  // namespace item

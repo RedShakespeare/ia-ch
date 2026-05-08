@@ -20,29 +20,29 @@ const std::string g_date_str = __DATE__;
 
 std::optional<std::string> read_git_sha1_str_from_file()
 {
-        const auto sha1_file_path = paths::data_dir() + "git-sha1.txt";
+    const auto sha1_file_path = paths::data_dir() + "git-sha1.txt";
 
-        std::ifstream file(sha1_file_path);
+    std::ifstream file(sha1_file_path);
 
-        if (!file.is_open()) {
-                TRACE << "Failed to open git sha1 file at "
-                      << sha1_file_path
-                      << "\n";
+    if (!file.is_open()) {
+        TRACE << "Failed to open git sha1 file at "
+              << sha1_file_path
+              << "\n";
 
-                return {};
-        }
+        return {};
+    }
 
-        std::string sha1;
+    std::string sha1;
 
-        getline(file, sha1);
+    getline(file, sha1);
 
-        file.close();
+    file.close();
 
-        if (sha1.empty()) {
-                return {};
-        }
+    if (sha1.empty()) {
+        return {};
+    }
 
-        return sha1;
+    return sha1;
 }
 
 }  // namespace version_info

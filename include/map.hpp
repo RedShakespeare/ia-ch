@@ -49,61 +49,61 @@ class Room;
 
 struct ChokePointData
 {
-        ChokePointData() = default;
-        ChokePointData(const ChokePointData& other);
-        ChokePointData& operator=(const ChokePointData& other);
+    ChokePointData() = default;
+    ChokePointData(const ChokePointData& other);
+    ChokePointData& operator=(const ChokePointData& other);
 
-        P p {};
+    P p {};
 
-        // These shall only ever have a value of 0 or 1 (or -1 when undefined)
-        int player_side {-1};
-        int stairs_side {-1};
+    // These shall only ever have a value of 0 or 1 (or -1 when undefined)
+    int player_side {-1};
+    int stairs_side {-1};
 
-        std::vector<P> sides[2] {};
+    std::vector<P> sides[2] {};
 };
 
 namespace map
 {
 enum class MinimapSymbol
 {
-        rectangle_filled,
-        rectangle_filled_small,
-        rectangle_edge,
+    rectangle_filled,
+    rectangle_filled_small,
+    rectangle_edge,
 };
 
 struct MinimapAppearance
 {
-        Color color {};
-        std::string legend_text;
-        MinimapSymbol symbol {MinimapSymbol::rectangle_filled};
+    Color color {};
+    std::string legend_text;
+    MinimapSymbol symbol {MinimapSymbol::rectangle_filled};
 };
 
 struct PlayerMemoryAppearance
 {
-        bool is_defined() const
-        {
-                return tile != gfx::TileId::END;
-        }
+    bool is_defined() const
+    {
+        return tile != gfx::TileId::END;
+    }
 
-        gfx::TileId tile {gfx::TileId::END};
-        char character {0};
-        std::string name;
-        Color color {};
+    gfx::TileId tile {gfx::TileId::END};
+    char character {0};
+    std::string name;
+    Color color {};
 
-        MinimapAppearance minimap {};
+    MinimapAppearance minimap {};
 };
 
 struct PlayerMemoryTerrain
 {
-        PlayerMemoryAppearance appearance {};
-        terrain::Id id {(terrain::Id)0};
-        bool blocks_walking {false};
+    PlayerMemoryAppearance appearance {};
+    terrain::Id id {(terrain::Id)0};
+    bool blocks_walking {false};
 };
 
 struct PlayerMemoryItem
 {
-        PlayerMemoryAppearance appearance {};
-        item::Id id {(item::Id)0};
+    PlayerMemoryAppearance appearance {};
+    item::Id id {(item::Id)0};
 };
 
 extern Array2<bool> g_seen;
@@ -174,8 +174,8 @@ actor::Actor* first_corpse_at(const P& pos);
 terrain::Terrain* first_mob_at_pos(const P& pos);
 
 actor::Actor* random_closest_actor(
-        const P& c,
-        const std::vector<actor::Actor*>& actors);
+    const P& c,
+    const std::vector<actor::Actor*>& actors);
 
 bool is_pos_inside_map(const P& pos);
 bool is_pos_inside_outer_walls(const P& pos);

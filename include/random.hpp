@@ -18,75 +18,75 @@
 
 struct Range
 {
-        Range() = default;
+    Range() = default;
 
-        Range(const int min_val, const int max_val) :
-                min(min_val),
-                max(max_val) {}
+    Range(const int min_val, const int max_val) :
+        min(min_val),
+        max(max_val) {}
 
-        Range(const Range&) = default;
+    Range(const Range&) = default;
 
-        Range& operator=(const Range&) = default;
+    Range& operator=(const Range&) = default;
 
-        void set(const int min_val, const int max_val)
-        {
-                min = min_val;
-                max = max_val;
-        }
+    void set(const int min_val, const int max_val)
+    {
+        min = min_val;
+        max = max_val;
+    }
 
-        bool operator==(const Range& other) const
-        {
-                return (min == other.min) && (max == other.max);
-        }
+    bool operator==(const Range& other) const
+    {
+        return (min == other.min) && (max == other.max);
+    }
 
-        Range& operator/=(const int v)
-        {
-                min /= v;
-                max /= v;
-                return *this;
-        }
+    Range& operator/=(const int v)
+    {
+        min /= v;
+        max /= v;
+        return *this;
+    }
 
-        int roll() const;
+    int roll() const;
 
-        int len() const
-        {
-                return max - min + 1;
-        }
+    int len() const
+    {
+        return max - min + 1;
+    }
 
-        double avg() const
-        {
-                return (double)(min + max) / 2.0;
-        }
+    double avg() const
+    {
+        return (double)(min + max) / 2.0;
+    }
 
-        bool is_in_range(const int v) const
-        {
-                return (v >= min) && (v <= max);
-        }
+    bool is_in_range(const int v) const
+    {
+        return (v >= min) && (v <= max);
+    }
 
-        std::string str() const;
+    std::string str() const;
 
-        std::string str_avg() const;
+    std::string str_avg() const;
 
-        int min {0};
-        int max {0};
+    int min {0};
+    int max {0};
 };
 
 struct Fraction
 {
-        Fraction() = default;
+    Fraction() = default;
 
-        Fraction(const Fraction&) = default;
+    Fraction(const Fraction&) = default;
 
-        Fraction(const int numerator, const int denominator) :
-                num(numerator),
-                den(denominator) {}
+    Fraction(const int numerator, const int denominator) :
+        num(numerator),
+        den(denominator) {}
 
-        Fraction& operator=(const Fraction& other) = default;
+    Fraction& operator=(const Fraction& other) = default;
 
-        bool roll() const;
+    bool roll() const;
 
-        int num {-1};
-        int den {-1};
+    int num {-1};
+    int den {-1};
 };
 
 template <typename T>
@@ -123,32 +123,32 @@ int weighted_choice(const std::vector<int>& weights);
 template <typename T>
 T weighted_choice(const WeightedItems<T>& weighted_items)
 {
-        ASSERT(weighted_items.items.size() == weighted_items.weights.size());
-        ASSERT(!weighted_items.items.empty());
+    ASSERT(weighted_items.items.size() == weighted_items.weights.size());
+    ASSERT(!weighted_items.items.empty());
 
-        const size_t idx = weighted_choice(weighted_items.weights);
+    const size_t idx = weighted_choice(weighted_items.weights);
 
-        return weighted_items.items[idx];
+    return weighted_items.items[idx];
 }
 
 template <typename T>
 T element(const std::vector<T>& v)
 {
-        const size_t idx = range(0, v.size() - 1);
+    const size_t idx = range(0, v.size() - 1);
 
-        return v[idx];
+    return v[idx];
 }
 
 template <typename T>
 int idx(const std::vector<T>& v)
 {
-        return range(0, v.size() - 1);
+    return range(0, v.size() - 1);
 }
 
 template <typename T>
 void shuffle(std::vector<T>& v)
 {
-        std::shuffle(std::begin(v), std::end(v), g_rng);
+    std::shuffle(std::begin(v), std::end(v), g_rng);
 }
 
 }  // namespace rnd
@@ -156,13 +156,13 @@ void shuffle(std::vector<T>& v)
 template <typename T>
 struct WeightedItems
 {
-        T roll() const
-        {
-                return rnd::weighted_choice(*this);
-        }
+    T roll() const
+    {
+        return rnd::weighted_choice(*this);
+    }
 
-        std::vector<T> items = {};
-        std::vector<int> weights;
+    std::vector<T> items = {};
+    std::vector<int> weights;
 };
 
 #endif  // RANDOM_HPP

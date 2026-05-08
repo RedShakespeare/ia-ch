@@ -14,17 +14,17 @@ namespace actor
 class Actor;
 
 void hit(
-        Actor& actor,
-        int dmg,
-        DmgType dmg_type,
-        actor::Actor* attacker,
-        AllowWound allow_wound = AllowWound::yes);
+    Actor& actor,
+    int dmg,
+    DmgType dmg_type,
+    actor::Actor* attacker,
+    AllowWound allow_wound = AllowWound::yes);
 
 void hit_sp(
-        Actor& actor,
-        int dmg,
-        actor::Actor* attacker,
-        Verbose verbose = Verbose::yes);
+    Actor& actor,
+    int dmg,
+    actor::Actor* attacker,
+    Verbose verbose = Verbose::yes);
 
 }  // namespace actor
 

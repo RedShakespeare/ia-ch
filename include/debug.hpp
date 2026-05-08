@@ -47,22 +47,22 @@
 // if (1) ; else std::cerr << "foo" << "\n";
 //
 #define TRACE \
-        if (1) \
-                ; \
-        else \
-                std::cerr
+    if (1) \
+        ; \
+    else \
+        std::cerr
 
 #define TRACE_FUNC_BEGIN \
-        if (1) \
-                ; \
-        else \
-                std::cerr
+    if (1) \
+        ; \
+    else \
+        std::cerr
 
 #define TRACE_FUNC_END \
-        if (1) \
-                ; \
-        else \
-                std::cerr
+    if (1) \
+        ; \
+    else \
+        std::cerr
 
 #define PANIC exit(EXIT_FAILURE)
 
@@ -71,27 +71,27 @@
 // Debug mode
 
 #define TRACE \
-        std::cerr \
-                << "DEBUG: " \
-                << __FILE__ << ", " \
-                << __LINE__ << ", " \
-                << __func__ << "(): "
+    std::cerr \
+        << "DEBUG: " \
+        << __FILE__ << ", " \
+        << __LINE__ << ", " \
+        << __func__ << "(): "
 
 #define TRACE_FUNC_BEGIN \
-        std::cerr \
-                << "DEBUG: " \
-                << __FILE__ << ", " \
-                << __LINE__ << ", " \
-                << __func__ << "() [BEGIN]" \
-                << "\n"
+    std::cerr \
+        << "DEBUG: " \
+        << __FILE__ << ", " \
+        << __LINE__ << ", " \
+        << __func__ << "() [BEGIN]" \
+        << "\n"
 
 #define TRACE_FUNC_END \
-        std::cerr \
-                << "DEBUG: " \
-                << __FILE__ << ", " \
-                << __LINE__ << ", " \
-                << __func__ << "() [END]" \
-                << "\n"
+    std::cerr \
+        << "DEBUG: " \
+        << __FILE__ << ", " \
+        << __LINE__ << ", " \
+        << __func__ << "() [END]" \
+        << "\n"
 
 #define PANIC ASSERT(false)
 
@@ -102,10 +102,10 @@
 // NOTE: Never call this function directly, use the "ASSERT" macro above
 //------------------------------------------------------------------------------
 void assert_impl(
-        bool check,
-        const char* check_str,
-        const char* file,
-        int line,
-        const char* func);
+    bool check,
+    const char* check_str,
+    const char* file,
+    int line,
+    const char* func);
 
 #endif  // DEBUG_HPP

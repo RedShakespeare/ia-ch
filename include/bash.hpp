@@ -49,8 +49,8 @@ void do_fake_attack_on_unseen_terrain(const P& pos, const item::Item& wpn);
 void attack_air();
 
 bool is_allowed_use_wpn_on_terrain(
-        const item::Item& wpn,
-        const terrain::Terrain& terrain);
+    const item::Item& wpn,
+    const terrain::Terrain& terrain);
 
 bool is_open_terrain(const terrain::Terrain& terrain);
 

@@ -60,123 +60,123 @@ bool g_is_demo_mapgen = false;
 
 void init_io()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        io::init_sdl();
-        io::init_sdl_audio();
+    io::init_sdl();
+    io::init_sdl_audio();
 
-        paths::init();
+    paths::init();
 
-        config::init();
-        colors::init();
-        io::init_other();
+    config::init();
+    colors::init();
+    io::init_other();
 
-        io::clear_screen();
+    io::clear_screen();
 
-        // TODO: Use more creative loading messages
-        io::draw_text_center(
-                "Loading...",
-                Panel::screen,
-                panels::center(Panel::screen),
-                colors::menu_dark());
+    // TODO: Use more creative loading messages
+    io::draw_text_center(
+        "Loading...",
+        Panel::screen,
+        panels::center(Panel::screen),
+        colors::menu_dark());
 
-        io::update_screen();
+    io::update_screen();
 
-        query::init();
-        audio::init();
+    query::init();
+    audio::init();
 
-        std::queue<std::string>& paths_error_messages = paths::pending_error_messages();
+    std::queue<std::string>& paths_error_messages = paths::pending_error_messages();
 
-        for (; !paths_error_messages.empty(); paths_error_messages.pop()) {
-                const std::string msg = paths_error_messages.front();
+    for (; !paths_error_messages.empty(); paths_error_messages.pop()) {
+        const std::string msg = paths_error_messages.front();
 
-                popup::Popup popup(popup::AddToMsgHistory::no);
+        popup::Popup popup(popup::AddToMsgHistory::no);
 
-                popup.set_title("Warning");
+        popup.set_title("Warning");
 
-                popup.set_msg(msg);
+        popup.set_msg(msg);
 
-                popup.run();
+        popup.run();
 
-                io::sleep(250);
-        }
+        io::sleep(250);
+    }
 
-        TRACE_FUNC_END;
+    TRACE_FUNC_END;
 }
 
 void cleanup_io()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        audio::cleanup();
-        query::cleanup();
-        io::cleanup_other();
-        io::cleanup_sdl_audio();
-        io::cleanup_sdl();
+    audio::cleanup();
+    query::cleanup();
+    io::cleanup_other();
+    io::cleanup_sdl_audio();
+    io::cleanup_sdl();
 
-        TRACE_FUNC_END;
+    TRACE_FUNC_END;
 }
 
 void init_game()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        saving::init();
-        messages::init();
-        line_calc::init();
-        map_templates::init();
+    saving::init();
+    messages::init();
+    line_calc::init();
+    map_templates::init();
 
-        TRACE_FUNC_END;
+    TRACE_FUNC_END;
 }
 
 void cleanup_game()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        TRACE_FUNC_END;
+    TRACE_FUNC_END;
 }
 
 void init_session()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        actor::init();
-        terrain::init();
-        prop::init();
-        item::init();
-        scroll::init();
-        potion::init();
-        rod::init();
-        item_curse::init();
-        terrain::pylon::init();
-        game_time::init();
-        map_travel::init();
-        map::init();
-        player_bon::init();
-        insanity::init();
-        msg_log::init();
-        game::init();
-        bot::init();
-        player_spells::init();
-        hints::init();
-        smell::init();
+    actor::init();
+    terrain::init();
+    prop::init();
+    item::init();
+    scroll::init();
+    potion::init();
+    rod::init();
+    item_curse::init();
+    terrain::pylon::init();
+    game_time::init();
+    map_travel::init();
+    map::init();
+    player_bon::init();
+    insanity::init();
+    msg_log::init();
+    game::init();
+    bot::init();
+    player_spells::init();
+    hints::init();
+    smell::init();
 
-        TRACE_FUNC_END;
+    TRACE_FUNC_END;
 }
 
 void cleanup_session()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        map_templates::clear_base_room_templates_used();
+    map_templates::clear_base_room_templates_used();
 
-        player_spells::cleanup();
-        insanity::cleanup();
-        map::cleanup();
-        game_time::cleanup();
-        item::cleanup();
+    player_spells::cleanup();
+    insanity::cleanup();
+    map::cleanup();
+    game_time::cleanup();
+    item::cleanup();
 
-        TRACE_FUNC_END;
+    TRACE_FUNC_END;
 }
 
 }  // namespace init

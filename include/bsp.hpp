@@ -15,14 +15,14 @@ namespace bsp
 {
 struct BlockedSplitPositions
 {
-        std::vector<int> x {};
-        std::vector<int> y {};
+    std::vector<int> x {};
+    std::vector<int> y {};
 };
 
 std::vector<R> try_split(
-        const R& rect,
-        int child_min_size,
-        const BlockedSplitPositions& blocked_split_positions);
+    const R& rect,
+    int child_min_size,
+    const BlockedSplitPositions& blocked_split_positions);
 
 }  // namespace bsp
 

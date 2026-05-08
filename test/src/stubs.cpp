@@ -44,7 +44,7 @@ void init_sdl() {}
 
 void init_other()
 {
-        panels::init({100, 100});
+    panels::init({100, 100});
 }
 
 void cleanup_sdl() {}
@@ -61,7 +61,7 @@ void clear_screen() {}
 
 P get_native_resolution()
 {
-        return {};
+    return {};
 }
 
 void on_user_toggle_fullscreen() {}
@@ -69,72 +69,72 @@ void on_user_toggle_scaling() {}
 
 R gui_to_px_rect(const R&)
 {
-        return {};
+    return {};
 }
 
 int gui_to_px_coords_x(const int)
 {
-        return 0;
+    return 0;
 }
 
 int gui_to_px_coords_y(const int)
 {
-        return 0;
+    return 0;
 }
 
 int map_to_px_coords_x(const int)
 {
-        return 0;
+    return 0;
 }
 
 int map_to_px_coords_y(const int)
 {
-        return 0;
+    return 0;
 }
 
 P gui_to_px_coords(const P&)
 {
-        return {};
+    return {};
 }
 
 P gui_to_px_coords(const int, const int)
 {
-        return {};
+    return {};
 }
 
 P map_to_px_coords(const P&)
 {
-        return {};
+    return {};
 }
 
 P map_to_px_coords(const int, const int)
 {
-        return {};
+    return {};
 }
 
 P px_to_gui_coords(const P&)
 {
-        return {};
+    return {};
 }
 
 P px_to_map_coords(const P&)
 {
-        return {};
+    return {};
 }
 
 P gui_to_map_coords(const P&)
 {
-        return {};
+    return {};
 }
 
 P gui_to_px_coords(const Panel, const P&)
 {
-        return {};
+    return {};
 }
 
 P map_to_px_coords(const Panel, const P&)
 {
-        return {};
+    return {};
 }
 
 void draw_map_obj(const MapDrawObj&) {}
@@ -144,46 +144,46 @@ void draw_tile(const TileDrawObj&) {}
 void draw_character(const CharacterDrawObj&) {}
 
 void draw_text(
-        Text,
-        Panel,
-        P,
-        Color,
-        const DrawBg,
-        const Color&) {}
+    Text,
+    Panel,
+    P,
+    Color,
+    const DrawBg,
+    const Color&) {}
 
 void draw_text_center(
-        const std::string&,
-        const Panel,
-        P,
-        const Color&,
-        const DrawBg,
-        const Color&,
-        const bool) {}
+    const std::string&,
+    const Panel,
+    P,
+    const Color&,
+    const DrawBg,
+    const Color&,
+    const bool) {}
 
 void draw_text_right(
-        const std::string&,
-        const Panel,
-        P,
-        const Color&,
-        const DrawBg,
-        const Color&) {}
+    const std::string&,
+    const Panel,
+    P,
+    const Color&,
+    const DrawBg,
+    const Color&) {}
 
 void cover_cell(const Panel, const P&) {}
 
 void cover_panel(
-        const Panel,
-        const Color&) {}
+    const Panel,
+    const Color&) {}
 
 void cover_area(
-        const Panel,
-        const R&,
-        const Color&) {}
+    const Panel,
+    const R&,
+    const Color&) {}
 
 void cover_area(
-        const Panel,
-        const P&,
-        const P&,
-        const Color&) {}
+    const Panel,
+    const P&,
+    const P&,
+    const Color&) {}
 
 void draw_rectangle(R, const Color&) {}
 
@@ -203,21 +203,21 @@ void clear_input() {}
 
 InputData read_input()
 {
-        InputData d = {};
+    InputData d = {};
 
-        d.key = SDLK_SPACE;
+    d.key = SDLK_SPACE;
 
-        return d;
+    return d;
 }
 
 Dir controller_support_mode_dir_held()
 {
-        return Dir::END;
+    return Dir::END;
 }
 
 int graphics_cycle_nr(const GraphicsCycle)
 {
-        return 0;
+    return 0;
 }
 
 void flash_at(const P&, const Color&, const int)
@@ -234,7 +234,7 @@ void clear_all_flash_animations() {}
 
 std::string sdl_pref_dir()
 {
-        return "./";
+    return "./";
 }
 
 void sleep(const Uint32) {}

@@ -20,16 +20,16 @@ namespace knockback
 {
 enum class KnockbackSource
 {
-        spike_gun,
-        other
+    spike_gun,
+    other
 };
 
 void run(
-        actor::Actor& actor,
-        const P& attacked_from_pos,
-        KnockbackSource source,
-        Verbose verbose = Verbose::yes,
-        int paralyze_extra_turns = 0);
+    actor::Actor& actor,
+    const P& attacked_from_pos,
+    KnockbackSource source,
+    Verbose verbose = Verbose::yes,
+    int paralyze_extra_turns = 0);
 
 }  // namespace knockback
 

@@ -41,9 +41,9 @@
 // Only used to verify that the put/get methods are not called at the wrong time
 enum class SaveLoadState
 {
-        saving,
-        loading,
-        stopped
+    saving,
+    loading,
+    stopped
 };
 
 static SaveLoadState s_state;
@@ -52,109 +52,109 @@ static std::vector<std::string> s_lines;
 
 static void save_modules()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        ASSERT(s_lines.empty());
+    ASSERT(s_lines.empty());
 
-        saving::put_str(actor::name_a(*map::g_player));
+    saving::put_str(actor::name_a(*map::g_player));
 
-        game::save();
-        scroll::save();
-        potion::save();
-        rod::save();
-        item::save();
-        item_curse::save();
-        terrain::pylon::save();
-        map::g_player->m_inv.save();
-        map::g_player->save();
-        insanity::save();
-        player_bon::save();
-        map_travel::save();
-        map::save();
-        actor::save();
-        game_time::save();
-        player_spells::save();
-        map_templates::save();
-        hints::save();
-        smell::save();
+    game::save();
+    scroll::save();
+    potion::save();
+    rod::save();
+    item::save();
+    item_curse::save();
+    terrain::pylon::save();
+    map::g_player->m_inv.save();
+    map::g_player->save();
+    insanity::save();
+    player_bon::save();
+    map_travel::save();
+    map::save();
+    actor::save();
+    game_time::save();
+    player_spells::save();
+    map_templates::save();
+    hints::save();
+    smell::save();
 
-        TRACE_FUNC_END;
+    TRACE_FUNC_END;
 }
 
 static void load_modules()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        ASSERT(!s_lines.empty());
+    ASSERT(!s_lines.empty());
 
-        const std::string player_name = saving::get_str();
+    const std::string player_name = saving::get_str();
 
-        ASSERT(!player_name.empty());
+    ASSERT(!player_name.empty());
 
-        map::g_player->m_data->name_a = player_name;
+    map::g_player->m_data->name_a = player_name;
 
-        map::g_player->m_data->name_the = player_name;
+    map::g_player->m_data->name_the = player_name;
 
-        game::load();
-        scroll::load();
-        potion::load();
-        rod::load();
-        item::load();
-        item_curse::load();
-        terrain::pylon::load();
-        map::g_player->m_inv.load();
-        map::g_player->load();
-        insanity::load();
-        player_bon::load();
-        map_travel::load();
-        map::load();
-        actor::load();
-        game_time::load();
-        player_spells::load();
-        map_templates::load();
-        hints::load();
-        smell::load();
+    game::load();
+    scroll::load();
+    potion::load();
+    rod::load();
+    item::load();
+    item_curse::load();
+    terrain::pylon::load();
+    map::g_player->m_inv.load();
+    map::g_player->load();
+    insanity::load();
+    player_bon::load();
+    map_travel::load();
+    map::load();
+    actor::load();
+    game_time::load();
+    player_spells::load();
+    map_templates::load();
+    hints::load();
+    smell::load();
 
-        TRACE_FUNC_END;
+    TRACE_FUNC_END;
 }
 
 static void write_file()
 {
-        std::ofstream file;
+    std::ofstream file;
 
-        // Current file content is discarded
-        file.open(paths::save_file_path(), std::ios::trunc);
+    // Current file content is discarded
+    file.open(paths::save_file_path(), std::ios::trunc);
 
-        if (file.is_open()) {
-                for (size_t i = 0; i < s_lines.size(); ++i) {
-                        file << s_lines[i];
+    if (file.is_open()) {
+        for (size_t i = 0; i < s_lines.size(); ++i) {
+            file << s_lines[i];
 
-                        if (i != s_lines.size() - 1) {
-                                file << "\n";
-                        }
-                }
-
-                file.close();
+            if (i != s_lines.size() - 1) {
+                file << "\n";
+            }
         }
+
+        file.close();
+    }
 }
 
 static void read_file()
 {
-        std::ifstream file(paths::save_file_path());
+    std::ifstream file(paths::save_file_path());
 
-        if (file.is_open()) {
-                std::string current_line;
+    if (file.is_open()) {
+        std::string current_line;
 
-                while (getline(file, current_line)) {
-                        s_lines.push_back(current_line);
-                }
-
-                file.close();
+        while (getline(file, current_line)) {
+            s_lines.push_back(current_line);
         }
-        else {
-                // Could not open save file
-                ASSERT(false && "Failed to open save file");
-        }
+
+        file.close();
+    }
+    else {
+        // Could not open save file
+        ASSERT(false && "Failed to open save file");
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -164,123 +164,123 @@ namespace saving
 {
 void init()
 {
-        s_lines.clear();
+    s_lines.clear();
 
-        s_state = SaveLoadState::stopped;
+    s_state = SaveLoadState::stopped;
 }
 
 void save_game()
 {
-        ASSERT(s_state == SaveLoadState::stopped);
-        ASSERT(s_lines.empty());
+    ASSERT(s_state == SaveLoadState::stopped);
+    ASSERT(s_lines.empty());
 
-        s_state = SaveLoadState::saving;
+    s_state = SaveLoadState::saving;
 
-        // Tell all modules to append to the save lines (via this modules store
-        // functions)
-        save_modules();
+    // Tell all modules to append to the save lines (via this modules store
+    // functions)
+    save_modules();
 
-        s_state = SaveLoadState::stopped;
+    s_state = SaveLoadState::stopped;
 
-        // Write the save lines to the save file
-        write_file();
+    // Write the save lines to the save file
+    write_file();
 
-        s_lines.clear();
+    s_lines.clear();
 }
 
 void load_game()
 {
-        ASSERT(s_state == SaveLoadState::stopped);
-        ASSERT(s_lines.empty());
+    ASSERT(s_state == SaveLoadState::stopped);
+    ASSERT(s_lines.empty());
 
-        s_state = SaveLoadState::loading;
+    s_state = SaveLoadState::loading;
 
-        // Read the save file to the save lines
-        read_file();
+    // Read the save file to the save lines
+    read_file();
 
-        ASSERT(!s_lines.empty());
+    ASSERT(!s_lines.empty());
 
-        // Tell all modules to set up their state from the save lines (via the
-        // read functions of this module)
-        load_modules();
+    // Tell all modules to set up their state from the save lines (via the
+    // read functions of this module)
+    load_modules();
 
-        s_state = SaveLoadState::stopped;
+    s_state = SaveLoadState::stopped;
 
-        ASSERT(s_lines.empty());
+    ASSERT(s_lines.empty());
 }
 
 void erase_save()
 {
-        s_lines.clear();
+    s_lines.clear();
 
-        // Write empty save file
-        write_file();
+    // Write empty save file
+    write_file();
 }
 
 bool is_save_available()
 {
-        std::ifstream file(paths::save_file_path());
+    std::ifstream file(paths::save_file_path());
 
-        if (file.good()) {
-                const bool is_empty =
-                        file.peek() == std::ifstream::traits_type::eof();
+    if (file.good()) {
+        const bool is_empty =
+            file.peek() == std::ifstream::traits_type::eof();
 
-                file.close();
+        file.close();
 
-                return !is_empty;
-        }
-        else {
-                // Failed to open file
-                file.close();
+        return !is_empty;
+    }
+    else {
+        // Failed to open file
+        file.close();
 
-                return false;
-        }
+        return false;
+    }
 }
 
 bool is_loading()
 {
-        return s_state == SaveLoadState::loading;
+    return s_state == SaveLoadState::loading;
 }
 
 void put_str(const std::string& str)
 {
-        ASSERT(s_state == SaveLoadState::saving);
+    ASSERT(s_state == SaveLoadState::saving);
 
-        s_lines.push_back(str);
+    s_lines.push_back(str);
 }
 
 void put_int(const int v)
 {
-        put_str(std::to_string(v));
+    put_str(std::to_string(v));
 }
 
 void put_bool(const bool v)
 {
-        const std::string str = v ? "T" : "F";
+    const std::string str = v ? "T" : "F";
 
-        put_str(str);
+    put_str(str);
 }
 
 std::string get_str()
 {
-        ASSERT(s_state == SaveLoadState::loading);
-        ASSERT(!s_lines.empty());
+    ASSERT(s_state == SaveLoadState::loading);
+    ASSERT(!s_lines.empty());
 
-        auto str = s_lines.front();
+    auto str = s_lines.front();
 
-        s_lines.erase(std::begin(s_lines));
+    s_lines.erase(std::begin(s_lines));
 
-        return str;
+    return str;
 }
 
 int get_int()
 {
-        return to_int(get_str());
+    return to_int(get_str());
 }
 
 bool get_bool()
 {
-        return get_str() == "T";
+    return get_str() == "T";
 }
 
 }  // namespace saving

@@ -52,271 +52,271 @@ struct P;
 // -----------------------------------------------------------------------------
 static item::Item* get_random_cursed_player_item()
 {
-        std::vector<item::Item*> cursed_items;
+    std::vector<item::Item*> cursed_items;
 
-        for (const InvSlot& slot : map::g_player->m_inv.m_slots) {
-                if (slot.item && slot.item->is_cursed()) {
-                        cursed_items.push_back(slot.item);
-                }
+    for (const InvSlot& slot : map::g_player->m_inv.m_slots) {
+        if (slot.item && slot.item->is_cursed()) {
+            cursed_items.push_back(slot.item);
         }
+    }
 
-        for (item::Item* const item : map::g_player->m_inv.m_backpack) {
-                if (item->is_cursed()) {
-                        cursed_items.push_back(item);
-                }
+    for (item::Item* const item : map::g_player->m_inv.m_backpack) {
+        if (item->is_cursed()) {
+            cursed_items.push_back(item);
         }
+    }
 
-        if (cursed_items.empty()) {
-                return nullptr;
-        }
-        else {
-                return rnd::element(cursed_items);
-        }
+    if (cursed_items.empty()) {
+        return nullptr;
+    }
+    else {
+        return rnd::element(cursed_items);
+    }
 }
 
 static std::unique_ptr<terrain::gong::Bonus> make_bonus(
-        terrain::gong::BonusId id)
+    terrain::gong::BonusId id)
 {
-        // If the player has a cursed item, make the bless bonus most probable.
-        auto bless = std::make_unique<terrain::gong::Blessed>();
+    // If the player has a cursed item, make the bless bonus most probable.
+    auto bless = std::make_unique<terrain::gong::Blessed>();
 
-        if (get_random_cursed_player_item() && bless->is_allowed() && rnd::coin_toss()) {
-                return bless;
-        }
+    if (get_random_cursed_player_item() && bless->is_allowed() && rnd::coin_toss()) {
+        return bless;
+    }
 
-        switch (id) {
-        case terrain::gong::BonusId::upgrade_spell:
-                return std::make_unique<terrain::gong::UpgradeSpell>();
+    switch (id) {
+    case terrain::gong::BonusId::upgrade_spell:
+        return std::make_unique<terrain::gong::UpgradeSpell>();
 
-        case terrain::gong::BonusId::gain_hp:
-                return std::make_unique<terrain::gong::GainHp>();
+    case terrain::gong::BonusId::gain_hp:
+        return std::make_unique<terrain::gong::GainHp>();
 
-        case terrain::gong::BonusId::gain_sp:
-                return std::make_unique<terrain::gong::GainSp>();
+    case terrain::gong::BonusId::gain_sp:
+        return std::make_unique<terrain::gong::GainSp>();
 
-        case terrain::gong::BonusId::gain_xp:
-                return std::make_unique<terrain::gong::GainXp>();
+    case terrain::gong::BonusId::gain_xp:
+        return std::make_unique<terrain::gong::GainXp>();
 
-        case terrain::gong::BonusId::remove_insanity:
-                return std::make_unique<terrain::gong::RemoveInsanity>();
+    case terrain::gong::BonusId::remove_insanity:
+        return std::make_unique<terrain::gong::RemoveInsanity>();
 
-        case terrain::gong::BonusId::gain_item:
-                return std::make_unique<terrain::gong::GainItem>();
+    case terrain::gong::BonusId::gain_item:
+        return std::make_unique<terrain::gong::GainItem>();
 
-        case terrain::gong::BonusId::healed:
-                return std::make_unique<terrain::gong::Healed>();
+    case terrain::gong::BonusId::healed:
+        return std::make_unique<terrain::gong::Healed>();
 
-        case terrain::gong::BonusId::blessed:
-                return bless;
+    case terrain::gong::BonusId::blessed:
+        return bless;
 
-        case terrain::gong::BonusId::undefined:
-        case terrain::gong::BonusId::END:
-                break;
-        }
+    case terrain::gong::BonusId::undefined:
+    case terrain::gong::BonusId::END:
+        break;
+    }
 
-        ASSERT(false);
+    ASSERT(false);
 
-        return nullptr;
+    return nullptr;
 }
 
 static std::unique_ptr<terrain::gong::Toll> make_toll(terrain::gong::TollId id)
 {
-        switch (id) {
-        case terrain::gong::TollId::hp_reduced:
-                return std::make_unique<terrain::gong::HpReduced>();
+    switch (id) {
+    case terrain::gong::TollId::hp_reduced:
+        return std::make_unique<terrain::gong::HpReduced>();
 
-        case terrain::gong::TollId::sp_reduced:
-                return std::make_unique<terrain::gong::SpReduced>();
+    case terrain::gong::TollId::sp_reduced:
+        return std::make_unique<terrain::gong::SpReduced>();
 
-        case terrain::gong::TollId::xp_reduced:
-                return std::make_unique<terrain::gong::XpReduced>();
+    case terrain::gong::TollId::xp_reduced:
+        return std::make_unique<terrain::gong::XpReduced>();
 
-        case terrain::gong::TollId::deaf:
-                return std::make_unique<terrain::gong::Deaf>();
+    case terrain::gong::TollId::deaf:
+        return std::make_unique<terrain::gong::Deaf>();
 
-        case terrain::gong::TollId::cursed:
-                return std::make_unique<terrain::gong::Cursed>();
+    case terrain::gong::TollId::cursed:
+        return std::make_unique<terrain::gong::Cursed>();
 
-        case terrain::gong::TollId::forget_spell:
-                return std::make_unique<terrain::gong::ForgetSpell>();
+    case terrain::gong::TollId::forget_spell:
+        return std::make_unique<terrain::gong::ForgetSpell>();
 
-        case terrain::gong::TollId::spawn_monsters:
-                return std::make_unique<terrain::gong::SpawnMonsters>();
+    case terrain::gong::TollId::spawn_monsters:
+        return std::make_unique<terrain::gong::SpawnMonsters>();
 
-        case terrain::gong::TollId::END:
-                break;
-        }
+    case terrain::gong::TollId::END:
+        break;
+    }
 
-        ASSERT(false);
+    ASSERT(false);
 
-        return nullptr;
+    return nullptr;
 }
 
 static std::vector<std::unique_ptr<terrain::gong::Bonus>>
 make_all_allowed_bonuses()
 {
-        std::vector<std::unique_ptr<terrain::gong::Bonus>> bonuses;
+    std::vector<std::unique_ptr<terrain::gong::Bonus>> bonuses;
 
-        for (int i = 0; i < (int)terrain::gong::BonusId::END; ++i) {
-                auto bonus = make_bonus((terrain::gong::BonusId)i);
+    for (int i = 0; i < (int)terrain::gong::BonusId::END; ++i) {
+        auto bonus = make_bonus((terrain::gong::BonusId)i);
 
-                if (!bonus) {
-                        ASSERT(false);
+        if (!bonus) {
+            ASSERT(false);
 
-                        continue;
-                }
-
-                if (!bonus->is_allowed()) {
-                        continue;
-                }
-
-                bonuses.push_back(std::move(bonus));
+            continue;
         }
 
-        return bonuses;
+        if (!bonus->is_allowed()) {
+            continue;
+        }
+
+        bonuses.push_back(std::move(bonus));
+    }
+
+    return bonuses;
 }
 
 static bool is_toll_blacklist_allowing_bonus(
-        const terrain::gong::Toll& toll,
-        const terrain::gong::BonusId bonus_id)
+    const terrain::gong::Toll& toll,
+    const terrain::gong::BonusId bonus_id)
 {
-        const auto bonuses_not_allowed_with =
-                toll.bonuses_not_allowed_with();
+    const auto bonuses_not_allowed_with =
+        toll.bonuses_not_allowed_with();
 
-        const auto search =
-                std::find(
-                        std::begin(bonuses_not_allowed_with),
-                        std::end(bonuses_not_allowed_with),
-                        bonus_id);
+    const auto search =
+        std::find(
+            std::begin(bonuses_not_allowed_with),
+            std::end(bonuses_not_allowed_with),
+            bonus_id);
 
-        const bool is_in_blacklist =
-                (search != std::end(bonuses_not_allowed_with));
+    const bool is_in_blacklist =
+        (search != std::end(bonuses_not_allowed_with));
 
-        return !is_in_blacklist;
+    return !is_in_blacklist;
 }
 
 static bool is_toll_whitelist_allowing_bonus(
-        const terrain::gong::Toll& toll,
-        const terrain::gong::BonusId bonus_id)
+    const terrain::gong::Toll& toll,
+    const terrain::gong::BonusId bonus_id)
 {
-        const auto bonuses_only_allowed_with =
-                toll.bonuses_only_allowed_with();
+    const auto bonuses_only_allowed_with =
+        toll.bonuses_only_allowed_with();
 
-        if (bonuses_only_allowed_with.empty()) {
-                // The toll does not have a bonus whitelist
-                return true;
-        }
+    if (bonuses_only_allowed_with.empty()) {
+        // The toll does not have a bonus whitelist
+        return true;
+    }
 
-        // The toll has a bonus whitelist
+    // The toll has a bonus whitelist
 
-        const auto search =
-                std::find(
-                        std::begin(bonuses_only_allowed_with),
-                        std::end(bonuses_only_allowed_with),
-                        bonus_id);
+    const auto search =
+        std::find(
+            std::begin(bonuses_only_allowed_with),
+            std::end(bonuses_only_allowed_with),
+            bonus_id);
 
-        const bool is_in_whitelist =
-                (search != std::end(bonuses_only_allowed_with));
+    const bool is_in_whitelist =
+        (search != std::end(bonuses_only_allowed_with));
 
-        return is_in_whitelist;
+    return is_in_whitelist;
 }
 
 static bool is_toll_allowing_bonus(
-        const terrain::gong::Toll& toll,
-        const terrain::gong::BonusId bonus_id)
+    const terrain::gong::Toll& toll,
+    const terrain::gong::BonusId bonus_id)
 {
-        if (!is_toll_blacklist_allowing_bonus(toll, bonus_id)) {
-                return false;
-        }
+    if (!is_toll_blacklist_allowing_bonus(toll, bonus_id)) {
+        return false;
+    }
 
-        if (!is_toll_whitelist_allowing_bonus(toll, bonus_id)) {
-                return false;
-        }
+    if (!is_toll_whitelist_allowing_bonus(toll, bonus_id)) {
+        return false;
+    }
 
-        return true;
+    return true;
 }
 
 static std::vector<std::unique_ptr<terrain::gong::Toll>> make_all_allowed_tolls(
-        const terrain::gong::BonusId bonus_id)
+    const terrain::gong::BonusId bonus_id)
 {
-        ASSERT((bonus_id != terrain::gong::BonusId::undefined));
-        ASSERT((bonus_id != terrain::gong::BonusId::END));
+    ASSERT((bonus_id != terrain::gong::BonusId::undefined));
+    ASSERT((bonus_id != terrain::gong::BonusId::END));
 
-        std::vector<std::unique_ptr<terrain::gong::Toll>> tolls;
+    std::vector<std::unique_ptr<terrain::gong::Toll>> tolls;
 
-        for (int i = 0; i < (int)terrain::gong::TollId::END; ++i) {
-                auto toll = make_toll((terrain::gong::TollId)i);
+    for (int i = 0; i < (int)terrain::gong::TollId::END; ++i) {
+        auto toll = make_toll((terrain::gong::TollId)i);
 
-                if (!toll) {
-                        ASSERT(false);
+        if (!toll) {
+            ASSERT(false);
 
-                        continue;
-                }
-
-                if (!is_toll_allowing_bonus(*toll, bonus_id)) {
-                        continue;
-                }
-
-                if (!toll->is_allowed()) {
-                        continue;
-                }
-
-                tolls.push_back(std::move(toll));
+            continue;
         }
 
-        return tolls;
+        if (!is_toll_allowing_bonus(*toll, bonus_id)) {
+            continue;
+        }
+
+        if (!toll->is_allowed()) {
+            continue;
+        }
+
+        tolls.push_back(std::move(toll));
+    }
+
+    return tolls;
 }
 
 static std::unique_ptr<terrain::gong::Bonus> make_random_allowed_bonus()
 {
-        auto bonus_bucket = make_all_allowed_bonuses();
+    auto bonus_bucket = make_all_allowed_bonuses();
 
-        if (bonus_bucket.empty()) {
-                return nullptr;
-        }
+    if (bonus_bucket.empty()) {
+        return nullptr;
+    }
 
-        const auto idx = rnd::idx(bonus_bucket);
+    const auto idx = rnd::idx(bonus_bucket);
 
-        auto bonus = std::move(bonus_bucket[idx]);
+    auto bonus = std::move(bonus_bucket[idx]);
 
-        return bonus;
+    return bonus;
 }
 
 static std::unique_ptr<terrain::gong::Toll> make_random_allowed_toll(
-        const terrain::gong::BonusId bonus_id)
+    const terrain::gong::BonusId bonus_id)
 {
-        auto toll_bucket = make_all_allowed_tolls(bonus_id);
+    auto toll_bucket = make_all_allowed_tolls(bonus_id);
 
-        if (toll_bucket.empty()) {
-                return nullptr;
-        }
+    if (toll_bucket.empty()) {
+        return nullptr;
+    }
 
-        const auto idx = rnd::idx(toll_bucket);
+    const auto idx = rnd::idx(toll_bucket);
 
-        auto toll = std::move(toll_bucket[idx]);
+    auto toll = std::move(toll_bucket[idx]);
 
-        return toll;
+    return toll;
 }
 
 static void run_gong_effect()
 {
-        const auto bonus = make_random_allowed_bonus();
+    const auto bonus = make_random_allowed_bonus();
 
-        if (!bonus) {
-                return;
-        }
+    if (!bonus) {
+        return;
+    }
 
-        bonus->run_effect();
+    bonus->run_effect();
 
-        const auto toll = make_random_allowed_toll(bonus->id());
+    const auto toll = make_random_allowed_toll(bonus->id());
 
-        if (!toll) {
-                return;
-        }
+    if (!toll) {
+        return;
+    }
 
-        msg_log::more_prompt();
+    msg_log::more_prompt();
 
-        toll->run_effect();
+    toll->run_effect();
 }
 
 // -----------------------------------------------------------------------------
@@ -334,53 +334,53 @@ namespace gong
 // -----------------------------------------------------------------------------
 UpgradeSpell::UpgradeSpell() :
 
-        m_spell_id(SpellId::END)
+    m_spell_id(SpellId::END)
 {
-        const auto bucket = find_spells_can_upgrade();
+    const auto bucket = find_spells_can_upgrade();
 
-        if (!bucket.empty()) {
-                m_spell_id = rnd::element(bucket);
-        }
+    if (!bucket.empty()) {
+        m_spell_id = rnd::element(bucket);
+    }
 }
 
 bool UpgradeSpell::is_allowed() const
 {
-        return m_spell_id != SpellId::END;
+    return m_spell_id != SpellId::END;
 }
 
 void UpgradeSpell::run_effect()
 {
-        player_spells::incr_spell_skill(m_spell_id, Verbose::yes);
+    player_spells::incr_spell_skill(m_spell_id, Verbose::yes);
 }
 
 std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
 {
-        std::vector<SpellId> spells;
+    std::vector<SpellId> spells;
 
-        spells.reserve((size_t)SpellId::END);
+    spells.reserve((size_t)SpellId::END);
 
-        for (int i = 0; i < (int)SpellId::END; ++i) {
-                const auto id = (SpellId)i;
+    for (int i = 0; i < (int)SpellId::END; ++i) {
+        const auto id = (SpellId)i;
 
-                if (!player_spells::is_spell_learned(id)) {
-                        continue;
-                }
-
-                if (player_spells::spell_skill(id) == SpellSkill::master) {
-                        continue;
-                }
-
-                const std::unique_ptr<const Spell> spell(spells::make(id));
-
-                if (!spell->can_be_improved_with_skill()) {
-                        continue;
-                }
-
-                // Spell can be improved
-                spells.push_back(id);
+        if (!player_spells::is_spell_learned(id)) {
+            continue;
         }
 
-        return spells;
+        if (player_spells::spell_skill(id) == SpellSkill::master) {
+            continue;
+        }
+
+        const std::unique_ptr<const Spell> spell(spells::make(id));
+
+        if (!spell->can_be_improved_with_skill()) {
+            continue;
+        }
+
+        // Spell can be improved
+        spells.push_back(id);
+    }
+
+    return spells;
 }
 
 // -----------------------------------------------------------------------------
@@ -388,12 +388,12 @@ std::vector<SpellId> UpgradeSpell::find_spells_can_upgrade() const
 // -----------------------------------------------------------------------------
 bool GainHp::is_allowed() const
 {
-        return true;
+    return true;
 }
 
 void GainHp::run_effect()
 {
-        actor::change_max_hp(*map::g_player, 2);
+    actor::change_max_hp(*map::g_player, 2);
 }
 
 // -----------------------------------------------------------------------------
@@ -401,12 +401,12 @@ void GainHp::run_effect()
 // -----------------------------------------------------------------------------
 bool GainSp::is_allowed() const
 {
-        return true;
+    return true;
 }
 
 void GainSp::run_effect()
 {
-        actor::change_max_sp(*map::g_player, 1);
+    actor::change_max_sp(*map::g_player, 1);
 }
 
 // -----------------------------------------------------------------------------
@@ -414,14 +414,14 @@ void GainSp::run_effect()
 // -----------------------------------------------------------------------------
 bool GainXp::is_allowed() const
 {
-        return game::xp_pct() < 50;
+    return game::xp_pct() < 50;
 }
 
 void GainXp::run_effect()
 {
-        msg_log::add("I feel more experienced.");
+    msg_log::add("I feel more experienced.");
 
-        game::incr_player_xp(50, Verbose::no);
+    game::incr_player_xp(50, Verbose::no);
 }
 
 // -----------------------------------------------------------------------------
@@ -429,14 +429,14 @@ void GainXp::run_effect()
 // -----------------------------------------------------------------------------
 bool RemoveInsanity::is_allowed() const
 {
-        return actor::player_state::g_insanity >= 25;
+    return actor::player_state::g_insanity >= 25;
 }
 
 void RemoveInsanity::run_effect()
 {
-        msg_log::add("I feel more sane.");
+    msg_log::add("I feel more sane.");
 
-        actor::player_state::g_insanity -= 25;
+    actor::player_state::g_insanity -= 25;
 }
 
 // -----------------------------------------------------------------------------
@@ -444,46 +444,46 @@ void RemoveInsanity::run_effect()
 // -----------------------------------------------------------------------------
 GainItem::GainItem() :
 
-        m_item_id(item::Id::END)
+    m_item_id(item::Id::END)
 {
-        const auto item_ids = find_allowed_item_ids();
+    const auto item_ids = find_allowed_item_ids();
 
-        if (!item_ids.empty()) {
-                m_item_id = rnd::element(item_ids);
-        }
+    if (!item_ids.empty()) {
+        m_item_id = rnd::element(item_ids);
+    }
 }
 
 bool GainItem::is_allowed() const
 {
-        return m_item_id != item::Id::END;
+    return m_item_id != item::Id::END;
 }
 
 void GainItem::run_effect()
 {
-        auto* const item = item::make(m_item_id);
+    auto* const item = item::make(m_item_id);
 
-        item::randomize_item_properties(*item);
+    item::randomize_item_properties(*item);
 
-        const std::string name_a = item->name(ItemNameType::a);
+    const std::string name_a = item->name(ItemNameType::a);
 
-        msg_log::add("I have received " + name_a + ".");
+    msg_log::add("I have received " + name_a + ".");
 
-        map::g_player->m_inv.put_in_backpack(item);
+    map::g_player->m_inv.put_in_backpack(item);
 }
 
 std::vector<item::Id> GainItem::find_allowed_item_ids() const
 {
-        std::vector<item::Id> ids;
+    std::vector<item::Id> ids;
 
-        for (size_t i = 0; i < (size_t)item::Id::END; ++i) {
-                const auto& d = item::g_data[i];
+    for (size_t i = 0; i < (size_t)item::Id::END; ++i) {
+        const auto& d = item::g_data[i];
 
-                if (d.allow_spawn && d.value >= item::Value::supreme_treasure) {
-                        ids.push_back((item::Id)i);
-                }
+        if (d.allow_spawn && d.value >= item::Value::supreme_treasure) {
+            ids.push_back((item::Id)i);
         }
+    }
 
-        return ids;
+    return ids;
 }
 
 // -----------------------------------------------------------------------------
@@ -491,42 +491,42 @@ std::vector<item::Id> GainItem::find_allowed_item_ids() const
 // -----------------------------------------------------------------------------
 bool Healed::is_allowed() const
 {
-        const auto& player = *map::g_player;
+    const auto& player = *map::g_player;
 
-        if (player.m_properties.has(prop::Id::poisoned) && (player.m_hp <= 6)) {
-                return true;
+    if (player.m_properties.has(prop::Id::poisoned) && (player.m_hp <= 6)) {
+        return true;
+    }
+
+    const auto* const prop = player.m_properties.prop(prop::Id::wound);
+
+    if (prop) {
+        const auto* const wound = static_cast<const prop::Wound*>(prop);
+
+        if (wound->nr_wounds() >= 3) {
+            return true;
         }
+    }
 
-        const auto* const prop = player.m_properties.prop(prop::Id::wound);
-
-        if (prop) {
-                const auto* const wound = static_cast<const prop::Wound*>(prop);
-
-                if (wound->nr_wounds() >= 3) {
-                        return true;
-                }
-        }
-
-        return false;
+    return false;
 }
 
 void Healed::run_effect()
 {
-        std::vector<prop::Id> props_can_heal = {
-                prop::Id::blind,
-                prop::Id::deaf,
-                prop::Id::poisoned,
-                prop::Id::infected,
-                prop::Id::diseased,
-                prop::Id::weakened,
-                prop::Id::wound,
-        };
+    std::vector<prop::Id> props_can_heal = {
+        prop::Id::blind,
+        prop::Id::deaf,
+        prop::Id::poisoned,
+        prop::Id::infected,
+        prop::Id::diseased,
+        prop::Id::weakened,
+        prop::Id::wound,
+    };
 
-        for (prop::Id prop_id : props_can_heal) {
-                map::g_player->m_properties.end_prop(prop_id);
-        }
+    for (prop::Id prop_id : props_can_heal) {
+        map::g_player->m_properties.end_prop(prop_id);
+    }
 
-        actor::restore_hp(*map::g_player, 999, actor::AllowRestoreAboveMax::no);
+    actor::restore_hp(*map::g_player, 999, actor::AllowRestoreAboveMax::no);
 }
 
 // -----------------------------------------------------------------------------
@@ -534,35 +534,35 @@ void Healed::run_effect()
 // -----------------------------------------------------------------------------
 bool Blessed::is_allowed() const
 {
-        const bool is_blessed = map::g_player->m_properties.has(prop::Id::blessed);
+    const bool is_blessed = map::g_player->m_properties.has(prop::Id::blessed);
 
-        const bool has_cursed_item = (get_random_cursed_player_item() != nullptr);
+    const bool has_cursed_item = (get_random_cursed_player_item() != nullptr);
 
-        return !is_blessed || has_cursed_item;
+    return !is_blessed || has_cursed_item;
 }
 
 void Blessed::run_effect()
 {
-        auto* const blessed = prop::make(prop::Id::blessed);
+    auto* const blessed = prop::make(prop::Id::blessed);
 
-        blessed->set_indefinite();
+    blessed->set_indefinite();
 
-        map::g_player->m_properties.apply(blessed);
+    map::g_player->m_properties.apply(blessed);
 
-        auto* const cursed_item = get_random_cursed_player_item();
+    auto* const cursed_item = get_random_cursed_player_item();
 
-        if (cursed_item) {
-                const auto name =
-                        cursed_item->name(
-                                ItemNameType::plain,
-                                ItemNameInfo::none);
+    if (cursed_item) {
+        const auto name =
+            cursed_item->name(
+                ItemNameType::plain,
+                ItemNameInfo::none);
 
-                msg_log::add("The " + name + " seems cleansed!");
+        msg_log::add("The " + name + " seems cleansed!");
 
-                cursed_item->current_curse().on_curse_end();
+        cursed_item->current_curse().on_curse_end();
 
-                cursed_item->remove_curse();
-        }
+        cursed_item->remove_curse();
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -570,12 +570,12 @@ void Blessed::run_effect()
 // -----------------------------------------------------------------------------
 std::vector<BonusId> HpReduced::bonuses_only_allowed_with() const
 {
-        return {BonusId::gain_sp};
+    return {BonusId::gain_sp};
 }
 
 void HpReduced::run_effect()
 {
-        actor::change_max_hp(*map::g_player, -2);
+    actor::change_max_hp(*map::g_player, -2);
 }
 
 // -----------------------------------------------------------------------------
@@ -583,12 +583,12 @@ void HpReduced::run_effect()
 // -----------------------------------------------------------------------------
 std::vector<BonusId> SpReduced::bonuses_only_allowed_with() const
 {
-        return {BonusId::gain_hp};
+    return {BonusId::gain_hp};
 }
 
 void SpReduced::run_effect()
 {
-        actor::change_max_sp(*map::g_player, -1);
+    actor::change_max_sp(*map::g_player, -1);
 }
 
 // -----------------------------------------------------------------------------
@@ -596,19 +596,19 @@ void SpReduced::run_effect()
 // -----------------------------------------------------------------------------
 bool XpReduced::is_allowed() const
 {
-        return game::xp_pct() >= 50;
+    return game::xp_pct() >= 50;
 }
 
 std::vector<BonusId> XpReduced::bonuses_not_allowed_with() const
 {
-        return {BonusId::gain_xp};
+    return {BonusId::gain_xp};
 }
 
 void XpReduced::run_effect()
 {
-        msg_log::add("I feel less experienced.");
+    msg_log::add("I feel less experienced.");
 
-        game::decr_player_xp(50);
+    game::decr_player_xp(50);
 }
 
 // -----------------------------------------------------------------------------
@@ -616,18 +616,18 @@ void XpReduced::run_effect()
 // -----------------------------------------------------------------------------
 bool Deaf::is_allowed() const
 {
-        auto* const prop = map::g_player->m_properties.prop(prop::Id::deaf);
+    auto* const prop = map::g_player->m_properties.prop(prop::Id::deaf);
 
-        return !prop || (prop->duration_mode() != prop::PropDurationMode::indefinite);
+    return !prop || (prop->duration_mode() != prop::PropDurationMode::indefinite);
 }
 
 void Deaf::run_effect()
 {
-        auto* const deaf = prop::make(prop::Id::deaf);
+    auto* const deaf = prop::make(prop::Id::deaf);
 
-        deaf->set_indefinite();
+    deaf->set_indefinite();
 
-        map::g_player->m_properties.apply(deaf);
+    map::g_player->m_properties.apply(deaf);
 }
 
 // -----------------------------------------------------------------------------
@@ -635,23 +635,23 @@ void Deaf::run_effect()
 // -----------------------------------------------------------------------------
 bool Cursed::is_allowed() const
 {
-        auto* const prop = map::g_player->m_properties.prop(prop::Id::cursed);
+    auto* const prop = map::g_player->m_properties.prop(prop::Id::cursed);
 
-        return !prop || (prop->duration_mode() != prop::PropDurationMode::indefinite);
+    return !prop || (prop->duration_mode() != prop::PropDurationMode::indefinite);
 }
 
 std::vector<BonusId> Cursed::bonuses_not_allowed_with() const
 {
-        return {BonusId::blessed};
+    return {BonusId::blessed};
 }
 
 void Cursed::run_effect()
 {
-        auto* const cursed = prop::make(prop::Id::cursed);
+    auto* const cursed = prop::make(prop::Id::cursed);
 
-        cursed->set_indefinite();
+    cursed->set_indefinite();
 
-        map::g_player->m_properties.apply(cursed);
+    map::g_player->m_properties.apply(cursed);
 }
 
 // -----------------------------------------------------------------------------
@@ -659,55 +659,55 @@ void Cursed::run_effect()
 // -----------------------------------------------------------------------------
 SpawnMonsters::SpawnMonsters()
 {
-        std::vector<std::string> summon_bucket;
+    std::vector<std::string> summon_bucket;
 
-        summon_bucket.reserve(actor::g_data.size());
+    summon_bucket.reserve(actor::g_data.size());
 
-        const Range allowed_spawn_lvl_range(map::g_dlvl - 2, map::g_dlvl + 2);
+    const Range allowed_spawn_lvl_range(map::g_dlvl - 2, map::g_dlvl + 2);
 
-        for (const auto& it : actor::g_data) {
-                const actor::ActorData& data = it.second;
+    for (const auto& it : actor::g_data) {
+        const actor::ActorData& data = it.second;
 
-                if (data.can_be_summoned_by_mon) {
-                        if (allowed_spawn_lvl_range.is_in_range(data.spawn_min_dlvl)) {
-                                summon_bucket.push_back(data.id);
-                        }
-                }
+        if (data.can_be_summoned_by_mon) {
+            if (allowed_spawn_lvl_range.is_in_range(data.spawn_min_dlvl)) {
+                summon_bucket.push_back(data.id);
+            }
         }
+    }
 
-        if (!summon_bucket.empty()) {
-                m_id_to_spawn = rnd::element(summon_bucket);
-        }
+    if (!summon_bucket.empty()) {
+        m_id_to_spawn = rnd::element(summon_bucket);
+    }
 }
 
 bool SpawnMonsters::is_allowed() const
 {
-        return !m_id_to_spawn.empty();
+    return !m_id_to_spawn.empty();
 }
 
 void SpawnMonsters::run_effect()
 {
-        if (m_id_to_spawn.empty()) {
-                ASSERT(false);
+    if (m_id_to_spawn.empty()) {
+        ASSERT(false);
 
-                return;
-        }
+        return;
+    }
 
-        msg_log::add("Something approaches...");
+    msg_log::add("Something approaches...");
 
-        const size_t nr_mon = rnd::range(3, 4);
+    const size_t nr_mon = rnd::range(3, 4);
 
-        auto* const event =
-                static_cast<EventSpawnMonstersDelayed*>(
-                        make(
-                                Id::event_spawn_monsters_delayed,
-                                map::g_player->m_pos));
+    auto* const event =
+        static_cast<EventSpawnMonstersDelayed*>(
+            make(
+                Id::event_spawn_monsters_delayed,
+                map::g_player->m_pos));
 
-        event->set_mon_id(m_id_to_spawn);
+    event->set_mon_id(m_id_to_spawn);
 
-        event->set_nr_mon((int)nr_mon);
+    event->set_nr_mon((int)nr_mon);
 
-        game_time::add_mob(event);
+    game_time::add_mob(event);
 }
 
 // -----------------------------------------------------------------------------
@@ -715,59 +715,59 @@ void SpawnMonsters::run_effect()
 // -----------------------------------------------------------------------------
 ForgetSpell::ForgetSpell()
 {
-        const std::vector<SpellId> spell_bucket = make_spell_bucket();
+    const std::vector<SpellId> spell_bucket = make_spell_bucket();
 
-        if (!spell_bucket.empty()) {
-                m_spell_to_forget = rnd::element(spell_bucket);
-        }
+    if (!spell_bucket.empty()) {
+        m_spell_to_forget = rnd::element(spell_bucket);
+    }
 }
 
 std::vector<BonusId> ForgetSpell::bonuses_not_allowed_with() const
 {
-        return {BonusId::upgrade_spell};
+    return {BonusId::upgrade_spell};
 }
 
 bool ForgetSpell::is_allowed() const
 {
-        return m_spell_to_forget != SpellId::END;
+    return m_spell_to_forget != SpellId::END;
 }
 
 void ForgetSpell::run_effect()
 {
-        player_spells::forget_spell(m_spell_to_forget);
+    player_spells::forget_spell(m_spell_to_forget);
 }
 
 std::vector<SpellId> ForgetSpell::make_spell_bucket() const
 {
-        std::vector<SpellId> result;
+    std::vector<SpellId> result;
 
-        for (size_t i = 0; i < (size_t)item::Id::END; ++i) {
-                const item::ItemData& d = item::g_data[i];
+    for (size_t i = 0; i < (size_t)item::Id::END; ++i) {
+        const item::ItemData& d = item::g_data[i];
 
-                if (d.type != ItemType::scroll) {
-                        continue;
-                }
-
-                const SpellId spell_id = d.spell_cast_from_scroll;
-
-                if (spell_id == SpellId::END) {
-                        ASSERT(false);
-
-                        continue;
-                }
-
-                if (!player_spells::is_spell_learned(spell_id)) {
-                        continue;
-                }
-
-                if (player_spells::is_spell_forgotten(spell_id)) {
-                        continue;
-                }
-
-                result.push_back(spell_id);
+        if (d.type != ItemType::scroll) {
+            continue;
         }
 
-        return result;
+        const SpellId spell_id = d.spell_cast_from_scroll;
+
+        if (spell_id == SpellId::END) {
+            ASSERT(false);
+
+            continue;
+        }
+
+        if (!player_spells::is_spell_learned(spell_id)) {
+            continue;
+        }
+
+        if (player_spells::is_spell_forgotten(spell_id)) {
+            continue;
+        }
+
+        result.push_back(spell_id);
+    }
+
+    return result;
 }
 
 }  // namespace gong
@@ -776,148 +776,148 @@ std::vector<SpellId> ForgetSpell::make_spell_bucket() const
 // Gong
 // -----------------------------------------------------------------------------
 Gong::Gong(const P& p, const TerrainData* const data) :
-        Terrain(p, data) {}
+    Terrain(p, data) {}
 
 void Gong::bump(actor::Actor& actor_bumping)
 {
-        if (!actor::is_player(&actor_bumping)) {
-                return;
-        }
+    if (!actor::is_player(&actor_bumping)) {
+        return;
+    }
 
-        map::memorize_terrain_at(m_pos);
-        map::update_vision();
+    map::memorize_terrain_at(m_pos);
+    map::update_vision();
 
-        if (!map::g_seen.at(m_pos)) {
+    if (!map::g_seen.at(m_pos)) {
+        msg_log::clear();
+
+        msg_log::add("There is a temple gong here.");
+
+        if (!player_bon::is_bg(Bg::exorcist)) {
+            msg_log::add(
+                "Strike it? " + common_text::g_yes_or_no_hint,
+                colors::light_white(),
+                MsgInterruptPlayer::no,
+                MorePromptOnMsg::no,
+                CopyToMsgHistory::no);
+
+            const auto answer = query::yes_or_no();
+
+            if (answer == BinaryAnswer::no) {
                 msg_log::clear();
 
-                msg_log::add("There is a temple gong here.");
-
-                if (!player_bon::is_bg(Bg::exorcist)) {
-                        msg_log::add(
-                                "Strike it? " + common_text::g_yes_or_no_hint,
-                                colors::light_white(),
-                                MsgInterruptPlayer::no,
-                                MorePromptOnMsg::no,
-                                CopyToMsgHistory::no);
-
-                        const auto answer = query::yes_or_no();
-
-                        if (answer == BinaryAnswer::no) {
-                                msg_log::clear();
-
-                                return;
-                        }
-                }
-        }
-
-        if (player_bon::is_bg(Bg::exorcist)) {
-                msg_log::add("This unholy instrument must be destroyed!");
-
                 return;
+            }
         }
+    }
 
-        msg_log::add("I strike the temple gong!");
+    if (player_bon::is_bg(Bg::exorcist)) {
+        msg_log::add("This unholy instrument must be destroyed!");
 
-        Snd snd(
-                "The crash resonates through the air!",
-                audio::SfxId::gong,
-                IgnoreMsgIfOriginSeen::no,
-                m_pos,
-                map::g_player,
-                SndVol::high,
-                AlertsMon::yes);
+        return;
+    }
 
-        snd.run();
+    msg_log::add("I strike the temple gong!");
 
-        if (m_is_used) {
-                msg_log::add("Nothing happens.");
-        }
-        else {
-                msg_log::more_prompt();
+    Snd snd(
+        "The crash resonates through the air!",
+        audio::SfxId::gong,
+        IgnoreMsgIfOriginSeen::no,
+        m_pos,
+        map::g_player,
+        SndVol::high,
+        AlertsMon::yes);
 
-                run_gong_effect();
+    snd.run();
 
-                m_is_used = true;
-        }
+    if (m_is_used) {
+        msg_log::add("Nothing happens.");
+    }
+    else {
+        msg_log::more_prompt();
 
-        map::g_player->incr_shock(8.0, ShockSrc::misc);
+        run_gong_effect();
 
-        map::memorize_terrain_at(m_pos);
-        map::update_vision();
+        m_is_used = true;
+    }
 
-        game_time::tick();
+    map::g_player->incr_shock(8.0, ShockSrc::misc);
+
+    map::memorize_terrain_at(m_pos);
+    map::update_vision();
+
+    game_time::tick();
 }
 
 void Gong::hit(
-        DmgType dmg_type,
-        actor::Actor* actor,
-        const P& from_pos,
-        int dmg)
+    DmgType dmg_type,
+    actor::Actor* actor,
+    const P& from_pos,
+    int dmg)
 {
-        (void)actor;
-        (void)from_pos;
-        (void)dmg;
+    (void)actor;
+    (void)from_pos;
+    (void)dmg;
 
-        switch (dmg_type) {
-        case DmgType::explosion:
-        case DmgType::pure:
-                if (map::g_seen.at(m_pos)) {
-                        msg_log::add("The gong is destroyed.");
-                }
-
-                map::update_terrain(terrain::make(terrain::Id::rubble_low, m_pos));
-
-                map::update_vision();
-
-                if (player_bon::is_bg(Bg::exorcist)) {
-                        const std::string msg =
-                                rnd::element(
-                                        common_text::g_exorcist_purge_phrases);
-
-                        msg_log::add(msg);
-
-                        game::incr_player_xp(g_xp_on_exorcist_destroy_gong);
-
-                        actor::restore_sp(
-                                *map::g_player,
-                                999,
-                                actor::AllowRestoreAboveMax::no,
-                                Verbose::no);
-
-                        actor::restore_exorcist_fervor(g_exorcist_fervor_destroy_gong);
-                }
-                break;
-
-        default:
-                break;
+    switch (dmg_type) {
+    case DmgType::explosion:
+    case DmgType::pure:
+        if (map::g_seen.at(m_pos)) {
+            msg_log::add("The gong is destroyed.");
         }
+
+        map::update_terrain(terrain::make(terrain::Id::rubble_low, m_pos));
+
+        map::update_vision();
+
+        if (player_bon::is_bg(Bg::exorcist)) {
+            const std::string msg =
+                rnd::element(
+                    common_text::g_exorcist_purge_phrases);
+
+            msg_log::add(msg);
+
+            game::incr_player_xp(g_xp_on_exorcist_destroy_gong);
+
+            actor::restore_sp(
+                *map::g_player,
+                999,
+                actor::AllowRestoreAboveMax::no,
+                Verbose::no);
+
+            actor::restore_exorcist_fervor(g_exorcist_fervor_destroy_gong);
+        }
+        break;
+
+    default:
+        break;
+    }
 }
 
 std::string Gong::name(const Article article) const
 {
-        std::string a = (article == Article::a) ? "a " : "the ";
+    std::string a = (article == Article::a) ? "a " : "the ";
 
-        return a + "temple gong";
+    return a + "temple gong";
 }
 
 Color Gong::color_default() const
 {
-        return m_is_used ? colors::gray() : colors::brown();
+    return m_is_used ? colors::gray() : colors::brown();
 }
 
 std::optional<map::MinimapAppearance> Gong::minimap_appearance() const
 {
-        if (m_is_used) {
-                return {};
-        }
+    if (m_is_used) {
+        return {};
+    }
 
-        map::MinimapAppearance appearance;
+    map::MinimapAppearance appearance;
 
-        appearance.color = color_default();
-        appearance.legend_text = "Temple Gong";
-        appearance.symbol = map::MinimapSymbol::rectangle_edge;
+    appearance.color = color_default();
+    appearance.legend_text = "Temple Gong";
+    appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
-        return appearance;
+    return appearance;
 }
 
 }  // namespace terrain

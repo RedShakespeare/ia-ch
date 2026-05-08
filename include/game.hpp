@@ -23,14 +23,14 @@ class Actor;
 
 struct HistoryEvent
 {
-        HistoryEvent() = default;
+    HistoryEvent() = default;
 
-        HistoryEvent(std::string history_msg, const int turn_nr) :
-                msg(std::move(history_msg)),
-                turn(turn_nr) {}
+    HistoryEvent(std::string history_msg, const int turn_nr) :
+        msg(std::move(history_msg)),
+        turn(turn_nr) {}
 
-        std::string msg {};
-        int turn {0};
+    std::string msg {};
+    int turn {0};
 };
 
 namespace game
@@ -73,25 +73,25 @@ const std::vector<HistoryEvent>& history();
 class GameState : public State
 {
 public:
-        GameState(GameEntryMode entry_mode) :
+    GameState(GameEntryMode entry_mode) :
 
-                m_entry_mode(entry_mode)
-        {}
+        m_entry_mode(entry_mode)
+    {}
 
-        void on_start() override;
+    void on_start() override;
 
-        void cycle_graphics(io::GraphicsCycle cycle) override;
+    void cycle_graphics(io::GraphicsCycle cycle) override;
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
-        StateId id() const override;
+    StateId id() const override;
 
 private:
-        void query_quit();
+    void query_quit();
 
-        const GameEntryMode m_entry_mode;
+    const GameEntryMode m_entry_mode;
 };
 
 // -----------------------------------------------------------------------------
@@ -100,13 +100,13 @@ private:
 class WinGameState : public State
 {
 public:
-        WinGameState() = default;
+    WinGameState() = default;
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
-        StateId id() const override;
+    StateId id() const override;
 };
 
 #endif  // GAME_HPP

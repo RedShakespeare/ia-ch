@@ -11,44 +11,44 @@
 
 enum class TimeType
 {
-        year,
-        month,
-        day,
-        hour,
-        minute,
-        second
+    year,
+    month,
+    day,
+    hour,
+    minute,
+    second
 };
 
 struct TimeData
 {
-        TimeData() = default;
+    TimeData() = default;
 
-        TimeData(
-                int year_val,
-                int month_val,
-                int day_val,
-                int hour_val,
-                int minute_val,
-                int second_val) :
+    TimeData(
+        int year_val,
+        int month_val,
+        int day_val,
+        int hour_val,
+        int minute_val,
+        int second_val) :
 
-                year(year_val),
-                month(month_val),
-                day(day_val),
-                hour(hour_val),
-                minute(minute_val),
-                second(second_val)
-        {}
+        year(year_val),
+        month(month_val),
+        day(day_val),
+        hour(hour_val),
+        minute(minute_val),
+        second(second_val)
+    {}
 
-        std::string time_str(
-                TimeType lowest,
-                bool add_separators) const;
+    std::string time_str(
+        TimeType lowest,
+        bool add_separators) const;
 
-        int year;
-        int month;
-        int day;
-        int hour;
-        int minute;
-        int second;
+    int year;
+    int month;
+    int day;
+    int hour;
+    int minute;
+    int second;
 };
 
 TimeData current_time();

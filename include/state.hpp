@@ -16,110 +16,110 @@ enum class GraphicsCycle;
 
 enum class StateId
 {
-        browse_highscore_entry,
-        browse_spells,
-        game,
-        game_over_summary,
-        highscore,
-        inventory,
-        main_menu,
-        manual,
-        manual_page,
-        marker,
-        message_history,
-        new_game,
-        new_level,
-        options,
-        options_submenu,
-        pick_background,
-        pick_background_occultist,
-        pick_name,
-        pick_trait,
-        player_character_descr,
-        popup,
-        query_number,
-        remove_trait,
-        view_actor,
-        view_minimap,
-        win_game,  // TODO: This should just be a popup
+    browse_highscore_entry,
+    browse_spells,
+    game,
+    game_over_summary,
+    highscore,
+    inventory,
+    main_menu,
+    manual,
+    manual_page,
+    marker,
+    message_history,
+    new_game,
+    new_level,
+    options,
+    options_submenu,
+    pick_background,
+    pick_background_occultist,
+    pick_name,
+    pick_trait,
+    player_character_descr,
+    popup,
+    query_number,
+    remove_trait,
+    view_actor,
+    view_minimap,
+    win_game,  // TODO: This should just be a popup
 };
 
 class State
 {
 public:
-        virtual ~State() = default;
+    virtual ~State() = default;
 
-        // Executed immediately when the state is pushed.
-        virtual void on_pushed() {}
+    // Executed immediately when the state is pushed.
+    virtual void on_pushed() {}
 
-        // Executed the first time that the state becomes the current state.
-        // Sometimes multiple states may be pushed in a sequence, and one of the
-        // later states may want to perform actions only when it actually
-        // becomes the current state.
-        virtual void on_start() {}
+    // Executed the first time that the state becomes the current state.
+    // Sometimes multiple states may be pushed in a sequence, and one of the
+    // later states may want to perform actions only when it actually
+    // becomes the current state.
+    virtual void on_start() {}
 
-        // Executed immediately when the state is popped.
-        // This should only be used for cleanup, do not push or pop other states
-        // from this call (this is not supported).
-        virtual void on_popped() {}
+    // Executed immediately when the state is popped.
+    // This should only be used for cleanup, do not push or pop other states
+    // from this call (this is not supported).
+    virtual void on_popped() {}
 
-        // This is called continuously, and can be used for cycling what to draw
-        // (e.g. animating the color of a monster, or scrolling text, etc).
-        virtual void cycle_graphics(const io::GraphicsCycle cycle)
-        {
-                (void)cycle;
-        }
+    // This is called continuously, and can be used for cycling what to draw
+    // (e.g. animating the color of a monster, or scrolling text, etc).
+    virtual void cycle_graphics(const io::GraphicsCycle cycle)
+    {
+        (void)cycle;
+    }
 
-        virtual void draw() {}
+    virtual void draw() {}
 
-        // If true, this state is drawn overlayed on the state(s) below. This
-        // can be used for example to draw a marker state on top of the map.
-        virtual bool draw_overlayed() const
-        {
-                return false;
-        }
+    // If true, this state is drawn overlayed on the state(s) below. This
+    // can be used for example to draw a marker state on top of the map.
+    virtual bool draw_overlayed() const
+    {
+        return false;
+    }
 
-        virtual void on_window_resized() {}
+    virtual void on_window_resized() {}
 
-        // Read input, process game logic etc.
-        virtual void update() {}
+    // Read input, process game logic etc.
+    virtual void update() {}
 
-        // All states above have been popped
-        virtual void on_resume() {}
+    // All states above have been popped
+    virtual void on_resume() {}
 
-        // Another state is pushed on top
-        virtual void on_pause() {}
+    // Another state is pushed on top
+    virtual void on_pause() {}
 
-        bool has_started() const
-        {
-                return m_has_started;
-        }
+    bool has_started() const
+    {
+        return m_has_started;
+    }
 
-        void set_started()
-        {
-                m_has_started = true;
-        }
+    void set_started()
+    {
+        m_has_started = true;
+    }
 
-        bool is_drawing_disabled() const
-        {
-                return m_is_drawing_disabled;
-        }
+    bool is_drawing_disabled() const
+    {
+        return m_is_drawing_disabled;
+    }
 
-        void disable_drawing()
-        {
-                m_is_drawing_disabled = true;
-        }
+    void disable_drawing()
+    {
+        m_is_drawing_disabled = true;
+    }
 
-        void enable_drawing()
-        {
-                m_is_drawing_disabled = false;
-        }
+    void enable_drawing()
+    {
+        m_is_drawing_disabled = false;
+    }
 
-        virtual StateId id() const = 0;
+    virtual StateId id() const = 0;
 
 private:
-        bool m_has_started {false};
-        bool m_is_drawing_disabled {false};
+    bool m_has_started {false};
+    bool m_is_drawing_disabled {false};
 };
 
 namespace states

@@ -23,127 +23,127 @@ struct ColoredString;
 
 enum class TraitId
 {
-        // Common (except some traits can be blocked for certain backgrounds)
-        adept_melee,
-        expert_melee,
-        master_melee,
-        adept_marksman,
-        expert_marksman,
-        master_marksman,
-        cool_headed,
-        courageous,
-        dexterous,
-        lithe,
-        crippling_strikes,
-        fearless,
-        stealthy,
-        imperceptible,
-        silent,
-        vigilant,
-        treasure_hunter,
-        self_aware,
-        healer,
-        rapid_recoverer,
-        survivalist,
-        stout_spirit,
-        strong_spirit,
-        mighty_spirit,
-        meditative,
-        sage,
-        absorption,
-        tough,
-        rugged,
-        thick_skinned,
-        resistant,
-        strong_backed,
-        undead_bane,
-        elec_incl,
+    // Common (except some traits can be blocked for certain backgrounds)
+    adept_melee,
+    expert_melee,
+    master_melee,
+    adept_marksman,
+    expert_marksman,
+    master_marksman,
+    cool_headed,
+    courageous,
+    dexterous,
+    lithe,
+    crippling_strikes,
+    fearless,
+    stealthy,
+    imperceptible,
+    silent,
+    vigilant,
+    treasure_hunter,
+    self_aware,
+    healer,
+    rapid_recoverer,
+    survivalist,
+    stout_spirit,
+    strong_spirit,
+    mighty_spirit,
+    meditative,
+    sage,
+    absorption,
+    tough,
+    rugged,
+    thick_skinned,
+    resistant,
+    strong_backed,
+    undead_bane,
+    elec_incl,
 
-        // Unique for Occultists
-        adept_of_channeling,
-        master_of_channeling,
-        adept_of_corruption,
-        master_of_corruption,
-        adept_of_illusion,
-        master_of_illusion,
-        adept_of_the_mind,
-        master_of_the_mind,
-        adept_of_time,
-        master_of_time,
-        adept_of_warding,
-        master_of_warding,
+    // Unique for Occultists
+    adept_of_channeling,
+    master_of_channeling,
+    adept_of_corruption,
+    master_of_corruption,
+    adept_of_illusion,
+    master_of_illusion,
+    adept_of_the_mind,
+    master_of_the_mind,
+    adept_of_time,
+    master_of_time,
+    adept_of_warding,
+    master_of_warding,
 
-        // Unique for Exorcist
-        cast_bless_i,
-        cast_bless_ii,
-        cast_cleansing_fire_i,
-        cast_cleansing_fire_ii,
-        cast_heal_i,
-        cast_heal_ii,
-        cast_light_i,
-        cast_light_ii,
-        cast_sanctuary_i,
-        cast_sanctuary_ii,
-        cast_see_invisible_i,
-        cast_see_invisible_ii,
-        prolonged_life,
+    // Unique for Exorcist
+    cast_bless_i,
+    cast_bless_ii,
+    cast_cleansing_fire_i,
+    cast_cleansing_fire_ii,
+    cast_heal_i,
+    cast_heal_ii,
+    cast_light_i,
+    cast_light_ii,
+    cast_sanctuary_i,
+    cast_sanctuary_ii,
+    cast_see_invisible_i,
+    cast_see_invisible_ii,
+    prolonged_life,
 
-        // Unique for Ghoul
-        ravenous,
-        foul,
-        toxic,
-        indomitable_fury,
+    // Unique for Ghoul
+    ravenous,
+    foul,
+    toxic,
+    indomitable_fury,
 
-        // Unique for Rogue
-        elusive,
-        vicious,
-        ruthless,
+    // Unique for Rogue
+    elusive,
+    vicious,
+    ruthless,
 
-        // Unique for War veteran
-        steady_aimer,
+    // Unique for War veteran
+    steady_aimer,
 
-        // Unique for Flagellant
-        unbreakable,
-        callous,
-        galvanization,
-        enthusiasm,
-        memento_mori,
+    // Unique for Flagellant
+    unbreakable,
+    callous,
+    galvanization,
+    enthusiasm,
+    memento_mori,
 
-        END
+    END
 };
 
 enum class Bg
 {
-        exorcist,
-        flagellant,
-        ghoul,
-        occultist,
-        rogue,
-        war_vet,
+    exorcist,
+    flagellant,
+    ghoul,
+    occultist,
+    rogue,
+    war_vet,
 
-        END
+    END
 };
 
 namespace player_bon
 {
 struct TraitLogEntry
 {
-        TraitId trait_id {TraitId::END};
-        int clvl {0};
-        bool is_removal {false};
+    TraitId trait_id {TraitId::END};
+    int clvl {0};
+    bool is_removal {false};
 };
 
 struct UnpickedTraitsData
 {
-        std::vector<TraitId> traits_can_be_picked;
-        std::vector<TraitId> traits_prereqs_not_met;
+    std::vector<TraitId> traits_can_be_picked;
+    std::vector<TraitId> traits_prereqs_not_met;
 };
 
 struct TraitPrereqData
 {
-        Bg bg;
-        int clvl {0};
-        std::vector<TraitId> traits;
+    Bg bg;
+    int clvl {0};
+    std::vector<TraitId> traits;
 };
 
 void init();

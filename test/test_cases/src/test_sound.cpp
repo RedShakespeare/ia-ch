@@ -25,107 +25,107 @@
 
 TEST_CASE("Sound alerts monster")
 {
-        test_utils::init_all();
+    test_utils::init_all();
 
-        for (int x = 0; x < map::w(); ++x) {
-                for (int y = 0; y < map::h(); ++y) {
-                        map::update_terrain(
-                                terrain::make(terrain::Id::wall, {x, y}));
-                }
+    for (int x = 0; x < map::w(); ++x) {
+        for (int y = 0; y < map::h(); ++y) {
+            map::update_terrain(
+                terrain::make(terrain::Id::wall, {x, y}));
         }
+    }
 
-        const P snd_origin(5, 7);
-        const P wall_pos(6, 7);
-        const P mon_pos(7, 7);
+    const P snd_origin(5, 7);
+    const P wall_pos(6, 7);
+    const P mon_pos(7, 7);
 
-        // Fill a 3x3 area with floor
-        for (int x = wall_pos.x - 1; x <= wall_pos.x + 1; ++x) {
-                for (int y = wall_pos.y - 1; y <= wall_pos.y + 1; ++y) {
-                        map::update_terrain(
-                                terrain::make(terrain::Id::floor, {x, y}));
-                }
+    // Fill a 3x3 area with floor
+    for (int x = wall_pos.x - 1; x <= wall_pos.x + 1; ++x) {
+        for (int y = wall_pos.y - 1; y <= wall_pos.y + 1; ++y) {
+            map::update_terrain(
+                terrain::make(terrain::Id::floor, {x, y}));
         }
+    }
 
-        // Put a wall in the middle (the sound will travel around this wall)
-        map::update_terrain(terrain::make(terrain::Id::wall, wall_pos));
+    // Put a wall in the middle (the sound will travel around this wall)
+    map::update_terrain(terrain::make(terrain::Id::wall, wall_pos));
 
-        auto* const zombie = actor::make("MON_ZOMBIE", mon_pos);
+    auto* const zombie = actor::make("MON_ZOMBIE", mon_pos);
 
-        REQUIRE(!actor::is_aware_of_player(*zombie));
+    REQUIRE(!actor::is_aware_of_player(*zombie));
 
-        // First run a sound that does NOT alert monsters
-        Snd snd(
-                "",
-                audio::SfxId::END,
-                IgnoreMsgIfOriginSeen::no,
-                snd_origin,
-                nullptr,
-                SndVol::low,
-                AlertsMon::no);
+    // First run a sound that does NOT alert monsters
+    Snd snd(
+        "",
+        audio::SfxId::END,
+        IgnoreMsgIfOriginSeen::no,
+        snd_origin,
+        nullptr,
+        SndVol::low,
+        AlertsMon::no);
 
-        snd.run();
+    snd.run();
 
-        REQUIRE(!actor::is_aware_of_player(*zombie));
+    REQUIRE(!actor::is_aware_of_player(*zombie));
 
-        // Now run a sound that does alert monsters
-        snd.set_alerts_mon(AlertsMon::yes);
+    // Now run a sound that does alert monsters
+    snd.set_alerts_mon(AlertsMon::yes);
 
-        snd.run();
+    snd.run();
 
-        REQUIRE(actor::is_aware_of_player(*zombie));
+    REQUIRE(actor::is_aware_of_player(*zombie));
 
-        test_utils::cleanup_all();
+    test_utils::cleanup_all();
 }
 
 TEST_CASE("Player wading alerts monsters")
 {
-        test_utils::init_all();
+    test_utils::init_all();
 
-        map::update_terrain(terrain::make(terrain::Id::floor, {4, 5}));
-        map::update_terrain(terrain::make(terrain::Id::floor, {5, 5}));
-        map::update_terrain(terrain::make(terrain::Id::liquid, {6, 5}));
-        map::update_terrain(terrain::make(terrain::Id::floor, {7, 5}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {4, 5}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {5, 5}));
+    map::update_terrain(terrain::make(terrain::Id::liquid, {6, 5}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {7, 5}));
 
-        map::g_player->m_pos = {4, 5};
+    map::g_player->m_pos = {4, 5};
 
-        auto* const zombie = actor::make("MON_ZOMBIE", {7, 5});
+    auto* const zombie = actor::make("MON_ZOMBIE", {7, 5});
 
-        REQUIRE(!actor::is_aware_of_player(*zombie));
+    REQUIRE(!actor::is_aware_of_player(*zombie));
 
-        // Move player into floor
-        actor::do_move_action(*map::g_player, Dir::right);
+    // Move player into floor
+    actor::do_move_action(*map::g_player, Dir::right);
 
-        REQUIRE(!actor::is_aware_of_player(*zombie));
+    REQUIRE(!actor::is_aware_of_player(*zombie));
 
-        game_time::g_allow_tick = true;
+    game_time::g_allow_tick = true;
 
-        // Move player into water (wading)
-        actor::do_move_action(*map::g_player, Dir::right);
+    // Move player into water (wading)
+    actor::do_move_action(*map::g_player, Dir::right);
 
-        REQUIRE(actor::is_aware_of_player(*zombie));
+    REQUIRE(actor::is_aware_of_player(*zombie));
 
-        test_utils::cleanup_all();
+    test_utils::cleanup_all();
 }
 
 TEST_CASE("Monster wading does not alert monsters")
 {
-        test_utils::init_all();
+    test_utils::init_all();
 
-        map::update_terrain(terrain::make(terrain::Id::floor, {5, 5}));
-        map::update_terrain(terrain::make(terrain::Id::liquid, {6, 5}));
-        map::update_terrain(terrain::make(terrain::Id::floor, {7, 5}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {5, 5}));
+    map::update_terrain(terrain::make(terrain::Id::liquid, {6, 5}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {7, 5}));
 
-        auto* const zombie_1 = actor::make("MON_ZOMBIE", {5, 5});
-        auto* const zombie_2 = actor::make("MON_ZOMBIE", {7, 5});
+    auto* const zombie_1 = actor::make("MON_ZOMBIE", {5, 5});
+    auto* const zombie_2 = actor::make("MON_ZOMBIE", {7, 5});
 
-        REQUIRE(!actor::is_aware_of_player(*zombie_1));
-        REQUIRE(!actor::is_aware_of_player(*zombie_2));
+    REQUIRE(!actor::is_aware_of_player(*zombie_1));
+    REQUIRE(!actor::is_aware_of_player(*zombie_2));
 
-        // Move zombie 1 into water (wading)
-        actor::do_move_action(*zombie_1, Dir::right);
+    // Move zombie 1 into water (wading)
+    actor::do_move_action(*zombie_1, Dir::right);
 
-        REQUIRE(!actor::is_aware_of_player(*zombie_1));
-        REQUIRE(!actor::is_aware_of_player(*zombie_2));
+    REQUIRE(!actor::is_aware_of_player(*zombie_1));
+    REQUIRE(!actor::is_aware_of_player(*zombie_2));
 
-        test_utils::cleanup_all();
+    test_utils::cleanup_all();
 }

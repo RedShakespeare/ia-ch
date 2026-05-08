@@ -18,9 +18,9 @@ class Actor;
 bool can_player_see_actor(const Actor& other);
 
 bool can_mon_see_actor(
-        const Actor& mon,
-        const Actor& other,
-        const Array2<bool>& hard_blocked_los);
+    const Actor& mon,
+    const Actor& other,
+    const Array2<bool>& hard_blocked_los);
 
 std::vector<Actor*> seen_actors(const Actor& actor);
 

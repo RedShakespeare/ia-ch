@@ -42,25 +42,25 @@ bool is_getting_altar_bonus();
 class BrowseSpell : public State
 {
 public:
-        BrowseSpell() = default;
+    BrowseSpell() = default;
 
-        void on_start() override;
+    void on_start() override;
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
-        StateId id() const override;
+    StateId id() const override;
 
-        void disable_allow_cast()
-        {
-                m_allow_cast = false;
-        }
+    void disable_allow_cast()
+    {
+        m_allow_cast = false;
+    }
 
 private:
-        MenuBrowser m_browser {};
+    MenuBrowser m_browser {};
 
-        bool m_allow_cast {true};
+    bool m_allow_cast {true};
 };
 
 #endif  // PLAYER_SPELLS_HPP

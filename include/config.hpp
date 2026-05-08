@@ -19,28 +19,28 @@ enum class Id;
 
 enum class InputMode
 {
-        standard,
-        vi_keys,
-        controller_support,
+    standard,
+    vi_keys,
+    controller_support,
 
-        END
+    END
 };
 
 enum class RendererType
 {
-        auto_select,
-        sw,
+    auto_select,
+    sw,
 
-        END
+    END
 };
 
 enum class HintsMode
 {
-        once_per_game,
-        once,
-        never,
+    once_per_game,
+    once,
+    never,
 
-        END
+    END
 };
 
 namespace config
@@ -111,31 +111,31 @@ std::string default_player_name();
 class OptionsState : public State
 {
 public:
-        OptionsState();
+    OptionsState();
 
-        void update() override;
+    void update() override;
 
-        void draw() override;
+    void draw() override;
 
-        StateId id() const override;
+    StateId id() const override;
 
 private:
-        MenuBrowser m_browser;
+    MenuBrowser m_browser;
 };
 
 class OptionsSubmenuState : public State
 {
 public:
-        OptionsSubmenuState();
+    OptionsSubmenuState();
 
-        void update() override;
+    void update() override;
 
-        void draw() override;
+    void draw() override;
 
-        StateId id() const override;
+    StateId id() const override;
 
 private:
-        MenuBrowser m_browser;
+    MenuBrowser m_browser;
 };
 
 #endif  // CONFIG_HPP

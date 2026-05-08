@@ -15,54 +15,54 @@
 class MapController
 {
 public:
-        MapController() = default;
+    MapController() = default;
 
-        virtual ~MapController() = default;
+    virtual ~MapController() = default;
 
-        virtual void on_enter() {}
+    virtual void on_enter() {}
 
-        virtual void on_std_turn() {}
+    virtual void on_std_turn() {}
 };
 
 class MapControllerStd : public MapController
 {
 public:
-        MapControllerStd() = default;
+    MapControllerStd() = default;
 
-        void on_enter() override;
+    void on_enter() override;
 
-        void on_std_turn() override;
+    void on_std_turn() override;
 };
 
 class MapControllerEgypt : public MapController
 {
 public:
-        MapControllerEgypt() = default;
+    MapControllerEgypt() = default;
 
-        void on_enter() override;
+    void on_enter() override;
 
-        void on_std_turn() override;
+    void on_std_turn() override;
 
 private:
-        bool m_has_triggered_awareness {false};
+    bool m_has_triggered_awareness {false};
 };
 
 class MapControllerDeepOneLair : public MapController
 {
 public:
-        MapControllerDeepOneLair() = default;
+    MapControllerDeepOneLair() = default;
 
-        void on_enter() override;
+    void on_enter() override;
 };
 
 class MapControllerBoss : public MapController
 {
 public:
-        MapControllerBoss() = default;
+    MapControllerBoss() = default;
 
-        void on_enter() override;
+    void on_enter() override;
 
-        void on_std_turn() override;
+    void on_std_turn() override;
 };
 
 // -----------------------------------------------------------------------------

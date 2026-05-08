@@ -28,190 +28,190 @@ struct ItemData;
 class Wpn : public Item
 {
 public:
-        Wpn(ItemData* item_data);
+    Wpn(ItemData* item_data);
 
-        virtual ~Wpn() = default;
+    virtual ~Wpn() = default;
 
-        Wpn& operator=(const Wpn& other) = delete;
+    Wpn& operator=(const Wpn& other) = delete;
 
-        void save_hook() const override;
-        void load_hook() override;
+    void save_hook() const override;
+    void load_hook() override;
 
-        Color color() const override;
+    Color color() const override;
 
-        Color interface_color() const override
-        {
-                return colors::gray();
-        }
+    Color interface_color() const override
+    {
+        return colors::gray();
+    }
 
-        std::string name_info_str(ItemNameIdentified id_type) const override;
+    std::string name_info_str(ItemNameIdentified id_type) const override;
 
-        const ItemData& ammo_data()
-        {
-                return *m_ammo_data;
-        }
+    const ItemData& ammo_data()
+    {
+        return *m_ammo_data;
+    }
 
-        int m_ammo_loaded;
+    int m_ammo_loaded;
 
 protected:
-        ItemData* m_ammo_data;
+    ItemData* m_ammo_data;
 };
 
 class PlayerGhoulClaw : public Wpn
 {
 public:
-        PlayerGhoulClaw(ItemData* const item_data) :
-                Wpn(item_data) {}
+    PlayerGhoulClaw(ItemData* const item_data) :
+        Wpn(item_data) {}
 
 private:
-        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
+    void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 
-        void on_melee_kill(actor::Actor& actor_killed) override;
+    void on_melee_kill(actor::Actor& actor_killed) override;
 };
 
 class MorphicBlaster : public Wpn
 {
 public:
-        MorphicBlaster(ItemData* item_data);
-        ~MorphicBlaster() = default;
+    MorphicBlaster(ItemData* item_data);
+    ~MorphicBlaster() = default;
 
-        void pre_ranged_attack() override;
+    void pre_ranged_attack() override;
 
-        void on_projectile_blocked(const P& pos) override;
+    void on_projectile_blocked(const P& pos) override;
 };
 
 class ElectricGun : public Wpn
 {
 public:
-        ElectricGun(ItemData* item_data);
-        ~ElectricGun() = default;
+    ElectricGun(ItemData* item_data);
+    ~ElectricGun() = default;
 
-        void pre_ranged_attack() override;
+    void pre_ranged_attack() override;
 
 protected:
-        void specific_dmg_mod(
-                WpnDmg& range,
-                const actor::Actor* actor) const override;
+    void specific_dmg_mod(
+        WpnDmg& range,
+        const actor::Actor* actor) const override;
 };
 
 class RavenPeck : public Wpn
 {
 public:
-        RavenPeck(ItemData* const item_data) :
-                Wpn(item_data) {}
+    RavenPeck(ItemData* const item_data) :
+        Wpn(item_data) {}
 
-        bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
+    bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
 };
 
 class VampiricBite : public Wpn
 {
 public:
-        VampiricBite(ItemData* const item_data) :
-                Wpn(item_data) {}
+    VampiricBite(ItemData* const item_data) :
+        Wpn(item_data) {}
 
-        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
+    void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 };
 
 class MindLeechSting : public Wpn
 {
 public:
-        MindLeechSting(ItemData* const item_data) :
-                Wpn(item_data) {}
+    MindLeechSting(ItemData* const item_data) :
+        Wpn(item_data) {}
 
-        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
+    void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 };
 
 class DustEngulf : public Wpn
 {
 public:
-        DustEngulf(ItemData* const item_data) :
-                Wpn(item_data) {}
+    DustEngulf(ItemData* const item_data) :
+        Wpn(item_data) {}
 
-        bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
+    bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
 };
 
 class Spores : public Wpn
 {
 public:
-        Spores(ItemData* const item_data) :
-                Wpn(item_data) {}
+    Spores(ItemData* const item_data) :
+        Wpn(item_data) {}
 
-        bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
+    bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
 };
 
 class PusSpew : public Wpn
 {
 public:
-        PusSpew(ItemData* const item_data) :
-                Wpn(item_data) {}
+    PusSpew(ItemData* const item_data) :
+        Wpn(item_data) {}
 
-        bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
+    bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
 };
 
 class SnakeVenomSpit : public Wpn
 {
 public:
-        SnakeVenomSpit(ItemData* const item_data) :
-                Wpn(item_data) {}
+    SnakeVenomSpit(ItemData* const item_data) :
+        Wpn(item_data) {}
 
-        bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
+    bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
 };
 
 class PutridSpit : public Wpn
 {
 public:
-        PutridSpit(ItemData* const item_data) :
-                Wpn(item_data) {}
+    PutridSpit(ItemData* const item_data) :
+        Wpn(item_data) {}
 
-        bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
+    bool is_resisting_weapon_special(actor::Actor& actor_hit) const override;
 };
 
 class WaterBreath : public Wpn
 {
 public:
-        WaterBreath(ItemData* item_data);
-        ~WaterBreath() = default;
+    WaterBreath(ItemData* item_data);
+    ~WaterBreath() = default;
 
-        void on_projectile_blocked(const P& pos) override;
+    void on_projectile_blocked(const P& pos) override;
 };
 
 class PharaohStaff : public Wpn
 {
 public:
-        PharaohStaff(ItemData* item_data);
+    PharaohStaff(ItemData* item_data);
 
-        void on_std_turn_in_inv_hook(InvType inv_type) override;
+    void on_std_turn_in_inv_hook(InvType inv_type) override;
 
 private:
-        void on_mon_see_player_carrying(actor::Actor& mon) const;
+    void on_mon_see_player_carrying(actor::Actor& mon) const;
 
-        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
+    void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 };
 
 class ShadowDagger : public Wpn
 {
 public:
-        ShadowDagger(ItemData* item_data);
+    ShadowDagger(ItemData* item_data);
 
-        void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
+    void on_melee_hit(actor::Actor& actor_hit, int dmg) override;
 
-        void on_ranged_hit(actor::Actor& actor_hit) override;
+    void on_ranged_hit(actor::Actor& actor_hit) override;
 
 private:
-        bool is_radiant_creature(const actor::Actor& actor) const;
+    bool is_radiant_creature(const actor::Actor& actor) const;
 
-        void hit_normal_creature(actor::Actor& actor) const;
+    void hit_normal_creature(actor::Actor& actor) const;
 
-        void hit_radiant_creature(actor::Actor& actor) const;
+    void hit_radiant_creature(actor::Actor& actor) const;
 };
 
 class ZombieDust : public Wpn
 {
 public:
-        ZombieDust(ItemData* const item_data) :
-                Wpn(item_data) {}
+    ZombieDust(ItemData* const item_data) :
+        Wpn(item_data) {}
 
-        void on_ranged_hit(actor::Actor& actor_hit) override;
+    void on_ranged_hit(actor::Actor& actor_hit) override;
 };
 
 }  // namespace item

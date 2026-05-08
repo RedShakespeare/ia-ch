@@ -22,9 +22,9 @@ struct P;
 namespace throwing
 {
 void throw_item(
-        actor::Actor& actor_throwing,
-        const P& tgt_pos,
-        item::Item& item_thrown);
+    actor::Actor& actor_throwing,
+    const P& tgt_pos,
+    item::Item& item_thrown);
 
 void player_throw_lit_explosive(const P& aim_cell);
 

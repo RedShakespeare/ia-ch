@@ -46,159 +46,159 @@ class Item;
 
 enum class SpellId
 {
-        //
-        // --- AVAILABLE FOR THE PLAYER (and possibly monsters)
-        //
+    //
+    // --- AVAILABLE FOR THE PLAYER (and possibly monsters)
+    //
 
-        // Domain: Channeling
-        aza_gaze,
-        cataclysm,
-        darkbolt,
-        gnawing_torrent,
+    // Domain: Channeling
+    aza_gaze,
+    cataclysm,
+    darkbolt,
+    gnawing_torrent,
 
-        // Domain: Corruption
-        aura_of_decay,
-        curse,
-        enfeeble,
-        pestilence,
-        poison,
+    // Domain: Corruption
+    aura_of_decay,
+    curse,
+    enfeeble,
+    pestilence,
+    poison,
 
-        // Domain: Illusion
-        invis,
-        // NOTE: The Mirror Images spell is NOT supported for monsters, because the player could
-        // just view the monster descriptions and see which ones are unusually hard to hit (the
-        // mirror images have extremely high dodge), which would just be annoying and ruins the
-        // whole aspect of making the images look like the caster.
-        //
-        // (A similar thing happens with hallucination, but in that case it's a different situation
-        // and more OK.)
-        //
-        mirror_images,
-        terrify,
-        threat_projection,
+    // Domain: Illusion
+    invis,
+    // NOTE: The Mirror Images spell is NOT supported for monsters, because the player could just
+    // view the monster descriptions and see which ones are unusually hard to hit (the mirror images
+    // have extremely high dodge), which would just be annoying and ruins the whole aspect of making
+    // the images look like the caster.
+    //
+    // (A similar thing happens with hallucination, but in that case it's a different situation and
+    // more OK.)
+    //
+    mirror_images,
+    terrify,
+    threat_projection,
 
-        // Domain: Mind
-        control_object,
-        erudition,
-        identify,
-        premonition,
-        see_invis,
-        spectral_weapons,
-        transmut,
+    // Domain: Mind
+    control_object,
+    erudition,
+    identify,
+    premonition,
+    see_invis,
+    spectral_weapons,
+    transmut,
 
-        // Domain: Time
-        expulsion,
-        haste,
-        slow,
-        teleport,
-        temporal_echo,
+    // Domain: Time
+    expulsion,
+    haste,
+    slow,
+    teleport,
+    temporal_echo,
 
-        // Domain: Warding
-        bless,
-        cancellation,
-        heal,
-        inscribe_boundary_sigil,
-        light,
-        spell_shield,
+    // Domain: Warding
+    bless,
+    cancellation,
+    heal,
+    inscribe_boundary_sigil,
+    light,
+    spell_shield,
 
-        // Domain: Blood
-        blood_tempering,
-        crimson_passage,
-        sacrifice_life,
-        thorns,
+    // Domain: Blood
+    blood_tempering,
+    crimson_passage,
+    sacrifice_life,
+    thorns,
 
-        //
-        // --- EXORCIST BACKGROUND ONLY ---
-        //
+    //
+    // --- EXORCIST BACKGROUND ONLY ---
+    //
 
-        // (No domain)
-        cleansing_fire,
-        purge,
-        sanctuary,
+    // (No domain)
+    cleansing_fire,
+    purge,
+    sanctuary,
 
-        //
-        // --- GHOUL BACKGROUND ONLY ---
-        //
+    //
+    // --- GHOUL BACKGROUND ONLY ---
+    //
 
-        // (No domain)
-        frenzy,
+    // (No domain)
+    frenzy,
 
-        //
-        // --- FLAGELLANT BACKGROUND ONLY ---
-        //
+    //
+    // --- FLAGELLANT BACKGROUND ONLY ---
+    //
 
-        // Domain: Blood
-        shed_impurity,
+    // Domain: Blood
+    shed_impurity,
 
-        //
-        // --- MONSTERS ONLY ---
-        //
+    //
+    // --- MONSTERS ONLY ---
+    //
 
-        // (Domain doesn't matter)
-        blind,
-        burn,
-        deafen,
-        disease,
-        force_bolt,
-        heal_others,
-        knockback,
-        mi_go_hypno,
-        summon_random,
-        summon_tentacles,
-        summon_water_creature,
+    // (Domain doesn't matter)
+    blind,
+    burn,
+    deafen,
+    disease,
+    force_bolt,
+    heal_others,
+    knockback,
+    mi_go_hypno,
+    summon_random,
+    summon_tentacles,
+    summon_water_creature,
 
-        END
+    END
 };
 
 enum class SpellDomain
 {
-        channeling,
-        corruption,
-        illusion,
-        mind,
-        time,
-        warding,
+    channeling,
+    corruption,
+    illusion,
+    mind,
+    time,
+    warding,
 
-        blood,
+    blood,
 
-        END
+    END
 };
 
 enum class SpellSkill
 {
-        basic,
-        expert,
-        master,
-        transcendent
+    basic,
+    expert,
+    master,
+    transcendent
 };
 
 enum class SpellSrc
 {
-        learned,
-        manuscript,
-        item
+    learned,
+    manuscript,
+    item
 };
 
 enum class SpellShock
 {
-        none,
-        mild,
-        disturbing,
-        severe
+    none,
+    mild,
+    disturbing,
+    severe
 };
 
 // Player saw or heard the spell being cast.
 enum class PlayerAwareOfCast
 {
-        no,
-        yes,
+    no,
+    yes,
 };
 
 // Does the spell cost spirit or hit points to cast?
 enum class SpellCostType
 {
-        spirit,
-        hit_points
+    spirit,
+    hit_points
 };
 
 namespace spells
@@ -226,1906 +226,1906 @@ void run_mi_go_hypno_effect(actor::Actor& target);
 class Spell
 {
 public:
-        Spell() = default;
+    Spell() = default;
 
-        virtual ~Spell() = default;
+    virtual ~Spell() = default;
 
-        void cast(
-                actor::Actor* caster,
-                SpellSkill skill,
-                SpellSrc spell_src,
-                const std::vector<actor::Actor*>& seen_targets) const;
+    void cast(
+        actor::Actor* caster,
+        SpellSkill skill,
+        SpellSrc spell_src,
+        const std::vector<actor::Actor*>& seen_targets) const;
 
-        virtual void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const = 0;
+    virtual void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const = 0;
 
-        virtual bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const
-        {
-                (void)mon;
-                (void)seen_targets;
+    virtual bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const
+    {
+        (void)mon;
+        (void)seen_targets;
 
-                return false;
-        }
+        return false;
+    }
 
-        virtual int mon_cooldown() const
-        {
-                return 3;
-        }
+    virtual int mon_cooldown() const
+    {
+        return 3;
+    }
 
-        virtual std::string name() const = 0;
+    virtual std::string name() const = 0;
 
-        virtual SpellId id() const = 0;
+    virtual SpellId id() const = 0;
 
-        virtual SpellDomain domain() const = 0;
+    virtual SpellDomain domain() const = 0;
 
-        // Casting a memorized tenebrous spell disables it (i.e. single use,
-        // until it it re-enabled).
-        virtual bool is_tenebrous() const
-        {
-                return false;
-        }
+    // Casting a memorized tenebrous spell disables it (i.e. single use,
+    // until it it re-enabled).
+    virtual bool is_tenebrous() const
+    {
+        return false;
+    }
 
-        virtual bool can_be_improved_with_skill() const
-        {
-                return true;
-        }
+    virtual bool can_be_improved_with_skill() const
+    {
+        return true;
+    }
 
-        std::vector<std::string> descr(SpellSkill skill, SpellSrc spell_src) const;
+    std::vector<std::string> descr(SpellSkill skill, SpellSrc spell_src) const;
 
-        std::string domain_descr() const;
+    std::string domain_descr() const;
 
-        virtual std::vector<std::string> descr_specific(SpellSkill skill) const = 0;
+    virtual std::vector<std::string> descr_specific(SpellSkill skill) const = 0;
 
-        Range cost_range(SpellSkill skill, const actor::Actor* caster = nullptr) const;
+    Range cost_range(SpellSkill skill, const actor::Actor* caster = nullptr) const;
 
-        virtual SpellCostType cost_type() const
-        {
-                return SpellCostType::spirit;
-        }
+    virtual SpellCostType cost_type() const
+    {
+        return SpellCostType::spirit;
+    }
 
-        int shock_value() const;
+    int shock_value() const;
 
-        virtual SpellShock shock_type() const = 0;
+    virtual SpellShock shock_type() const = 0;
 
 protected:
-        virtual int base_max_cost(SpellSkill skill, const actor::Actor* caster) const = 0;
+    virtual int base_max_cost(SpellSkill skill, const actor::Actor* caster) const = 0;
 
-        virtual bool is_noisy(SpellSkill skill) const = 0;
+    virtual bool is_noisy(SpellSkill skill) const = 0;
 
-        void on_resist(actor::Actor& target) const;
+    void on_resist(actor::Actor& target) const;
 
-        bool m_is_disabled {false};
+    bool m_is_disabled {false};
 };
 
 class SpellCurse : public Spell
 {
 public:
-        SpellCurse() = default;
+    SpellCurse() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        int pct_chance_doom(SpellSkill skill) const;
+    int pct_chance_doom(SpellSkill skill) const;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellPoison : public Spell
 {
 public:
-        SpellPoison() = default;
+    SpellPoison() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellEnfeeble : public Spell
 {
 public:
-        SpellEnfeeble() = default;
+    SpellEnfeeble() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellTemporalEcho : public Spell
 {
 public:
-        SpellTemporalEcho() = default;
+    SpellTemporalEcho() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range() const;
+    Range duration_range() const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        int pct_damage_dealt(SpellSkill skill) const;
+    int pct_damage_dealt(SpellSkill skill) const;
 
-        void apply_temporal_echo_effect(
-                actor::Actor& target,
-                SpellSkill skill,
-                int duration) const;
+    void apply_temporal_echo_effect(
+        actor::Actor& target,
+        SpellSkill skill,
+        int duration) const;
 };
 
 class SpellSlow : public Spell
 {
 public:
-        SpellSlow() = default;
+    SpellSlow() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellTerrify : public Spell
 {
 public:
-        SpellTerrify() = default;
+    SpellTerrify() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int faint_pct_chance(SpellSkill skill) const;
-        Range faint_duration_range() const;
+    int faint_pct_chance(SpellSkill skill) const;
+    Range faint_duration_range() const;
 
-        void terrify_target(actor::Actor& target, SpellSkill skill) const;
-        void faint_target(actor::Actor& target) const;
+    void terrify_target(actor::Actor& target, SpellSkill skill) const;
+    void faint_target(actor::Actor& target) const;
 };
 
 class SpellThreatProjection : public Spell
 {
 public:
-        SpellThreatProjection() = default;
+    SpellThreatProjection() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        void conflict_target(actor::Actor& target, SpellSkill skill) const;
+    void conflict_target(actor::Actor& target, SpellSkill skill) const;
 };
 
 class SpellAuraOfDecay : public Spell
 {
 public:
-        SpellAuraOfDecay() = default;
+    SpellAuraOfDecay() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range dmg_range(SpellSkill skill) const;
+    Range dmg_range(SpellSkill skill) const;
 
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 };
 
 class BoltImpl
 {
 public:
-        virtual ~BoltImpl() = default;
+    virtual ~BoltImpl() = default;
 
-        virtual SpellShock shock_type() const;
+    virtual SpellShock shock_type() const;
 
-        virtual Range damage(SpellSkill skill) const = 0;
+    virtual Range damage(SpellSkill skill) const = 0;
 
-        virtual void on_hit(
-                actor::Actor& actor_hit,
-                actor::Actor& caster,
-                SpellSkill skill) const = 0;
+    virtual void on_hit(
+        actor::Actor& actor_hit,
+        actor::Actor& caster,
+        SpellSkill skill) const = 0;
 
-        virtual std::string hit_msg_ending() const = 0;
+    virtual std::string hit_msg_ending() const = 0;
 
-        virtual audio::SfxId impact_sfx() const;
+    virtual audio::SfxId impact_sfx() const;
 
-        virtual int mon_cooldown() const = 0;
+    virtual int mon_cooldown() const = 0;
 
-        virtual std::string name() const = 0;
+    virtual std::string name() const = 0;
 
-        virtual SpellId id() const = 0;
+    virtual SpellId id() const = 0;
 
-        virtual std::vector<std::string> descr_specific(SpellSkill skill) const = 0;
+    virtual std::vector<std::string> descr_specific(SpellSkill skill) const = 0;
 
-        virtual int base_max_cost(SpellSkill skill, const actor::Actor* caster) const = 0;
+    virtual int base_max_cost(SpellSkill skill, const actor::Actor* caster) const = 0;
 
-        virtual int nr_projectiles(SpellSkill skill) const
-        {
-                (void)skill;
+    virtual int nr_projectiles(SpellSkill skill) const
+    {
+        (void)skill;
 
-                return 1;
-        }
+        return 1;
+    }
 };
 
 class ForceBolt : public BoltImpl
 {
 public:
-        ForceBolt() = default;
+    ForceBolt() = default;
 
-        Range damage(SpellSkill skill) const override;
+    Range damage(SpellSkill skill) const override;
 
-        void on_hit(
-                actor::Actor& actor_hit,
-                actor::Actor& caster,
-                SpellSkill skill) const override;
+    void on_hit(
+        actor::Actor& actor_hit,
+        actor::Actor& caster,
+        SpellSkill skill) const override;
 
-        std::string hit_msg_ending() const override;
+    std::string hit_msg_ending() const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 };
 
 class Darkbolt : public BoltImpl
 {
 public:
-        Darkbolt() = default;
+    Darkbolt() = default;
 
-        Range damage(SpellSkill skill) const override;
+    Range damage(SpellSkill skill) const override;
 
-        void on_hit(
-                actor::Actor& actor_hit,
-                actor::Actor& caster,
-                SpellSkill skill) const override;
+    void on_hit(
+        actor::Actor& actor_hit,
+        actor::Actor& caster,
+        SpellSkill skill) const override;
 
-        std::string hit_msg_ending() const override;
+    std::string hit_msg_ending() const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 };
 
 class GnawingTorrent : public BoltImpl
 {
 public:
-        GnawingTorrent() = default;
+    GnawingTorrent() = default;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        Range damage(SpellSkill skill) const override;
+    Range damage(SpellSkill skill) const override;
 
-        void on_hit(
-                actor::Actor& actor_hit,
-                actor::Actor& caster,
-                SpellSkill skill) const override;
+    void on_hit(
+        actor::Actor& actor_hit,
+        actor::Actor& caster,
+        SpellSkill skill) const override;
 
-        std::string hit_msg_ending() const override;
+    std::string hit_msg_ending() const override;
 
-        audio::SfxId impact_sfx() const override;
+    audio::SfxId impact_sfx() const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        int nr_projectiles(SpellSkill skill) const override;
+    int nr_projectiles(SpellSkill skill) const override;
 };
 
 class SpellBolt : public Spell
 {
 public:
-        SpellBolt(BoltImpl* impl) :
-                m_impl(impl) {}
+    SpellBolt(BoltImpl* impl) :
+        m_impl(impl) {}
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        void draw_projectile_travel(
-                const actor::Actor& caster,
-                const actor::Actor& target,
-                SpellSkill skill) const;
+    void draw_projectile_travel(
+        const actor::Actor& caster,
+        const actor::Actor& target,
+        SpellSkill skill) const;
 
-        void run_bolt_on_target(
-                actor::Actor& caster,
-                actor::Actor& target,
-                SpellSkill skill,
-                PlayerAwareOfCast player_aware) const;
+    void run_bolt_on_target(
+        actor::Actor& caster,
+        actor::Actor& target,
+        SpellSkill skill,
+        PlayerAwareOfCast player_aware) const;
 
-        std::unique_ptr<BoltImpl> m_impl;
+    std::unique_ptr<BoltImpl> m_impl;
 };
 
 class SpellAzaGaze : public Spell
 {
 public:
-        SpellAzaGaze() = default;
+    SpellAzaGaze() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range dmg_range(SpellSkill skill) const;
+    Range dmg_range(SpellSkill skill) const;
 
-        Range faint_duration_range(SpellSkill skill) const;
+    Range faint_duration_range(SpellSkill skill) const;
 
-        Range conflict_duration_range(SpellSkill skill) const;
+    Range conflict_duration_range(SpellSkill skill) const;
 
-        void run_effect_on_target(
-                actor::Actor* caster,
-                actor::Actor& target,
-                SpellSkill skill,
-                PlayerAwareOfCast player_aware) const;
+    void run_effect_on_target(
+        actor::Actor* caster,
+        actor::Actor& target,
+        SpellSkill skill,
+        PlayerAwareOfCast player_aware) const;
 
-        void do_damage_on_target(
-                actor::Actor& target,
-                SpellSkill skill,
-                actor::Actor* caster) const;
+    void do_damage_on_target(
+        actor::Actor& target,
+        SpellSkill skill,
+        actor::Actor* caster) const;
 
-        void apply_properties_on_target(
-                actor::Actor& target,
-                SpellSkill skill) const;
+    void apply_properties_on_target(
+        actor::Actor& target,
+        SpellSkill skill) const;
 };
 
 class SpellCataclysm : public Spell
 {
 public:
-        SpellCataclysm() = default;
+    SpellCataclysm() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int destruction_radi(SpellSkill skill) const;
+    int destruction_radi(SpellSkill skill) const;
 
-        int nr_explosions(SpellSkill skill) const;
+    int nr_explosions(SpellSkill skill) const;
 
-        int nr_destruction_sweeps(SpellSkill skill) const;
+    int nr_destruction_sweeps(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellPestilence : public Spell
 {
 public:
-        SpellPestilence() = default;
+    SpellPestilence() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int nr_rats_summoned(SpellSkill skill) const;
+    int nr_rats_summoned(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        void on_rat_summoned(actor::Actor* mon, SpellSkill skill) const;
+    void on_rat_summoned(actor::Actor* mon, SpellSkill skill) const;
 };
 
 class SpellMirrorImages : public Spell
 {
 public:
-        SpellMirrorImages() = default;
+    SpellMirrorImages() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int nr_mirror_images_summoned(SpellSkill skill) const;
+    int nr_mirror_images_summoned(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        void on_mirror_image_summoned(actor::Actor* mon, SpellSkill skill) const;
+    void on_mirror_image_summoned(actor::Actor* mon, SpellSkill skill) const;
 };
 
 class SpellSpectralWeapons : public Spell
 {
 public:
-        SpellSpectralWeapons() = default;
+    SpellSpectralWeapons() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        void on_mon_summoned(
-                item::Item* item,
-                actor::Actor* mon,
-                SpellSkill skill) const;
+    void on_mon_summoned(
+        item::Item* item,
+        actor::Actor* mon,
+        SpellSkill skill) const;
 
-        int max_nr_weapons(SpellSkill skill) const;
+    int max_nr_weapons(SpellSkill skill) const;
 };
 
 class SpellControlObject : public Spell
 {
 public:
-        SpellControlObject() = default;
+    SpellControlObject() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        int max_dist(SpellSkill skill) const;
+    int max_dist(SpellSkill skill) const;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellCleansingFire : public Spell
 {
 public:
-        SpellCleansingFire() = default;
+    SpellCleansingFire() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range burn_duration_range() const;
+    Range burn_duration_range() const;
 };
 
 class SpellSanctuary : public Spell
 {
 public:
-        SpellSanctuary() = default;
+    SpellSanctuary() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range duration(SpellSkill skill) const;
+    Range duration(SpellSkill skill) const;
 };
 
 class SpellPurge : public Spell
 {
 public:
-        SpellPurge() = default;
+    SpellPurge() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        bool can_be_improved_with_skill() const override;
+    bool can_be_improved_with_skill() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range dmg_range() const;
+    Range dmg_range() const;
 
-        Range fear_duration_range() const;
+    Range fear_duration_range() const;
 };
 
 class SpellFrenzy : public Spell
 {
 public:
-        SpellFrenzy() = default;
+    SpellFrenzy() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        bool can_be_improved_with_skill() const override;
+    bool can_be_improved_with_skill() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellBless : public Spell
 {
 public:
-        SpellBless() = default;
+    SpellBless() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 enum class CancelledPropIncludeInDescr
 {
-        no,
-        yes,
+    no,
+    yes,
 };
 
 enum class CancelledPropAllowCancelPermanent
 {
-        no,
-        yes,
+    no,
+    yes,
 };
 
 struct CancelledPropData
 {
-        prop::Id id;
+    prop::Id id;
 
-        // Include it in the lits of cancelled effects?
-        CancelledPropIncludeInDescr include_in_descr {
-                CancelledPropIncludeInDescr::yes};
+    // Include it in the lits of cancelled effects?
+    CancelledPropIncludeInDescr include_in_descr {
+        CancelledPropIncludeInDescr::yes};
 
-        CancelledPropAllowCancelPermanent allow_cancel_permanent_effect {
-                CancelledPropAllowCancelPermanent::no};
+    CancelledPropAllowCancelPermanent allow_cancel_permanent_effect {
+        CancelledPropAllowCancelPermanent::no};
 };
 
 class SpellCancellation : public Spell
 {
 public:
-        SpellCancellation() = default;
+    SpellCancellation() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int max_dist(SpellSkill skill) const;
+    int max_dist(SpellSkill skill) const;
 
-        std::vector<CancelledPropData> negative_effect_types_cancelled() const;
-        std::vector<CancelledPropData> positive_effect_types_cancelled() const;
+    std::vector<CancelledPropData> negative_effect_types_cancelled() const;
+    std::vector<CancelledPropData> positive_effect_types_cancelled() const;
 
-        void run_effect_on_actor(actor::Actor& actor, actor::Actor& caster) const;
-        void cancel_negative_effects(actor::Actor& actor) const;
-        void cancel_positive_effects(actor::Actor& actor) const;
-        Range damage_for_vulnerable_creatures() const;
-        void do_damage_vulnerable_creature(actor::Actor& actor, actor::Actor& caster) const;
+    void run_effect_on_actor(actor::Actor& actor, actor::Actor& caster) const;
+    void cancel_negative_effects(actor::Actor& actor) const;
+    void cancel_positive_effects(actor::Actor& actor) const;
+    Range damage_for_vulnerable_creatures() const;
+    void do_damage_vulnerable_creature(actor::Actor& actor, actor::Actor& caster) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellInscribeBoundarySigil : public Spell
 {
 public:
-        SpellInscribeBoundarySigil() = default;
+    SpellInscribeBoundarySigil() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int pct_chance_fade(SpellSkill skill) const;
+    int pct_chance_fade(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellTransmut : public Spell
 {
 public:
-        SpellTransmut() = default;
+    SpellTransmut() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        bool is_tenebrous() const override;
+    bool is_tenebrous() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int skill_bon(SpellSkill skill) const;
+    int skill_bon(SpellSkill skill) const;
 
-        int chance_scroll(SpellSkill skill) const;
+    int chance_scroll(SpellSkill skill) const;
 
-        int chance_potion(SpellSkill skill) const;
+    int chance_potion(SpellSkill skill) const;
 
-        int chance_weapon(SpellSkill skill, int plus) const;
+    int chance_weapon(SpellSkill skill, int plus) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellLight : public Spell
 {
 public:
-        SpellLight() = default;
+    SpellLight() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range light_duration_range(SpellSkill skill) const;
+    Range light_duration_range(SpellSkill skill) const;
 
-        Range blind_duration_range(SpellSkill skill) const;
+    Range blind_duration_range(SpellSkill skill) const;
 
-        Range burning_duration_range() const;
+    Range burning_duration_range() const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellKnockBack : public Spell
 {
 public:
-        SpellKnockBack() = default;
+    SpellKnockBack() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellTeleport : public Spell
 {
 public:
-        SpellTeleport() = default;
+    SpellTeleport() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int invis_duration(SpellSkill skill) const;
+    int invis_duration(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        int max_dist(SpellSkill skill) const;
+    int max_dist(SpellSkill skill) const;
 };
 
 class SpellExpulsion : public Spell
 {
 public:
-        SpellExpulsion() = default;
+    SpellExpulsion() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        int max_dist(SpellSkill skill) const;
+    int max_dist(SpellSkill skill) const;
 };
 
 class SpellInvis : public Spell
 {
 public:
-        SpellInvis() = default;
+    SpellInvis() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        bool is_tenebrous() const override;
+    bool is_tenebrous() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellSeeInvis : public Spell
 {
 public:
-        SpellSeeInvis() = default;
+    SpellSeeInvis() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellSpellShield : public Spell
 {
 public:
-        SpellSpellShield() = default;
+    SpellSpellShield() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellHaste : public Spell
 {
 public:
-        SpellHaste() = default;
+    SpellHaste() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellPremonition : public Spell
 {
 public:
-        SpellPremonition() = default;
+    SpellPremonition() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellErudition : public Spell
 {
 public:
-        SpellErudition() = default;
+    SpellErudition() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range get_duration_range(SpellSkill skill) const;
+    Range get_duration_range(SpellSkill skill) const;
 };
 
 class SpellIdentify : public Spell
 {
 public:
-        SpellIdentify() = default;
+    SpellIdentify() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        bool is_tenebrous() const override;
+    bool is_tenebrous() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellBloodTempering : public Spell
 {
 public:
-        SpellBloodTempering() = default;
+    SpellBloodTempering() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        bool is_tenebrous() const override;
+    bool is_tenebrous() const override;
 
-        SpellCostType cost_type() const override;
+    SpellCostType cost_type() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellThorns : public Spell
 {
 public:
-        SpellThorns() = default;
+    SpellThorns() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellCostType cost_type() const override;
+    SpellCostType cost_type() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        Range duration_range(SpellSkill skill) const;
-        Range dmg_range(SpellSkill skill) const;
+    Range duration_range(SpellSkill skill) const;
+    Range dmg_range(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellCrimsonPassage : public Spell
 {
 public:
-        SpellCrimsonPassage() = default;
+    SpellCrimsonPassage() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellCostType cost_type() const override;
+    SpellCostType cost_type() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int nr_steps_allowed(SpellSkill skill) const;
+    int nr_steps_allowed(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellSacrificeLife : public Spell
 {
 public:
-        SpellSacrificeLife() = default;
+    SpellSacrificeLife() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        bool is_tenebrous() const override;
+    bool is_tenebrous() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int nr_sp_per_hp(SpellSkill skill) const;
+    int nr_sp_per_hp(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellShedImpurity : public Spell
 {
 public:
-        SpellShedImpurity() = default;
+    SpellShedImpurity() = default;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int get_min_hp_removed_for_bonus_effects() const;
+    int get_min_hp_removed_for_bonus_effects() const;
 
-        int get_moribund_hp_limit() const;
+    int get_moribund_hp_limit() const;
 
-        int calc_nr_hp_removed(const actor::Actor* caster) const;
+    int calc_nr_hp_removed(const actor::Actor* caster) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellDisease : public Spell
 {
 public:
-        SpellDisease() = default;
+    SpellDisease() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellBlind : public Spell
 {
 public:
-        SpellBlind() = default;
+    SpellBlind() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        std::vector<actor::Actor*> find_actors_not_blind_resistant(
-                const std::vector<actor::Actor*>& actors) const;
+    std::vector<actor::Actor*> find_actors_not_blind_resistant(
+        const std::vector<actor::Actor*>& actors) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SummonImpl
 {
 public:
-        virtual ~SummonImpl() = default;
+    virtual ~SummonImpl() = default;
 
-        virtual SpellId id() const = 0;
+    virtual SpellId id() const = 0;
 
-        // NOTE: The input to this function is any summonable monster within a certain level range
-        // depending on the monsters skill level.
-        virtual std::vector<std::string> filter_allowed_ids(
-                const std::vector<std::string>& summon_bucket) const = 0;
+    // NOTE: The input to this function is any summonable monster within a certain level range
+    // depending on the monsters skill level.
+    virtual std::vector<std::string> filter_allowed_ids(
+        const std::vector<std::string>& summon_bucket) const = 0;
 
-        virtual int mon_cooldown() const;
+    virtual int mon_cooldown() const;
 
-        virtual std::string appear_msg_override() const;
+    virtual std::string appear_msg_override() const;
 };
 
 class SummonRandom : public SummonImpl
 {
 public:
-        SummonRandom() = default;
+    SummonRandom() = default;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        std::vector<std::string> filter_allowed_ids(
-                const std::vector<std::string>& summon_bucket) const override;
+    std::vector<std::string> filter_allowed_ids(
+        const std::vector<std::string>& summon_bucket) const override;
 };
 
 class SummonWaterCreature : public SummonImpl
 {
 public:
-        SummonWaterCreature() = default;
+    SummonWaterCreature() = default;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        std::vector<std::string> filter_allowed_ids(
-                const std::vector<std::string>& summon_bucket) const override;
+    std::vector<std::string> filter_allowed_ids(
+        const std::vector<std::string>& summon_bucket) const override;
 };
 
 class SummonTentacles : public SummonImpl
 {
 public:
-        SummonTentacles() = default;
+    SummonTentacles() = default;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        std::vector<std::string> filter_allowed_ids(
-                const std::vector<std::string>& summon_bucket) const override;
+    std::vector<std::string> filter_allowed_ids(
+        const std::vector<std::string>& summon_bucket) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string appear_msg_override() const override;
+    std::string appear_msg_override() const override;
 };
 
 class SpellSummon : public Spell
 {
 public:
-        SpellSummon(SummonImpl* impl) :
-                m_impl(impl) {}
+    SpellSummon(SummonImpl* impl) :
+        m_impl(impl) {}
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        // NOTE: There is no way for the summon implementation classes to control the allowed
-        // dungeon level range of the monsters. For spells that should summon a specific monster,
-        // make sure that the monster is in range for the summoners spell skill!
-        Range get_allowed_mon_lvl_range(SpellSkill skill) const;
+    // NOTE: There is no way for the summon implementation classes to control the allowed
+    // dungeon level range of the monsters. For spells that should summon a specific monster,
+    // make sure that the monster is in range for the summoners spell skill!
+    Range get_allowed_mon_lvl_range(SpellSkill skill) const;
 
-        std::vector<std::string> make_summon_bucket(const Range& mon_lvl_range) const;
+    std::vector<std::string> make_summon_bucket(const Range& mon_lvl_range) const;
 
-        void summon(const std::string& id, actor::Actor* caster) const;
+    void summon(const std::string& id, actor::Actor* caster) const;
 
-        std::unique_ptr<SummonImpl> m_impl;
+    std::unique_ptr<SummonImpl> m_impl;
 };
 
 class SpellHeal : public Spell
 {
 public:
-        SpellHeal() = default;
+    SpellHeal() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int nr_hp_restored(SpellSkill skill) const;
+    int nr_hp_restored(SpellSkill skill) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 
-        Range regen_duration() const;
+    Range regen_duration() const;
 };
 
 class SpellMiGoHypno : public Spell
 {
 public:
-        SpellMiGoHypno() = default;
+    SpellMiGoHypno() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellBurn : public Spell
 {
 public:
-        SpellBurn() = default;
+    SpellBurn() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellDeafen : public Spell
 {
 public:
-        SpellDeafen() = default;
+    SpellDeafen() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 class SpellHealOthers : public Spell
 {
 public:
-        SpellHealOthers() = default;
+    SpellHealOthers() = default;
 
-        bool allow_mon_cast_now(
-                const actor::Actor& mon,
-                const std::vector<actor::Actor*>& seen_targets) const override;
+    bool allow_mon_cast_now(
+        const actor::Actor& mon,
+        const std::vector<actor::Actor*>& seen_targets) const override;
 
-        int mon_cooldown() const override;
+    int mon_cooldown() const override;
 
-        std::string name() const override;
+    std::string name() const override;
 
-        SpellId id() const override;
+    SpellId id() const override;
 
-        SpellDomain domain() const override;
+    SpellDomain domain() const override;
 
-        SpellShock shock_type() const override;
+    SpellShock shock_type() const override;
 
-        std::vector<std::string> descr_specific(SpellSkill skill) const override;
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
 
-        void run_effect(
-                actor::Actor* caster,
-                SpellSkill skill,
-                const std::vector<actor::Actor*>& seen_targets,
-                PlayerAwareOfCast player_aware) const override;
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
 
 private:
-        std::vector<actor::Actor*> find_possible_actors_to_heal(const actor::Actor* caster) const;
+    std::vector<actor::Actor*> find_possible_actors_to_heal(const actor::Actor* caster) const;
 
-        actor::Actor* find_random_actor_to_heal(const actor::Actor* caster) const;
+    actor::Actor* find_random_actor_to_heal(const actor::Actor* caster) const;
 
-        int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
-        bool is_noisy(SpellSkill skill) const override;
+    bool is_noisy(SpellSkill skill) const override;
 };
 
 #endif  // SPELLS_HPP

@@ -30,85 +30,85 @@
 // -----------------------------------------------------------------------------
 static Fraction chance_for_trapped_room(const room::RoomType type)
 {
-        Fraction chance(-1, -1);
+    Fraction chance(-1, -1);
 
-        switch (type) {
-        case room::RoomType::plain:
-                chance = {1, 20};
-                break;
+    switch (type) {
+    case room::RoomType::plain:
+        chance = {1, 20};
+        break;
 
-        case room::RoomType::human:
-                chance = {1, 12};
-                break;
+    case room::RoomType::human:
+        chance = {1, 12};
+        break;
 
-        case room::RoomType::ritual:
-                chance = {1, 12};
-                break;
+    case room::RoomType::ritual:
+        chance = {1, 12};
+        break;
 
-        case room::RoomType::spider:
-                // NOTE: Spider rooms place webs themselves.
-                break;
+    case room::RoomType::spider:
+        // NOTE: Spider rooms place webs themselves.
+        break;
 
-        case room::RoomType::crypt:
-                chance = {1, 12};
-                break;
+    case room::RoomType::crypt:
+        chance = {1, 12};
+        break;
 
-        case room::RoomType::monster:
-                chance = {1, 30};
-                break;
+    case room::RoomType::monster:
+        chance = {1, 30};
+        break;
 
-        case room::RoomType::chasm:
-                chance = {1, 30};
-                break;
+    case room::RoomType::chasm:
+        chance = {1, 30};
+        break;
 
-        case room::RoomType::damp:
-                chance = {1, 30};
-                break;
+    case room::RoomType::damp:
+        chance = {1, 30};
+        break;
 
-        case room::RoomType::pool:
-                chance = {1, 30};
-                break;
+    case room::RoomType::pool:
+        chance = {1, 30};
+        break;
 
-        case room::RoomType::jail:
-                chance = {1, 30};
-                break;
+    case room::RoomType::jail:
+        chance = {1, 30};
+        break;
 
-        case room::RoomType::corridor:
-        case room::RoomType::crawling_pit:
-        case room::RoomType::forest:
-        case room::RoomType::cave:
-        case room::RoomType::END_OF_STD_ROOMS:
-        case room::RoomType::river:
-        case room::RoomType::crumble_room:
-                break;
-        }
+    case room::RoomType::corridor:
+    case room::RoomType::crawling_pit:
+    case room::RoomType::forest:
+    case room::RoomType::cave:
+    case room::RoomType::END_OF_STD_ROOMS:
+    case room::RoomType::river:
+    case room::RoomType::crumble_room:
+        break;
+    }
 
-        return chance;
+    return chance;
 }
 
 static std::vector<P> find_allowed_positions_in_room(
-        const room::Room& room,
-        const Array2<bool>& blocked)
+    const room::Room& room,
+    const Array2<bool>& blocked)
 {
-        std::vector<P> positions;
+    std::vector<P> positions;
 
-        const auto r = room.m_r;
+    const auto r = room.m_r;
 
-        positions.reserve(r.area());
+    positions.reserve(r.area());
 
-        for (int x = r.p0.x; x <= r.p1.x; ++x) {
-                for (int y = r.p0.y; y <= r.p1.y; ++y) {
-                        const P p(x, y);
+    for (int x = r.p0.x; x <= r.p1.x; ++x) {
+        for (int y = r.p0.y; y <= r.p1.y; ++y) {
+            const P p(x, y);
 
-                        if (!blocked.at(p) &&
-                            map::g_terrain.at(p)->can_have_trap() &&
-                            (map::g_room_map.at(p) == &room)) {
-                                positions.push_back(p);
-                        }
-                }
+            if (!blocked.at(p) &&
+                map::g_terrain.at(p)->can_have_trap() &&
+                (map::g_room_map.at(p) == &room)) {
+                positions.push_back(p);
+            }
         }
+    }
 
-        return positions;
+    return positions;
 }
 
 // -----------------------------------------------------------------------------
@@ -118,90 +118,90 @@ namespace populate_traps
 {
 void populate()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        Array2<bool> blocked(map::dims());
+    Array2<bool> blocked(map::dims());
 
-        map_parsers::BlocksWalking(ParseActors::no)
-                .run(blocked, blocked.rect());
+    map_parsers::BlocksWalking(ParseActors::no)
+        .run(blocked, blocked.rect());
 
-        const P& player_p = map::g_player->m_pos;
+    const P& player_p = map::g_player->m_pos;
 
-        blocked.at(player_p) = true;
+    blocked.at(player_p) = true;
 
-        for (room::Room* const room : map::g_room_list) {
-                const Fraction chance_trapped = chance_for_trapped_room(room->m_type);
+    for (room::Room* const room : map::g_room_list) {
+        const Fraction chance_trapped = chance_for_trapped_room(room->m_type);
 
-                if ((chance_trapped.num == -1) || !chance_trapped.roll()) {
-                        continue;
-                }
+        if ((chance_trapped.num == -1) || !chance_trapped.roll()) {
+            continue;
+        }
 
-                auto trap_pos_bucket = find_allowed_positions_in_room(*room, blocked);
+        auto trap_pos_bucket = find_allowed_positions_in_room(*room, blocked);
 
-                rnd::shuffle(trap_pos_bucket);
+        rnd::shuffle(trap_pos_bucket);
 
-                const int nr_traps =
-                        std::min(
-                                rnd::range(1, 3),
-                                (int)trap_pos_bucket.size());
+        const int nr_traps =
+            std::min(
+                rnd::range(1, 3),
+                (int)trap_pos_bucket.size());
 
-                for (int i = 0; i < nr_traps; ++i) {
-                        const terrain::TrapId trap_type = terrain::TrapId::any;
+        for (int i = 0; i < nr_traps; ++i) {
+            const terrain::TrapId trap_type = terrain::TrapId::any;
 
-                        const auto pos = trap_pos_bucket[i];
+            const auto pos = trap_pos_bucket[i];
 
-                        terrain::Trap* const trap = try_make_trap(trap_type, pos);
+            terrain::Trap* const trap = try_make_trap(trap_type, pos);
 
-                        if (trap) {
-                                map::set_terrain(trap);
-                        }
-                }
-        }  // room loop
+            if (trap) {
+                map::set_terrain(trap);
+            }
+        }
+    }  // room loop
 
-        TRACE_FUNC_END;
+    TRACE_FUNC_END;
 }
 
 terrain::Trap* try_make_trap(const terrain::TrapId id, const P& pos)
 {
-        const terrain::Terrain* const terrain_here = map::g_terrain.at(pos);
+    const terrain::Terrain* const terrain_here = map::g_terrain.at(pos);
 
-        if (!terrain_here->can_have_trap()) {
-                TRACE
-                        << "Cannot place trap on terrain id: "
-                        << (int)terrain_here->id() << "\n"
-                        << "Trap id: "
-                        << int(id) << "\n";
+    if (!terrain_here->can_have_trap()) {
+        TRACE
+            << "Cannot place trap on terrain id: "
+            << (int)terrain_here->id() << "\n"
+            << "Trap id: "
+            << int(id) << "\n";
 
-                ASSERT(false);
+        ASSERT(false);
 
-                return nullptr;
-        }
+        return nullptr;
+    }
 
-        auto* const trap =
-                static_cast<terrain::Trap*>(
-                        terrain::make(terrain::Id::trap, pos));
+    auto* const trap =
+        static_cast<terrain::Trap*>(
+            terrain::make(terrain::Id::trap, pos));
 
-        // Set up mimic terrain
+    // Set up mimic terrain
 
-        terrain::Terrain* const mimic = terrain::make(terrain_here->id(), pos);
+    terrain::Terrain* const mimic = terrain::make(terrain_here->id(), pos);
 
-        if (terrain_here->id() == terrain::Id::floor) {
-                // The terrain to mimic is a floor, set correct floor type.
-                static_cast<terrain::Floor*>(mimic)->m_type =
-                        static_cast<const terrain::Floor*>(terrain_here)->m_type;
-        }
+    if (terrain_here->id() == terrain::Id::floor) {
+        // The terrain to mimic is a floor, set correct floor type.
+        static_cast<terrain::Floor*>(mimic)->m_type =
+            static_cast<const terrain::Floor*>(terrain_here)->m_type;
+    }
 
-        trap->set_mimic_terrain(mimic);
+    trap->set_mimic_terrain(mimic);
 
-        const bool is_trap_ok = trap->try_init_type(id);
+    const bool is_trap_ok = trap->try_init_type(id);
 
-        if (!is_trap_ok) {
-                delete trap;
+    if (!is_trap_ok) {
+        delete trap;
 
-                return nullptr;
-        }
+        return nullptr;
+    }
 
-        return trap;
+    return trap;
 }
 
 }  // namespace populate_traps

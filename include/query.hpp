@@ -20,30 +20,30 @@ struct InputData;
 
 enum class BinaryAnswer
 {
-        no,
-        yes,
-        special
+    no,
+    yes,
+    special
 };
 
 enum class AllowCenter
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class AllowSpaceCancel
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 namespace query
 {
 struct QueryNumberConfig
 {
-        Range allowed_range {};
-        int default_value {0};
-        bool cancel_returns_default {false};
+    Range allowed_range {};
+    int default_value {0};
+    bool cancel_returns_default {false};
 };
 
 void init();
@@ -53,8 +53,8 @@ void cleanup();
 void wait_for_key_press();
 
 BinaryAnswer yes_or_no(
-        std::optional<char> key_for_special_event = std::nullopt,
-        AllowSpaceCancel allow_space_cancel = AllowSpaceCancel::yes);
+    std::optional<char> key_for_special_event = std::nullopt,
+    AllowSpaceCancel allow_space_cancel = AllowSpaceCancel::yes);
 
 bool is_waiting_for_yes_no();
 
@@ -67,9 +67,9 @@ void wait_for_confirm();
 io::InputData letter(bool accept_enter);
 
 int number(
-        const QueryNumberConfig& config,
-        const std::string& title,
-        const std::string& msg = "");
+    const QueryNumberConfig& config,
+    const std::string& title,
+    const std::string& msg = "");
 
 }  // namespace query
 

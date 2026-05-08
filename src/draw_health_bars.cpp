@@ -25,71 +25,71 @@
 // -----------------------------------------------------------------------------
 static int health_bar_length(const actor::Actor& actor)
 {
-        const int actor_hp = std::max(0, actor.m_hp);
+    const int actor_hp = std::max(0, actor.m_hp);
 
-        const int actor_hp_max = actor::max_hp(actor);
+    const int actor_hp_max = actor::max_hp(actor);
 
-        if (actor_hp < actor_hp_max) {
-                const int hp_percent = (actor_hp * 100) / actor_hp_max;
+    if (actor_hp < actor_hp_max) {
+        const int hp_percent = (actor_hp * 100) / actor_hp_max;
 
-                return ((config::map_cell_px_w() - 2) * hp_percent) / 100;
-        }
+        return ((config::map_cell_px_w() - 2) * hp_percent) / 100;
+    }
 
-        return -1;
+    return -1;
 }
 
 static void draw_health_bar(const actor::Actor& actor)
 {
-        const int length = health_bar_length(actor);
+    const int length = health_bar_length(actor);
 
-        if (length < 0) {
-                return;
-        }
+    if (length < 0) {
+        return;
+    }
 
-        const P map_pos = actor.m_pos.with_y_offset(1);
+    const P map_pos = actor.m_pos.with_y_offset(1);
 
-        if (!viewport::is_in_view(map_pos)) {
-                return;
-        }
+    if (!viewport::is_in_view(map_pos)) {
+        return;
+    }
 
-        const P cell_dims(config::map_cell_px_w(), config::map_cell_px_h());
+    const P cell_dims(config::map_cell_px_w(), config::map_cell_px_h());
 
-        const int w_green = length;
-        const int w_bar_tot = cell_dims.x - 2;
-        const int w_red = w_bar_tot - w_green;
+    const int w_green = length;
+    const int w_bar_tot = cell_dims.x - 2;
+    const int w_red = w_bar_tot - w_green;
 
-        const auto view_pos = viewport::to_view_pos(map_pos);
+    const auto view_pos = viewport::to_view_pos(map_pos);
 
-        P px_pos = io::map_to_px_coords(Panel::map, view_pos);
+    P px_pos = io::map_to_px_coords(Panel::map, view_pos);
 
-        px_pos.y -= 2;
+    px_pos.y -= 2;
 
-        const int x0_green = px_pos.x + 1;
-        const int x0_red = x0_green + w_green;
+    const int x0_green = px_pos.x + 1;
+    const int x0_red = x0_green + w_green;
 
-        if (w_green > 0) {
-                const P px_p0_green(x0_green, px_pos.y);
+    if (w_green > 0) {
+        const P px_p0_green(x0_green, px_pos.y);
 
-                const R px_rect_green(
-                        px_p0_green,
-                        px_p0_green + P(w_green, 2) - 1);
+        const R px_rect_green(
+            px_p0_green,
+            px_p0_green + P(w_green, 2) - 1);
 
-                io::draw_rectangle_filled(
-                        px_rect_green,
-                        colors::light_green());
-        }
+        io::draw_rectangle_filled(
+            px_rect_green,
+            colors::light_green());
+    }
 
-        if (w_red > 0) {
-                const P px_p0_red(x0_red, px_pos.y);
+    if (w_red > 0) {
+        const P px_p0_red(x0_red, px_pos.y);
 
-                const R px_rect_red(
-                        px_p0_red,
-                        px_p0_red + P(w_red, 2) - 1);
+        const R px_rect_red(
+            px_p0_red,
+            px_p0_red + P(w_red, 2) - 1);
 
-                io::draw_rectangle_filled(
-                        px_rect_red,
-                        colors::light_red());
-        }
+        io::draw_rectangle_filled(
+            px_rect_red,
+            colors::light_red());
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -97,9 +97,9 @@ static void draw_health_bar(const actor::Actor& actor)
 // -----------------------------------------------------------------------------
 void draw_health_bars()
 {
-        for (auto* actor : game_time::g_actors) {
-                if (actor::is_alive(*actor) && can_player_see_actor(*actor)) {
-                        draw_health_bar(*actor);
-                }
+    for (auto* actor : game_time::g_actors) {
+        if (actor::is_alive(*actor) && can_player_see_actor(*actor)) {
+            draw_health_bar(*actor);
         }
+    }
 }

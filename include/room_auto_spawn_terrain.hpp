@@ -18,9 +18,9 @@ namespace room
 void place_auto_terrains(const Room& room);
 
 P find_auto_terrain_placement(
-        const std::vector<P>& adj_to_walls,
-        const std::vector<P>& away_from_walls,
-        terrain::Id id);
+    const std::vector<P>& adj_to_walls,
+    const std::vector<P>& away_from_walls,
+    terrain::Id id);
 
 }  // namespace room
 

@@ -27,176 +27,176 @@ struct P;
 
 struct FilteredInvEntry
 {
-        // Index relatie to slot list or relative to backpack list
-        size_t relative_idx {0};
-        bool is_slot {false};
+    // Index relatie to slot list or relative to backpack list
+    size_t relative_idx {0};
+    bool is_slot {false};
 };
 
 class InvState : public State
 {
 public:
-        InvState() = default;
+    InvState() = default;
 
-        virtual ~InvState() = default;
+    virtual ~InvState() = default;
 
-        void cycle_graphics(io::GraphicsCycle cycle) override;
+    void cycle_graphics(io::GraphicsCycle cycle) override;
 
-        void on_window_resized() override;
+    void on_window_resized() override;
 
-        StateId id() const override;
+    StateId id() const override;
 
 protected:
-        void draw_slot(
-                SlotId id,
-                int y,
-                char key,
-                bool is_marked,
-                ItemNameAttackInfo attack_info);
+    void draw_slot(
+        SlotId id,
+        int y,
+        char key,
+        bool is_marked,
+        ItemNameAttackInfo attack_info);
 
-        void draw_backpack_item(
-                size_t backpack_idx,
-                int y,
-                char key,
-                bool is_marked,
-                ItemNameAttackInfo attack_info);
+    void draw_backpack_item(
+        size_t backpack_idx,
+        int y,
+        char key,
+        bool is_marked,
+        ItemNameAttackInfo attack_info);
 
-        void draw_weight_pct_and_dots(
-                P item_pos,
-                size_t item_name_len,
-                const item::Item& item,
-                const Color& item_name_color_id,
-                bool is_marked) const;
+    void draw_weight_pct_and_dots(
+        P item_pos,
+        size_t item_name_len,
+        const item::Item& item,
+        const Color& item_name_color_id,
+        bool is_marked) const;
 
-        // void draw_item_symbol(const item::Item& item, const P& p) const;
+    // void draw_item_symbol(const item::Item& item, const P& p) const;
 
-        void set_viewed_item(
-                const item::Item* item,
-                ItemNameAttackInfo attack_info);
+    void set_viewed_item(
+        const item::Item* item,
+        ItemNameAttackInfo attack_info);
 
-        void draw_item_descr() const;
+    void draw_item_descr() const;
 
-        MenuBrowser m_browser;
+    MenuBrowser m_browser;
 
 private:
-        std::vector<std::string> make_detailed_descr_lines() const;
+    std::vector<std::string> make_detailed_descr_lines() const;
 
-        const item::Item* m_viewed_item {nullptr};
-        ItemNameAttackInfo m_viewed_item_attack_info {(ItemNameAttackInfo)0};
-        int m_descr_idx {0};
+    const item::Item* m_viewed_item {nullptr};
+    ItemNameAttackInfo m_viewed_item_attack_info {(ItemNameAttackInfo)0};
+    int m_descr_idx {0};
 };
 
 class BrowseInv : public InvState
 {
 public:
-        BrowseInv() = default;
+    BrowseInv() = default;
 
-        void on_start() override;
+    void on_start() override;
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
-        void disable_allow_inventory_actions()
-        {
-                m_allow_inv_action = false;
-        }
+    void disable_allow_inventory_actions()
+    {
+        m_allow_inv_action = false;
+    }
 
 private:
-        void on_selected() const;
+    void on_selected() const;
 
-        void on_inventory_slot_selected(InvSlot& slot) const;
+    void on_inventory_slot_selected(InvSlot& slot) const;
 
-        void on_inventory_slot_with_item_selected(InvSlot& slot) const;
+    void on_inventory_slot_with_item_selected(InvSlot& slot) const;
 
-        void on_backpack_item_selected(size_t backpack_idx) const;
+    void on_backpack_item_selected(size_t backpack_idx) const;
 
-        bool m_allow_inv_action {true};
+    bool m_allow_inv_action {true};
 };
 
 class Apply : public InvState
 {
 public:
-        Apply() = default;
+    Apply() = default;
 
-        void on_start() override;
+    void on_start() override;
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
 private:
-        void reserve_key_for_item_id(const item::Id id, const char key);
+    void reserve_key_for_item_id(const item::Id id, const char key);
 
-        std::vector<FilteredInvEntry> m_filtered_backpack_indexes {};
+    std::vector<FilteredInvEntry> m_filtered_backpack_indexes {};
 };
 
 class Drop : public InvState
 {
 public:
-        Drop() = default;
+    Drop() = default;
 
-        void on_start() override;
+    void on_start() override;
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
 private:
-        void on_selected() const;
+    void on_selected() const;
 };
 
 class Equip : public InvState
 {
 public:
-        Equip(InvSlot& slot) :
+    Equip(InvSlot& slot) :
 
-                m_slot_to_equip(slot)
-        {}
+        m_slot_to_equip(slot)
+    {}
 
-        void on_start() override;
+    void on_start() override;
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
 private:
-        std::vector<FilteredInvEntry> m_filtered_backpack_indexes {};
+    std::vector<FilteredInvEntry> m_filtered_backpack_indexes {};
 
-        InvSlot& m_slot_to_equip;
+    InvSlot& m_slot_to_equip;
 };
 
 class SelectThrow : public InvState
 {
 public:
-        SelectThrow() = default;
+    SelectThrow() = default;
 
-        void on_start() override;
+    void on_start() override;
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
 private:
-        void reserve_keys();
+    void reserve_keys();
 
-        std::vector<FilteredInvEntry> m_filtered_inv {};
+    std::vector<FilteredInvEntry> m_filtered_inv {};
 };
 
 class SelectIdentify : public InvState
 {
 public:
-        SelectIdentify(std::vector<ItemType> item_types_allowed = {}) :
-                m_item_types_allowed(std::move(item_types_allowed)) {}
+    SelectIdentify(std::vector<ItemType> item_types_allowed = {}) :
+        m_item_types_allowed(std::move(item_types_allowed)) {}
 
-        void on_start() override;
+    void on_start() override;
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
 private:
-        const std::vector<ItemType> m_item_types_allowed;
-        std::vector<FilteredInvEntry> m_filtered_inv {};
+    const std::vector<ItemType> m_item_types_allowed;
+    std::vector<FilteredInvEntry> m_filtered_inv {};
 };
 
 #endif  // INVENTORY_HANDLING_HPP

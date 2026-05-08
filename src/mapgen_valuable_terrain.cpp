@@ -30,86 +30,86 @@
 // -----------------------------------------------------------------------------
 static void block_positions_with_actors(Array2<bool>& blocked)
 {
-        for (actor::Actor* const actor : game_time::g_actors) {
-                blocked.at(actor->m_pos) = true;
-        }
+    for (actor::Actor* const actor : game_time::g_actors) {
+        blocked.at(actor->m_pos) = true;
+    }
 }
 
 static void block_area_around_player(Array2<bool>& blocked)
 {
-        const P& player_p = map::g_player->m_pos;
+    const P& player_p = map::g_player->m_pos;
 
-        const int r = g_fov_radi_int;
+    const int r = g_fov_radi_int;
 
-        const R fov_r(
-                std::max(0, player_p.x - r),
-                std::max(0, player_p.y - r),
-                std::min(map::w() - 1, player_p.x + r),
-                std::min(map::h() - 1, player_p.y + r));
+    const R fov_r(
+        std::max(0, player_p.x - r),
+        std::max(0, player_p.y - r),
+        std::min(map::w() - 1, player_p.x + r),
+        std::min(map::h() - 1, player_p.y + r));
 
-        for (int x = fov_r.p0.x; x <= fov_r.p1.x; ++x) {
-                for (int y = fov_r.p0.y; y <= fov_r.p1.y; ++y) {
-                        blocked.at(x, y) = true;
-                }
+    for (int x = fov_r.p0.x; x <= fov_r.p1.x; ++x) {
+        for (int y = fov_r.p0.y; y <= fov_r.p1.y; ++y) {
+            blocked.at(x, y) = true;
         }
+    }
 }
 
 static void remove_weighted_pos_at(
-        std::vector<P>& positions,
-        std::vector<int>& weights,
-        const P& pos)
+    std::vector<P>& positions,
+    std::vector<int>& weights,
+    const P& pos)
 {
-        for (size_t idx = 0; idx < positions.size(); ++idx) {
-                if (positions[idx] == pos) {
-                        positions.erase(std::cbegin(positions) + (int)idx);
-                        weights.erase(std::cbegin(weights) + (int)idx);
-                }
+    for (size_t idx = 0; idx < positions.size(); ++idx) {
+        if (positions[idx] == pos) {
+            positions.erase(std::cbegin(positions) + (int)idx);
+            weights.erase(std::cbegin(weights) + (int)idx);
         }
+    }
 }
 
 static void place_terrains(const terrain::Id id, const int nr_to_spawn)
 {
-        Array2<bool> blocked(map::dims());
+    Array2<bool> blocked(map::dims());
 
-        map_parsers::IsNotFloorLike().run(blocked, blocked.rect());
+    map_parsers::IsNotFloorLike().run(blocked, blocked.rect());
 
-        blocked = map_parsers::expand(blocked, blocked.rect());
+    blocked = map_parsers::expand(blocked, blocked.rect());
 
-        block_positions_with_actors(blocked);
+    block_positions_with_actors(blocked);
 
-        block_area_around_player(blocked);
+    block_area_around_player(blocked);
 
-        std::vector<P> weighted_positions;
-        std::vector<int> weights;
+    std::vector<P> weighted_positions;
+    std::vector<int> weights;
 
-        mapgen::make_explore_spawn_weights(blocked, weighted_positions, weights);
+    mapgen::make_explore_spawn_weights(blocked, weighted_positions, weights);
 
-        for (int idx = 0; idx < nr_to_spawn; ++idx) {
-                // Store non-blocked (false) cells in a vector.
-                const std::vector<P> pos_bucket = to_vec(blocked, false, blocked.rect());
+    for (int idx = 0; idx < nr_to_spawn; ++idx) {
+        // Store non-blocked (false) cells in a vector.
+        const std::vector<P> pos_bucket = to_vec(blocked, false, blocked.rect());
 
-                if (pos_bucket.empty()) {
-                        // Unable to place terrain.
-                        return;
-                }
-
-                const int spawn_p_idx = rnd::weighted_choice(weights);
-
-                const P p = weighted_positions[spawn_p_idx];
-
-                map::set_terrain(terrain::make(id, p));
-
-                // Block this position and all adjacent positions.
-                for (const P& d : dir_utils::g_cardinal_list_w_center) {
-                        const P p_adj = p + d;
-
-                        blocked.at(p_adj) = true;
-
-                        remove_weighted_pos_at(weighted_positions, weights, p_adj);
-                }
-
-                ASSERT(weights.size() == weighted_positions.size());
+        if (pos_bucket.empty()) {
+            // Unable to place terrain.
+            return;
         }
+
+        const int spawn_p_idx = rnd::weighted_choice(weights);
+
+        const P p = weighted_positions[spawn_p_idx];
+
+        map::set_terrain(terrain::make(id, p));
+
+        // Block this position and all adjacent positions.
+        for (const P& d : dir_utils::g_cardinal_list_w_center) {
+            const P p_adj = p + d;
+
+            blocked.at(p_adj) = true;
+
+            remove_weighted_pos_at(weighted_positions, weights, p_adj);
+        }
+
+        ASSERT(weights.size() == weighted_positions.size());
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -119,27 +119,27 @@ namespace mapgen
 {
 void make_monoliths()
 {
-        const std::vector<int> nr_weights = {
-                50,  // 0 monolith(s)
-                50,  // 1 -
-                1,   // 2 -
-        };
+    const std::vector<int> nr_weights = {
+        50,  // 0 monolith(s)
+        50,  // 1 -
+        1,   // 2 -
+    };
 
-        const int nr_to_spawn = rnd::weighted_choice(nr_weights);
+    const int nr_to_spawn = rnd::weighted_choice(nr_weights);
 
-        place_terrains(terrain::Id::monolith, nr_to_spawn);
+    place_terrains(terrain::Id::monolith, nr_to_spawn);
 }
 
 void make_mirrors()
 {
-        const std::vector<int> nr_weights = {
-                15,  // 0 mirrors(s)
-                1,   // 1 -
-        };
+    const std::vector<int> nr_weights = {
+        15,  // 0 mirrors(s)
+        1,   // 1 -
+    };
 
-        const int nr_to_spawn = rnd::weighted_choice(nr_weights);
+    const int nr_to_spawn = rnd::weighted_choice(nr_weights);
 
-        place_terrains(terrain::Id::mirror, nr_to_spawn);
+    place_terrains(terrain::Id::mirror, nr_to_spawn);
 }
 
 }  // namespace mapgen

@@ -30,31 +30,31 @@ namespace terrain
 class Mirror : public Terrain
 {
 public:
-        Mirror(const P& p, const TerrainData* data);
-        Mirror() = delete;
-        ~Mirror() = default;
+    Mirror(const P& p, const TerrainData* data);
+    Mirror() = delete;
+    ~Mirror() = default;
 
-        std::string name(Article article) const override;
+    std::string name(Article article) const override;
 
-        Color color_default() const override;
+    Color color_default() const override;
 
-        std::optional<map::MinimapAppearance> minimap_appearance() const override;
+    std::optional<map::MinimapAppearance> minimap_appearance() const override;
 
-        void bump(actor::Actor& actor_bumping) override;
+    void bump(actor::Actor& actor_bumping) override;
 
-        void hit(
-                DmgType dmg_type,
-                actor::Actor* actor,
-                const P& from_pos,
-                int dmg) override;
+    void hit(
+        DmgType dmg_type,
+        actor::Actor* actor,
+        const P& from_pos,
+        int dmg) override;
 
-        bool is_activated() const
-        {
-                return m_is_activated;
-        }
+    bool is_activated() const
+    {
+        return m_is_activated;
+    }
 
 private:
-        bool m_is_activated {false};
+    bool m_is_activated {false};
 };
 
 }  // namespace terrain

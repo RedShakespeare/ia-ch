@@ -21,39 +21,39 @@ struct ItemData;
 class Headwear : public Item
 {
 public:
-        Headwear(ItemData* item_data) :
-                Item(item_data) {}
+    Headwear(ItemData* item_data) :
+        Item(item_data) {}
 
-        Color interface_color() const override
-        {
-                return colors::brown();
-        }
+    Color interface_color() const override
+    {
+        return colors::brown();
+    }
 };
 
 class GasMask : public Headwear
 {
 public:
-        GasMask(ItemData* item_data) :
-                Headwear(item_data),
-                m_nr_turns_left(60) {}
+    GasMask(ItemData* item_data) :
+        Headwear(item_data),
+        m_nr_turns_left(60) {}
 
-        std::string name_info_str(ItemNameIdentified id_type) const override;
+    std::string name_info_str(ItemNameIdentified id_type) const override;
 
-        void decr_turns_left(Inventory& carrier_inv);
+    void decr_turns_left(Inventory& carrier_inv);
 
 protected:
-        void save_hook() const override;
+    void save_hook() const override;
 
-        void load_hook() override;
+    void load_hook() override;
 
-        int m_nr_turns_left;
+    int m_nr_turns_left;
 };
 
 class TortureCollar : public Headwear
 {
 public:
-        TortureCollar(ItemData* item_data) :
-                Headwear(item_data) {}
+    TortureCollar(ItemData* item_data) :
+        Headwear(item_data) {}
 };
 
 }  // namespace item

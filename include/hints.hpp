@@ -11,20 +11,20 @@ namespace hints
 {
 enum class Id
 {
-        altars,
-        destroying_corpses,
-        fountains,
-        high_shock,
-        infected,
-        kick_brazier,
-        kick_statue,
-        overburdened,
-        status_effects,
-        study_inscription,
-        temporary_and_permanent_shock,
-        unload_weapons,
+    altars,
+    destroying_corpses,
+    fountains,
+    high_shock,
+    infected,
+    kick_brazier,
+    kick_statue,
+    overburdened,
+    status_effects,
+    study_inscription,
+    temporary_and_permanent_shock,
+    unload_weapons,
 
-        END
+    END
 };
 
 void init();

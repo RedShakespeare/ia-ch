@@ -22,26 +22,26 @@ class Prop;
 
 enum class ExplType
 {
-        expl,
-        apply_prop
+    expl,
+    apply_prop
 };
 
 enum class EmitExplSnd
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class ExplExclCenter
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class ExplIsGas
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 namespace explosion
@@ -52,14 +52,14 @@ namespace explosion
 // NOTE: If "emit_expl_sound" is set to "no", this typically means that the caller should emit a
 // custom sound before running the explosion (e.g. molotov explosion sound).
 void run(
-        const P& origin,
-        ExplType expl_type,
-        EmitExplSnd emit_expl_snd = EmitExplSnd::yes,
-        int radi_change = 0,
-        ExplExclCenter exclude_center = ExplExclCenter::no,
-        const std::vector<prop::Prop*>& properties_applied = {},
-        const std::optional<Color>& color_override = {},
-        ExplIsGas is_gas = ExplIsGas::no);
+    const P& origin,
+    ExplType expl_type,
+    EmitExplSnd emit_expl_snd = EmitExplSnd::yes,
+    int radi_change = 0,
+    ExplExclCenter exclude_center = ExplExclCenter::no,
+    const std::vector<prop::Prop*>& properties_applied = {},
+    const std::optional<Color>& color_override = {},
+    ExplIsGas is_gas = ExplIsGas::no);
 
 void run_smoke_explosion_at(const P& origin, int radi_change = 0);
 

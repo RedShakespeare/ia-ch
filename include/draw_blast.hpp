@@ -19,18 +19,18 @@ class Actor;
 }  // namespace actor
 
 void draw_blast_at_cells(
-        const std::vector<P>& positions,
-        const Color& color,
-        int delay_div = 2);
+    const std::vector<P>& positions,
+    const Color& color,
+    int delay_div = 2);
 
 void draw_blast_at_seen_cells(
-        const std::vector<P>& positions,
-        const Color& color,
-        int delay_div = 2);
+    const std::vector<P>& positions,
+    const Color& color,
+    int delay_div = 2);
 
 void draw_blast_at_seen_actors(
-        const std::vector<actor::Actor*>& actors,
-        const Color& color,
-        int delay_div = 2);
+    const std::vector<actor::Actor*>& actors,
+    const Color& color,
+    int delay_div = 2);
 
 #endif  // DRAW_BLAST_HPP

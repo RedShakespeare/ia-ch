@@ -30,32 +30,32 @@ namespace terrain
 {
 void destr_all_adj_doors(const P p)
 {
-        for (const P& d : dir_utils::g_cardinal_list) {
-                const auto p_adj = p + d;
+    for (const P& d : dir_utils::g_cardinal_list) {
+        const auto p_adj = p + d;
 
-                if (!map::is_pos_inside_map(p_adj)) {
-                        continue;
-                }
-
-                if (map::g_terrain.at(p_adj)->id() !=
-                    terrain::Id::door) {
-                        continue;
-                }
-
-                map::update_terrain(
-                        terrain::make(
-                                terrain::Id::rubble_low,
-                                p_adj));
+        if (!map::is_pos_inside_map(p_adj)) {
+            continue;
         }
+
+        if (map::g_terrain.at(p_adj)->id() !=
+            terrain::Id::door) {
+            continue;
+        }
+
+        map::update_terrain(
+            terrain::make(
+                terrain::Id::rubble_low,
+                p_adj));
+    }
 }
 
 void destr_stone_wall(const P p)
 {
-        map::update_terrain(terrain::make(terrain::Id::rubble_low, p));
+    map::update_terrain(terrain::make(terrain::Id::rubble_low, p));
 
-        if (rnd::one_in(4)) {
-                item::make_item_on_floor(item::Id::rock, p);
-        }
+    if (rnd::one_in(4)) {
+        item::make_item_on_floor(item::Id::rock, p);
+    }
 }
 
 }  // namespace terrain

@@ -21,34 +21,34 @@
 
 TEST_CASE("Test light map")
 {
-        test_utils::init_all();
+    test_utils::init_all();
 
-        std::fill(std::begin(map::g_light), std::end(map::g_light), false);
-        std::fill(std::begin(map::g_dark), std::end(map::g_dark), true);
+    std::fill(std::begin(map::g_light), std::end(map::g_light), false);
+    std::fill(std::begin(map::g_dark), std::end(map::g_dark), true);
 
-        map::g_player->m_pos.set(40, 12);
+    map::g_player->m_pos.set(40, 12);
 
-        const P burn_pos(40, 10);
+    const P burn_pos(40, 10);
 
-        auto* const burn_terrain = map::g_terrain.at(burn_pos);
+    auto* const burn_terrain = map::g_terrain.at(burn_pos);
 
-        while (!burn_terrain->is_burning()) {
-                burn_terrain->hit(DmgType::fire, nullptr);
-        }
+    while (!burn_terrain->is_burning()) {
+        burn_terrain->hit(DmgType::fire, nullptr);
+    }
 
-        map::update_light_map();
+    map::update_light_map();
 
-        actor::update_player_fov();
+    actor::update_player_fov();
 
-        for (const auto& d : dir_utils::g_dir_list_w_center) {
-                const P p = burn_pos + d;
+    for (const auto& d : dir_utils::g_dir_list_w_center) {
+        const P p = burn_pos + d;
 
-                // The cells around the burning floor should be lit
-                REQUIRE(map::g_light.at(p));
+        // The cells around the burning floor should be lit
+        REQUIRE(map::g_light.at(p));
 
-                // The cells should also be dark (independent from light)
-                REQUIRE(map::g_dark.at(p));
-        }
+        // The cells should also be dark (independent from light)
+        REQUIRE(map::g_dark.at(p));
+    }
 
-        test_utils::cleanup_all();
+    test_utils::cleanup_all();
 }

@@ -29,91 +29,91 @@ namespace mapgen
 {
 P make_stairs_at_random_pos()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        const auto allowed_cells = allowed_stair_cells();
+    const auto allowed_cells = allowed_stair_cells();
 
-        auto pos_bucket = to_vec(allowed_cells, true, allowed_cells.rect());
+    auto pos_bucket = to_vec(allowed_cells, true, allowed_cells.rect());
 
-        const auto nr_ok_cells = (int)pos_bucket.size();
+    const auto nr_ok_cells = (int)pos_bucket.size();
 
-        const int min_nr_ok_cells_req = 3;
+    const int min_nr_ok_cells_req = 3;
 
-        if (nr_ok_cells < min_nr_ok_cells_req) {
-                TRACE << "Nr available cells to place stairs too low "
-                      << "(" << nr_ok_cells << "), discarding map"
-                      << "\n";
+    if (nr_ok_cells < min_nr_ok_cells_req) {
+        TRACE << "Nr available cells to place stairs too low "
+              << "(" << nr_ok_cells << "), discarding map"
+              << "\n";
 
-                g_is_map_valid = false;
+        g_is_map_valid = false;
 
-                return {-1, -1};
+        return {-1, -1};
+    }
+
+    TRACE << "Sorting the allowed cells vector "
+          << "(" << pos_bucket.size() << " cells)" << "\n";
+
+    Array2<bool> blocks_player(map::dims());
+
+    map_parsers::BlocksWalking(ParseActors::no)
+        .run(blocks_player, blocks_player.rect());
+
+    const std::vector<terrain::Id> free_terrains = {
+        terrain::Id::door,
+    };
+
+    for (int x = 0; x < blocks_player.w(); ++x) {
+        for (int y = 0; y < blocks_player.h(); ++y) {
+            const P p(x, y);
+
+            if (map_parsers::IsAnyOfTerrains(free_terrains).run(p)) {
+                blocks_player.at(p) = false;
+            }
         }
+    }
 
-        TRACE << "Sorting the allowed cells vector "
-              << "(" << pos_bucket.size() << " cells)" << "\n";
+    const auto flood = floodfill(map::g_player->m_pos, blocks_player);
 
-        Array2<bool> blocks_player(map::dims());
+    std::sort(
+        std::begin(pos_bucket),
+        std::end(pos_bucket),
+        [flood](const P& p1, const P& p2) {
+            // If any of the two positions are unreached by the
+            // flood, assume this is furthest - otherwise compare
+            // which position is nearest on the flood
+            if (flood.at(p1) == 0) {
+                return false;
+            }
+            else if (flood.at(p2) == 0) {
+                return true;
+            }
+            else {
+                return flood.at(p1) < flood.at(p2);
+            }
+        });
 
-        map_parsers::BlocksWalking(ParseActors::no)
-                .run(blocks_player, blocks_player.rect());
+    TRACE << "Picking one of the furthest cells" << "\n";
 
-        const std::vector<terrain::Id> free_terrains = {
-                terrain::Id::door,
-        };
+    const int cell_idx_range_size = std::max(1, nr_ok_cells / 5);
 
-        for (int x = 0; x < blocks_player.w(); ++x) {
-                for (int y = 0; y < blocks_player.h(); ++y) {
-                        const P p(x, y);
+    const int cell_idx = nr_ok_cells - rnd::range(1, cell_idx_range_size);
 
-                        if (map_parsers::IsAnyOfTerrains(free_terrains).run(p)) {
-                                blocks_player.at(p) = false;
-                        }
-                }
-        }
+    if ((cell_idx < 0) || (cell_idx >= (int)pos_bucket.size())) {
+        ASSERT(false);
 
-        const auto flood = floodfill(map::g_player->m_pos, blocks_player);
+        g_is_map_valid = false;
 
-        std::sort(
-                std::begin(pos_bucket),
-                std::end(pos_bucket),
-                [flood](const P& p1, const P& p2) {
-                        // If any of the two positions are unreached by the
-                        // flood, assume this is furthest - otherwise compare
-                        // which position is nearest on the flood
-                        if (flood.at(p1) == 0) {
-                                return false;
-                        }
-                        else if (flood.at(p2) == 0) {
-                                return true;
-                        }
-                        else {
-                                return flood.at(p1) < flood.at(p2);
-                        }
-                });
+        return {-1, -1};
+    }
 
-        TRACE << "Picking one of the furthest cells" << "\n";
+    const P stairs_pos(pos_bucket[cell_idx]);
 
-        const int cell_idx_range_size = std::max(1, nr_ok_cells / 5);
+    TRACE << "Spawning stairs at chosen cell" << "\n";
 
-        const int cell_idx = nr_ok_cells - rnd::range(1, cell_idx_range_size);
+    map::set_terrain(terrain::make(terrain::Id::stairs, stairs_pos));
 
-        if ((cell_idx < 0) || (cell_idx >= (int)pos_bucket.size())) {
-                ASSERT(false);
+    TRACE_FUNC_END;
 
-                g_is_map_valid = false;
-
-                return {-1, -1};
-        }
-
-        const P stairs_pos(pos_bucket[cell_idx]);
-
-        TRACE << "Spawning stairs at chosen cell" << "\n";
-
-        map::set_terrain(terrain::make(terrain::Id::stairs, stairs_pos));
-
-        TRACE_FUNC_END;
-
-        return stairs_pos;
+    return stairs_pos;
 }
 
 }  // namespace mapgen

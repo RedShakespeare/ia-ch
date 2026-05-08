@@ -23,55 +23,55 @@ namespace actor
 // -----------------------------------------------------------------------------
 Actor::~Actor()
 {
-        // Free all items owning actors.
-        for (auto* item : m_inv.m_backpack) {
-                item->clear_actor_carrying();
-        }
+    // Free all items owning actors.
+    for (auto* item : m_inv.m_backpack) {
+        item->clear_actor_carrying();
+    }
 
-        for (auto& slot : m_inv.m_slots) {
-                if (slot.item) {
-                        slot.item->clear_actor_carrying();
-                }
+    for (auto& slot : m_inv.m_slots) {
+        if (slot.item) {
+            slot.item->clear_actor_carrying();
         }
+    }
 
-        // Free monster spells.
-        for (const auto& spell : m_mon_spells) {
-                delete spell.spell;
-        }
+    // Free monster spells.
+    for (const auto& spell : m_mon_spells) {
+        delete spell.spell;
+    }
 }
 
 void Actor::set_my_leader(Actor* const leader)
 {
-        m_leader = leader;
+    m_leader = leader;
 
-        m_leader->m_leader = nullptr;
+    m_leader->m_leader = nullptr;
 
-        // Redirect everyone who followed me to the new leader instead.
-        for (Actor* const actor : game_time::g_actors) {
-                if (actor->m_leader == this) {
-                        actor->m_leader = leader;
-                }
+    // Redirect everyone who followed me to the new leader instead.
+    for (Actor* const actor : game_time::g_actors) {
+        if (actor->m_leader == this) {
+            actor->m_leader = leader;
         }
+    }
 }
 
 bool Actor::is_leader_of(const Actor* const actor) const
 {
-        if (actor) {
-                return actor->m_leader == this;
-        }
-        else {
-                return false;
-        }
+    if (actor) {
+        return actor->m_leader == this;
+    }
+    else {
+        return false;
+    }
 }
 
 bool Actor::is_actor_my_leader(const Actor* const actor) const
 {
-        if (m_leader) {
-                return m_leader == actor;
-        }
-        else {
-                return false;
-        }
+    if (m_leader) {
+        return m_leader == actor;
+    }
+    else {
+        return false;
+    }
 }
 
 }  // namespace actor

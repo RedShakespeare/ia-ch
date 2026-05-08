@@ -28,106 +28,106 @@ namespace device
 class Device : public item::Item
 {
 public:
-        Device(item::ItemData* item_data);
+    Device(item::ItemData* item_data);
 
-        virtual ~Device() = default;
+    virtual ~Device() = default;
 
-        void save_hook() const final;
-        void load_hook() final;
+    void save_hook() const final;
+    void load_hook() final;
 
-        std::string name_info_str(ItemNameIdentified id_type) const final;
+    std::string name_info_str(ItemNameIdentified id_type) const final;
 
-        std::vector<std::string> descr_hook() const final;
+    std::vector<std::string> descr_hook() const final;
 
-        Color interface_color() const final
-        {
-                return colors::cyan();
-        }
+    Color interface_color() const final
+    {
+        return colors::cyan();
+    }
 
-        ConsumeItem activate(actor::Actor* actor) final;
+    ConsumeItem activate(actor::Actor* actor) final;
 
-        void identify(Verbose verbose) final;
+    void identify(Verbose verbose) final;
 
-        Condition m_condition;
+    Condition m_condition;
 
 protected:
-        virtual std::string descr_identified() const = 0;
+    virtual std::string descr_identified() const = 0;
 
-        virtual ConsumeItem run_effect() = 0;
+    virtual ConsumeItem run_effect() = 0;
 };
 
 class Blaster : public Device
 {
 public:
-        Blaster(item::ItemData* const item_data) :
-                Device(item_data) {}
+    Blaster(item::ItemData* const item_data) :
+        Device(item_data) {}
 
-        ~Blaster() = default;
+    ~Blaster() = default;
 
 private:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        ConsumeItem run_effect() override;
+    ConsumeItem run_effect() override;
 };
 
 class Rejuvenator : public Device
 {
 public:
-        Rejuvenator(item::ItemData* const item_data) :
-                Device(item_data) {}
+    Rejuvenator(item::ItemData* const item_data) :
+        Device(item_data) {}
 
-        ~Rejuvenator() = default;
+    ~Rejuvenator() = default;
 
 private:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        ConsumeItem run_effect() override;
+    ConsumeItem run_effect() override;
 };
 
 class Translocator : public Device
 {
 public:
-        Translocator(item::ItemData* const item_data) :
-                Device(item_data) {}
+    Translocator(item::ItemData* const item_data) :
+        Device(item_data) {}
 
-        ~Translocator() = default;
+    ~Translocator() = default;
 
 private:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        ConsumeItem run_effect() override;
+    ConsumeItem run_effect() override;
 };
 
 class SentryDrone : public Device
 {
 public:
-        SentryDrone(item::ItemData* const item_data) :
-                Device(item_data) {}
+    SentryDrone(item::ItemData* const item_data) :
+        Device(item_data) {}
 
-        ~SentryDrone() = default;
+    ~SentryDrone() = default;
 
 private:
-        std::string descr_identified() const override
-        {
-                return "When activated, this device will \"come alive\" and "
-                       "guard the user.";
-        }
+    std::string descr_identified() const override
+    {
+        return "When activated, this device will \"come alive\" and "
+               "guard the user.";
+    }
 
-        ConsumeItem run_effect() override;
+    ConsumeItem run_effect() override;
 };
 
 class ForceField : public Device
 {
 public:
-        ForceField(item::ItemData* const item_data) :
-                Device(item_data) {}
+    ForceField(item::ItemData* const item_data) :
+        Device(item_data) {}
 
-        ~ForceField() = default;
+    ~ForceField() = default;
 
 private:
-        std::string descr_identified() const override;
+    std::string descr_identified() const override;
 
-        ConsumeItem run_effect() override;
+    ConsumeItem run_effect() override;
 };
 
 }  // namespace device

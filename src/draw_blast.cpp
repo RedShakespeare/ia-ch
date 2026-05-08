@@ -27,90 +27,90 @@
 // Public
 // -----------------------------------------------------------------------------
 void draw_blast_at_cells(
-        const std::vector<P>& positions,
-        const Color& color,
-        const int delay_div)
+    const std::vector<P>& positions,
+    const Color& color,
+    const int delay_div)
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        states::draw();
+    states::draw();
 
-        for (const P& pos : positions) {
-                if (!viewport::is_in_view(pos)) {
-                        continue;
-                }
-
-                io::MapDrawObj draw_obj;
-                draw_obj.tile = gfx::TileId::blast1;
-                draw_obj.character = '*';
-                draw_obj.pos = viewport::to_view_pos(pos);
-                draw_obj.color = color;
-
-                draw_obj.draw();
+    for (const P& pos : positions) {
+        if (!viewport::is_in_view(pos)) {
+            continue;
         }
 
-        io::update_screen();
+        io::MapDrawObj draw_obj;
+        draw_obj.tile = gfx::TileId::blast1;
+        draw_obj.character = '*';
+        draw_obj.pos = viewport::to_view_pos(pos);
+        draw_obj.color = color;
 
-        io::sleep(config::delay_explosion() / delay_div);
+        draw_obj.draw();
+    }
 
-        states::draw();
+    io::update_screen();
 
-        for (const P& pos : positions) {
-                if (!viewport::is_in_view(pos)) {
-                        continue;
-                }
+    io::sleep(config::delay_explosion() / delay_div);
 
-                io::MapDrawObj draw_obj;
-                draw_obj.tile = gfx::TileId::blast2;
-                draw_obj.character = '*';
-                draw_obj.pos = viewport::to_view_pos(pos);
-                draw_obj.color = color;
+    states::draw();
 
-                draw_obj.draw();
+    for (const P& pos : positions) {
+        if (!viewport::is_in_view(pos)) {
+            continue;
         }
 
-        io::update_screen();
+        io::MapDrawObj draw_obj;
+        draw_obj.tile = gfx::TileId::blast2;
+        draw_obj.character = '*';
+        draw_obj.pos = viewport::to_view_pos(pos);
+        draw_obj.color = color;
 
-        io::sleep(config::delay_explosion() / delay_div);
+        draw_obj.draw();
+    }
 
-        TRACE_FUNC_END;
+    io::update_screen();
+
+    io::sleep(config::delay_explosion() / delay_div);
+
+    TRACE_FUNC_END;
 }
 
 void draw_blast_at_seen_cells(
-        const std::vector<P>& positions,
-        const Color& color,
-        const int delay_div)
+    const std::vector<P>& positions,
+    const Color& color,
+    const int delay_div)
 {
-        std::vector<P> positions_with_vision;
+    std::vector<P> positions_with_vision;
 
-        for (const P& p : positions) {
-                if (map::g_seen.at(p)) {
-                        positions_with_vision.push_back(p);
-                }
+    for (const P& p : positions) {
+        if (map::g_seen.at(p)) {
+            positions_with_vision.push_back(p);
         }
+    }
 
-        if (!positions_with_vision.empty()) {
-                draw_blast_at_cells(positions_with_vision, color, delay_div);
-        }
+    if (!positions_with_vision.empty()) {
+        draw_blast_at_cells(positions_with_vision, color, delay_div);
+    }
 }
 
 void draw_blast_at_seen_actors(
-        const std::vector<actor::Actor*>& actors,
-        const Color& color,
-        const int delay_div)
+    const std::vector<actor::Actor*>& actors,
+    const Color& color,
+    const int delay_div)
 {
-        // if (!panels::is_valid())
-        // {
-        //         return;
-        // }
+    // if (!panels::is_valid())
+    // {
+    //         return;
+    // }
 
-        std::vector<P> positions;
+    std::vector<P> positions;
 
-        positions.reserve(actors.size());
+    positions.reserve(actors.size());
 
-        for (auto* const actor : actors) {
-                positions.push_back(actor->m_pos);
-        }
+    for (auto* const actor : actors) {
+        positions.push_back(actor->m_pos);
+    }
 
-        draw_blast_at_seen_cells(positions, color, delay_div);
+    draw_blast_at_seen_cells(positions, color, delay_div);
 }

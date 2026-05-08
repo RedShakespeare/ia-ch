@@ -14,8 +14,8 @@ namespace viewport
 {
 enum class ForceCentering
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 R get_map_view_area();
@@ -24,8 +24,8 @@ R get_map_view_area();
 // (unless force_centering is true). It only guarantees that the position will
 // be visible in the viewport.
 void show(
-        const P& map_pos,
-        ForceCentering force_centering = ForceCentering::no);
+    const P& map_pos,
+    ForceCentering force_centering = ForceCentering::no);
 
 bool is_in_view(const P& map_pos);
 

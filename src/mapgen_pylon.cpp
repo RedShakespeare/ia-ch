@@ -25,30 +25,30 @@
 // -----------------------------------------------------------------------------
 static int roll_nr_pylons_to_make()
 {
-        const std::vector<int> nr_weights = {
-                20,  // 0 pylon(s)
-                4,   // 1 -
-                1,   // 2 -
-        };
+    const std::vector<int> nr_weights = {
+        20,  // 0 pylon(s)
+        4,   // 1 -
+        1,   // 2 -
+    };
 
-        return rnd::weighted_choice(nr_weights);
+    return rnd::weighted_choice(nr_weights);
 }
 
 static void set_area_blocked(
-        const P& pos,
-        const int dist,
-        Array2<bool>& blocked)
+    const P& pos,
+    const int dist,
+    Array2<bool>& blocked)
 {
-        const int x0 = std::max(0, pos.x - dist);
-        const int y0 = std::max(0, pos.y - dist);
-        const int x1 = std::min(map::w() - 1, pos.x + dist);
-        const int y1 = std::min(map::h() - 1, pos.y + dist);
+    const int x0 = std::max(0, pos.x - dist);
+    const int y0 = std::max(0, pos.y - dist);
+    const int x1 = std::min(map::w() - 1, pos.x + dist);
+    const int y1 = std::min(map::h() - 1, pos.y + dist);
 
-        for (int x = x0; x <= x1; ++x) {
-                for (int y = y0; y <= y1; ++y) {
-                        blocked.at(x, y) = true;
-                }
+    for (int x = x0; x <= x1; ++x) {
+        for (int y = y0; y <= y1; ++y) {
+            blocked.at(x, y) = true;
         }
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -58,47 +58,47 @@ namespace mapgen
 {
 void make_pylons()
 {
-        // Never make Pylons late game (theme)
-        if (map::g_dlvl >= g_dlvl_first_late_game) {
-                return;
+    // Never make Pylons late game (theme)
+    if (map::g_dlvl >= g_dlvl_first_late_game) {
+        return;
+    }
+
+    Array2<bool> blocked(map::dims());
+
+    map_parsers::IsNotFloorLike().run(blocked, blocked.rect());
+
+    // Block player cell before expanding the blocked cells
+    blocked.at(map::g_player->m_pos) = true;
+
+    // Expand the blocked cells to block around them as well
+    blocked = map_parsers::expand(blocked, 2);
+
+    for (auto* const actor : game_time::g_actors) {
+        blocked.at(actor->m_pos) = true;
+    }
+
+    const int nr_pylons = roll_nr_pylons_to_make();
+
+    for (int i = 0; i < nr_pylons; ++i) {
+        // Store non-blocked (false) cells in a vector
+        const auto p_bucket = to_vec(blocked, false, blocked.rect());
+
+        if (p_bucket.empty()) {
+            // No position available to place a Pylon - give up
+            return;
         }
 
-        Array2<bool> blocked(map::dims());
+        const auto pylon_p = rnd::element(p_bucket);
 
-        map_parsers::IsNotFloorLike().run(blocked, blocked.rect());
+        auto* const pylon = terrain::make(terrain::Id::pylon, pylon_p);
 
-        // Block player cell before expanding the blocked cells
-        blocked.at(map::g_player->m_pos) = true;
+        map::set_terrain(pylon);
 
-        // Expand the blocked cells to block around them as well
-        blocked = map_parsers::expand(blocked, 2);
+        // Don't place other pylons too near
+        const int min_dist = 8;
 
-        for (auto* const actor : game_time::g_actors) {
-                blocked.at(actor->m_pos) = true;
-        }
-
-        const int nr_pylons = roll_nr_pylons_to_make();
-
-        for (int i = 0; i < nr_pylons; ++i) {
-                // Store non-blocked (false) cells in a vector
-                const auto p_bucket = to_vec(blocked, false, blocked.rect());
-
-                if (p_bucket.empty()) {
-                        // No position available to place a Pylon - give up
-                        return;
-                }
-
-                const auto pylon_p = rnd::element(p_bucket);
-
-                auto* const pylon = terrain::make(terrain::Id::pylon, pylon_p);
-
-                map::set_terrain(pylon);
-
-                // Don't place other pylons too near
-                const int min_dist = 8;
-
-                set_area_blocked(pylon_p, min_dist, blocked);
-        }
+        set_area_blocked(pylon_p, min_dist, blocked);
+    }
 }
 
 }  // namespace mapgen

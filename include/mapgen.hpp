@@ -21,22 +21,22 @@ class Room;
 struct Region
 {
 public:
-        Region(const R& rect) :
-                main_room(nullptr),
-                r(rect),
-                is_free(true) {}
+    Region(const R& rect) :
+        main_room(nullptr),
+        r(rect),
+        is_free(true) {}
 
-        Region() :
-                main_room(nullptr),
+    Region() :
+        main_room(nullptr),
 
-                is_free(true)
-        {}
+        is_free(true)
+    {}
 
-        R rnd_room_rect() const;
+    R rnd_room_rect() const;
 
-        room::Room* main_room;
-        R r;
-        bool is_free;
+    room::Room* main_room;
+    R r;
+    bool is_free;
 };
 
 namespace mapgen
@@ -131,28 +131,28 @@ bool is_passage(const P& pos, const Array2<bool>& blocked);
 void calc_chokepoint_data();
 
 bool try_make_pathfind_corridor(
-        room::Room& room_0,
-        room::Room& room_1,
-        Array2<bool>* door_proposals = nullptr);
+    room::Room& room_0,
+    room::Room& room_1,
+    Array2<bool>* door_proposals = nullptr);
 
 std::vector<P> rnd_walk(
-        const P& p0,
-        int len,
-        R area,
-        bool allow_diagonal = true);
+    const P& p0,
+    int len,
+    R area,
+    bool allow_diagonal = true);
 
 std::vector<P> pathfinder_walk(
-        const P& p0,
-        const P& p1,
-        bool is_smooth);
+    const P& p0,
+    const P& p1,
+    bool is_smooth);
 
 // Generates a map of spawn chance weights, with emphasis on hidden, optional,
 // or hard to reach areas - this can be used for finding good places to put
 // valuable stuff (items or terrain objects).
 void make_explore_spawn_weights(
-        const Array2<bool>& blocked,
-        std::vector<P>& positions_out,
-        std::vector<int>& weights_out);
+    const Array2<bool>& blocked,
+    std::vector<P>& positions_out,
+    std::vector<int>& weights_out);
 
 Array2<bool> allowed_stair_cells();
 

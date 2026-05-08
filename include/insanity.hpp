@@ -17,1024 +17,1024 @@ class Actor;
 
 enum class InsSymptId
 {
-        reduce_xp,
-        scream,
-        babbling,
-        faint,
-        laugh,
-        phobia_rat,
-        phobia_spider,
-        phobia_reptile_and_amph,
-        phobia_canine,
-        phobia_dead,
-        phobia_deep,
-        phobia_dark,
-        sadism,
-        shadows,
-        paranoia,  // Invisible stalker spawned
-        confusion,
-        frenzy,
-        strange_sensation,
-        END
+    reduce_xp,
+    scream,
+    babbling,
+    faint,
+    laugh,
+    phobia_rat,
+    phobia_spider,
+    phobia_reptile_and_amph,
+    phobia_canine,
+    phobia_dead,
+    phobia_deep,
+    phobia_dark,
+    sadism,
+    shadows,
+    paranoia,  // Invisible stalker spawned
+    confusion,
+    frenzy,
+    strange_sensation,
+    END
 };
 
 enum class InsSymptType
 {
-        phobia,
-        misc
+    phobia,
+    misc
 };
 
 class InsSympt
 {
 public:
-        InsSympt() = default;
+    InsSympt() = default;
 
-        virtual ~InsSympt() = default;
+    virtual ~InsSympt() = default;
 
-        virtual InsSymptId id() const = 0;
+    virtual InsSymptId id() const = 0;
 
-        virtual InsSymptType type() const = 0;
+    virtual InsSymptType type() const = 0;
 
-        virtual void save() const {}
+    virtual void save() const {}
 
-        virtual void load() {}
+    virtual void load() {}
 
-        virtual bool is_permanent() const = 0;
+    virtual bool is_permanent() const = 0;
 
-        virtual bool is_allowed() const
-        {
-                return true;
-        }
+    virtual bool is_allowed() const
+    {
+        return true;
+    }
 
-        void on_start();
+    void on_start();
 
-        void on_end();
+    void on_end();
 
-        virtual void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_actors)
-        {
-                (void)seen_actors;
-        }
+    virtual void on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_actors)
+    {
+        (void)seen_actors;
+    }
 
-        virtual void on_permanent_rfear() {}
+    virtual void on_permanent_rfear() {}
 
-        virtual std::string char_descr_msg() const
-        {
-                return "";
-        }
+    virtual std::string char_descr_msg() const
+    {
+        return "";
+    }
 
-        virtual std::string game_over_summary_msg() const
-        {
-                return "";
-        }
+    virtual std::string game_over_summary_msg() const
+    {
+        return "";
+    }
 
 protected:
-        virtual void on_start_hook() {}
+    virtual void on_start_hook() {}
 
-        virtual std::string start_msg() const = 0;
-        virtual std::string start_heading() const = 0;
+    virtual std::string start_msg() const = 0;
+    virtual std::string start_heading() const = 0;
 
-        virtual std::string end_msg() const
-        {
-                return "";
-        }
+    virtual std::string end_msg() const
+    {
+        return "";
+    }
 
-        virtual std::string history_msg() const = 0;
+    virtual std::string history_msg() const = 0;
 
-        virtual std::string history_msg_end() const
-        {
-                return "";
-        }
+    virtual std::string history_msg_end() const
+    {
+        return "";
+    }
 };
 
 class InsReduceXp : public InsSympt
 {
 public:
-        InsReduceXp() = default;
+    InsReduceXp() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::reduce_xp;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::reduce_xp;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return false;
-        }
+    bool is_permanent() const override
+    {
+        return false;
+    }
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        std::string start_msg() const override;
+    std::string start_msg() const override;
 
-        std::string start_heading() const override
-        {
-                return "Experiences erased!";
-        }
+    std::string start_heading() const override
+    {
+        return "Experiences erased!";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Experiences were erased from memory";
-        }
+    std::string history_msg() const override
+    {
+        return "Experiences were erased from memory";
+    }
 };
 
 class InsScream : public InsSympt
 {
 public:
-        InsScream() = default;
+    InsScream() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::scream;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::scream;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return false;
-        }
+    bool is_permanent() const override
+    {
+        return false;
+    }
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        std::string start_msg() const override;
+    std::string start_msg() const override;
 
-        std::string start_heading() const override
-        {
-                return "Screaming!";
-        }
+    std::string start_heading() const override
+    {
+        return "Screaming!";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Screamed in terror";
-        }
+    std::string history_msg() const override
+    {
+        return "Screamed in terror";
+    }
 };
 
 class InsBabbling : public InsSympt
 {
 public:
-        InsBabbling() = default;
+    InsBabbling() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::babbling;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::babbling;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return true;
-        }
+    bool is_permanent() const override
+    {
+        return true;
+    }
 
-        void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_actors) override;
+    void on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_actors) override;
 
-        std::string char_descr_msg() const override
-        {
-                return "Babbling";
-        }
+    std::string char_descr_msg() const override
+    {
+        return "Babbling";
+    }
 
-        std::string game_over_summary_msg() const override
-        {
-                return "Had a tendency to babble";
-        }
+    std::string game_over_summary_msg() const override
+    {
+        return "Had a tendency to babble";
+    }
 
-        void babble() const;
+    void babble() const;
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        std::string start_msg() const override
-        {
-                return "I find myself babbling incoherently.";
-        }
+    std::string start_msg() const override
+    {
+        return "I find myself babbling incoherently.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Babbling!";
-        }
+    std::string start_heading() const override
+    {
+        return "Babbling!";
+    }
 
-        std::string end_msg() const override
-        {
-                return "I feel in control of my speech.";
-        }
+    std::string end_msg() const override
+    {
+        return "I feel in control of my speech.";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Started babbling incoherently";
-        }
+    std::string history_msg() const override
+    {
+        return "Started babbling incoherently";
+    }
 
-        std::string history_msg_end() const override
-        {
-                return "My strange babbling was cured";
-        }
+    std::string history_msg_end() const override
+    {
+        return "My strange babbling was cured";
+    }
 };
 
 class InsFaint : public InsSympt
 {
 public:
-        InsFaint() = default;
+    InsFaint() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::faint;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::faint;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return false;
-        }
+    bool is_permanent() const override
+    {
+        return false;
+    }
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        std::string start_msg() const override
-        {
-                return "Everything is blacking out.";
-        }
+    std::string start_msg() const override
+    {
+        return "Everything is blacking out.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Fainting!";
-        }
+    std::string start_heading() const override
+    {
+        return "Fainting!";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Fainted";
-        }
+    std::string history_msg() const override
+    {
+        return "Fainted";
+    }
 };
 
 class InsLaugh : public InsSympt
 {
 public:
-        InsLaugh() = default;
+    InsLaugh() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::laugh;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::laugh;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return false;
-        }
+    bool is_permanent() const override
+    {
+        return false;
+    }
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        std::string start_msg() const override
-        {
-                return "I laugh maniacally.";
-        }
+    std::string start_msg() const override
+    {
+        return "I laugh maniacally.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "HAHAHA!";
-        }
+    std::string start_heading() const override
+    {
+        return "HAHAHA!";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Laughed maniacally";
-        }
+    std::string history_msg() const override
+    {
+        return "Laughed maniacally";
+    }
 };
 
 class InsPhobiaRat : public InsSympt
 {
 public:
-        InsPhobiaRat() = default;
+    InsPhobiaRat() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::phobia_rat;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::phobia_rat;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::phobia;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::phobia;
+    }
 
-        bool is_permanent() const override
-        {
-                return true;
-        }
+    bool is_permanent() const override
+    {
+        return true;
+    }
 
-        void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_actors) override;
+    void on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_actors) override;
 
-        void on_permanent_rfear() override;
+    void on_permanent_rfear() override;
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
-        std::string char_descr_msg() const override
-        {
-                return "Phobia of rats";
-        }
+    std::string char_descr_msg() const override
+    {
+        return "Phobia of rats";
+    }
 
-        std::string game_over_summary_msg() const override
-        {
-                return "Had a phobia of rats";
-        }
+    std::string game_over_summary_msg() const override
+    {
+        return "Had a phobia of rats";
+    }
 
 protected:
-        std::string start_msg() const override
-        {
-                return "Rats suddenly seem terrifying.";
-        }
+    std::string start_msg() const override
+    {
+        return "Rats suddenly seem terrifying.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Murophobia!";
-        }
+    std::string start_heading() const override
+    {
+        return "Murophobia!";
+    }
 
-        std::string end_msg() const override
-        {
-                return "I am no longer terrified of rats.";
-        }
+    std::string end_msg() const override
+    {
+        return "I am no longer terrified of rats.";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Gained a phobia of rats";
-        }
+    std::string history_msg() const override
+    {
+        return "Gained a phobia of rats";
+    }
 
-        std::string history_msg_end() const override
-        {
-                return "My phobia of rats was cured";
-        }
+    std::string history_msg_end() const override
+    {
+        return "My phobia of rats was cured";
+    }
 };
 
 class InsPhobiaSpider : public InsSympt
 {
 public:
-        InsPhobiaSpider() = default;
+    InsPhobiaSpider() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::phobia_spider;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::phobia_spider;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::phobia;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::phobia;
+    }
 
-        bool is_permanent() const override
-        {
-                return true;
-        }
+    bool is_permanent() const override
+    {
+        return true;
+    }
 
-        void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_actors) override;
+    void on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_actors) override;
 
-        void on_permanent_rfear() override;
+    void on_permanent_rfear() override;
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
-        std::string char_descr_msg() const override
-        {
-                return "Phobia of spiders";
-        }
+    std::string char_descr_msg() const override
+    {
+        return "Phobia of spiders";
+    }
 
-        std::string game_over_summary_msg() const override
-        {
-                return "Had a phobia of spiders";
-        }
+    std::string game_over_summary_msg() const override
+    {
+        return "Had a phobia of spiders";
+    }
 
 protected:
-        std::string start_msg() const override
-        {
-                return "Spiders suddenly seem terrifying.";
-        }
+    std::string start_msg() const override
+    {
+        return "Spiders suddenly seem terrifying.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Arachnophobia!";
-        }
+    std::string start_heading() const override
+    {
+        return "Arachnophobia!";
+    }
 
-        std::string end_msg() const override
-        {
-                return "I am no longer terrified of spiders.";
-        }
+    std::string end_msg() const override
+    {
+        return "I am no longer terrified of spiders.";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Gained a phobia of spiders";
-        }
+    std::string history_msg() const override
+    {
+        return "Gained a phobia of spiders";
+    }
 
-        std::string history_msg_end() const override
-        {
-                return "My phobia of spiders was cured";
-        }
+    std::string history_msg_end() const override
+    {
+        return "My phobia of spiders was cured";
+    }
 };
 
 class InsPhobiaReptileAndAmph : public InsSympt
 {
 public:
-        InsPhobiaReptileAndAmph() = default;
+    InsPhobiaReptileAndAmph() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::phobia_reptile_and_amph;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::phobia_reptile_and_amph;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::phobia;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::phobia;
+    }
 
-        bool is_permanent() const override
-        {
-                return true;
-        }
+    bool is_permanent() const override
+    {
+        return true;
+    }
 
-        void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_actors) override;
+    void on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_actors) override;
 
-        void on_permanent_rfear() override;
+    void on_permanent_rfear() override;
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
-        std::string char_descr_msg() const override
-        {
-                return "Phobia of reptiles and amphibians";
-        }
+    std::string char_descr_msg() const override
+    {
+        return "Phobia of reptiles and amphibians";
+    }
 
-        std::string game_over_summary_msg() const override
-        {
-                return "Had a phobia of reptiles and amphibians";
-        }
+    std::string game_over_summary_msg() const override
+    {
+        return "Had a phobia of reptiles and amphibians";
+    }
 
 protected:
-        std::string start_msg() const override
-        {
-                return "Reptiles and amphibians suddenly seem terrifying.";
-        }
+    std::string start_msg() const override
+    {
+        return "Reptiles and amphibians suddenly seem terrifying.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Herpetophobia!";
-        }
+    std::string start_heading() const override
+    {
+        return "Herpetophobia!";
+    }
 
-        std::string end_msg() const override
-        {
-                return "I am no longer terrified of reptiles and amphibians.";
-        }
+    std::string end_msg() const override
+    {
+        return "I am no longer terrified of reptiles and amphibians.";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Gained a phobia of reptiles and amphibians";
-        }
+    std::string history_msg() const override
+    {
+        return "Gained a phobia of reptiles and amphibians";
+    }
 
-        std::string history_msg_end() const override
-        {
-                return "My phobia of reptiles and amphibians was cured";
-        }
+    std::string history_msg_end() const override
+    {
+        return "My phobia of reptiles and amphibians was cured";
+    }
 };
 
 class InsPhobiaCanine : public InsSympt
 {
 public:
-        InsPhobiaCanine() = default;
+    InsPhobiaCanine() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::phobia_canine;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::phobia_canine;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::phobia;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::phobia;
+    }
 
-        bool is_permanent() const override
-        {
-                return true;
-        }
+    bool is_permanent() const override
+    {
+        return true;
+    }
 
-        void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_actors) override;
+    void on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_actors) override;
 
-        void on_permanent_rfear() override;
+    void on_permanent_rfear() override;
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
-        std::string char_descr_msg() const override
-        {
-                return "Phobia of canines";
-        }
+    std::string char_descr_msg() const override
+    {
+        return "Phobia of canines";
+    }
 
-        std::string game_over_summary_msg() const override
-        {
-                return "Had a phobia of canines";
-        }
+    std::string game_over_summary_msg() const override
+    {
+        return "Had a phobia of canines";
+    }
 
 protected:
-        std::string start_msg() const override
-        {
-                return "Canines suddenly seem terrifying.";
-        }
+    std::string start_msg() const override
+    {
+        return "Canines suddenly seem terrifying.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Cynophobia!";
-        }
+    std::string start_heading() const override
+    {
+        return "Cynophobia!";
+    }
 
-        std::string end_msg() const override
-        {
-                return "I am no longer terrified of canines.";
-        }
+    std::string end_msg() const override
+    {
+        return "I am no longer terrified of canines.";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Gained a phobia of canines";
-        }
+    std::string history_msg() const override
+    {
+        return "Gained a phobia of canines";
+    }
 
-        std::string history_msg_end() const override
-        {
-                return "My phobia of canines was cured";
-        }
+    std::string history_msg_end() const override
+    {
+        return "My phobia of canines was cured";
+    }
 };
 
 class InsPhobiaDead : public InsSympt
 {
 public:
-        InsPhobiaDead() = default;
+    InsPhobiaDead() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::phobia_dead;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::phobia_dead;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::phobia;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::phobia;
+    }
 
-        bool is_permanent() const override
-        {
-                return true;
-        }
+    bool is_permanent() const override
+    {
+        return true;
+    }
 
-        void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_actors) override;
+    void on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_actors) override;
 
-        void on_permanent_rfear() override;
+    void on_permanent_rfear() override;
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
-        std::string char_descr_msg() const override
-        {
-                return "Phobia of the dead";
-        }
+    std::string char_descr_msg() const override
+    {
+        return "Phobia of the dead";
+    }
 
-        std::string game_over_summary_msg() const override
-        {
-                return "Had a phobia of the dead";
-        }
+    std::string game_over_summary_msg() const override
+    {
+        return "Had a phobia of the dead";
+    }
 
 protected:
-        std::string start_msg() const override
-        {
-                return "The dead suddenly seem far more terrifying.";
-        }
+    std::string start_msg() const override
+    {
+        return "The dead suddenly seem far more terrifying.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Necrophobia!";
-        }
+    std::string start_heading() const override
+    {
+        return "Necrophobia!";
+    }
 
-        std::string end_msg() const override
-        {
-                return "I am no longer terrified of the dead.";
-        }
+    std::string end_msg() const override
+    {
+        return "I am no longer terrified of the dead.";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Gained a phobia of the dead";
-        }
+    std::string history_msg() const override
+    {
+        return "Gained a phobia of the dead";
+    }
 
-        std::string history_msg_end() const override
-        {
-                return "My phobia of the dead was cured";
-        }
+    std::string history_msg_end() const override
+    {
+        return "My phobia of the dead was cured";
+    }
 };
 
 class InsPhobiaDeep : public InsSympt
 {
 public:
-        InsPhobiaDeep() = default;
+    InsPhobiaDeep() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::phobia_deep;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::phobia_deep;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::phobia;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::phobia;
+    }
 
-        bool is_permanent() const override
-        {
-                return true;
-        }
+    bool is_permanent() const override
+    {
+        return true;
+    }
 
-        void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_actors) override;
+    void on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_actors) override;
 
-        void on_permanent_rfear() override;
+    void on_permanent_rfear() override;
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
-        std::string char_descr_msg() const override
-        {
-                return "Phobia of deep places";
-        }
+    std::string char_descr_msg() const override
+    {
+        return "Phobia of deep places";
+    }
 
-        std::string game_over_summary_msg() const override
-        {
-                return "Had a phobia of deep places";
-        }
+    std::string game_over_summary_msg() const override
+    {
+        return "Had a phobia of deep places";
+    }
 
 protected:
-        std::string start_msg() const override
-        {
-                return "It suddenly seems far more terrifying to delve deeper.";
-        }
+    std::string start_msg() const override
+    {
+        return "It suddenly seems far more terrifying to delve deeper.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Bathophobia!";
-        }
+    std::string start_heading() const override
+    {
+        return "Bathophobia!";
+    }
 
-        std::string end_msg() const override
-        {
-                return "I am no longer terrified of deep places.";
-        }
+    std::string end_msg() const override
+    {
+        return "I am no longer terrified of deep places.";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Gained a phobia of deep places";
-        }
+    std::string history_msg() const override
+    {
+        return "Gained a phobia of deep places";
+    }
 
-        std::string history_msg_end() const override
-        {
-                return "My phobia of deep places was cured";
-        }
+    std::string history_msg_end() const override
+    {
+        return "My phobia of deep places was cured";
+    }
 };
 
 class InsPhobiaDark : public InsSympt
 {
 public:
-        InsPhobiaDark() = default;
+    InsPhobiaDark() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::phobia_dark;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::phobia_dark;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::phobia;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::phobia;
+    }
 
-        bool is_permanent() const override
-        {
-                return true;
-        }
+    bool is_permanent() const override
+    {
+        return true;
+    }
 
-        void on_new_player_turn(
-                const std::vector<actor::Actor*>& seen_actors) override;
+    void on_new_player_turn(
+        const std::vector<actor::Actor*>& seen_actors) override;
 
-        void on_permanent_rfear() override;
+    void on_permanent_rfear() override;
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
-        std::string char_descr_msg() const override
-        {
-                return "Phobia of darkness";
-        }
+    std::string char_descr_msg() const override
+    {
+        return "Phobia of darkness";
+    }
 
-        std::string game_over_summary_msg() const override
-        {
-                return "Had a phobia of darkness";
-        }
+    std::string game_over_summary_msg() const override
+    {
+        return "Had a phobia of darkness";
+    }
 
 protected:
-        std::string start_msg() const override
-        {
-                return "Darkness suddenly seems far more terrifying.";
-        }
+    std::string start_msg() const override
+    {
+        return "Darkness suddenly seems far more terrifying.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Nyctophobia!";
-        }
+    std::string start_heading() const override
+    {
+        return "Nyctophobia!";
+    }
 
-        std::string end_msg() const override
-        {
-                return "I am no longer terrified of darkness.";
-        }
+    std::string end_msg() const override
+    {
+        return "I am no longer terrified of darkness.";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Gained a phobia of darkness";
-        }
+    std::string history_msg() const override
+    {
+        return "Gained a phobia of darkness";
+    }
 
-        std::string history_msg_end() const override
-        {
-                return "My phobia of darkness was cured";
-        }
+    std::string history_msg_end() const override
+    {
+        return "My phobia of darkness was cured";
+    }
 };
 
 class InsSadism : public InsSympt
 {
 public:
-        InsSadism() = default;
+    InsSadism() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::sadism;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::sadism;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return true;
-        }
+    bool is_permanent() const override
+    {
+        return true;
+    }
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
-        std::string char_descr_msg() const override
-        {
-                return "Sadistic obsession";
-        }
+    std::string char_descr_msg() const override
+    {
+        return "Sadistic obsession";
+    }
 
-        std::string game_over_summary_msg() const override
-        {
-                return "Had a sadistic obsession";
-        }
+    std::string game_over_summary_msg() const override
+    {
+        return "Had a sadistic obsession";
+    }
 
 protected:
-        std::string start_msg() const override
-        {
-                return "To my alarm, I find myself encouraged by the pain I "
-                       "cause in others. For every significant life I take, I "
-                       "find a little relief. However, my depraved mind will "
-                       "never find complete peace.";
-        }
+    std::string start_msg() const override
+    {
+        return "To my alarm, I find myself encouraged by the pain I "
+               "cause in others. For every significant life I take, I "
+               "find a little relief. However, my depraved mind will "
+               "never find complete peace.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Sadistic obsession!";
-        }
+    std::string start_heading() const override
+    {
+        return "Sadistic obsession!";
+    }
 
-        std::string end_msg() const override
-        {
-                return "I am cured of my sadistic obsession.";
-        }
+    std::string end_msg() const override
+    {
+        return "I am cured of my sadistic obsession.";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Gained a sadistic obsession";
-        }
+    std::string history_msg() const override
+    {
+        return "Gained a sadistic obsession";
+    }
 
-        std::string history_msg_end() const override
-        {
-                return "My sadistic obsession was cured";
-        }
+    std::string history_msg_end() const override
+    {
+        return "My sadistic obsession was cured";
+    }
 };
 
 class InsShadows : public InsSympt
 {
 public:
-        InsShadows() = default;
+    InsShadows() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::shadows;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::shadows;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return false;
-        }
+    bool is_permanent() const override
+    {
+        return false;
+    }
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        std::string start_msg() const override
-        {
-                return "The shadows are closing in on me!";
-        }
+    std::string start_msg() const override
+    {
+        return "The shadows are closing in on me!";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Haunted by shadows!";
-        }
+    std::string start_heading() const override
+    {
+        return "Haunted by shadows!";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Was haunted by shadows";
-        }
+    std::string history_msg() const override
+    {
+        return "Was haunted by shadows";
+    }
 };
 
 class InsParanoia : public InsSympt
 {
 public:
-        InsParanoia() = default;
+    InsParanoia() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::paranoia;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::paranoia;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return false;
-        }
+    bool is_permanent() const override
+    {
+        return false;
+    }
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        std::string start_msg() const override
-        {
-                return "Is there someone following me? Or is it panic taking "
-                       "over?";
-        }
+    std::string start_msg() const override
+    {
+        return "Is there someone following me? Or is it panic taking "
+               "over?";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Paranoia!";
-        }
+    std::string start_heading() const override
+    {
+        return "Paranoia!";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Had a strong sensation of being followed";
-        }
+    std::string history_msg() const override
+    {
+        return "Had a strong sensation of being followed";
+    }
 };
 
 class InsConfusion : public InsSympt
 {
 public:
-        InsConfusion() = default;
+    InsConfusion() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::confusion;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::confusion;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return false;
-        }
+    bool is_permanent() const override
+    {
+        return false;
+    }
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        std::string start_msg() const override
-        {
-                return "I find myself in a peculiar trance. I struggle to "
-                       "recall where I am, and what is happening.";
-        }
+    std::string start_msg() const override
+    {
+        return "I find myself in a peculiar trance. I struggle to "
+               "recall where I am, and what is happening.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Confusion!";
-        }
+    std::string start_heading() const override
+    {
+        return "Confusion!";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Suddenly felt deeply confused for no reason";
-        }
+    std::string history_msg() const override
+    {
+        return "Suddenly felt deeply confused for no reason";
+    }
 };
 
 class InsFrenzy : public InsSympt
 {
 public:
-        InsFrenzy() = default;
+    InsFrenzy() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::frenzy;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::frenzy;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return false;
-        }
+    bool is_permanent() const override
+    {
+        return false;
+    }
 
-        bool is_allowed() const override;
+    bool is_allowed() const override;
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        std::string start_msg() const override
-        {
-                return "I fall into an uncontrollable rage!";
-        }
+    std::string start_msg() const override
+    {
+        return "I fall into an uncontrollable rage!";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Frenzy!";
-        }
+    std::string start_heading() const override
+    {
+        return "Frenzy!";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Fell into an uncontrollable rage";
-        }
+    std::string history_msg() const override
+    {
+        return "Fell into an uncontrollable rage";
+    }
 };
 
 class InsStrangeSensation : public InsSympt
 {
 public:
-        InsStrangeSensation() = default;
+    InsStrangeSensation() = default;
 
-        InsSymptId id() const override
-        {
-                return InsSymptId::strange_sensation;
-        }
+    InsSymptId id() const override
+    {
+        return InsSymptId::strange_sensation;
+    }
 
-        InsSymptType type() const override
-        {
-                return InsSymptType::misc;
-        }
+    InsSymptType type() const override
+    {
+        return InsSymptType::misc;
+    }
 
-        bool is_permanent() const override
-        {
-                return false;
-        }
+    bool is_permanent() const override
+    {
+        return false;
+    }
 
 protected:
-        std::string start_msg() const override
-        {
-                return "There is a strange itch, as if something is crawling "
-                       "on the back of my neck.";
-        }
+    std::string start_msg() const override
+    {
+        return "There is a strange itch, as if something is crawling "
+               "on the back of my neck.";
+    }
 
-        std::string start_heading() const override
-        {
-                return "Strange sensation!";
-        }
+    std::string start_heading() const override
+    {
+        return "Strange sensation!";
+    }
 
-        std::string history_msg() const override
-        {
-                return "Had a sensation of something crawling on my neck";
-        }
+    std::string history_msg() const override
+    {
+        return "Had a sensation of something crawling on my neck";
+    }
 };
 
 namespace insanity

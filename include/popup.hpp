@@ -20,14 +20,14 @@ namespace popup
 {
 enum class AddToMsgHistory
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 enum class MenuModeShowCancelHint
 {
-        no,
-        yes
+    no,
+    yes
 };
 
 class PopupState;
@@ -44,128 +44,128 @@ class PopupState;
 class Popup
 {
 public:
-        Popup(AddToMsgHistory add_to_msg_history);
+    Popup(AddToMsgHistory add_to_msg_history);
 
-        ~Popup();
+    ~Popup();
 
-        void run();
+    void run();
 
-        Popup& set_title(const std::string& title);
+    Popup& set_title(const std::string& title);
 
-        Popup& set_msg(const std::string& msg);
+    Popup& set_msg(const std::string& msg);
 
-        Popup& setup_menu_mode(
-                const std::vector<std::string>& choices,
-                const std::vector<char>& menu_keys,
-                MenuModeShowCancelHint show_cancel_hint,
-                int* menu_choice_result);
+    Popup& setup_menu_mode(
+        const std::vector<std::string>& choices,
+        const std::vector<char>& menu_keys,
+        MenuModeShowCancelHint show_cancel_hint,
+        int* menu_choice_result);
 
-        Popup& setup_number_query_mode(
-                const query::QueryNumberConfig& config,
-                int* number_result);
+    Popup& setup_number_query_mode(
+        const query::QueryNumberConfig& config,
+        int* number_result);
 
-        Popup& set_sfx(audio::SfxId sfx);
+    Popup& set_sfx(audio::SfxId sfx);
 
 private:
-        void copy_common_config(const PopupState* from, PopupState* to) const;
+    void copy_common_config(const PopupState* from, PopupState* to) const;
 
-        std::unique_ptr<PopupState> m_popup_state {};
+    std::unique_ptr<PopupState> m_popup_state {};
 
-        const AddToMsgHistory m_add_to_msg_history;
+    const AddToMsgHistory m_add_to_msg_history;
 };
 
 class PopupState : public State
 {
 public:
-        PopupState();
+    PopupState();
 
-        void on_start() final;
+    void on_start() final;
 
-        bool draw_overlayed() const override
-        {
-                return false;
-        }
+    bool draw_overlayed() const override
+    {
+        return false;
+    }
 
-        void on_window_resized() override;
+    void on_window_resized() override;
 
-        StateId id() const final;
+    StateId id() const final;
 
 protected:
-        friend class Popup;
+    friend class Popup;
 
-        virtual void on_start_specific() = 0;
+    virtual void on_start_specific() = 0;
 
-        void draw_msg_popup() const;
+    void draw_msg_popup() const;
 
-        void draw_menu_popup() const;
+    void draw_menu_popup() const;
 
-        std::string m_title {};
-        std::string m_msg {};
-        audio::SfxId m_sfx {audio::SfxId::END};
-        AddToMsgHistory m_add_to_msg_history {AddToMsgHistory::yes};
+    std::string m_title {};
+    std::string m_msg {};
+    audio::SfxId m_sfx {audio::SfxId::END};
+    AddToMsgHistory m_add_to_msg_history {AddToMsgHistory::yes};
 };
 
 class MsgPopupState : public PopupState
 {
 public:
-        MsgPopupState();
+    MsgPopupState();
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
 private:
-        void on_start_specific() override;
+    void on_start_specific() override;
 };
 
 class MenuPopupState : public PopupState
 {
 public:
-        MenuPopupState();
+    MenuPopupState();
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
 private:
-        friend class Popup;
+    friend class Popup;
 
-        void on_start_specific() override;
+    void on_start_specific() override;
 
-        std::vector<std::string> m_menu_choices {};
-        std::vector<char> m_menu_keys {};
-        MenuModeShowCancelHint m_show_cancel_hint {MenuModeShowCancelHint::no};
-        int* m_menu_choice_result {nullptr};
-        MenuBrowser m_browser {};
+    std::vector<std::string> m_menu_choices {};
+    std::vector<char> m_menu_keys {};
+    MenuModeShowCancelHint m_show_cancel_hint {MenuModeShowCancelHint::no};
+    int* m_menu_choice_result {nullptr};
+    MenuBrowser m_browser {};
 };
 
 class NumberQueryPopupState : public PopupState
 {
 public:
-        NumberQueryPopupState();
+    NumberQueryPopupState();
 
-        void draw() override;
+    void draw() override;
 
-        void update() override;
+    void update() override;
 
 private:
-        friend class Popup;
+    friend class Popup;
 
-        void on_start_specific() override;
+    void on_start_specific() override;
 
-        std::string calc_input_str_number_only() const;
+    std::string calc_input_str_number_only() const;
 
-        // Updates the displayed input string, including blinking underscore.
-        void update_input_str();
+    // Updates the displayed input string, including blinking underscore.
+    void update_input_str();
 
-        int calc_max_nr_digits() const;
+    int calc_max_nr_digits() const;
 
-        query::QueryNumberConfig m_config {};
+    query::QueryNumberConfig m_config {};
 
-        int* m_number_result {nullptr};
-        std::string m_input_str {};
-        bool m_has_player_entered_value {false};
-        bool m_is_empty_nr {false};
+    int* m_number_result {nullptr};
+    std::string m_input_str {};
+    bool m_has_player_entered_value {false};
+    bool m_is_empty_nr {false};
 };
 
 }  // namespace popup

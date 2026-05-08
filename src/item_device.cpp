@@ -48,15 +48,15 @@
 // -----------------------------------------------------------------------------
 static Array2<std::vector<actor::Actor*>> get_actor_array()
 {
-        Array2<std::vector<actor::Actor*>> a(map::dims());
+    Array2<std::vector<actor::Actor*>> a(map::dims());
 
-        for (auto* actor : game_time::g_actors) {
-                const auto& p = actor->m_pos;
+    for (auto* actor : game_time::g_actors) {
+        const auto& p = actor->m_pos;
 
-                a.at(p).push_back(actor);
-        }
+        a.at(p).push_back(actor);
+    }
 
-        return a;
+    return a;
 }
 
 // -----------------------------------------------------------------------------
@@ -68,215 +68,215 @@ namespace device
 // Device
 // -----------------------------------------------------------------------------
 Device::Device(item::ItemData* const item_data) :
-        Item(item_data),
-        m_condition(rnd::coin_toss() ? Condition::fine : Condition::shoddy) {}
+    Item(item_data),
+    m_condition(rnd::coin_toss() ? Condition::fine : Condition::shoddy) {}
 
 void Device::identify(const Verbose verbose)
 {
-        if (m_data->is_identified) {
-                return;
-        }
+    if (m_data->is_identified) {
+        return;
+    }
 
-        m_data->is_identified = true;
+    m_data->is_identified = true;
 
-        if (verbose == Verbose::yes) {
-                const std::string name_after =
-                        name(
-                                ItemNameType::a,
-                                ItemNameInfo::none);
+    if (verbose == Verbose::yes) {
+        const std::string name_after =
+            name(
+                ItemNameType::a,
+                ItemNameInfo::none);
 
-                msg_log::add("I have identified " + name_after + ".");
+        msg_log::add("I have identified " + name_after + ".");
 
-                msg_log::add("All its properties are now known to me.");
+        msg_log::add("All its properties are now known to me.");
 
-                game::add_history_event("Comprehended " + name_after);
+        game::add_history_event("Comprehended " + name_after);
 
-                game::incr_player_xp(g_xp_on_identify_device);
-        }
+        game::incr_player_xp(g_xp_on_identify_device);
+    }
 }
 
 void Device::save_hook() const
 {
-        saving::put_int((int)m_condition);
+    saving::put_int((int)m_condition);
 }
 
 void Device::load_hook()
 {
-        m_condition = (Condition)saving::get_int();
+    m_condition = (Condition)saving::get_int();
 }
 
 std::vector<std::string> Device::descr_hook() const
 {
-        if (m_data->is_identified) {
-                const std::string descr = descr_identified();
+    if (m_data->is_identified) {
+        const std::string descr = descr_identified();
 
-                std::vector<std::string> out = {descr};
+        std::vector<std::string> out = {descr};
 
-                std::string cond_str = "It seems ";
+        std::string cond_str = "It seems ";
 
-                switch (m_condition) {
-                case Condition::fine:
-                        cond_str += "to be in fine condition.";
-                        break;
+        switch (m_condition) {
+        case Condition::fine:
+            cond_str += "to be in fine condition.";
+            break;
 
-                case Condition::shoddy:
-                        cond_str += "to be in shoddy condition.";
-                        break;
+        case Condition::shoddy:
+            cond_str += "to be in shoddy condition.";
+            break;
 
-                case Condition::breaking:
-                        cond_str += "almost broken.";
-                        break;
-                }
-
-                out.push_back(cond_str);
-
-                return out;
+        case Condition::breaking:
+            cond_str += "almost broken.";
+            break;
         }
-        else {
-                // Not identified
-                return m_data->base_descr;
-        }
+
+        out.push_back(cond_str);
+
+        return out;
+    }
+    else {
+        // Not identified
+        return m_data->base_descr;
+    }
 }
 
 ConsumeItem Device::activate(actor::Actor* const actor)
 {
-        ASSERT(actor);
+    ASSERT(actor);
 
-        if (!m_data->is_identified) {
-                msg_log::add(
-                        "This device is completely alien to me, I could never "
-                        "understand it through normal means.");
+    if (!m_data->is_identified) {
+        msg_log::add(
+            "This device is completely alien to me, I could never "
+            "understand it through normal means.");
 
-                return ConsumeItem::no;
-        }
+        return ConsumeItem::no;
+    }
 
-        bool should_warn = false;
-        bool should_hurt_user = false;
-        bool should_fail = false;
-        bool should_degrade = false;
+    bool should_warn = false;
+    bool should_hurt_user = false;
+    bool should_fail = false;
+    bool should_degrade = false;
 
-        int max = 8;
+    int max = 8;
 
-        if (actor::is_player(actor) &&
-            player_bon::has_trait(TraitId::elec_incl)) {
-                max += 2;
-        }
+    if (actor::is_player(actor) &&
+        player_bon::has_trait(TraitId::elec_incl)) {
+        max += 2;
+    }
 
-        const int rnd = rnd::range(1, max);
+    const int rnd = rnd::range(1, max);
 
-        switch (m_condition) {
-        case Condition::breaking: {
-                should_warn = (rnd == 7) || (rnd == 8);
-                should_hurt_user = (rnd == 5) || (rnd == 6);
-                should_fail = (rnd == 3) || (rnd == 4);
-                should_degrade = (rnd <= 2);
-        } break;
+    switch (m_condition) {
+    case Condition::breaking: {
+        should_warn = (rnd == 7) || (rnd == 8);
+        should_hurt_user = (rnd == 5) || (rnd == 6);
+        should_fail = (rnd == 3) || (rnd == 4);
+        should_degrade = (rnd <= 2);
+    } break;
 
-        case Condition::shoddy: {
-                should_warn = (rnd == 5) || (rnd == 6);
-                should_hurt_user = (rnd == 4);
-                should_fail = (rnd == 3);
-                should_degrade = (rnd <= 2);
-        } break;
+    case Condition::shoddy: {
+        should_warn = (rnd == 5) || (rnd == 6);
+        should_hurt_user = (rnd == 4);
+        should_fail = (rnd == 3);
+        should_degrade = (rnd <= 2);
+    } break;
 
-        case Condition::fine: {
-                should_warn = (rnd == 5) || (rnd == 6);
-                should_degrade = (rnd <= 4);
-        } break;
-        }
+    case Condition::fine: {
+        should_warn = (rnd == 5) || (rnd == 6);
+        should_degrade = (rnd <= 4);
+    } break;
+    }
 
-        if (!actor::is_alive(*map::g_player)) {
-                return ConsumeItem::no;
-        }
+    if (!actor::is_alive(*map::g_player)) {
+        return ConsumeItem::no;
+    }
 
-        if (!should_fail) {
-                if (should_degrade) {
-                        audio::play(audio::SfxId::strange_device_damaged);
-                }
-                else {
-                        audio::play(audio::SfxId::strange_device_activate);
-                }
-        }
-
-        const std::string item_name =
-                name(
-                        ItemNameType::plain,
-                        ItemNameInfo::none);
-
-        const std::string item_name_a =
-                name(
-                        ItemNameType::a,
-                        ItemNameInfo::none);
-
-        msg_log::add("I activate " + item_name_a + "...");
-
-        ConsumeItem consumed = ConsumeItem::no;
-
-        if (should_hurt_user) {
-                msg_log::add(
-                        "It hits me with a jolt of electricity!",
-                        colors::msg_bad());
-
-                actor::hit(
-                        *actor,
-                        rnd::range(1, 3),
-                        DmgType::electric,
-                        nullptr);
-        }
-
-        if (should_fail) {
-                msg_log::add("It suddenly stops.");
+    if (!should_fail) {
+        if (should_degrade) {
+            audio::play(audio::SfxId::strange_device_damaged);
         }
         else {
-                consumed = run_effect();
+            audio::play(audio::SfxId::strange_device_activate);
+        }
+    }
+
+    const std::string item_name =
+        name(
+            ItemNameType::plain,
+            ItemNameInfo::none);
+
+    const std::string item_name_a =
+        name(
+            ItemNameType::a,
+            ItemNameInfo::none);
+
+    msg_log::add("I activate " + item_name_a + "...");
+
+    ConsumeItem consumed = ConsumeItem::no;
+
+    if (should_hurt_user) {
+        msg_log::add(
+            "It hits me with a jolt of electricity!",
+            colors::msg_bad());
+
+        actor::hit(
+            *actor,
+            rnd::range(1, 3),
+            DmgType::electric,
+            nullptr);
+    }
+
+    if (should_fail) {
+        msg_log::add("It suddenly stops.");
+    }
+    else {
+        consumed = run_effect();
+    }
+
+    if (consumed == ConsumeItem::no) {
+        if (should_degrade) {
+            if (m_condition == Condition::breaking) {
+                msg_log::add("The " + item_name + " breaks!");
+
+                consumed = ConsumeItem::yes;
+            }
+            else {
+                msg_log::add(
+                    "The " +
+                    item_name +
+                    " makes a terrible grinding noise. "
+                    "I seem to have damaged it.");
+
+                m_condition = (Condition)((int)m_condition - 1);
+            }
         }
 
-        if (consumed == ConsumeItem::no) {
-                if (should_degrade) {
-                        if (m_condition == Condition::breaking) {
-                                msg_log::add("The " + item_name + " breaks!");
-
-                                consumed = ConsumeItem::yes;
-                        }
-                        else {
-                                msg_log::add(
-                                        "The " +
-                                        item_name +
-                                        " makes a terrible grinding noise. "
-                                        "I seem to have damaged it.");
-
-                                m_condition = (Condition)((int)m_condition - 1);
-                        }
-                }
-
-                if (should_warn) {
-                        msg_log::add("The " + item_name + " hums ominously.");
-                }
+        if (should_warn) {
+            msg_log::add("The " + item_name + " hums ominously.");
         }
+    }
 
-        map::g_player->incr_shock(12.0, ShockSrc::use_strange_item);
+    map::g_player->incr_shock(12.0, ShockSrc::use_strange_item);
 
-        game_time::tick();
+    game_time::tick();
 
-        return consumed;
+    return consumed;
 }
 
 std::string Device::name_info_str(const ItemNameIdentified id_type) const
 {
-        if (m_data->is_identified || (id_type == ItemNameIdentified::force_identified)) {
-                switch (m_condition) {
-                case Condition::breaking:
-                        return "(breaking)";
+    if (m_data->is_identified || (id_type == ItemNameIdentified::force_identified)) {
+        switch (m_condition) {
+        case Condition::breaking:
+            return "(breaking)";
 
-                case Condition::shoddy:
-                        return "(shoddy)";
+        case Condition::shoddy:
+            return "(shoddy)";
 
-                case Condition::fine:
-                        return "(fine)";
-                }
+        case Condition::fine:
+            return "(fine)";
         }
+    }
 
-        return "";
+    return "";
 }
 
 // -----------------------------------------------------------------------------
@@ -284,33 +284,33 @@ std::string Device::name_info_str(const ItemNameIdentified id_type) const
 // -----------------------------------------------------------------------------
 ConsumeItem Blaster::run_effect()
 {
-        const auto tgt_bucket = actor::seen_foes(*map::g_player);
+    const auto tgt_bucket = actor::seen_foes(*map::g_player);
 
-        if (tgt_bucket.empty()) {
-                msg_log::add("It seems to peruse area.");
-
-                return ConsumeItem::no;
-        }
-
-        // Targets are available
-        const std::unique_ptr<Spell> spell(spells::make(SpellId::darkbolt));
-
-        const auto seen_foes = actor::seen_foes(*map::g_player);
-
-        spell->cast(
-                map::g_player,
-                SpellSkill::expert,
-                SpellSrc::item,
-                seen_foes);
+    if (tgt_bucket.empty()) {
+        msg_log::add("It seems to peruse area.");
 
         return ConsumeItem::no;
+    }
+
+    // Targets are available
+    const std::unique_ptr<Spell> spell(spells::make(SpellId::darkbolt));
+
+    const auto seen_foes = actor::seen_foes(*map::g_player);
+
+    spell->cast(
+        map::g_player,
+        SpellSkill::expert,
+        SpellSrc::item,
+        seen_foes);
+
+    return ConsumeItem::no;
 }
 
 std::string Blaster::descr_identified() const
 {
-        return (
-                "When activated, this device blasts one visible hostile "
-                "creature with infernal power.");
+    return (
+        "When activated, this device blasts one visible hostile "
+        "creature with infernal power.");
 }
 
 // -----------------------------------------------------------------------------
@@ -318,35 +318,35 @@ std::string Blaster::descr_identified() const
 // -----------------------------------------------------------------------------
 ConsumeItem Rejuvenator::run_effect()
 {
-        msg_log::add("It repairs my body.");
+    msg_log::add("It repairs my body.");
 
-        const std::vector<prop::Id> props_can_heal = {
-                prop::Id::blind,
-                prop::Id::deaf,
-                prop::Id::poisoned,
-                prop::Id::infected,
-                prop::Id::diseased,
-                prop::Id::weakened,
-                prop::Id::wound,
-        };
+    const std::vector<prop::Id> props_can_heal = {
+        prop::Id::blind,
+        prop::Id::deaf,
+        prop::Id::poisoned,
+        prop::Id::infected,
+        prop::Id::diseased,
+        prop::Id::weakened,
+        prop::Id::wound,
+    };
 
-        for (prop::Id prop_id : props_can_heal) {
-                map::g_player->m_properties.end_prop(prop_id);
-        }
+    for (prop::Id prop_id : props_can_heal) {
+        map::g_player->m_properties.end_prop(prop_id);
+    }
 
-        actor::restore_hp(*map::g_player, 999);
+    actor::restore_hp(*map::g_player, 999);
 
-        map::g_player->incr_shock(50.0, ShockSrc::use_strange_item);
+    map::g_player->incr_shock(50.0, ShockSrc::use_strange_item);
 
-        return ConsumeItem::no;
+    return ConsumeItem::no;
 }
 
 std::string Rejuvenator::descr_identified() const
 {
-        return (
-                "When activated, this device heals all wounds and physical "
-                "maladies. The procedure is very painful and invasive "
-                "however, and causes great shock to the user.");
+    return (
+        "When activated, this device heals all wounds and physical "
+        "maladies. The procedure is very painful and invasive "
+        "however, and causes great shock to the user.");
 }
 
 // -----------------------------------------------------------------------------
@@ -354,34 +354,34 @@ std::string Rejuvenator::descr_identified() const
 // -----------------------------------------------------------------------------
 ConsumeItem Translocator::run_effect()
 {
-        const auto seen_foes = actor::seen_foes(*map::g_player);
+    const auto seen_foes = actor::seen_foes(*map::g_player);
 
-        if (seen_foes.empty()) {
-                msg_log::add("It seems to peruse area.");
+    if (seen_foes.empty()) {
+        msg_log::add("It seems to peruse area.");
+    }
+    else {
+        // Seen targets are available
+        for (auto* actor : seen_foes) {
+            msg_log::add(
+                text_format::first_to_upper(actor::name_the(*actor)) +
+                " is teleported.");
+
+            draw_blast_at_cells(
+                std::vector<P> {actor->m_pos},
+                colors::yellow());
+
+            teleport(*actor);
         }
-        else {
-                // Seen targets are available
-                for (auto* actor : seen_foes) {
-                        msg_log::add(
-                                text_format::first_to_upper(actor::name_the(*actor)) +
-                                " is teleported.");
+    }
 
-                        draw_blast_at_cells(
-                                std::vector<P> {actor->m_pos},
-                                colors::yellow());
-
-                        teleport(*actor);
-                }
-        }
-
-        return ConsumeItem::no;
+    return ConsumeItem::no;
 }
 
 std::string Translocator::descr_identified() const
 {
-        return (
-                "When activated, this device teleports all visible enemies "
-                "to different locations.");
+    return (
+        "When activated, this device teleports all visible enemies "
+        "to different locations.");
 }
 
 // -----------------------------------------------------------------------------
@@ -389,13 +389,13 @@ std::string Translocator::descr_identified() const
 // -----------------------------------------------------------------------------
 ConsumeItem SentryDrone::run_effect()
 {
-        msg_log::add("The Sentry Drone awakens!");
+    msg_log::add("The Sentry Drone awakens!");
 
-        actor::spawn(map::g_player->m_pos, {"MON_SENTRY_DRONE"})
-                .make_aware_of_player()
-                .set_leader(map::g_player);
+    actor::spawn(map::g_player->m_pos, {"MON_SENTRY_DRONE"})
+        .make_aware_of_player()
+        .set_leader(map::g_player);
 
-        return ConsumeItem::yes;
+    return ConsumeItem::yes;
 }
 
 // -----------------------------------------------------------------------------
@@ -403,64 +403,64 @@ ConsumeItem SentryDrone::run_effect()
 // -----------------------------------------------------------------------------
 ConsumeItem ForceField::run_effect()
 {
-        msg_log::add("The air thickens around me.");
+    msg_log::add("The air thickens around me.");
 
-        Range duration_range(85, 100);
+    Range duration_range(85, 100);
 
-        const int duration = duration_range.roll();
+    const int duration = duration_range.roll();
 
-        const auto actors = get_actor_array();
+    const auto actors = get_actor_array();
 
-        const auto blocked_parser =
-                map_parsers::BlocksWalking(ParseActors::yes);
+    const auto blocked_parser =
+        map_parsers::BlocksWalking(ParseActors::yes);
 
-        const std::vector<terrain::Id> specific_allowed_terrains = {
-                terrain::Id::chasm};
+    const std::vector<terrain::Id> specific_allowed_terrains = {
+        terrain::Id::chasm};
 
-        const auto specific_allowed_terrains_parser =
-                map_parsers::IsAnyOfTerrains(specific_allowed_terrains);
+    const auto specific_allowed_terrains_parser =
+        map_parsers::IsAnyOfTerrains(specific_allowed_terrains);
 
-        for (const auto& d : dir_utils::g_dir_list) {
-                const auto p = map::g_player->m_pos + d;
+    for (const auto& d : dir_utils::g_dir_list) {
+        const auto p = map::g_player->m_pos + d;
 
-                if (blocked_parser.run(p) &&
-                    !specific_allowed_terrains_parser.run(p)) {
-                        continue;
-                }
-
-                auto actors_here = actors.at(p);
-
-                // Destroy corpses in cells with force fields
-                for (auto* const actor : actors_here) {
-                        if (actor::is_corpse(*actor)) {
-                                actor->m_state = ActorState::destroyed;
-
-                                terrain::make_blood(p);
-                                terrain::make_gore(p);
-                        }
-                }
-
-                auto* const force_field =
-                        static_cast<terrain::ForceField*>(
-                                terrain::make(
-                                        terrain::Id::force_field,
-                                        p));
-
-                force_field->set_nr_turns(duration);
-
-                game_time::add_mob(force_field);
+        if (blocked_parser.run(p) &&
+            !specific_allowed_terrains_parser.run(p)) {
+            continue;
         }
 
-        return ConsumeItem::no;
+        auto actors_here = actors.at(p);
+
+        // Destroy corpses in cells with force fields
+        for (auto* const actor : actors_here) {
+            if (actor::is_corpse(*actor)) {
+                actor->m_state = ActorState::destroyed;
+
+                terrain::make_blood(p);
+                terrain::make_gore(p);
+            }
+        }
+
+        auto* const force_field =
+            static_cast<terrain::ForceField*>(
+                terrain::make(
+                    terrain::Id::force_field,
+                    p));
+
+        force_field->set_nr_turns(duration);
+
+        game_time::add_mob(force_field);
+    }
+
+    return ConsumeItem::no;
 }
 
 std::string ForceField::descr_identified() const
 {
-        return (
-                "When activated, this device constructs a temporary opaque "
-                "barrier around the user, blocking all physical matter. "
-                "The barrier can only be created in empty spaces "
-                "(i.e. not in spaces occupied by creatures, walls, etc).");
+    return (
+        "When activated, this device constructs a temporary opaque "
+        "barrier around the user, blocking all physical matter. "
+        "The barrier can only be created in empty spaces "
+        "(i.e. not in spaces occupied by creatures, walls, etc).");
 }
 
 }  // namespace device

@@ -32,13 +32,13 @@ namespace pylon
 {
 enum class PylonId
 {
-        slow,
-        haste,
-        terrify,
-        invis,
-        knockback,
-        teleport,
-        END,
+    slow,
+    haste,
+    terrify,
+    invis,
+    knockback,
+    teleport,
+    END,
 };
 
 void init();
@@ -52,116 +52,116 @@ void load();
 class PylonImpl
 {
 public:
-        PylonImpl(const PylonId id, const P& p) :
-                m_id(id),
-                m_pos(p) {}
+    PylonImpl(const PylonId id, const P& p) :
+        m_id(id),
+        m_pos(p) {}
 
-        virtual ~PylonImpl() = default;
+    virtual ~PylonImpl() = default;
 
-        PylonId id() const
-        {
-                return m_id;
-        }
+    PylonId id() const
+    {
+        return m_id;
+    }
 
-        virtual std::string name(Article article) const = 0;
+    virtual std::string name(Article article) const = 0;
 
-        virtual void on_new_turn() = 0;
+    virtual void on_new_turn() = 0;
 
 protected:
-        virtual std::string effect_descr() const = 0;
+    virtual std::string effect_descr() const = 0;
 
-        void reveal() const;
+    void reveal() const;
 
-        std::vector<actor::Actor*> living_actors_reached() const;
+    std::vector<actor::Actor*> living_actors_reached() const;
 
-        actor::Actor* rnd_reached_living_actor() const;
+    actor::Actor* rnd_reached_living_actor() const;
 
-        PylonId m_id {};
-        P m_pos;
+    PylonId m_id {};
+    P m_pos;
 };
 
 class PylonTerrify : public PylonImpl
 {
 public:
-        PylonTerrify(const PylonId id, const P& p) :
-                PylonImpl(id, p) {}
+    PylonTerrify(const PylonId id, const P& p) :
+        PylonImpl(id, p) {}
 
-        void on_new_turn() override;
+    void on_new_turn() override;
 
-        std::string name(Article article) const override;
+    std::string name(Article article) const override;
 
 protected:
-        std::string effect_descr() const override;
+    std::string effect_descr() const override;
 };
 
 class PylonInvis : public PylonImpl
 {
 public:
-        PylonInvis(const PylonId id, const P& p) :
-                PylonImpl(id, p) {}
+    PylonInvis(const PylonId id, const P& p) :
+        PylonImpl(id, p) {}
 
-        void on_new_turn() override;
+    void on_new_turn() override;
 
-        std::string name(Article article) const override;
+    std::string name(Article article) const override;
 
 protected:
-        std::string effect_descr() const override;
+    std::string effect_descr() const override;
 };
 
 class PylonSlow : public PylonImpl
 {
 public:
-        PylonSlow(const PylonId id, const P& p) :
-                PylonImpl(id, p) {}
+    PylonSlow(const PylonId id, const P& p) :
+        PylonImpl(id, p) {}
 
-        void on_new_turn() override;
+    void on_new_turn() override;
 
-        std::string name(Article article) const override;
+    std::string name(Article article) const override;
 
 protected:
-        std::string effect_descr() const override;
+    std::string effect_descr() const override;
 };
 
 class PylonHaste : public PylonImpl
 {
 public:
-        PylonHaste(const PylonId id, const P& p) :
-                PylonImpl(id, p) {}
+    PylonHaste(const PylonId id, const P& p) :
+        PylonImpl(id, p) {}
 
-        void on_new_turn() override;
+    void on_new_turn() override;
 
-        std::string name(Article article) const override;
+    std::string name(Article article) const override;
 
 protected:
-        std::string effect_descr() const override;
+    std::string effect_descr() const override;
 };
 
 class PylonKnockback : public PylonImpl
 {
 public:
-        PylonKnockback(const PylonId id, const P& p) :
-                PylonImpl(id, p) {}
+    PylonKnockback(const PylonId id, const P& p) :
+        PylonImpl(id, p) {}
 
-        void on_new_turn() override;
+    void on_new_turn() override;
 
-        std::string name(Article article) const override;
+    std::string name(Article article) const override;
 
 protected:
-        std::string effect_descr() const override;
+    std::string effect_descr() const override;
 };
 
 class PylonTeleport : public PylonImpl
 {
 public:
-        PylonTeleport(const PylonId id, const P& p) :
-                PylonImpl(id, p) {}
+    PylonTeleport(const PylonId id, const P& p) :
+        PylonImpl(id, p) {}
 
-        void on_new_turn() override;
+    void on_new_turn() override;
 
-        std::string name(Article article) const override;
+    std::string name(Article article) const override;
 
 protected:
-        std::string effect_descr() const override;
+    std::string effect_descr() const override;
 };
 
 }  // namespace pylon
@@ -172,34 +172,34 @@ protected:
 class Pylon : public Terrain
 {
 public:
-        Pylon(const P& p, const TerrainData* data);
+    Pylon(const P& p, const TerrainData* data);
 
-        Pylon() = delete;
+    Pylon() = delete;
 
-        ~Pylon() = default;
+    ~Pylon() = default;
 
-        void on_new_turn_hook() override;
+    void on_new_turn_hook() override;
 
-        void activate();
+    void activate();
 
-        gfx::TileId tile() const override;
+    gfx::TileId tile() const override;
 
-        Color color_default() const override;
+    Color color_default() const override;
 
-        std::string name(Article article) const override;
+    std::string name(Article article) const override;
 
-        void add_light_hook(Array2<bool>& light) const override;
+    void add_light_hook(Array2<bool>& light) const override;
 
-        void hit(
-                DmgType dmg_type,
-                actor::Actor* actor,
-                const P& from_pos,
-                int dmg) override;
+    void hit(
+        DmgType dmg_type,
+        actor::Actor* actor,
+        const P& from_pos,
+        int dmg) override;
 
 private:
-        pylon::PylonImpl* make_pylon_impl_from_id(pylon::PylonId id);
+    pylon::PylonImpl* make_pylon_impl_from_id(pylon::PylonId id);
 
-        std::unique_ptr<pylon::PylonImpl> m_pylon_impl;
+    std::unique_ptr<pylon::PylonImpl> m_pylon_impl;
 };
 
 }  // namespace terrain

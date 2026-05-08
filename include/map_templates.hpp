@@ -16,39 +16,39 @@
 // NOTE: When updating this, also update the translation table in the cpp file.
 enum class LevelTemplId
 {
-        deep_one_lair,
-        magic_pool,
-        egypt,
-        high_priest,
-        intro_forest,
-        rat_cave,
-        mi_go_outpost,
-        trapez,
-        END
+    deep_one_lair,
+    magic_pool,
+    egypt,
+    high_priest,
+    intro_forest,
+    rat_cave,
+    mi_go_outpost,
+    trapez,
+    END
 };
 
 struct RoomTempl
 {
-        RoomTempl() :
-                symbols(P(0, 0)),
-                type((room::RoomType)0),
-                base_templ_idx(0) {}
+    RoomTempl() :
+        symbols(P(0, 0)),
+        type((room::RoomType)0),
+        base_templ_idx(0) {}
 
-        Array2<char> symbols;
+    Array2<char> symbols;
 
-        room::RoomType type;
+    room::RoomType type;
 
-        // Each template in the data file is rotated/flipped to create variants
-        // - this is the index of the origin template from the file (i.e. there
-        // will be many templates with index 0, then index 1, etc)
-        size_t base_templ_idx;
+    // Each template in the data file is rotated/flipped to create variants
+    // - this is the index of the origin template from the file (i.e. there
+    // will be many templates with index 0, then index 1, etc)
+    size_t base_templ_idx;
 };
 
 enum class RoomTemplStatus
 {
-        unused,
-        placed,  // Plcaed on the map
-        used     // Included in a map which was not discarded
+    unused,
+    placed,  // Plcaed on the map
+    used     // Included in a map which was not discarded
 };
 
 namespace map_templates

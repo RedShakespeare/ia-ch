@@ -16,61 +16,61 @@ class Actor;
 
 enum class AbilityId
 {
-        melee,
-        ranged,
-        dodging,
-        stealth,
-        searching,
-        END
+    melee,
+    ranged,
+    dodging,
+    stealth,
+    searching,
+    END
 };
 
 enum class ActionResult
 {
-        fail_critical,
-        fail_big,
-        fail,
-        success,
-        success_big,
-        success_critical
+    fail_critical,
+    fail_big,
+    fail,
+    success,
+    success_big,
+    success_critical
 };
 
 // Should the retrieved ability be affected by applied actor properties, or just
 // be the "raw" ability?
 enum class AbilityAffectedByProperties
 {
-        no,
-        yes,
+    no,
+    yes,
 };
 
 // Each actor has an instance of this class
 class AbilityValues
 {
 public:
-        AbilityValues()
-        {
-                reset();
-        }
+    AbilityValues()
+    {
+        reset();
+    }
 
-        AbilityValues& operator=(const AbilityValues& other) = default;
+    AbilityValues& operator=(const AbilityValues& other) = default;
 
-        void reset();
+    void reset();
 
-        int val(
-                AbilityId id,
-                AbilityAffectedByProperties affected_by_props,
-                const actor::Actor& actor) const;
+    int val(
+        AbilityId id,
+        AbilityAffectedByProperties affected_by_props,
+        const actor::Actor& actor) const;
 
-        int raw_val(const AbilityId id) const
-        {
-                return m_ability_list[(size_t)id];
-        }
+    int raw_val(const AbilityId id) const
+    {
+        return m_ability_list[(size_t)id];
+    }
 
-        void set_val(AbilityId ability, int val);
+    void set_val(AbilityId ability, int val);
 
-        void change_val(AbilityId ability, int change);
+    void change_val(AbilityId ability, int change);
 
 private:
-        int m_ability_list[(size_t)AbilityId::END];
+    int m_ability_list[(size_t)AbilityId::END];
 };
 
 namespace ability_roll

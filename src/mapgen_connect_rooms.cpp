@@ -33,110 +33,110 @@
 // -----------------------------------------------------------------------------
 static bool is_standard_room_type(const room::Room& r)
 {
-        return (r.m_type < room::RoomType::END_OF_STD_ROOMS);
+    return (r.m_type < room::RoomType::END_OF_STD_ROOMS);
 }
 
 static bool is_rooms_directly_connected(
-        const room::Room* const room0,
-        const room::Room* const room1)
+    const room::Room* const room0,
+    const room::Room* const room1)
 {
-        const std::vector<room::Room*>& room0_connections = room0->m_rooms_con_to;
+    const std::vector<room::Room*>& room0_connections = room0->m_rooms_con_to;
 
-        return (
-                std::find(
-                        std::cbegin(room0_connections),
-                        std::cend(room0_connections),
-                        room1) != std::end(room0_connections));
+    return (
+        std::find(
+            std::cbegin(room0_connections),
+            std::cend(room0_connections),
+            room1) != std::end(room0_connections));
 }
 
 static bool is_other_room_between_rooms(
-        const room::Room* const room0,
-        const room::Room* const room1)
+    const room::Room* const room0,
+    const room::Room* const room1)
 {
-        const P c0(room0->m_r.center());
-        const P c1(room1->m_r.center());
+    const P c0(room0->m_r.center());
+    const P c1(room1->m_r.center());
 
-        const int x0 = std::min(c0.x, c1.x);
-        const int y0 = std::min(c0.y, c1.y);
-        const int x1 = std::max(c0.x, c1.x);
-        const int y1 = std::max(c0.y, c1.y);
+    const int x0 = std::min(c0.x, c1.x);
+    const int y0 = std::min(c0.y, c1.y);
+    const int x1 = std::max(c0.x, c1.x);
+    const int y1 = std::max(c0.y, c1.y);
 
-        for (int x = x0; x <= x1; ++x) {
-                for (int y = y0; y <= y1; ++y) {
-                        const room::Room* const room_here = map::g_room_map.at(x, y);
+    for (int x = x0; x <= x1; ++x) {
+        for (int y = y0; y <= y1; ++y) {
+            const room::Room* const room_here = map::g_room_map.at(x, y);
 
-                        // TODO: Corridors should perhaps no longer be an
-                        // exception now if they are more like regular rooms.
-                        if (room_here &&
-                            (room_here != room0) &&
-                            (room_here != room1) &&
-                            (room_here->m_type != room::RoomType::corridor) &&
-                            !room_here->m_is_sub_room) {
-                                return true;
-                        }
-                }
+            // TODO: Corridors should perhaps no longer be an
+            // exception now if they are more like regular rooms.
+            if (room_here &&
+                (room_here != room0) &&
+                (room_here != room1) &&
+                (room_here->m_type != room::RoomType::corridor) &&
+                !room_here->m_is_sub_room) {
+                return true;
+            }
         }
+    }
 
-        return false;
+    return false;
 }
 
 static void mark_doors_as_non_blocking(Array2<bool>& blocked)
 {
-        const size_t nr_positions = map::nr_positions();
-        for (size_t i = 0; i < nr_positions; ++i) {
-                const auto id = map::g_terrain.at(i)->id();
+    const size_t nr_positions = map::nr_positions();
+    for (size_t i = 0; i < nr_positions; ++i) {
+        const auto id = map::g_terrain.at(i)->id();
 
-                if (id == terrain::Id::door) {
-                        blocked.at(i) = false;
-                }
+        if (id == terrain::Id::door) {
+            blocked.at(i) = false;
         }
+    }
 }
 
 static bool try_make_random_connection()
 {
-        room::Room* room0 = rnd::element(map::g_room_list);
+    room::Room* room0 = rnd::element(map::g_room_list);
 
-        // Room 0 must be a connectable room type (an actual room), but
-        // occasionally a corridor is allowed.
-        const bool is_room_0_corridor = (room0->m_type == room::RoomType::corridor);
+    // Room 0 must be a connectable room type (an actual room), but
+    // occasionally a corridor is allowed.
+    const bool is_room_0_corridor = (room0->m_type == room::RoomType::corridor);
 
-        if (!is_standard_room_type(*room0) &&
-            !(is_room_0_corridor && rnd::one_in(4))) {
-                return false;
-        }
+    if (!is_standard_room_type(*room0) &&
+        !(is_room_0_corridor && rnd::one_in(4))) {
+        return false;
+    }
 
-        // Finding second room to connect to.
-        room::Room* room1 = rnd::element(map::g_room_list);
+    // Finding second room to connect to.
+    room::Room* room1 = rnd::element(map::g_room_list);
 
-        // Room 1 must not be the same as room 0, and it must be a connectable
-        // room (connections are only allowed between two standard rooms, or
-        // from a corridor link to a standard room - never between two corridor
-        // links).
-        while ((room1 == room0) || !is_standard_room_type(*room1)) {
-                room1 = rnd::element(map::g_room_list);
-        }
+    // Room 1 must not be the same as room 0, and it must be a connectable
+    // room (connections are only allowed between two standard rooms, or
+    // from a corridor link to a standard room - never between two corridor
+    // links).
+    while ((room1 == room0) || !is_standard_room_type(*room1)) {
+        room1 = rnd::element(map::g_room_list);
+    }
 
-        // Do not allow two rooms to be connected twice.
-        if (is_rooms_directly_connected(room0, room1)) {
-                return false;
-        }
+    // Do not allow two rooms to be connected twice.
+    if (is_rooms_directly_connected(room0, room1)) {
+        return false;
+    }
 
-        // Do not connect room 0 and 1 if another room (except for sub rooms)
-        // lies anywhere in a rectangle defined by the two center points of
-        // those rooms.
-        if (is_other_room_between_rooms(room0, room1)) {
-                // Blocked by room between, trying other combination.
-                return false;
-        }
+    // Do not connect room 0 and 1 if another room (except for sub rooms)
+    // lies anywhere in a rectangle defined by the two center points of
+    // those rooms.
+    if (is_other_room_between_rooms(room0, room1)) {
+        // Blocked by room between, trying other combination.
+        return false;
+    }
 
-        // OK, let's try to connect these rooms.
-        const bool did_connect =
-                mapgen::try_make_pathfind_corridor(
-                        *room0,
-                        *room1,
-                        &mapgen::g_door_proposals);
+    // OK, let's try to connect these rooms.
+    const bool did_connect =
+        mapgen::try_make_pathfind_corridor(
+            *room0,
+            *room1,
+            &mapgen::g_door_proposals);
 
-        return did_connect;
+    return did_connect;
 }
 
 // -----------------------------------------------------------------------------
@@ -146,49 +146,49 @@ namespace mapgen
 {
 void connect_rooms()
 {
-        TRACE_FUNC_BEGIN;
+    TRACE_FUNC_BEGIN;
 
-        int nr_tries_left = 5000;
+    int nr_tries_left = 5000;
 
-        while (true) {
-                // NOTE: Keep this counter at the top of the loop, since
-                // otherwise a continue statement could bypass it so we get
-                // stuck in the loop.
-                --nr_tries_left;
+    while (true) {
+        // NOTE: Keep this counter at the top of the loop, since
+        // otherwise a continue statement could bypass it so we get
+        // stuck in the loop.
+        --nr_tries_left;
 
-                if (nr_tries_left == 0) {
-                        mapgen::g_is_map_valid = false;
+        if (nr_tries_left == 0) {
+            mapgen::g_is_map_valid = false;
 
-                        break;
-                }
-
-                const bool did_connect = try_make_random_connection();
-
-                if (!did_connect) {
-                        continue;
-                }
-
-                Array2<bool> blocked(map::dims());
-
-                map_parsers::BlocksWalking(ParseActors::no)
-                        .run(blocked, blocked.rect());
-
-                // Do not consider doors blocking.
-                mark_doors_as_non_blocking(blocked);
-
-                if (map_parsers::is_map_connected(blocked)) {
-                        // OK, we have enough connections for a playable map
-                        // (whole map is connected)! But keep making more
-                        // connections with a random chance to stop - it's
-                        // typically more fun with a lot of connections so the
-                        // map isn't so linear.
-                        if ((nr_tries_left <= 2) || (rnd::one_in(4))) {
-                                break;
-                        }
-                }
+            break;
         }
 
-        TRACE_FUNC_END;
+        const bool did_connect = try_make_random_connection();
+
+        if (!did_connect) {
+            continue;
+        }
+
+        Array2<bool> blocked(map::dims());
+
+        map_parsers::BlocksWalking(ParseActors::no)
+            .run(blocked, blocked.rect());
+
+        // Do not consider doors blocking.
+        mark_doors_as_non_blocking(blocked);
+
+        if (map_parsers::is_map_connected(blocked)) {
+            // OK, we have enough connections for a playable map
+            // (whole map is connected)! But keep making more
+            // connections with a random chance to stop - it's
+            // typically more fun with a lot of connections so the
+            // map isn't so linear.
+            if ((nr_tries_left <= 2) || (rnd::one_in(4))) {
+                break;
+            }
+        }
+    }
+
+    TRACE_FUNC_END;
 }
 
 }  // namespace mapgen

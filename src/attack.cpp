@@ -36,93 +36,93 @@ namespace attack
 {
 HitSize relative_hit_size(const int dmg)
 {
-        const int threshold_medium = g_min_dmg_to_wound;
-        const int threshold_major = g_min_dmg_to_wound + 3;
+    const int threshold_medium = g_min_dmg_to_wound;
+    const int threshold_major = g_min_dmg_to_wound + 3;
 
-        if (dmg >= threshold_major) {
-                return HitSize::major;
-        }
+    if (dmg >= threshold_major) {
+        return HitSize::major;
+    }
 
-        if (dmg >= threshold_medium) {
-                return HitSize::medium;
-        }
+    if (dmg >= threshold_medium) {
+        return HitSize::medium;
+    }
 
-        return HitSize::minor;
+    return HitSize::minor;
 }
 
 std::string hit_size_punctuation_str(const HitSize hit_size)
 {
-        switch (hit_size) {
-        case HitSize::minor:
-                return ".";
+    switch (hit_size) {
+    case HitSize::minor:
+        return ".";
 
-        case HitSize::medium:
-                return "!";
+    case HitSize::medium:
+        return "!";
 
-        case HitSize::major:
-                return "!!!";
-        }
+    case HitSize::major:
+        return "!!!";
+    }
 
-        return "";
+    return "";
 }
 
 void try_apply_attack_property_on_actor(
-        const ItemAttackProp& att_prop,
-        actor::Actor& actor,
-        const DmgType dmg_type)
+    const ItemAttackProp& att_prop,
+    actor::Actor& actor,
+    const DmgType dmg_type)
 {
-        if (!rnd::percent(att_prop.pct_chance_to_apply)) {
-                return;
-        }
+    if (!rnd::percent(att_prop.pct_chance_to_apply)) {
+        return;
+    }
 
-        const bool is_resisting_dmg = actor.m_properties.is_resisting_dmg(dmg_type, Verbose::no);
+    const bool is_resisting_dmg = actor.m_properties.is_resisting_dmg(dmg_type, Verbose::no);
 
-        if (is_resisting_dmg) {
-                return;
-        }
+    if (is_resisting_dmg) {
+        return;
+    }
 
-        prop::Prop* const prop_cpy = prop::make(att_prop.prop->id());
+    prop::Prop* const prop_cpy = prop::make(att_prop.prop->id());
 
-        const prop::PropDurationMode duration_mode = att_prop.prop->duration_mode();
+    const prop::PropDurationMode duration_mode = att_prop.prop->duration_mode();
 
-        if (duration_mode == prop::PropDurationMode::specific) {
-                prop_cpy->set_duration(att_prop.prop->nr_turns_left());
-        }
-        else if (duration_mode == prop::PropDurationMode::indefinite) {
-                prop_cpy->set_indefinite();
-        }
+    if (duration_mode == prop::PropDurationMode::specific) {
+        prop_cpy->set_duration(att_prop.prop->nr_turns_left());
+    }
+    else if (duration_mode == prop::PropDurationMode::indefinite) {
+        prop_cpy->set_indefinite();
+    }
 
-        actor.m_properties.apply(prop_cpy);
+    actor.m_properties.apply(prop_cpy);
 }
 
 BinaryAnswer query_player_attack_mon_with_ranged_wpn(
-        const item::Wpn& wpn,
-        const actor::Actor& mon)
+    const item::Wpn& wpn,
+    const actor::Actor& mon)
 {
-        const std::string wpn_name = wpn.name(ItemNameType::a);
+    const std::string wpn_name = wpn.name(ItemNameType::a);
 
-        const bool can_see_mon = can_player_see_actor(mon);
+    const bool can_see_mon = can_player_see_actor(mon);
 
-        const std::string mon_name = can_see_mon ? actor::name_the(mon) : "it";
+    const std::string mon_name = can_see_mon ? actor::name_the(mon) : "it";
 
-        const std::string msg =
-                "Attack " +
-                mon_name +
-                " with " +
-                wpn_name +
-                "? " +
-                common_text::g_yes_or_no_hint;
+    const std::string msg =
+        "Attack " +
+        mon_name +
+        " with " +
+        wpn_name +
+        "? " +
+        common_text::g_yes_or_no_hint;
 
-        msg_log::add(
-                msg,
-                colors::light_white(),
-                MsgInterruptPlayer::no,
-                MorePromptOnMsg::no,
-                CopyToMsgHistory::no);
+    msg_log::add(
+        msg,
+        colors::light_white(),
+        MsgInterruptPlayer::no,
+        MorePromptOnMsg::no,
+        CopyToMsgHistory::no);
 
-        const BinaryAnswer answer = query::yes_or_no();
+    const BinaryAnswer answer = query::yes_or_no();
 
-        return answer;
+    return answer;
 }
 
 }  // namespace attack

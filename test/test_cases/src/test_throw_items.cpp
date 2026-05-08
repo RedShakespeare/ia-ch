@@ -29,84 +29,84 @@ class Item;
 
 TEST_CASE("Throw weapon at wall")
 {
-        // Throwing a weapon at a wall should make it land in front of the wall,
-        // i.e. the last cell it travelled through BEFORE the wall.
+    // Throwing a weapon at a wall should make it land in front of the wall,
+    // i.e. the last cell it travelled through BEFORE the wall.
 
-        // Setup:
-        // . <- Floor                              (5,  7)
-        // # <- Wall  --- Aim position             (5,  8)
-        // . <- Floor --- Weapon should land here  (5,  9)
-        // @ <- Floor --- Origin position          (5, 10)
+    // Setup:
+    // . <- Floor                              (5,  7)
+    // # <- Wall  --- Aim position             (5,  8)
+    // . <- Floor --- Weapon should land here  (5,  9)
+    // @ <- Floor --- Origin position          (5, 10)
 
-        test_utils::init_all();
+    test_utils::init_all();
 
-        map::update_terrain(terrain::make(terrain::Id::floor, {5, 7}));
-        map::update_terrain(terrain::make(terrain::Id::wall, {5, 8}));
-        map::update_terrain(terrain::make(terrain::Id::floor, {5, 9}));
-        map::update_terrain(terrain::make(terrain::Id::floor, {5, 10}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {5, 7}));
+    map::update_terrain(terrain::make(terrain::Id::wall, {5, 8}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {5, 9}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {5, 10}));
 
-        map::g_player->m_pos = {5, 10};
+    map::g_player->m_pos = {5, 10};
 
-        auto* item = item::make(item::Id::thr_knife);
+    auto* item = item::make(item::Id::thr_knife);
 
-        throwing::throw_item(*(map::g_player), {5, 8}, *item);
+    throwing::throw_item(*(map::g_player), {5, 8}, *item);
 
-        REQUIRE(map::g_items.at(5, 9) == item);
+    REQUIRE(map::g_items.at(5, 9) == item);
 
-        test_utils::cleanup_all();
+    test_utils::cleanup_all();
 }
 
 TEST_CASE("Throw potion at monster")
 {
-        test_utils::init_all();
+    test_utils::init_all();
 
-        map::update_terrain(terrain::make(terrain::Id::floor, {5, 7}));
-        map::update_terrain(terrain::make(terrain::Id::floor, {6, 7}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {5, 7}));
+    map::update_terrain(terrain::make(terrain::Id::floor, {6, 7}));
 
-        map::g_player->m_pos = {5, 7};
+    map::g_player->m_pos = {5, 7};
 
-        auto* const mon = actor::make("MON_ZOMBIE", {6, 7});
+    auto* const mon = actor::make("MON_ZOMBIE", {6, 7});
 
-        REQUIRE(!mon->m_properties.has(prop::Id::r_fire));
+    REQUIRE(!mon->m_properties.has(prop::Id::r_fire));
 
-        bool did_test_r_fire = false;
+    bool did_test_r_fire = false;
 
-        // Throw potions at the monster until it is killed, plus one more throw
-        // at the corpse
-        while (true) {
-                bool is_dead = false;
+    // Throw potions at the monster until it is killed, plus one more throw
+    // at the corpse
+    while (true) {
+        bool is_dead = false;
 
-                if (mon->m_state != ActorState::alive) {
-                        is_dead = true;
+        if (mon->m_state != ActorState::alive) {
+            is_dead = true;
 
-                        // Clear fire resistance, throwing at the corpse should
-                        // not re-apply it
-                        mon->m_properties.end_prop(prop::Id::r_fire);
-                }
-
-                game_time::g_allow_tick = true;
-
-                throwing::throw_item(
-                        *map::g_player,
-                        {6, 7},
-                        *item::make(item::Id::potion_resistance));
-
-                if (is_dead) {
-                        REQUIRE(!mon->m_properties.has(prop::Id::r_fire));
-                }
-                else {
-                        // Not dead
-                        if (mon->m_hp < actor::max_hp(*mon)) {
-                                did_test_r_fire = true;
-
-                                REQUIRE(mon->m_properties.has(prop::Id::r_fire));
-                        }
-                }
-
-                if (is_dead) {
-                        break;
-                }
+            // Clear fire resistance, throwing at the corpse should
+            // not re-apply it
+            mon->m_properties.end_prop(prop::Id::r_fire);
         }
 
-        REQUIRE(did_test_r_fire);
+        game_time::g_allow_tick = true;
+
+        throwing::throw_item(
+            *map::g_player,
+            {6, 7},
+            *item::make(item::Id::potion_resistance));
+
+        if (is_dead) {
+            REQUIRE(!mon->m_properties.has(prop::Id::r_fire));
+        }
+        else {
+            // Not dead
+            if (mon->m_hp < actor::max_hp(*mon)) {
+                did_test_r_fire = true;
+
+                REQUIRE(mon->m_properties.has(prop::Id::r_fire));
+            }
+        }
+
+        if (is_dead) {
+            break;
+        }
+    }
+
+    REQUIRE(did_test_r_fire);
 }

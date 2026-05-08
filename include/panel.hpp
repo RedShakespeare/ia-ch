@@ -12,20 +12,20 @@ struct P;
 
 enum class Panel
 {
-        screen,
-        map,
-        map_gui_stats,
-        map_gui_stats_border,
-        log,
-        create_char_menu,
-        create_char_descr,
-        options,
-        options_values,
-        options_descr,
-        inventory_menu,
-        inventory_descr,
-        info_screen_content,
-        END
+    screen,
+    map,
+    map_gui_stats,
+    map_gui_stats_border,
+    log,
+    create_char_menu,
+    create_char_descr,
+    options,
+    options_values,
+    options_descr,
+    inventory_menu,
+    inventory_descr,
+    info_screen_content,
+    END
 };
 
 namespace panels

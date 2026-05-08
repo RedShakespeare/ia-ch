@@ -42,83 +42,83 @@ struct InputData;
 class MarkerState : public State
 {
 public:
-        MarkerState(const P& origin) :
-                m_origin(origin)
-        {}
+    MarkerState(const P& origin) :
+        m_origin(origin)
+    {}
 
-        virtual ~MarkerState() = default;
+    virtual ~MarkerState() = default;
 
-        void on_start() final;
+    void on_start() final;
 
-        void on_popped() final;
+    void on_popped() final;
 
-        void draw() final;
+    void draw() final;
 
-        bool draw_overlayed() const final
-        {
-                return true;
-        }
+    bool draw_overlayed() const final
+    {
+        return true;
+    }
 
-        void on_window_resized() override;
+    void on_window_resized() override;
 
-        void update() final;
+    void update() final;
 
-        StateId id() const final;
+    StateId id() const final;
 
 protected:
-        virtual void on_start_hook() {}
+    virtual void on_start_hook() {}
 
-        void draw_marker(
-                const std::vector<P>& line,
-                int orange_until_including_king_dist,
-                int orange_from_king_dist,
-                int red_from_king_dist,
-                int red_from_idx);
+    void draw_marker(
+        const std::vector<P>& line,
+        int orange_until_including_king_dist,
+        int orange_from_king_dist,
+        int red_from_king_dist,
+        int red_from_idx);
 
-        // Fire etc
-        virtual void handle_input(const io::InputData& input) = 0;
+    // Fire etc
+    virtual void handle_input(const io::InputData& input) = 0;
 
-        // Print messages
-        virtual void on_moved() = 0;
+    // Print messages
+    virtual void on_moved() = 0;
 
-        // Used for overlays, etc - it should be pretty rare that this is needed
-        virtual void on_draw() {}
+    // Used for overlays, etc - it should be pretty rare that this is needed
+    virtual void on_draw() {}
 
-        virtual bool use_player_tgt() const
-        {
-                return false;
-        }
+    virtual bool use_player_tgt() const
+    {
+        return false;
+    }
 
-        virtual bool is_pos_blocked(const P& pos) const;
+    virtual bool is_pos_blocked(const P& pos) const;
 
-        virtual bool show_blocked() const
-        {
-                return false;
-        }
+    virtual bool show_blocked() const
+    {
+        return false;
+    }
 
-        virtual Range effective_king_dist_range() const
-        {
-                return {-1, -1};
-        }
+    virtual Range effective_king_dist_range() const
+    {
+        return {-1, -1};
+    }
 
-        virtual int max_king_dist() const
-        {
-                return -1;
-        }
+    virtual int max_king_dist() const
+    {
+        return -1;
+    }
 
-        const P m_origin;
+    const P m_origin;
 
-        P m_pos {0, 0};
+    P m_pos {0, 0};
 
-        // Can be set by child classes to temporarily enable/disable drawing
-        bool m_allow_draw {true};
+    // Can be set by child classes to temporarily enable/disable drawing
+    bool m_allow_draw {true};
 
 private:
-        void move(Dir dir, int nr_steps = 1);
+    void move(Dir dir, int nr_steps = 1);
 
-        bool try_go_to_tgt();
+    bool try_go_to_tgt();
 
-        void try_go_to_closest_enemy();
+    void try_go_to_closest_enemy();
 };
 
 // -----------------------------------------------------------------------------
@@ -127,23 +127,23 @@ private:
 class Viewing : public MarkerState
 {
 public:
-        Viewing(const P& origin) :
-                MarkerState(origin) {}
+    Viewing(const P& origin) :
+        MarkerState(origin) {}
 
 protected:
-        void on_moved() override;
+    void on_moved() override;
 
-        void handle_input(const io::InputData& input) override;
+    void handle_input(const io::InputData& input) override;
 
-        bool use_player_tgt() const override
-        {
-                return true;
-        }
+    bool use_player_tgt() const override
+    {
+        return true;
+    }
 
-        bool show_blocked() const override
-        {
-                return false;
-        }
+    bool show_blocked() const override
+    {
+        return false;
+    }
 };
 
 // -----------------------------------------------------------------------------
@@ -152,30 +152,30 @@ protected:
 class Aiming : public MarkerState
 {
 public:
-        Aiming(const P& origin, item::Wpn& wpn) :
-                MarkerState(origin),
-                m_wpn(wpn) {}
+    Aiming(const P& origin, item::Wpn& wpn) :
+        MarkerState(origin),
+        m_wpn(wpn) {}
 
 protected:
-        void on_moved() override;
+    void on_moved() override;
 
-        void handle_input(const io::InputData& input) override;
+    void handle_input(const io::InputData& input) override;
 
-        bool use_player_tgt() const override
-        {
-                return true;
-        }
+    bool use_player_tgt() const override
+    {
+        return true;
+    }
 
-        bool show_blocked() const override
-        {
-                return true;
-        }
+    bool show_blocked() const override
+    {
+        return true;
+    }
 
-        Range effective_king_dist_range() const override;
+    Range effective_king_dist_range() const override;
 
-        int max_king_dist() const override;
+    int max_king_dist() const override;
 
-        item::Wpn& m_wpn;
+    item::Wpn& m_wpn;
 };
 
 // -----------------------------------------------------------------------------
@@ -184,30 +184,30 @@ protected:
 class AimingMeleeWpn : public MarkerState
 {
 public:
-        AimingMeleeWpn(const P& origin, item::Wpn& wpn) :
-                MarkerState(origin),
-                m_wpn(wpn) {}
+    AimingMeleeWpn(const P& origin, item::Wpn& wpn) :
+        MarkerState(origin),
+        m_wpn(wpn) {}
 
 protected:
-        void on_moved() override;
+    void on_moved() override;
 
-        void handle_input(const io::InputData& input) override;
+    void handle_input(const io::InputData& input) override;
 
-        bool use_player_tgt() const override
-        {
-                return true;
-        }
+    bool use_player_tgt() const override
+    {
+        return true;
+    }
 
-        bool is_pos_blocked(const P& pos) const override;
+    bool is_pos_blocked(const P& pos) const override;
 
-        bool show_blocked() const override
-        {
-                return true;
-        }
+    bool show_blocked() const override
+    {
+        return true;
+    }
 
-        int max_king_dist() const override;
+    int max_king_dist() const override;
 
-        item::Wpn& m_wpn;
+    item::Wpn& m_wpn;
 };
 
 // -----------------------------------------------------------------------------
@@ -216,30 +216,30 @@ protected:
 class Throwing : public MarkerState
 {
 public:
-        Throwing(const P& origin, item::Item& inv_item) :
-                MarkerState(origin),
-                m_inv_item(&inv_item) {}
+    Throwing(const P& origin, item::Item& inv_item) :
+        MarkerState(origin),
+        m_inv_item(&inv_item) {}
 
 protected:
-        void on_moved() override;
+    void on_moved() override;
 
-        void handle_input(const io::InputData& input) override;
+    void handle_input(const io::InputData& input) override;
 
-        bool use_player_tgt() const override
-        {
-                return true;
-        }
+    bool use_player_tgt() const override
+    {
+        return true;
+    }
 
-        bool show_blocked() const override
-        {
-                return true;
-        }
+    bool show_blocked() const override
+    {
+        return true;
+    }
 
-        Range effective_king_dist_range() const override;
+    Range effective_king_dist_range() const override;
 
-        int max_king_dist() const override;
+    int max_king_dist() const override;
 
-        item::Item* m_inv_item;
+    item::Item* m_inv_item;
 };
 
 // -----------------------------------------------------------------------------
@@ -248,30 +248,30 @@ protected:
 class ThrowingExplosive : public MarkerState
 {
 public:
-        ThrowingExplosive(const P& origin, const item::Item& explosive) :
-                MarkerState(origin),
-                m_explosive(explosive) {}
+    ThrowingExplosive(const P& origin, const item::Item& explosive) :
+        MarkerState(origin),
+        m_explosive(explosive) {}
 
 protected:
-        void on_draw() override;
+    void on_draw() override;
 
-        void on_moved() override;
+    void on_moved() override;
 
-        void handle_input(const io::InputData& input) override;
+    void handle_input(const io::InputData& input) override;
 
-        bool use_player_tgt() const override
-        {
-                return false;
-        }
+    bool use_player_tgt() const override
+    {
+        return false;
+    }
 
-        bool show_blocked() const override
-        {
-                return true;
-        }
+    bool show_blocked() const override
+    {
+        return true;
+    }
 
-        int max_king_dist() const override;
+    int max_king_dist() const override;
 
-        const item::Item& m_explosive;
+    const item::Item& m_explosive;
 };
 
 // -----------------------------------------------------------------------------
@@ -280,21 +280,21 @@ protected:
 class CtrlTele : public MarkerState
 {
 public:
-        CtrlTele(const P& origin, Array2<bool> blocked, int max_dist = -1);
+    CtrlTele(const P& origin, Array2<bool> blocked, int max_dist = -1);
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        void on_moved() override;
+    void on_moved() override;
 
-        void handle_input(const io::InputData& input) override;
+    void handle_input(const io::InputData& input) override;
 
 private:
-        int chance_of_success_pct() const;
+    int chance_of_success_pct() const;
 
-        P m_origin;
-        int m_max_dist;
-        Array2<bool> m_blocked;
+    P m_origin;
+    int m_max_dist;
+    Array2<bool> m_blocked;
 };
 
 // -----------------------------------------------------------------------------
@@ -303,116 +303,116 @@ private:
 class CtrlObjAction
 {
 public:
-        virtual ~CtrlObjAction() = default;
+    virtual ~CtrlObjAction() = default;
 
-        virtual bool can_control(
-                const terrain::Terrain& terrain,
-                SpellSkill skill) const = 0;
+    virtual bool can_control(
+        const terrain::Terrain& terrain,
+        SpellSkill skill) const = 0;
 
-        virtual DidAction run(
-                terrain::Terrain& terrain,
-                SpellSkill skill) const = 0;
+    virtual DidAction run(
+        terrain::Terrain& terrain,
+        SpellSkill skill) const = 0;
 
-        virtual std::string menu_label(
-                const terrain::Terrain& terrain) const = 0;
+    virtual std::string menu_label(
+        const terrain::Terrain& terrain) const = 0;
 
-        virtual char menu_key() const = 0;
+    virtual char menu_key() const = 0;
 };
 
 class CtrlObjOpen : public CtrlObjAction
 {
 public:
-        bool can_control(
-                const terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    bool can_control(
+        const terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        DidAction run(
-                terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    DidAction run(
+        terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        std::string menu_label(const terrain::Terrain& terrain) const override;
+    std::string menu_label(const terrain::Terrain& terrain) const override;
 
-        char menu_key() const override;
+    char menu_key() const override;
 };
 
 class CtrlObjCloseDoor : public CtrlObjAction
 {
 public:
-        bool can_control(
-                const terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    bool can_control(
+        const terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        DidAction run(
-                terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    DidAction run(
+        terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        std::string menu_label(const terrain::Terrain& terrain) const override;
+    std::string menu_label(const terrain::Terrain& terrain) const override;
 
-        char menu_key() const override;
+    char menu_key() const override;
 };
 
 class CtrlObjJamDoor : public CtrlObjAction
 {
 public:
-        bool can_control(
-                const terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    bool can_control(
+        const terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        DidAction run(
-                terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    DidAction run(
+        terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        std::string menu_label(const terrain::Terrain& terrain) const override;
+    std::string menu_label(const terrain::Terrain& terrain) const override;
 
-        char menu_key() const override;
+    char menu_key() const override;
 };
 
 class CtrlObjDeactivateCrystal : public CtrlObjAction
 {
 public:
-        bool can_control(
-                const terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    bool can_control(
+        const terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        DidAction run(
-                terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    DidAction run(
+        terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        std::string menu_label(const terrain::Terrain& terrain) const override;
+    std::string menu_label(const terrain::Terrain& terrain) const override;
 
-        char menu_key() const override;
+    char menu_key() const override;
 };
 
 class CtrlObjStrike : public CtrlObjAction
 {
 public:
-        bool can_control(
-                const terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    bool can_control(
+        const terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        DidAction run(
-                terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    DidAction run(
+        terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        std::string menu_label(const terrain::Terrain& terrain) const override;
+    std::string menu_label(const terrain::Terrain& terrain) const override;
 
-        char menu_key() const override;
+    char menu_key() const override;
 };
 
 class CtrlObjDestrWall : public CtrlObjAction
 {
 public:
-        bool can_control(
-                const terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    bool can_control(
+        const terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        DidAction run(
-                terrain::Terrain& terrain,
-                SpellSkill skill) const override;
+    DidAction run(
+        terrain::Terrain& terrain,
+        SpellSkill skill) const override;
 
-        std::string menu_label(const terrain::Terrain& terrain) const override;
+    std::string menu_label(const terrain::Terrain& terrain) const override;
 
-        char menu_key() const override;
+    char menu_key() const override;
 };
 
 using CtrlObjActionPtr = std::shared_ptr<CtrlObjAction>;
@@ -420,30 +420,30 @@ using CtrlObjActionPtr = std::shared_ptr<CtrlObjAction>;
 class CtrlObj : public MarkerState
 {
 public:
-        CtrlObj(const P& origin, int max_dist, SpellSkill skill);
+    CtrlObj(const P& origin, int max_dist, SpellSkill skill);
 
 protected:
-        void on_start_hook() override;
+    void on_start_hook() override;
 
-        void on_moved() override;
+    void on_moved() override;
 
-        void handle_input(const io::InputData& input) override;
+    void handle_input(const io::InputData& input) override;
 
 private:
-        int current_dist() const;
+    int current_dist() const;
 
-        bool is_allowed_at_dist() const;
+    bool is_allowed_at_dist() const;
 
-        void set_terrain();
-        void set_possible_actions();
+    void set_terrain();
+    void set_possible_actions();
 
-        CtrlObjActionPtr query_control() const;
+    CtrlObjActionPtr query_control() const;
 
-        P m_origin;
-        int m_max_dist;
-        SpellSkill m_skill;
-        std::vector<CtrlObjActionPtr> m_possible_actions {};
-        terrain::Terrain* m_terrain {nullptr};
+    P m_origin;
+    int m_max_dist;
+    SpellSkill m_skill;
+    std::vector<CtrlObjActionPtr> m_possible_actions {};
+    terrain::Terrain* m_terrain {nullptr};
 };
 
 #endif  // MARKER_HPP
