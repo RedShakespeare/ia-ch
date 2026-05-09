@@ -1322,19 +1322,24 @@ void Spell::cast(
         }
 
         // Disable tenebrous spell for the player?
-        if (actor::is_player(caster) &&
+        const bool should_forget_spell =
+            actor::is_player(caster) &&
             is_tenebrous() &&
-            (spell_src == SpellSrc::learned)) {
+            (spell_src == SpellSrc::learned);
+
+        if (should_forget_spell) {
             player_spells::forget_spell(id());
         }
     }
 
-    if (actor::is_player(caster) &&
+    const bool allow_side_effect =
+        actor::is_player(caster) &&
         actor::is_alive(*caster) &&
         !player_bon::is_bg(Bg::exorcist) &&
         allow_cast &&
-        (base_max_cost(skill, caster) > 0) &&
-        rnd::one_in(7)) {
+        (base_max_cost(skill, caster) > 0);
+
+    if (allow_side_effect && rnd::one_in(7)) {
         spell_side_effects::run_random_side_effect(*caster);
     }
 

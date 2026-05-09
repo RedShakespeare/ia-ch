@@ -17,6 +17,7 @@
 #include "array2.hpp"
 #include "debug.hpp"
 #include "game.hpp"
+#include "game_time.hpp"
 #include "global.hpp"
 #include "inventory.hpp"
 #include "item_data.hpp"
@@ -127,10 +128,7 @@ void init()
     for (size_t i = 0; i < nr_combinable_names; ++i) {
         for (size_t ii = 0; ii < nr_combinable_names; ii++) {
             if (i != ii) {
-                s_fake_names.push_back(
-                    combinable_names[i] +
-                    " " +
-                    combinable_names[ii]);
+                s_fake_names.push_back(combinable_names[i] + " " + combinable_names[ii]);
             }
         }
     }
@@ -149,32 +147,21 @@ void init()
 
         const std::string& title = s_fake_names[idx];
 
-        d->base_name_un_id.names[(size_t)ItemNameType::plain] =
-            "Manuscript titled " + title;
-
-        d->base_name_un_id.names[(size_t)ItemNameType::plural] =
-            "Manuscripts titled " + title;
-
-        d->base_name_un_id.names[(size_t)ItemNameType::a] =
-            "a Manuscript titled " + title;
+        d->base_name_un_id.names[(size_t)ItemNameType::plain] = "Manuscript titled " + title;
+        d->base_name_un_id.names[(size_t)ItemNameType::plural] = "Manuscripts titled " + title;
+        d->base_name_un_id.names[(size_t)ItemNameType::a] = "a Manuscript titled " + title;
 
         s_fake_names.erase(s_fake_names.begin() + (int)idx);
 
         // True name
         const std::unique_ptr<const Scroll> scroll(
-            static_cast<const Scroll*>(
-                item::make(d->id, 1)));
+            static_cast<const Scroll*>(item::make(d->id, 1)));
 
         const std::string real_type_name = scroll->real_name();
 
-        const std::string real_name =
-            "Manuscript of " + real_type_name;
-
-        const std::string real_name_plural =
-            "Manuscripts of " + real_type_name;
-
-        const std::string real_name_a =
-            "a Manuscript of " + real_type_name;
+        const std::string real_name = "Manuscript of " + real_type_name;
+        const std::string real_name_plural = "Manuscripts of " + real_type_name;
+        const std::string real_name_a = "a Manuscript of " + real_type_name;
 
         d->base_name.names[(size_t)ItemNameType::plain] = real_name;
         d->base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
@@ -358,18 +345,13 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
     const bool is_identified_before = m_data->is_identified;
 
     if (is_identified_before) {
-        const std::string scroll_name =
-            name(
-                ItemNameType::a,
-                ItemNameInfo::none);
+        const std::string scroll_name = name(ItemNameType::a, ItemNameInfo::none);
 
         msg_log::add("I read " + scroll_name + "...");
     }
     else {
         // Not already identified
-        msg_log::add(
-            "I recite the forbidden incantations on the "
-            "manuscript...");
+        msg_log::add("I recite the forbidden incantations on the manuscript...");
     }
 
     const std::string crumble_str = "The Manuscript crumbles to dust.";
@@ -377,6 +359,8 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
     // Check properties which MAY allow reading, with a random chance
     if (!actor->m_properties.allow_read_chance(Verbose::yes)) {
         msg_log::add(crumble_str);
+
+        game_time::tick();
 
         TRACE_FUNC_END;
 
@@ -389,9 +373,9 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
 
     const SpellId id = spell->id();
 
-    const auto skill = player_skill_for_scroll(id);
+    const SpellSkill skill = player_skill_for_scroll(id);
 
-    const auto seen_foes = actor::seen_foes(*map::g_player);
+    const std::vector<actor::Actor*> seen_foes = actor::seen_foes(*map::g_player);
 
     spell->cast(map::g_player, skill, SpellSrc::manuscript, seen_foes);
 

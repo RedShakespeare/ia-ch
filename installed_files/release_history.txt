@@ -52,6 +52,7 @@
 - Sneak chance was calculated wrong - only the sneak chance of the hiding actor had any effect, but search skill of the searching actor, distance, light and darkness were also supposed to affect the chance. The values presented when viewing monsters were correct, but the ACTUAL chances when rolling for success were wrong. This bug has existed since v21.0.0.
 - Animations for ranged attacks and spells now only appear when there is something indicating why it happened (for example the player character saw or heard the source).
 - Some sound effects may not have played due to unsupported sample rate. Fixed by normalizing all audio files to 44100 Hz.
+- Failing to read a Manuscript due to things like being on fire did not spend a turn.
 
 ##############################
 # Modability, game data

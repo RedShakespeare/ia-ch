@@ -1332,11 +1332,9 @@ std::string occultist_domain_descr(const SpellDomain domain)
     std::vector<std::string> spell_names;
 
     for (const SpellId id : spell_ids) {
-        const Spell* const tmp_spell = spells::make(id);
+        const std::unique_ptr<Spell> tmp_spell(spells::make(id));
 
         spell_names.push_back(tmp_spell->name());
-
-        delete tmp_spell;
     }
 
     const std::string spell_list_str = text_format::make_comma_and_str(spell_names);
