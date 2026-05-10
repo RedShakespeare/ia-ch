@@ -46,7 +46,7 @@ TEST_CASE("Saving and loading the game")
         test_utils::init_all();
 
         // Item data
-        item::g_data[(size_t)item::Id::scroll_telep]
+        item::g_data[(size_t)item::Id::scroll_teleport]
             .is_spell_domain_known = true;
 
         item::g_data[(size_t)item::Id::scroll_control_object]
@@ -234,10 +234,10 @@ TEST_CASE("Saving and loading the game")
         saving::load_game();
 
         // Item data
-        REQUIRE(item::g_data[(size_t)item::Id::scroll_telep]
+        REQUIRE(item::g_data[(size_t)item::Id::scroll_teleport]
                     .is_spell_domain_known);
 
-        REQUIRE(!item::g_data[(size_t)item::Id::scroll_telep]
+        REQUIRE(!item::g_data[(size_t)item::Id::scroll_teleport]
                      .is_identified);
 
         REQUIRE(item::g_data[(size_t)item::Id::scroll_control_object]

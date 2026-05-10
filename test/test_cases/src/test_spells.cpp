@@ -265,12 +265,12 @@ TEST_CASE("Test spell shield")
 
         REQUIRE(mon->m_properties.has(prop::Id::r_spell));
 
-        darkbolt->run_effect(map::g_player, SpellSkill::basic, {});
+        darkbolt->run_effect(map::g_player, SpellSkill::basic, {}, PlayerAwareOfCast::yes);
 
         REQUIRE(mon->m_hp == actor::max_hp(*mon));
         REQUIRE(!mon->m_properties.has(prop::Id::r_spell));
 
-        darkbolt->run_effect(map::g_player, SpellSkill::basic, {});
+        darkbolt->run_effect(map::g_player, SpellSkill::basic, {}, PlayerAwareOfCast::yes);
 
         REQUIRE(mon->m_hp < actor::max_hp(*mon));
         REQUIRE(!mon->m_properties.has(prop::Id::r_spell));
@@ -286,12 +286,12 @@ TEST_CASE("Test spell shield")
 
         REQUIRE(mon->m_properties.has(prop::Id::r_spell));
 
-        darkbolt->run_effect(map::g_player, SpellSkill::basic, {});
+        darkbolt->run_effect(map::g_player, SpellSkill::basic, {}, PlayerAwareOfCast::yes);
 
         REQUIRE(mon->m_hp == actor::max_hp(*mon));
         REQUIRE(mon->m_properties.has(prop::Id::r_spell));
 
-        darkbolt->run_effect(map::g_player, SpellSkill::basic, {});
+        darkbolt->run_effect(map::g_player, SpellSkill::basic, {}, PlayerAwareOfCast::yes);
 
         REQUIRE(mon->m_hp == actor::max_hp(*mon));
         REQUIRE(mon->m_properties.has(prop::Id::r_spell));
@@ -319,7 +319,7 @@ TEST_CASE("Test spell reflection hits correct creature")
     // Cast darkbolt from monster 2 on the player.
     const auto* const darkbolt = spells::make(SpellId::darkbolt);
 
-    darkbolt->run_effect(mon_2, SpellSkill::basic, {});
+    darkbolt->run_effect(mon_2, SpellSkill::basic, {}, PlayerAwareOfCast::yes);
 
     // The player should be hit, ending spell shield.
     REQUIRE(!map::g_player->m_properties.has(prop::Id::r_spell));
@@ -332,7 +332,7 @@ TEST_CASE("Test spell reflection hits correct creature")
     actor::restore_hp(*mon_2, 999);
 
     // Cast darkbolt again, now it should hit the player (no spell shield).
-    darkbolt->run_effect(mon_2, SpellSkill::basic, {});
+    darkbolt->run_effect(mon_2, SpellSkill::basic, {}, PlayerAwareOfCast::yes);
 
     REQUIRE(map::g_player->m_hp <= actor::max_hp(*map::g_player));
     REQUIRE(mon_1->m_hp == actor::max_hp(*mon_1));
@@ -364,7 +364,7 @@ TEST_CASE("Test reflected knockback spell blocked by caster spell shield")
     // Cast knockback from monster 2 on the player.
     const auto* const knockback = spells::make(SpellId::knockback);
 
-    knockback->run_effect(mon, SpellSkill::basic, {map::g_player});
+    knockback->run_effect(mon, SpellSkill::basic, {map::g_player}, PlayerAwareOfCast::yes);
 
     // Neither the player nor the monster should have been hit by the spell,
     // but both should have lost spell shield.
@@ -377,7 +377,7 @@ TEST_CASE("Test reflected knockback spell blocked by caster spell shield")
     // Re-apply spell shield on the player and cast the spell again.
     map::g_player->m_properties.apply(prop::make(prop::Id::r_spell));
 
-    knockback->run_effect(mon, SpellSkill::basic, {map::g_player});
+    knockback->run_effect(mon, SpellSkill::basic, {map::g_player}, PlayerAwareOfCast::yes);
 
     // Now the spell should have hit the monster.
     REQUIRE(mon->m_pos == P(12, 10));
