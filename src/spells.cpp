@@ -5291,7 +5291,7 @@ SpellDomain SpellExpulsion::domain() const
 
 SpellShock SpellExpulsion::shock_type() const
 {
-    return SpellShock::mild;
+    return SpellShock::disturbing;
 }
 
 bool SpellExpulsion::is_noisy(const SpellSkill skill) const
@@ -5309,14 +5309,11 @@ std::string SpellExpulsion::name() const
 int SpellExpulsion::max_dist(SpellSkill skill) const
 {
     switch (skill) {
-    case SpellSkill::basic:        return 15;
-    case SpellSkill::expert:       return 30;
-    case SpellSkill::master:       return 45;
+    case SpellSkill::basic:        return 8;
+    case SpellSkill::expert:       return 14;
+    case SpellSkill::master:       return 20;
     case SpellSkill::transcendent: return -1;
     }
-
-    ASSERT(false);
-    return -1;
 }
 
 int SpellExpulsion::base_max_cost(
@@ -5324,8 +5321,9 @@ int SpellExpulsion::base_max_cost(
     const actor::Actor* const caster) const
 {
     (void)caster;
+    (void)skill;
 
-    return 6 - (int)skill;
+    return 6;
 }
 
 void SpellExpulsion::run_effect(
