@@ -1739,6 +1739,11 @@ void init()
     d.spell_cast_from_scroll = SpellId::spell_shield;
     g_data[(size_t)d.id] = d;
 
+    reset_data(d, ItemType::scroll);
+    d.id = Id::scroll_clairvoyance;
+    d.spell_cast_from_scroll = SpellId::clairvoyance;
+    g_data[(size_t)d.id] = d;
+
     reset_data(d, ItemType::potion);
     d.id = Id::potion_skill;
     g_data[(size_t)d.id] = d;
@@ -2314,9 +2319,8 @@ void init()
     d.base_descr = {
         "The eye of a powerful witch. Clutching it in one's hand will "
         "temporarily grant magical vision - doors, traps, stairs, and "
-        "other locations of interest are detected in the "
-        "surrounding area, and the presence of all items and creatures "
-        "is revealed."};
+        "other locations of interest are detected in the surrounding area, "
+        "and the presence of items and creatures is revealed."};
     d.type = ItemType::general;
     d.value = item::Value::major_treasure;
     d.weight = Weight::extra_light;

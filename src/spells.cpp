@@ -84,6 +84,7 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
     {"SPELL_BURN", SpellId::burn},
     {"SPELL_CANCELLATION", SpellId::cancellation},
     {"SPELL_CATACLYSM", SpellId::cataclysm},
+    {"SPELL_CLAIRVOYANCE", SpellId::clairvoyance},
     {"SPELL_CLEANSING_FIRE", SpellId::cleansing_fire},
     {"SPELL_CONTROL_OBJECT", SpellId::control_object},
     {"SPELL_CURSE", SpellId::curse},
@@ -120,13 +121,15 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
     {"SPELL_TEMPORAL_ECHO", SpellId::temporal_echo},
     {"SPELL_TERRIFY", SpellId::terrify},
     {"SPELL_THREAT_PROJECTION", SpellId::threat_projection},
-    {"SPELL_TRANSMUT", SpellId::transmut}};
+    {"SPELL_TRANSMUT", SpellId::transmut},
+};
 
 static const std::unordered_map<std::string, SpellSkill> s_str_to_spell_skill_map = {
     {"SPELLSKILL_BASIC", SpellSkill::basic},
     {"SPELLSKILL_EXPERT", SpellSkill::expert},
     {"SPELLSKILL_MASTER", SpellSkill::master},
-    {"SPELLSKILL_TRANSCENDENT", SpellSkill::transcendent}};
+    {"SPELLSKILL_TRANSCENDENT", SpellSkill::transcendent},
+};
 
 static const std::unordered_map<SpellDomain, ShockSrc> s_spell_domain_to_shock_type_map = {
     {SpellDomain::blood, ShockSrc::cast_intr_spell_blood},
@@ -137,7 +140,8 @@ static const std::unordered_map<SpellDomain, ShockSrc> s_spell_domain_to_shock_t
     {SpellDomain::time, ShockSrc::cast_intr_spell_time},
     {SpellDomain::warding, ShockSrc::cast_intr_spell_warding},
     // NOTE: Not all spells belong to a domain:
-    {SpellDomain::END, ShockSrc::cast_intr_spell_general}};
+    {SpellDomain::END, ShockSrc::cast_intr_spell_general},
+};
 
 static const std::string s_spell_resist_msg_player = "I resist the spell!";
 // This assumes the message starts with "Monster Name":
@@ -980,6 +984,9 @@ Spell* make(const SpellId spell_id)
 
     case SpellId::transmut:
         return new SpellTransmut();
+
+    case SpellId::clairvoyance:
+        return new SpellClairvoyance();
 
     case SpellId::invis:
         return new SpellInvis();
@@ -8034,6 +8041,106 @@ std::vector<std::string> SpellTransmut::descr_specific(
         "% chance for a +2 weapon, " +
         std::to_string(chance_weapon(skill, 3)) +
         "% chance for a +3 weapon, etc.");
+
+    return descr;
+}
+
+// -----------------------------------------------------------------------------
+// Clairvoyance
+// -----------------------------------------------------------------------------
+std::string SpellClairvoyance::name() const
+{
+    return "Clairvoyance";
+}
+
+SpellId SpellClairvoyance::id() const
+{
+    return SpellId::clairvoyance;
+}
+
+SpellDomain SpellClairvoyance::domain() const
+{
+    return SpellDomain::mind;
+}
+
+bool SpellClairvoyance::is_tenebrous() const
+{
+    return true;
+}
+
+bool SpellClairvoyance::is_noisy(const SpellSkill skill) const
+{
+    (void)skill;
+
+    return false;
+}
+
+SpellShock SpellClairvoyance::shock_type() const
+{
+    return SpellShock::disturbing;
+}
+
+Range SpellClairvoyance::duration_range(const SpellSkill skill) const
+{
+    if (skill == SpellSkill::transcendent) {
+        return {400, 800};
+    }
+    else {
+        return {150, 300};
+    }
+}
+
+int SpellClairvoyance::base_max_cost(
+    const SpellSkill skill,
+    const actor::Actor* const caster) const
+{
+    (void)skill;
+    (void)caster;
+
+    return 7;
+}
+
+void SpellClairvoyance::run_effect(
+    actor::Actor* const caster,
+    const SpellSkill skill,
+    const std::vector<actor::Actor*>& seen_targets,
+    PlayerAwareOfCast player_aware) const
+{
+    (void)seen_targets;
+    (void)player_aware;
+
+    auto* clairvoyance = static_cast<prop::Clairvoyance*>(prop::make(prop::Id::clairvoyance));
+
+    clairvoyance->set_duration(duration_range(skill).roll());
+
+    if (skill >= SpellSkill::expert) {
+        clairvoyance->set_allow_reveal_items();
+    }
+
+    if (skill >= SpellSkill::master) {
+        clairvoyance->set_allow_reveal_creatures();
+    }
+
+    caster->m_properties.apply(clairvoyance);
+}
+
+std::vector<std::string> SpellClairvoyance::descr_specific(
+    const SpellSkill skill) const
+{
+    std::vector<std::string> descr;
+
+    descr.emplace_back(
+        "Reveals the presence of doors, traps, stairs, and other "
+        "locations of interest in the surrounding area.");
+
+    if (skill == SpellSkill::expert) {
+        descr.emplace_back("Also reveals items.");
+    }
+    else if (skill >= SpellSkill::master) {
+        descr.emplace_back("Also reveals items and creatures.");
+    }
+
+    descr.push_back("The spell lasts " + duration_range(skill).str() + " turns.");
 
     return descr;
 }

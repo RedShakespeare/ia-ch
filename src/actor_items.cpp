@@ -522,13 +522,6 @@ static void make_item_set_zealot_spiked_mace(actor::Actor& actor)
 
 static void make_item_set_witches_eye(actor::Actor& actor)
 {
-    if (player_bon::has_trait(TraitId::adept_of_the_mind)) {
-        // Player has at least Lesser Clairvoyance, and thus already has permanent magic
-        // searching - this does not work well with providing temporary magic searching -
-        // just discard the item.
-        return;
-    }
-
     item::Item* item = item::make(item::Id::witch_eye);
 
     actor.m_inv.put_in_backpack(item);

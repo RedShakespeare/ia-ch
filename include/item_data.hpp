@@ -139,6 +139,7 @@ enum class Id
     scroll_blood_temper,
     scroll_cancellation,
     scroll_cataclysm,
+    scroll_clairvoyance,
     scroll_control_object,
     scroll_crimson_passage,
     scroll_curse,

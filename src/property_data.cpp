@@ -56,7 +56,7 @@ static const std::unordered_map<std::string, prop::Id> s_str_to_prop_id_map = {
     {"PROP_INVIS", prop::Id::invis},
     {"PROP_LIGHT_SENSITIVE", prop::Id::light_sensitive},
     {"PROP_MAGIC_CARAPACE", prop::Id::magic_carapace},
-    {"PROP_MAGIC_SEARCHING", prop::Id::magic_searching},
+    {"PROP_CLAIRVOYANCE", prop::Id::clairvoyance},
     {"PROP_MAJOR_CLAPHAM_SUMMON", prop::Id::major_clapham_summon},
     {"PROP_MELEE_COOLDOWN", prop::Id::melee_cooldown},
     {"PROP_MOVES_THROUGH_EARTH", prop::Id::moves_through_earth},
@@ -849,13 +849,10 @@ static void init_data_list()
     d.alignment = prop::PropAlignment::good;
     add(d);
 
-    d.id = prop::Id::magic_searching;
-    d.std_rnd_turns = Range(20, 60);
-    d.name = "Magic Searching";
-    d.name_short = "Magic Search";
-    d.descr =
-        "Magically detects objects and creatures in the surrounding "
-        "area.";
+    d.id = prop::Id::clairvoyance;
+    d.name = "Clairvoyance";
+    d.name_short = "Clairvoyance";
+    d.descr = "Magically reveals things in the surrounding area.";
     d.msg_start_player = "Hidden secrets are revealed to me.";
     d.msg_end_player = "I can no longer see hidden things.";
     d.allow_display_turns = true;

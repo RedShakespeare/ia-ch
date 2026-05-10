@@ -139,8 +139,8 @@ Prop* make(const prop::Id id)
     case prop::Id::erudition:
         return new Erudition();
 
-    case prop::Id::magic_searching:
-        return new MagicSearching();
+    case prop::Id::clairvoyance:
+        return new Clairvoyance();
 
     case prop::Id::entangled:
         return new Entangled();

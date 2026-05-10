@@ -28,8 +28,8 @@ enum class Id
     r_breath,
     r_disease,
     r_shock,
-    // NOTE: The purpose of this is only to prevent blindness for "eyeless" monsters, and is
-    // only intended as a natural property - not for e.g. gas masks.
+    // NOTE: The purpose of this is only to prevent blindness for "eyeless" monsters, and is only
+    // intended as a natural property - not for e.g. gas masks.
     //
     // TODO: It would probably be better if this was "eyeless".
     //
@@ -69,7 +69,7 @@ enum class Id
     doomed,
     premonition,
     erudition,
-    magic_searching,
+    clairvoyance,
     entangled,
     stuck,
     tele_ctrl,

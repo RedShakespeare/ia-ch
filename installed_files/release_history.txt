@@ -13,6 +13,13 @@
 - Made monster and player spell casting consistent regarding noise; monsters also cast silent spells without makings sounds. If a casting is seen and not heard, a "visual" message is printed instead (e.g. "The Cultist makes gestures in the air").
 - Spell shock cost is now shown in the spell casting menu.
 
+# Backgrounds (classes) and traits
+- Occultists can pick traits to improve spell domains again, instead of getting automatic spell upgrades. This is a reversion to how it worked prior to v20.0, but the spell domain traits now also have level requirements (4 and 8 for "lesser" and "greater" casting, respectively).
+- Occultists can still choose a spell domain at start, but this only affects starting spells.
+- The previous Clairvoyant ability to see hidden things is now available as a "tenebrous" spell instead (temporarily forgotten when cast).
+- Occultists also start with the Cool-headed trait.
+- Meditative now requires Strong Spirit instead of Stout Spirit (in addition to Cool-headed).
+
 # Status effects
 - "Doomed" is now considered an upgrade of "Cursed", a creature cannot be both cursed and doomed simultaneously.
 - Removed the health/spirit/mind "sap" status effects. The Mind Leech monster now (again) just directly causes shock when it attacks, and the "sapping" magical traps have been removed.
@@ -22,13 +29,6 @@
 - Renamed "Magic traps" to "Sigils" and made more diverse behavior possible. For example "triggering" them can happen in other ways than by stepping on them, and they may not just have a one-time effect.
 - "Mechanical traps" (e.g. spear traps) now (again) always trigger immediately instead of having a delay.
 - Removed the fire trap and the magical traps that "sapped" hit points or spirit points.
-
-# Backgrounds (classes) and traits
-- Occultists can pick traits to improve spell domains again, instead of getting automatic spell upgrades. This is a reversion to how it worked prior to v20.0, but the spell domain traits now also have level requirements (4 and 8 for "lesser" and "greater" casting, respectively).
-- Occultists can still choose a spell domain at start, but this only affects starting spells.
-- The previous Clairvoyant ability to see hidden things is now instead granted by the Mind spell traits.
-- Occultists also start with the Cool-headed trait.
-- Meditative now requires Strong Spirit instead of Stout Spirit (in addition to Cool-headed).
 
 # Convenience / quality of life features
 - Status effects from worn items (e.g. Asbestos Suite) are now displayed within asterisks in the player stats panel (e.g. "*Fire Res*"), and with "(from item)" clarified in the player character description page (e.g. "Fire Resistance (from item)").

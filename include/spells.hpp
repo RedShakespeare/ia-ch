@@ -78,6 +78,7 @@ enum class SpellId
     threat_projection,
 
     // Domain: Mind
+    clairvoyance,
     control_object,
     erudition,
     identify,
@@ -263,8 +264,7 @@ public:
 
     virtual SpellDomain domain() const = 0;
 
-    // Casting a memorized tenebrous spell disables it (i.e. single use,
-    // until it it re-enabled).
+    // Casting a memorized tenebrous spell disables it (i.e. single use, until it it re-enabled).
     virtual bool is_tenebrous() const
     {
         return false;
@@ -1258,6 +1258,37 @@ private:
     int chance_potion(SpellSkill skill) const;
 
     int chance_weapon(SpellSkill skill, int plus) const;
+
+    int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
+
+    bool is_noisy(SpellSkill skill) const override;
+};
+
+class SpellClairvoyance : public Spell
+{
+public:
+    SpellClairvoyance() = default;
+
+    std::string name() const override;
+
+    SpellId id() const override;
+
+    SpellDomain domain() const override;
+
+    bool is_tenebrous() const override;
+
+    SpellShock shock_type() const override;
+
+    std::vector<std::string> descr_specific(SpellSkill skill) const override;
+
+    void run_effect(
+        actor::Actor* caster,
+        SpellSkill skill,
+        const std::vector<actor::Actor*>& seen_targets,
+        PlayerAwareOfCast player_aware) const override;
+
+private:
+    Range duration_range(SpellSkill skill) const;
 
     int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 

@@ -25,7 +25,6 @@ namespace actor
 class Actor;
 
 enum class SpawnScattered;
-
 enum class AllowSpawnAdjToCurrentActors;
 
 }  // namespace actor
@@ -43,11 +42,11 @@ namespace prop
 {
 enum class PropSrc
 {
-    // Properties applied by potions, spells, etc, or "natural" properties
-    // for monsters (e.g. flying), or player properties gained by traits
+    // Properties applied by potions, spells, etc, or "natural" properties for monsters
+    // (e.g. flying), or player properties gained by traits.
     intr,
 
-    // Properties applied by items carried in inventory
+    // Properties applied by items carried in inventory.
     inv,
 
     END
@@ -697,20 +696,20 @@ public:
     int ability_mod(AbilityId ability) const override;
 };
 
-class MagicSearching : public Prop
+class Clairvoyance : public Prop
 {
 public:
-    MagicSearching() :
-        Prop(Id::magic_searching) {}
+    Clairvoyance() :
+        Prop(Id::clairvoyance) {}
 
     void save() const override;
     void load() override;
+
     PropEnded on_actor_turn() override;
 
-    void set_range(const int range)
-    {
-        m_range = range;
-    }
+    void on_applied() override;
+
+    void on_more(const Prop& new_prop) override;
 
     void set_allow_reveal_items()
     {
@@ -723,7 +722,8 @@ public:
     }
 
 private:
-    int m_range {1};
+    void run_detection() const;
+
     bool m_allow_reveal_items {false};
     bool m_allow_reveal_creatures {false};
 };

@@ -3544,33 +3544,43 @@ int HitChancePenaltyCurse::ability_mod(const AbilityId ability) const
     }
 }
 
-void MagicSearching::save() const
+void Clairvoyance::save() const
 {
-    saving::put_int(m_range);
-
     saving::put_bool(m_allow_reveal_items);
     saving::put_bool(m_allow_reveal_creatures);
 }
 
-void MagicSearching::load()
+void Clairvoyance::load()
 {
-    m_range = saving::get_int();
-
     m_allow_reveal_items = saving::get_bool();
     m_allow_reveal_creatures = saving::get_bool();
 }
 
-PropEnded MagicSearching::on_actor_turn()
+void Clairvoyance::on_applied()
+{
+    run_detection();
+}
+
+PropEnded Clairvoyance::on_actor_turn()
+{
+    run_detection();
+
+    return PropEnded::no;
+}
+
+void Clairvoyance::run_detection() const
 {
     ASSERT(actor::is_player(m_owner));
+
+    const int range = g_fov_radi_int;
 
     const int orig_x = map::g_player->m_pos.x;
     const int orig_y = map::g_player->m_pos.y;
 
-    const int x0 = std::max(0, orig_x - m_range);
-    const int y0 = std::max(0, orig_y - m_range);
-    const int x1 = std::min(map::w() - 1, orig_x + m_range);
-    const int y1 = std::min(map::h() - 1, orig_y + m_range);
+    const int x0 = std::max(0, orig_x - range);
+    const int y0 = std::max(0, orig_y - range);
+    const int x1 = std::min(map::w() - 1, orig_x + range);
+    const int y1 = std::min(map::h() - 1, orig_y + range);
 
     const std::vector<terrain::Id> terrain_types_revealed = {
         terrain::Id::trap,
@@ -3620,15 +3630,21 @@ PropEnded MagicSearching::on_actor_turn()
 
             if (actor::is_player(actor) ||
                 !actor::is_alive(*actor) ||
-                (king_dist(map::g_player->m_pos, p) > m_range)) {
+                (king_dist(map::g_player->m_pos, p) > range)) {
                 continue;
             }
 
             actor->make_player_aware_of_me(det_mon_multiplier);
         }
     }
+}
 
-    return PropEnded::no;
+void Clairvoyance::on_more(const Prop& new_prop)
+{
+    auto new_effect = static_cast<const Clairvoyance&>(new_prop);
+
+    m_allow_reveal_items = m_allow_reveal_items || new_effect.m_allow_reveal_items;
+    m_allow_reveal_creatures = m_allow_reveal_creatures || new_effect.m_allow_reveal_creatures;
 }
 
 bool CannotReadCurse::allow_read_absolute(const Verbose verbose) const

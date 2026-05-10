@@ -164,27 +164,16 @@ ConsumeItem MedicalBag::activate(actor::Actor* const actor)
     std::string start_msg;
 
     switch (m_current_action) {
-    case MedBagAction::quick_patch_up:
-        start_msg = "I patch up some minor injuries.";
-        break;
-
-    case MedBagAction::treat_wound:
-        start_msg = "I start treating a wound";
-        break;
-
-    case MedBagAction::sanitize_infection:
-        start_msg = "I start to sanitize an infection";
-        break;
+    case MedBagAction::quick_patch_up:     start_msg = "I patch up some minor injuries."; break;
+    case MedBagAction::treat_wound:        start_msg = "I start treating a wound"; break;
+    case MedBagAction::sanitize_infection: start_msg = "I start to sanitize an infection"; break;
 
     case MedBagAction::END:
         ASSERT(false);
         break;
     }
 
-    start_msg +=
-        " (" +
-        std::to_string(m_nr_turns_left_action) +
-        " turns)...";
+    start_msg += " (" + std::to_string(m_nr_turns_left_action) + " turns)...";
 
     msg_log::add(start_msg);
 
@@ -1107,22 +1096,30 @@ ConsumeItem WitchEye::activate(actor::Actor* actor)
 {
     (void)actor;
 
-    const auto item_name = name(ItemNameType::plain);
+    const std::string item_name = name(ItemNameType::plain);
+
+    // End any currently applied magic searching, otherwise this item could be used for "upgrading"
+    // an existing searching effct that has a long duration, so that it also detects more things,
+    // which is a strange interaction. This item is basically a master level Clairvoyance spell but
+    // with a short duration.
+    map::g_player->m_properties.end_prop(
+        prop::Id::clairvoyance,
+        {prop::PropEndAllowCallEndHook::no,
+         prop::PropEndAllowMsg::no,
+         prop::PropEndAllowHistoricMsg::no});
 
     msg_log::add("I clutch the " + item_name + "...");
 
-    auto* const search =
-        static_cast<prop::MagicSearching*>(
-            prop::make(prop::Id::magic_searching));
+    auto* const clairvoyance =
+        static_cast<prop::Clairvoyance*>(
+            prop::make(prop::Id::clairvoyance));
 
-    search->set_range(g_fov_radi_int);
+    clairvoyance->set_allow_reveal_items();
+    clairvoyance->set_allow_reveal_creatures();
 
-    search->set_allow_reveal_items();
-    search->set_allow_reveal_creatures();
+    clairvoyance->set_duration(rnd::range(60, 80));
 
-    search->set_duration(rnd::range(60, 80));
-
-    map::g_player->m_properties.apply(search);
+    map::g_player->m_properties.apply(clairvoyance);
 
     map::g_player->incr_shock(12.0, ShockSrc::use_strange_item);
 

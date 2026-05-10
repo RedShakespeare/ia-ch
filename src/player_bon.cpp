@@ -299,9 +299,6 @@ static void update_trait_data()
     d.id = TraitId::vigilant;
     d.title = "Vigilant";
     d.descr = "You are always aware of nearby creatures";
-    // Blocked for Occultists, since they have access to Clairvoyance (a strictly much better
-    // version of Vigilant when fully upgraded).
-    d.blocked_for_bgs = {Bg::occultist};
     set_trait_data(d);
 
     // --- Treasure Hunter ---
@@ -649,29 +646,11 @@ static void update_trait_data()
     d.title = "Adept of the Mind";
     d.descr =
         "Specialize in knowledge, foresight, and will. "
-        "Mind spells are cast at a higher skill level, "
-        "and you gain an intrinsic ability to sense "
-        "doors, traps, stairs, "
-        "and other locations of interest nearby.";
+        "Mind spells are cast at a higher skill level.";
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() {
         incr_spell_skills(SpellDomain::mind);
-
-        auto* searching =
-            static_cast<prop::MagicSearching*>(
-                prop::make(
-                    prop::Id::magic_searching));
-
-        searching->set_indefinite();
-
-        searching->set_range(g_fov_radi_int);
-
-        map::g_player->m_properties.apply(
-            searching,
-            prop::PropSrc::intr,
-            true,
-            Verbose::no);
     };
     set_trait_data(d);
 
@@ -687,17 +666,6 @@ static void update_trait_data()
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
     d.on_picked = []() {
         incr_spell_skills(SpellDomain::mind);
-
-        prop::Prop* const prop =
-            map::g_player->m_properties.prop(
-                prop::Id::magic_searching);
-
-        ASSERT(prop);
-
-        auto* const searching = static_cast<prop::MagicSearching*>(prop);
-
-        searching->set_allow_reveal_items();
-        searching->set_allow_reveal_creatures();
     };
     set_trait_data(d);
 
@@ -1401,7 +1369,7 @@ std::vector<SpellId> occultist_domian_starting_spells(const SpellDomain domain)
         return {SpellId::mirror_images, SpellId::terrify};
 
     case SpellDomain::mind:
-        return {SpellId::premonition, SpellId::control_object};
+        return {SpellId::premonition, SpellId::clairvoyance};
 
     case SpellDomain::time:
         return {SpellId::temporal_echo, SpellId::expulsion};
