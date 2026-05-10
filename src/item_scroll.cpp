@@ -36,6 +36,9 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+inline constexpr int s_scroll_low_spawn_chance = 5;
+inline constexpr int s_scroll_high_spawn_chance = 25;
+
 static std::vector<std::string> s_fake_names;
 
 static SpellSkill player_skill_for_scroll(const SpellId spell_id)
@@ -168,9 +171,9 @@ void init()
         d->base_name.names[(size_t)ItemNameType::a] = real_name_a;
     }
 
-    // Randomize scroll spawning chances - some scrolls have a "high"
-    // chance of spawning, and some have a "low" chance. The effect of this
-    // should be that there is less chance to find all spells.
+    // Randomize scroll spawning chances - some scrolls have a "high" chance of spawning, and some
+    // have a "low" chance. The effect of this should be that there is less chance to find all
+    // spells.
     rnd::shuffle(scroll_data);
 
     const size_t nr_scrolls = scroll_data.size();
@@ -179,8 +182,8 @@ void init()
     for (size_t i = 0; i < nr_scrolls; ++i) {
         scroll_data[i]->chance_to_incl_in_spawn_list =
             (i < nr_high_chance)
-            ? g_high_spawn_chance
-            : g_low_spawn_chance;
+            ? s_scroll_low_spawn_chance
+            : s_scroll_high_spawn_chance;
     }
 
     TRACE_FUNC_END;
