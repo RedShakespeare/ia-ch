@@ -4177,10 +4177,10 @@ SpellShock SpellInscribeBoundarySigil::shock_type() const
 Range SpellInscribeBoundarySigil::sigil_duration(const SpellSkill skill) const
 {
     switch (skill) {
-    case SpellSkill::basic:        return {4, 6};
-    case SpellSkill::expert:       return {4, 9};
-    case SpellSkill::master:       return {4, 12};
-    case SpellSkill::transcendent: return {7, 15};
+    case SpellSkill::basic:        return {5, 15};
+    case SpellSkill::expert:       return {6, 20};
+    case SpellSkill::master:       return {7, 25};
+    case SpellSkill::transcendent: return {8, 30};
     }
 
     ASSERT(false);
