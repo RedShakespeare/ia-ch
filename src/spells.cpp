@@ -4174,14 +4174,17 @@ SpellShock SpellInscribeBoundarySigil::shock_type() const
     return SpellShock::disturbing;
 }
 
-int SpellInscribeBoundarySigil::pct_chance_fade(const SpellSkill skill) const
+Range SpellInscribeBoundarySigil::sigil_duration(const SpellSkill skill) const
 {
-    if (skill == SpellSkill::transcendent) {
-        return 5;
+    switch (skill) {
+    case SpellSkill::basic:        return {4, 6};
+    case SpellSkill::expert:       return {4, 9};
+    case SpellSkill::master:       return {4, 12};
+    case SpellSkill::transcendent: return {7, 15};
     }
-    else {
-        return 60 - ((int)skill * 20);
-    }
+
+    ASSERT(false);
+    return {1, 1};
 }
 
 int SpellInscribeBoundarySigil::base_max_cost(
@@ -4263,7 +4266,7 @@ void SpellInscribeBoundarySigil::run_effect(
 
     auto* const boundary = static_cast<terrain::TrapBoundary*>(trap->trap_impl());
 
-    boundary->set_fade_chance_pct(pct_chance_fade(skill));
+    boundary->set_duration(sigil_duration(skill).roll());
 
     map::update_terrain(trap);
 
@@ -4278,13 +4281,15 @@ std::vector<std::string> SpellInscribeBoundarySigil::descr_specific(
     descr.emplace_back(
         "Inscribes a magical sigil upon the ground, "
         "preventing Outer Beings, Undead and Summoned creatures "
-        "from moving into it or making melee attacks across its boundary.");
+        "from entering it or making melee attacks across its boundary.");
 
     descr.emplace_back(
-        "Each attempt at such an action strains the sigil, "
-        "which may cause it to fade out with " +
-        std::to_string(pct_chance_fade(skill)) +
-        "% chance.");
+        "The sigil lasts for " +
+        sigil_duration(skill).str() +
+        " turns. "
+        "Its duration decreases each turn, and is also reduced whenever it prevents an action. "
+        "However, it can only expire completely by preventing an action, "
+        "or with a small chance on each turn.");
 
     descr.emplace_back("Can only be inscribed on floor, but may overwrite an existing sigil.");
 
@@ -5314,6 +5319,9 @@ int SpellExpulsion::max_dist(SpellSkill skill) const
     case SpellSkill::master:       return 20;
     case SpellSkill::transcendent: return -1;
     }
+
+    ASSERT(false);
+    return -1;
 }
 
 int SpellExpulsion::base_max_cost(

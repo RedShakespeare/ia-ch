@@ -1220,7 +1220,7 @@ public:
         PlayerAwareOfCast player_aware) const override;
 
 private:
-    int pct_chance_fade(SpellSkill skill) const;
+    Range sigil_duration(SpellSkill skill) const;
 
     int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 

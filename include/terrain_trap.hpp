@@ -191,6 +191,8 @@ public:
 
     virtual void on_bumped(actor::Actor& actor_bumping) = 0;
 
+    virtual void on_new_turn() {};
+
     virtual std::string name(Article article) const = 0;
 
     virtual Color color() const = 0;
@@ -260,6 +262,10 @@ public:
 
     // Roll for destruction of the sigil. A message is printed regardless of fail or success (if
     // the terrain is seen).
+    //
+    // This is possible to override if the specific Sigil shall use a different system than a random
+    // chance for destruction (e.g. count down number of turns active).
+    //
     void strain() override;
 
     // Percent chance to fade when strained.
@@ -453,12 +459,22 @@ public:
     std::string name(Article article) const override;
     Color color() const override;
 
+    void strain() override;
+
+    void on_new_turn() override;
+
     int fade_chance_pct() const override;
 
-    void set_fade_chance_pct(int value);
+    // Set duration. This duration is decreased each turn, and also each time the sigil prevents an
+    // action. Counting down from one to zero (destroying the sigil) can only happen by preventing
+    // an action, or by a small chance each turn (as a cleanup mechanism in case the player spams
+    // the spell that places these sigils).
+    void set_duration(int duration);
 
 private:
-    int m_pct_chance_fade {0};
+    void destroy();
+
+    int m_duration {0};
 };
 
 }  // namespace terrain

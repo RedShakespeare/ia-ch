@@ -449,6 +449,7 @@ bool Trap::is_sigil() const
 
 void Trap::on_new_turn_hook()
 {
+    m_trap_impl->on_new_turn();
 }
 
 AllowAction Trap::pre_bump(actor::Actor& actor_bumping)
@@ -1651,14 +1652,51 @@ Color TrapBoundary::color() const
 
 int TrapBoundary::fade_chance_pct() const
 {
-    return m_pct_chance_fade;
+    // Should never be called, as strain() is overridden.
+    ASSERT(false);
+
+    return 100;
 }
 
-void TrapBoundary::set_fade_chance_pct(const int value)
+void TrapBoundary::set_duration(const int duration)
 {
-    ASSERT((value >= 0) && (value <= 100));
+    ASSERT(duration > 0);
 
-    m_pct_chance_fade = value;
+    m_duration = duration;
+}
+
+void TrapBoundary::strain()
+{
+    --m_duration;
+
+    if (m_duration <= 0) {
+        destroy();
+    }
+    else {
+        communicate_sigil_strained(*m_base_trap);
+    }
+}
+
+void TrapBoundary::on_new_turn()
+{
+    const int allow_destroy_chance_per_mille = 5;
+
+    if (m_duration > 1 || rnd::per_mille(allow_destroy_chance_per_mille)) {
+        --m_duration;
+    }
+
+    if (m_duration <= 0) {
+        destroy();
+    }
+}
+
+void TrapBoundary::destroy()
+{
+    communicate_sigil_destroyed(*m_base_trap);
+
+    m_base_trap->destroy();
+
+    map::update_vision();
 }
 
 }  // namespace terrain

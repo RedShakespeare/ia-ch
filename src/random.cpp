@@ -146,6 +146,11 @@ bool percent(const int pct_chance)
     return pct_chance >= range(1, 100);
 }
 
+bool per_mille(const int per_mille_chance)
+{
+    return per_mille_chance >= range(1, 1000);
+}
+
 int weighted_choice(const std::vector<int>& weights)
 {
     ASSERT(!weights.empty());

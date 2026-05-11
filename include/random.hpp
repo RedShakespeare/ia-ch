@@ -118,6 +118,8 @@ int range_binom(int v1, int v2, double p);
 
 bool percent(int pct_chance);
 
+bool per_mille(int per_mille_chance);
+
 int weighted_choice(const std::vector<int>& weights);
 
 template <typename T>
