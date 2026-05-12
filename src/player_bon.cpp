@@ -1375,8 +1375,7 @@ std::vector<SpellId> occultist_domian_starting_spells(const SpellDomain domain)
         return {SpellId::temporal_echo, SpellId::expulsion};
 
     case SpellDomain::warding:
-        // TODO: Temporary for debug:
-        return {SpellId::heal, SpellId::inscribe_boundary_sigil, SpellId::mirror_images};
+        return {SpellId::heal, SpellId::inscribe_boundary_sigil};
 
     case SpellDomain::blood:
     case SpellDomain::END:
