@@ -264,7 +264,7 @@ public:
     // the terrain is seen).
     //
     // This is possible to override if the specific Sigil shall use a different system than a random
-    // chance for destruction (e.g. count down number of turns active).
+    // chance for destruction (e.g. count down number of turns active, or something else).
     //
     void strain() override;
 
@@ -465,16 +465,13 @@ public:
 
     int fade_chance_pct() const override;
 
-    // Set duration. This duration is decreased each turn, and also each time the sigil prevents an
-    // action. Counting down from one to zero (destroying the sigil) can only happen by preventing
-    // an action, or by a small chance each turn (as a cleanup mechanism in case the player spams
-    // the spell that places these sigils).
-    void set_duration(int duration);
+    void set_nr_actions_to_prevent(int nr);
 
 private:
     void destroy();
 
-    int m_duration {0};
+    // Number of actions left that it can prevent, until it fades.
+    int m_nr_actions_countdown {1};
 };
 
 }  // namespace terrain

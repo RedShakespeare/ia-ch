@@ -1658,18 +1658,18 @@ int TrapBoundary::fade_chance_pct() const
     return 100;
 }
 
-void TrapBoundary::set_duration(const int duration)
+void TrapBoundary::set_nr_actions_to_prevent(const int nr)
 {
-    ASSERT(duration > 0);
+    ASSERT(nr > 0);
 
-    m_duration = duration;
+    m_nr_actions_countdown = nr;
 }
 
 void TrapBoundary::strain()
 {
-    --m_duration;
+    --m_nr_actions_countdown;
 
-    if (m_duration <= 0) {
+    if (m_nr_actions_countdown <= 0) {
         destroy();
     }
     else {
@@ -1679,13 +1679,9 @@ void TrapBoundary::strain()
 
 void TrapBoundary::on_new_turn()
 {
-    const int allow_destroy_chance_per_mille = 5;
+    const int destroy_one_in_n = 200;
 
-    if (m_duration > 1 || rnd::per_mille(allow_destroy_chance_per_mille)) {
-        --m_duration;
-    }
-
-    if (m_duration <= 0) {
+    if (rnd::one_in(destroy_one_in_n)) {
         destroy();
     }
 }

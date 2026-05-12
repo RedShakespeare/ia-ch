@@ -1220,7 +1220,7 @@ public:
         PlayerAwareOfCast player_aware) const override;
 
 private:
-    Range sigil_duration(SpellSkill skill) const;
+    Range nr_actions_prevented(SpellSkill skill) const;
 
     int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 

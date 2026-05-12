@@ -4174,13 +4174,13 @@ SpellShock SpellInscribeBoundarySigil::shock_type() const
     return SpellShock::disturbing;
 }
 
-Range SpellInscribeBoundarySigil::sigil_duration(const SpellSkill skill) const
+Range SpellInscribeBoundarySigil::nr_actions_prevented(const SpellSkill skill) const
 {
     switch (skill) {
-    case SpellSkill::basic:        return {5, 15};
-    case SpellSkill::expert:       return {6, 20};
-    case SpellSkill::master:       return {7, 25};
-    case SpellSkill::transcendent: return {8, 30};
+    case SpellSkill::basic:        return {3, 9};
+    case SpellSkill::expert:       return {3, 12};
+    case SpellSkill::master:       return {3, 15};
+    case SpellSkill::transcendent: return {6, 20};
     }
 
     ASSERT(false);
@@ -4266,7 +4266,7 @@ void SpellInscribeBoundarySigil::run_effect(
 
     auto* const boundary = static_cast<terrain::TrapBoundary*>(trap->trap_impl());
 
-    boundary->set_duration(sigil_duration(skill).roll());
+    boundary->set_nr_actions_to_prevent(nr_actions_prevented(skill).roll());
 
     map::update_terrain(trap);
 
@@ -4284,12 +4284,10 @@ std::vector<std::string> SpellInscribeBoundarySigil::descr_specific(
         "from entering it or making melee attacks across its boundary.");
 
     descr.emplace_back(
-        "The sigil lasts for " +
-        sigil_duration(skill).str() +
-        " turns. "
-        "Its duration decreases each turn, and is also reduced whenever it prevents an action. "
-        "However, it can only expire completely by preventing an action, "
-        "or with a small chance on each turn.");
+        "The sigil can prevent " +
+        nr_actions_prevented(skill).str() +
+        " actions before it fades, "
+        "though it also has a small chance to fade each turn.");
 
     descr.emplace_back("Can only be inscribed on floor, but may overwrite an existing sigil.");
 
