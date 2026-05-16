@@ -404,7 +404,7 @@ void PropHandler::apply(
 
     if (actor::is_player(m_owner) &&
         prop->m_data->force_interrupt_player_on_start) {
-        map::g_player->interrupt_actions(ForceInterruptActions::yes);
+        map::g_player->interrupt_all_actions(ForceInterruptActions::yes);
     }
 
     if (verbose == Verbose::yes) {
@@ -624,7 +624,7 @@ bool PropHandler::handle_apply_more_on_existing_intr_prop(
     }
 
     if (actor::is_player(m_owner) && old_prop->m_data->force_interrupt_player_on_start) {
-        map::g_player->interrupt_actions(ForceInterruptActions::yes);
+        map::g_player->interrupt_all_actions(ForceInterruptActions::yes);
     }
 
     return true;

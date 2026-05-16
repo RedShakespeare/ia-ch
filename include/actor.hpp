@@ -227,13 +227,17 @@ public:
     item::Wpn* make_kick_wpn(const Actor& mon_kicked) const;
     void set_unarmed_wpn(item::Wpn* wpn) const;
     void kick_mon(Actor& defender);
-    // Only interrupts repeated commands like waiting.
-    void on_log_msg_printed();
-    // Aborts e.g. healing. "is_forced" controlls if querying is allowed
-    // (for example if the player is seeing a monster, the game shall query
-    // the player to continue, but if the player is knocked back the healing
-    // should just be aborted).
-    void interrupt_actions(ForceInterruptActions is_forced);
+    // Interrupt only things like long wait and auto move, without querying the player.
+    void interrupt_auto_repeated_commands();
+    // Abort auto repeated commands, and also long actions like using the Medical Bag or equipping
+    // items. "is_forced" controls if querying is allowed (for example if the player is seeing a
+    // monster, the game shall query the player to continue, but if the player is knocked back the
+    // healing should just be aborted).
+    void interrupt_all_actions(ForceInterruptActions is_forced);
+    bool is_busy() const;
+    // Is the player busy with something that would result in a query on interruption? ("Do you want
+    // to continue?")
+    bool is_busy_queryable_action() const;
     int enc_percent() const;
     int carry_weight_lmt() const;
     void set_auto_move(Dir dir);
@@ -241,16 +245,11 @@ public:
     void update_tmp_shock();
     void add_shock_from_seen_monsters();
     void incr_insanity();
-    bool is_busy() const;
-    // Is the player busy with something that would result in a query on
-    // interruption? ("Do you want to continue?")
-    bool is_busy_queryable_action() const;
-    // Randomly prints a message such as "I sense an object of great power
-    // here" if there is a major treasure on the map (on the floor or in a
-    // container), and the player is a Rogue
+    // Randomly prints a message such as "I sense an object of great power here" if there is a major
+    // treasure on the map (on the floor or in a container), and the player is a Rogue
     void item_feeling();
-    // Randomly prints a message such as "A chill runs down my spine" if
-    // there are unique monsters on the map, and the player is a Rogue
+    // Randomly prints a message such as "A chill runs down my spine" if there are unique monsters
+    // on the map, and the player is a Rogue.
     void mon_feeling() const;
 
     // ==================================================

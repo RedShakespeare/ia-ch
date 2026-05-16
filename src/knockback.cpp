@@ -161,7 +161,7 @@ void run(
     }
 
     if (is_player) {
-        map::g_player->interrupt_actions(ForceInterruptActions::yes);
+        map::g_player->interrupt_all_actions(ForceInterruptActions::yes);
     }
 
     const P d = (actor.m_pos - attacked_from_pos).signs();

@@ -153,7 +153,7 @@ static void erase_destroyed_actor(
 static void run_std_turn_events()
 {
     if (game_time::g_is_magic_descend_nxt_std_turn) {
-        map::g_player->interrupt_actions(ForceInterruptActions::yes);
+        map::g_player->interrupt_all_actions(ForceInterruptActions::yes);
 
         const prop::PropEndConfig prop_end_config(
             prop::PropEndAllowCallEndHook::no,

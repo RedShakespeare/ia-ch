@@ -53,6 +53,8 @@
 - Animations for ranged attacks and spells now only appear when there is something indicating why it happened (for example the player character saw or heard the source).
 - Some sound effects may not have played due to unsupported sample rate. Fixed by normalizing all audio files to 44100 Hz.
 - Failing to read a Manuscript due to things like being on fire did not spend a turn.
+- In some situations where monsters appeared, player actions were not interupted (one result of this was that a normal speed monster could sometimes step around the corner and attack the player, while auto waiting with 's').
+- And more bug fixes...
 
 ##############################
 # Modability, game data

@@ -56,7 +56,6 @@ enum class MsgFadeState
     allow_start_fade,
     is_fading,
     done,
-    prevent_fade,
 };
 
 static MsgFadeState s_msg_fade_state = MsgFadeState::allow_start_fade;
@@ -190,10 +189,7 @@ static std::string convert_to_frenzied_str(const std::string& str)
     return frenzied_str;
 }
 
-static void draw_line(
-    const std::vector<Msg>& line,
-    const Panel panel,
-    const P& pos)
+static void draw_line(const std::vector<Msg>& line, const Panel panel, const P& pos)
 {
     const int shade_pct =
         (s_msg_fade_state == MsgFadeState::is_fading)
@@ -297,15 +293,13 @@ static void on_msg_not_fit_on_line(
     for (size_t i = 0; i < lines.size(); ++i) {
         const bool is_last_msg = (i == (lines.size() - 1));
 
-        // If the message is interrupting, only allow this for the last line of the split
-        // message.
+        // If the message is interrupting, only allow this for the last line of the split message.
         const auto interrupt_actions_current_line =
             is_last_msg
             ? interrupt_player
             : MsgInterruptPlayer::no;
 
-        // If a more prompt was requested through the parameter, only allow this on the last
-        // message.
+        // If a more prompt was requested, only allow this on the last message.
         const auto add_more_prompt_current_line =
             is_last_msg
             ? add_more_prompt_on_msg
@@ -617,43 +611,32 @@ void add(
 
     // Messages may stop long actions like first aid.
     if (interrupt_player == MsgInterruptPlayer::yes) {
-        map::g_player->interrupt_actions(ForceInterruptActions::no);
+        map::g_player->interrupt_all_actions(ForceInterruptActions::no);
     }
 
-    // Some actions are always interrupted by messages, regardless of the
+    // Auto repeated commands are always interrupted, regardless of the
     // "interrupt_all_player_actions" parameter.
-    map::g_player->on_log_msg_printed();
+    map::g_player->interrupt_auto_repeated_commands();
 }
 
 void more_prompt()
 {
-    // If the current log is empty, do nothing.
-    if (s_lines[0].messages.empty()) {
-        return;
+    if (!s_lines[0].messages.empty()) {
+        map::g_player->interrupt_auto_repeated_commands();
+
+        s_is_waiting_more_pompt = true;
+
+        states::draw();
+
+        query::wait_for_msg_more();
+
+        s_is_waiting_more_pompt = false;
+
+        // Force immediate clearing of the log.
+        s_msg_fade_state = MsgFadeState::done;
+
+        clear();
     }
-
-    // This will prevent messages from fading out while waiting for the "more" prompt.
-    //
-    // This could otherwise happen in cases where the client code is calling "more_prompt"
-    // directly while we are fading out another message.
-    //
-    // TODO: Is this still relevant? Or is that from when messages just faded out automatically
-    // in real time (as opposed to fading when the player turns start)?
-    //
-    s_msg_fade_state = MsgFadeState::prevent_fade;
-
-    s_is_waiting_more_pompt = true;
-
-    states::draw();
-
-    query::wait_for_msg_more();
-
-    s_is_waiting_more_pompt = false;
-
-    // Force immediate clearing of the log.
-    s_msg_fade_state = MsgFadeState::done;
-
-    clear();
 }
 
 bool is_waiting_more_prompt()

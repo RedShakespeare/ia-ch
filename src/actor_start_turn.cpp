@@ -264,21 +264,21 @@ static bool player_try_spot_sneaking_mon(
 
 static void warn_player_about_mon(const actor::Actor& actor)
 {
-    // NOTE: To avoid redundant messages, a message is only printed if the
-    // message log is empty, otherwise only a "more" prompt is added.
+    // NOTE: We try to only print a message if necessary, to avoid spamming the player.
 
-    const bool is_busy = map::g_player->is_busy_queryable_action();
+    map::g_player->interrupt_auto_repeated_commands();
 
-    if (msg_log::is_empty() || is_busy) {
-        // The message log is empty, or player is busy with an action,
-        // print a warning with a message.
+    const bool is_busy_queryable_action = map::g_player->is_busy_queryable_action();
 
-        const auto name_a = text_format::first_to_upper(actor::name_a(actor));
+    if (msg_log::is_empty() || is_busy_queryable_action) {
+        // The message log is empty, or player is busy with an action, print a warning message.
 
-        // If the player is busy, there is no need for a "more" prompt,
-        // since the player will be queried to abort anyway.
-        const auto add_more_prompt =
-            is_busy
+        const std::string name_a = text_format::first_to_upper(actor::name_a(actor));
+
+        // If the player is busy with an action that will yield a question, there is no need for a
+        // "more" prompt, since the player will be queried to abort anyway.
+        const MorePromptOnMsg add_more_prompt =
+            is_busy_queryable_action
             ? MorePromptOnMsg::no
             : MorePromptOnMsg::yes;
 
@@ -289,8 +289,8 @@ static void warn_player_about_mon(const actor::Actor& actor)
             add_more_prompt);
     }
     else {
-        // The message log contains messages, and player is not busy,
-        // just run a "more" prompt.
+        // The message log contains messages, and player is not busy with an action that we should
+        // ask about, just run a "more" prompt.
         msg_log::more_prompt();
     }
 }
@@ -312,8 +312,8 @@ static void update_player_seen_monster(actor::Actor& mon)
         actor::player_state::g_seen_mon_to_warn_about = &mon;
     }
     else {
-        // If we should not warn about this seen monster, it means we
-        // should not warn about any seen monster.
+        // If we should not warn about this seen monster, it means we should not warn about any seen
+        // monster.
         actor::player_state::g_seen_mon_to_warn_about = nullptr;
     }
 

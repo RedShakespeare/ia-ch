@@ -289,7 +289,7 @@ static int calc_new_dmg_for_light_sensitive(
 
 static void on_light_sensitive_player_hit_by_light()
 {
-    map::g_player->interrupt_actions(ForceInterruptActions::no);
+    map::g_player->interrupt_all_actions(ForceInterruptActions::no);
 
     msg_log::add("I am wracked by light!", colors::msg_bad());
 }
@@ -342,7 +342,7 @@ static void on_player_hit(
     const bool is_small_pure_damage = ((dmg_type == DmgType::pure) && (dmg <= 1));
 
     if (!is_small_pure_damage) {
-        map::g_player->interrupt_actions(ForceInterruptActions::yes);
+        map::g_player->interrupt_all_actions(ForceInterruptActions::yes);
     }
 
     map::g_player->incr_shock(1.0, ShockSrc::take_damage);
@@ -442,7 +442,7 @@ void hit(
             dmg = absorb_dmg_for_prolonged_life_exorcist(dmg);
 
             if (dmg <= 0) {
-                map::g_player->interrupt_actions(ForceInterruptActions::no);
+                map::g_player->interrupt_all_actions(ForceInterruptActions::no);
 
                 return;
             }
@@ -500,7 +500,7 @@ void hit_sp(
 
     if (actor.m_sp > 0) {
         if (actor::is_player(&actor)) {
-            map::g_player->interrupt_actions(ForceInterruptActions::no);
+            map::g_player->interrupt_all_actions(ForceInterruptActions::no);
         }
 
         return;

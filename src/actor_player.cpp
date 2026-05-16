@@ -904,19 +904,16 @@ int Actor::insanity() const
     return result;
 }
 
-void Actor::on_log_msg_printed()
+void Actor::interrupt_auto_repeated_commands()
 {
-    // NOTE: There cannot be any calls to msg_log::add() in this function,
-    // as that would cause infinite recursion!
+    // NOTE: There cannot be any calls to msg_log::add() in this function, as that would cause
+    // infinite recursion!
 
-    // All messages abort waiting
     player_state::g_wait_turns_left = -1;
-
-    // All messages abort quick move
     player_state::g_auto_move_dir = Dir::END;
 }
 
-void Actor::interrupt_actions(const ForceInterruptActions is_forced)
+void Actor::interrupt_all_actions(const ForceInterruptActions is_forced)
 {
     if (player_state::g_active_medical_bag) {
         player_state::g_active_medical_bag->interrupted(is_forced);
@@ -925,7 +922,6 @@ void Actor::interrupt_actions(const ForceInterruptActions is_forced)
     interrupt_equip(is_forced);
 
     player_state::g_wait_turns_left = -1;
-
     player_state::g_auto_move_dir = Dir::END;
 }
 
