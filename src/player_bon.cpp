@@ -1363,7 +1363,7 @@ std::vector<SpellId> occultist_domian_starting_spells(const SpellDomain domain)
         return {SpellId::darkbolt, SpellId::gnawing_torrent};
 
     case SpellDomain::corruption:
-        return {SpellId::aura_of_decay, SpellId::curse};
+        return {SpellId::enfeeble, SpellId::aura_of_decay};
 
     case SpellDomain::illusion:
         return {SpellId::mirror_images, SpellId::terrify};
