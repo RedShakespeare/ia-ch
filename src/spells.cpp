@@ -6168,7 +6168,7 @@ int SpellTemporalEcho::pct_damage_dealt(const SpellSkill skill) const
 
 Range SpellTemporalEcho::duration_range() const
 {
-    return {5, 7};
+    return {6, 8};
 }
 
 SpellId SpellTemporalEcho::id() const
