@@ -214,7 +214,7 @@ void run()
         msg_log::more_prompt();
     }
 
-    map::g_player->incr_shock(6.0, ShockSrc::misc);
+    map::g_player->incr_shock(3.0, ShockSrc::misc);
 
     TRACE_FUNC_END;
 }
