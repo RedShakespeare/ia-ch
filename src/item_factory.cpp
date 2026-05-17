@@ -323,6 +323,7 @@ Item* make(const Id item_id, const int nr_items)
     case Id::scroll_threat_projection:
     case Id::scroll_bless:
     case Id::scroll_cancellation:
+    case Id::scroll_identify:
     case Id::scroll_inscribe_boundary_sigil:
     case Id::scroll_darkbolt:
     case Id::scroll_gnawing_torrent:

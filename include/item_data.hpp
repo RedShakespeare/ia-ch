@@ -132,7 +132,6 @@ enum class Id
     torture_collar,
 
     // Scrolls
-    // NOTE: There is NO scroll for the identify spell, this is intentional.
     scroll_aura_of_decay,
     scroll_aza_gaze,
     scroll_bless,
@@ -150,6 +149,7 @@ enum class Id
     scroll_gnawing_torrent,
     scroll_haste,
     scroll_heal,
+    scroll_identify,
     scroll_inscribe_boundary_sigil,
     scroll_invis,
     scroll_light,
