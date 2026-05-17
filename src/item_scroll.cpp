@@ -37,7 +37,7 @@
 // Private
 // -----------------------------------------------------------------------------
 inline constexpr int s_scroll_low_spawn_chance = 5;
-inline constexpr int s_scroll_high_spawn_chance = 25;
+inline constexpr int s_scroll_high_spawn_chance = 20;
 
 static std::vector<std::string> s_fake_names;
 
