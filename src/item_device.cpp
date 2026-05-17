@@ -423,8 +423,7 @@ ConsumeItem ForceField::run_effect()
     for (const auto& d : dir_utils::g_dir_list) {
         const auto p = map::g_player->m_pos + d;
 
-        if (blocked_parser.run(p) &&
-            !specific_allowed_terrains_parser.run(p)) {
+        if (blocked_parser.run(p) && !specific_allowed_terrains_parser.run(p)) {
             continue;
         }
 
@@ -440,11 +439,11 @@ ConsumeItem ForceField::run_effect()
             }
         }
 
+        map::g_terrain.at(p)->stop_burning();
+
         auto* const force_field =
             static_cast<terrain::ForceField*>(
-                terrain::make(
-                    terrain::Id::force_field,
-                    p));
+                terrain::make(terrain::Id::force_field, p));
 
         force_field->set_nr_turns(duration);
 

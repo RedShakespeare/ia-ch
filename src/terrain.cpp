@@ -405,8 +405,27 @@ void Terrain::on_new_turn()
     on_new_turn_hook();
 }
 
+void Terrain::stop_burning()
+{
+    if (m_burn_state == BurnState::burning) {
+        m_burn_state = BurnState::not_burned;
+    }
+}
+
 void Terrain::try_start_burning(const Verbose verbose)
 {
+    // Burning cannot spread into force fields.
+    const bool has_force_field = std::any_of(
+        std::begin(game_time::g_mobs),
+        std::end(game_time::g_mobs),
+        [this](const Terrain* mob) {
+            return (mob->id() == Id::force_field) && (mob->pos() == m_pos);
+        });
+
+    if (has_force_field) {
+        return;
+    }
+
     clear_gore();
 
     const bool is_not_burned = m_burn_state == BurnState::not_burned;
@@ -2369,8 +2388,7 @@ void Carpet::hit(
 
 WasDestroyed Carpet::on_finished_burning()
 {
-    auto* const floor =
-        static_cast<Floor*>(make(Id::floor, m_pos));
+    auto* const floor = static_cast<Floor*>(make(Id::floor, m_pos));
 
     floor->m_burn_state = BurnState::has_burned;
 

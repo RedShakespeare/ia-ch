@@ -148,6 +148,8 @@ public:
         return m_burn_state == BurnState::burning;
     }
 
+    void stop_burning();
+
     void try_make_bloody();
 
     void try_put_gore();
