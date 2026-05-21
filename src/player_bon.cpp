@@ -890,7 +890,7 @@ static void update_trait_data()
     d.id = TraitId::prolonged_life;
     d.title = "Prolonged Life";
     d.descr =
-        "Any fatal damage received is instead drained fom your "
+        "Any fatal damage received is instead drained from your "
         "fervor points";
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
