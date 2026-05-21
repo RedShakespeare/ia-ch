@@ -13,12 +13,13 @@
 - Made monster and player spell casting consistent regarding noise; monsters also cast silent spells without makings sounds. If a casting is seen and not heard, a "visual" message is printed instead (e.g. "The Cultist makes gestures in the air").
 - Spell shock cost is now shown in the spell casting menu.
 
-# Backgrounds (classes) and traits
+# Backgrounds (classes), traits
 - Occultists can pick traits to improve spell domains again, instead of getting automatic spell upgrades. This is a reversion to how it worked prior to v20.0, but the spell domain traits now also have level requirements (4 and 8 for "lesser" and "greater" casting, respectively).
 - Occultists can still choose a spell domain at start, but this only affects starting spells.
 - The previous Clairvoyant ability to see hidden things is now available as a "tenebrous" spell instead (temporarily forgotten when cast).
 - Occultists also start with the Cool-headed trait.
 - Meditative now requires Strong Spirit instead of Stout Spirit (in addition to Cool-headed).
+- Sage now reduces spirit cost to zero when casting in focused state, instead of increasing skill level.
 
 # Status effects
 - "Doomed" is now considered an upgrade of "Cursed", a creature cannot be both cursed and doomed simultaneously.

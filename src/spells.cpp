@@ -685,11 +685,6 @@ static std::string get_skill_descr(
         bon_words.emplace_back("erudition");
     }
 
-    if (properties.has(prop::Id::meditative_focused) &&
-        player_bon::has_trait(TraitId::sage)) {
-        bon_words.emplace_back("focused");
-    }
-
     if (map::g_player->m_inv.has_item_in_backpack(item::Id::necronomicon)) {
         bon_words.emplace_back("necronomicon");
     }
@@ -1167,8 +1162,14 @@ Range Spell::cost_range(
 
     if (actor::is_player(caster) &&
         caster->m_properties.has(prop::Id::meditative_focused)) {
-        --range.min;
-        --range.max;
+        if (player_bon::has_trait(TraitId::sage)) {
+            range.min = 0;
+            range.max = 0;
+        }
+        else {
+            --range.min;
+            --range.max;
+        }
     }
 
     range.min = std::max(0, range.min);

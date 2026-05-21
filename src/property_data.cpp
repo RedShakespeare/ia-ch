@@ -525,9 +525,7 @@ static void init_data_list()
     d.id = prop::Id::meditative_focused;
     d.name = "Focused";
     d.name_short = "Focused";
-    d.descr =
-        "The next spell is cast without spending a turn, "
-        "and the cost is reduced by 1 point.";
+    d.descr = "The next spell is cast without spending a turn, and with reduced cost.";
     d.msg_start_player = "I feel very focused.";
     d.msg_end_player = "I feel less focused.";
     d.allow_test_on_bot = false;

@@ -337,7 +337,9 @@ static void player_std_turn()
 {
 #ifndef NDEBUG
     // Disease and infection should not be active at the same time
-    ASSERT(!map::g_player->m_properties.has(prop::Id::diseased) || !map::g_player->m_properties.has(prop::Id::infected));
+    ASSERT(
+        !map::g_player->m_properties.has(prop::Id::diseased) ||
+        !map::g_player->m_properties.has(prop::Id::infected));
 #endif  // NDEBUG
 
     if (!actor::is_alive(*map::g_player)) {

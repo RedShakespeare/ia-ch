@@ -461,14 +461,11 @@ static void update_trait_data()
     d.id = TraitId::sage;
     d.title = "Sage";
     d.descr =
-        "When focused, spells are also cast at a higher skill level, "
+        "When focused, spells are cast without spending spirit points, "
         "and the duration to regain the focused state is reduced to "
         "75-100 turns";
     d.trait_prereqs = {TraitId::meditative};
     d.blocked_for_bgs = trait_data(TraitId::meditative).blocked_for_bgs;
-    // TODO: Consider allowing it for Exorcists (and have third level spells for them, probably
-    // also traits for the third level spells).
-    d.blocked_for_bgs.push_back(Bg::exorcist);
     d.blocked_for_bgs.push_back(Bg::flagellant);
     set_trait_data(d);
 
