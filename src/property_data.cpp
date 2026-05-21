@@ -361,9 +361,9 @@ static void init_data_list()
     d.name_short = "Deaf";
     d.descr = "Cannot hear sounds.";
     d.msg_start_player = "I am deaf!";
-    d.msg_start_mon = "{} stops reacting to any noise";
+    d.msg_start_mon = "{} stops reacting to any noise.";
     d.msg_end_player = "I can hear again.";
-    d.msg_end_mon = "{} is reacting to noise again";
+    d.msg_end_mon = "{} is reacting to noise again.";
     d.historic_msg_start_permanent = "Became permanently deaf";
     d.historic_msg_end_permanent = "My hearing came back";
     d.allow_display_turns = true;
@@ -802,7 +802,7 @@ static void init_data_list()
     d.msg_start_player = "I feel more skillful.";
     d.msg_start_mon = "{} looks more skillful.";
     d.msg_end_player = "I feel less skillful.";
-    d.msg_end_player = "looks less skillful.";
+    d.msg_end_mon = "{} looks less skillful.";
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -816,7 +816,7 @@ static void init_data_list()
     d.msg_start_player = "A protective carapace forms around me.";
     d.msg_start_mon = "{} is enveloped by a protective carapace.";
     d.msg_end_player = "My carapace cracks and crumbles away.";
-    d.msg_end_player = "sheds a carapace.";
+    d.msg_end_mon = "{} sheds a carapace.";
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -1246,19 +1246,14 @@ static void init_data_list()
     d.alignment = prop::PropAlignment::bad;
     add(d);
 
-    // NOTE: This property reuses messages from 'light_sensitive', so order
-    // is important here
+    // NOTE: This property reuses messages from 'light_sensitive', so order is important here
     d.id = prop::Id::light_sensitive_curse;
     d.std_rnd_turns = Range(1, 1);
     d.name = "";
     d.name_short = "";
     d.descr = "";
-    d.msg_start_player =
-        prop::g_data[(size_t)prop::Id::light_sensitive]
-            .msg_start_player;
-    d.msg_end_player =
-        prop::g_data[(size_t)prop::Id::light_sensitive]
-            .msg_end_player;
+    d.msg_start_player = prop::g_data[(size_t)prop::Id::light_sensitive].msg_start_player;
+    d.msg_end_player = prop::g_data[(size_t)prop::Id::light_sensitive].msg_end_player;
     d.allow_display_turns = false;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
