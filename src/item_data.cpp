@@ -1039,7 +1039,7 @@ void init()
     d.melee.dmg = WpnDmg(1, 14);
     d.melee.hit_chance_mod = -10;
     d.melee.can_attack_corpse = true;
-    d.melee.dmg_type = DmgType::piercing;
+    d.melee.dmg_type = DmgType::blunt;
     d.melee.miss_sfx = audio::SfxId::miss_heavy;
     d.melee.is_noisy = true;
     {

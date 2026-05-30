@@ -35,7 +35,8 @@
 - Status effects from worn items (e.g. Asbestos Suite) are now displayed within asterisks in the player stats panel (e.g. "*Fire Res*"), and with "(from item)" clarified in the player character description page (e.g. "Fire Resistance (from item)").
 
 # Misc balancing
-- Halved shock taken from studying inscribed terrain objects.
+- Reduced shock from studying inscribed terrain objects by half.
+- The Spiked Mace is now a blunt weapon instead of piercing (so that it's not ineffective against pierce resistant monsters like Worm Masses).
 
 # Other gameplay changes
 - All monsters (except Ghouls) now very slowly regenerate hit points.

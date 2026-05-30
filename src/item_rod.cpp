@@ -430,7 +430,14 @@ void Shockwave::run_effect()
         }
     }
 
-    Snd snd("", audio::SfxId::END, IgnoreMsgIfOriginSeen::yes, player_pos, map::g_player, SndVol::high, AlertsMon::yes);
+    Snd snd(
+        "",
+        audio::SfxId::END,
+        IgnoreMsgIfOriginSeen::yes,
+        player_pos,
+        map::g_player,
+        SndVol::high,
+        AlertsMon::yes);
 
     snd.run();
 
