@@ -521,10 +521,7 @@ void incr_spell_skill(const SpellId id, const Verbose verbose)
 {
     ASSERT(id != SpellId::END);
 
-    TRACE
-        << "Increasing spell skill for spell id: "
-        << (int)id
-        << "\n";
+    TRACE << "Increasing spell skill for spell id: " << (int)id << "\n";
 
     SpellSkill& skill = s_spell_skills[(size_t)id];
 
@@ -532,17 +529,39 @@ void incr_spell_skill(const SpellId id, const Verbose verbose)
 
     if (skill != SpellSkill::master) {
         skill = (SpellSkill)((int)skill + 1);
+
+        if (is_spell_learned(id) && (verbose == Verbose::yes)) {
+            const std::unique_ptr<const Spell> spell(spells::make(id));
+
+            const auto name = spell->name();
+
+            msg_log::add("I am more skilled at casting " + name + "!");
+        }
     }
 
-    if (is_spell_learned(id) && (verbose == Verbose::yes)) {
-        const std::unique_ptr<const Spell> spell(spells::make(id));
+    TRACE << "skill after: " << (int)skill << "\n";
+}
 
-        const auto name = spell->name();
+void decr_spell_skill(const SpellId id, const Verbose verbose)
+{
+    ASSERT(id != SpellId::END);
 
-        msg_log::add(
-            "I am more skilled at casting " +
-            name +
-            "!");
+    TRACE << "Decreasing spell skill for spell id: " << (int)id << "\n";
+
+    SpellSkill& skill = s_spell_skills[(size_t)id];
+
+    TRACE << "skill before: " << (int)skill << "\n";
+
+    if (skill != SpellSkill::basic) {
+        skill = (SpellSkill)((int)skill - 1);
+
+        if (is_spell_learned(id) && (verbose == Verbose::yes)) {
+            const std::unique_ptr<const Spell> spell(spells::make(id));
+
+            const auto name = spell->name();
+
+            msg_log::add("I am less skilled at casting " + name + "!");
+        }
     }
 
     TRACE << "skill after: " << (int)skill << "\n";

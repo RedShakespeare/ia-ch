@@ -32,6 +32,7 @@ bool recall_spell(SpellId id);
 bool recall_all_spells();
 
 void incr_spell_skill(SpellId id, Verbose verbose);
+void decr_spell_skill(SpellId id, Verbose verbose);
 SpellSkill spell_skill(SpellId id);
 void set_spell_skill(SpellId id, SpellSkill val);
 

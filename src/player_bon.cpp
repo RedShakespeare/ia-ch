@@ -143,6 +143,19 @@ static void incr_spell_skills(const SpellDomain spell_domain)
     }
 }
 
+static void decr_spell_skills(const SpellDomain spell_domain)
+{
+    for (int i = 0; i < (int)SpellId::END; ++i) {
+        const auto id = (SpellId)i;
+
+        const std::unique_ptr<Spell> spell(spells::make(id));
+
+        if (spell->domain() == spell_domain) {
+            player_spells::decr_spell_skill(id, Verbose::yes);
+        }
+    }
+}
+
 static TraitData& trait_data(const TraitId id)
 {
     ASSERT(id != TraitId::END);
@@ -259,11 +272,7 @@ static void update_trait_data()
 
         prop->set_indefinite();
 
-        map::g_player->m_properties.apply(
-            prop,
-            prop::PropSrc::intr,
-            true,
-            Verbose::no);
+        map::g_player->m_properties.apply(prop, prop::PropSrc::intr, true, Verbose::no);
     };
     d.on_removed = []() {
         map::g_player->m_properties.end_prop(prop::Id::r_fear);
@@ -388,24 +397,13 @@ static void update_trait_data()
 
         prop->set_indefinite();
 
-        map::g_player->m_properties.apply(
-            prop,
-            prop::PropSrc::intr,
-            true,
-            Verbose::no);
+        map::g_player->m_properties.apply(prop, prop::PropSrc::intr, true, Verbose::no);
 
         const int spi_incr = 2;
 
-        actor::change_max_sp(
-            *map::g_player,
-            spi_incr,
-            Verbose::no);
+        actor::change_max_sp(*map::g_player, spi_incr, Verbose::no);
 
-        actor::restore_sp(
-            *map::g_player,
-            spi_incr,
-            actor::AllowRestoreAboveMax::no,
-            Verbose::no);
+        actor::restore_sp(*map::g_player, spi_incr, actor::AllowRestoreAboveMax::no, Verbose::no);
     };
     d.on_removed = []() {
         actor::change_max_sp(*map::g_player, -2, Verbose::no);
@@ -578,6 +576,7 @@ static void update_trait_data()
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::channeling); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::channeling); };
     set_trait_data(d);
 
     // -- Master of Channeling ---
@@ -590,6 +589,7 @@ static void update_trait_data()
     d.trait_prereqs = {TraitId::adept_of_channeling};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
     d.on_picked = []() { incr_spell_skills(SpellDomain::channeling); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::channeling); };
     set_trait_data(d);
 
     // -- Adept of Corruption ---
@@ -601,6 +601,7 @@ static void update_trait_data()
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::corruption); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::corruption); };
     set_trait_data(d);
 
     // -- Master of Corruption ---
@@ -613,6 +614,7 @@ static void update_trait_data()
     d.trait_prereqs = {TraitId::adept_of_corruption};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
     d.on_picked = []() { incr_spell_skills(SpellDomain::corruption); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::corruption); };
     set_trait_data(d);
 
     // -- Adept of Illusion ---
@@ -624,6 +626,7 @@ static void update_trait_data()
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::illusion); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::illusion); };
     set_trait_data(d);
 
     // -- Master of Illusion ---
@@ -636,6 +639,7 @@ static void update_trait_data()
     d.trait_prereqs = {TraitId::adept_of_illusion};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
     d.on_picked = []() { incr_spell_skills(SpellDomain::illusion); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::illusion); };
     set_trait_data(d);
 
     // -- Adept of The_mind ---
@@ -646,9 +650,8 @@ static void update_trait_data()
         "Mind spells are cast at a higher skill level.";
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
-    d.on_picked = []() {
-        incr_spell_skills(SpellDomain::mind);
-    };
+    d.on_picked = []() { incr_spell_skills(SpellDomain::mind); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::mind); };
     set_trait_data(d);
 
     // -- Master of The_mind ---
@@ -661,9 +664,8 @@ static void update_trait_data()
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_the_mind};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
-    d.on_picked = []() {
-        incr_spell_skills(SpellDomain::mind);
-    };
+    d.on_picked = []() { incr_spell_skills(SpellDomain::mind); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::mind); };
     set_trait_data(d);
 
     // -- Adept of Time ---
@@ -675,6 +677,7 @@ static void update_trait_data()
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::time); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::time); };
     set_trait_data(d);
 
     // -- Master of Time ---
@@ -687,6 +690,7 @@ static void update_trait_data()
     d.trait_prereqs = {TraitId::adept_of_time};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
     d.on_picked = []() { incr_spell_skills(SpellDomain::time); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::time); };
     set_trait_data(d);
 
     // -- Adept of Warding ---
@@ -698,6 +702,7 @@ static void update_trait_data()
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::warding); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::warding); };
     set_trait_data(d);
 
     // -- Master of Warding ---
@@ -710,6 +715,7 @@ static void update_trait_data()
     d.trait_prereqs = {TraitId::adept_of_warding};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
     d.on_picked = []() { incr_spell_skills(SpellDomain::warding); };
+    d.on_removed = []() { decr_spell_skills(SpellDomain::warding); };
     set_trait_data(d);
 
     // --- Cast Bless ---
@@ -717,12 +723,8 @@ static void update_trait_data()
     d.title = "Cast Bless";
     d.descr = trait_descr_for_spell(SpellId::bless, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::learn_spell(SpellId::bless, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::remove_learned_spell(SpellId::bless);
-    };
+    d.on_picked = []() { player_spells::learn_spell(SpellId::bless, Verbose::no); };
+    d.on_removed = []() { player_spells::remove_learned_spell(SpellId::bless); };
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
 
@@ -731,12 +733,8 @@ static void update_trait_data()
     d.title = "Cast Bless II";
     d.descr = trait_descr_for_spell(SpellId::bless, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::incr_spell_skill(SpellId::bless, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::set_spell_skill(SpellId::bless, SpellSkill::basic);
-    };
+    d.on_picked = []() { player_spells::incr_spell_skill(SpellId::bless, Verbose::no); };
+    d.on_removed = []() { player_spells::set_spell_skill(SpellId::bless, SpellSkill::basic); };
     d.trait_prereqs = {TraitId::cast_bless_i};
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
@@ -746,12 +744,8 @@ static void update_trait_data()
     d.title = "Cast Cleansing Fire";
     d.descr = trait_descr_for_spell(SpellId::cleansing_fire, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::learn_spell(SpellId::cleansing_fire, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::remove_learned_spell(SpellId::cleansing_fire);
-    };
+    d.on_picked = []() { player_spells::learn_spell(SpellId::cleansing_fire, Verbose::no); };
+    d.on_removed = []() { player_spells::remove_learned_spell(SpellId::cleansing_fire); };
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
 
@@ -760,9 +754,7 @@ static void update_trait_data()
     d.title = "Cast Cleansing Fire II";
     d.descr = trait_descr_for_spell(SpellId::cleansing_fire, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::incr_spell_skill(SpellId::cleansing_fire, Verbose::no);
-    };
+    d.on_picked = []() { player_spells::incr_spell_skill(SpellId::cleansing_fire, Verbose::no); };
     d.on_removed = []() {
         player_spells::set_spell_skill(SpellId::cleansing_fire, SpellSkill::basic);
     };
@@ -775,12 +767,8 @@ static void update_trait_data()
     d.title = "Cast Heal";
     d.descr = trait_descr_for_spell(SpellId::heal, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::learn_spell(SpellId::heal, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::remove_learned_spell(SpellId::heal);
-    };
+    d.on_picked = []() { player_spells::learn_spell(SpellId::heal, Verbose::no); };
+    d.on_removed = []() { player_spells::remove_learned_spell(SpellId::heal); };
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
 
@@ -789,12 +777,8 @@ static void update_trait_data()
     d.title = "Cast Heal II";
     d.descr = trait_descr_for_spell(SpellId::heal, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::incr_spell_skill(SpellId::heal, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::set_spell_skill(SpellId::heal, SpellSkill::basic);
-    };
+    d.on_picked = []() { player_spells::incr_spell_skill(SpellId::heal, Verbose::no); };
+    d.on_removed = []() { player_spells::set_spell_skill(SpellId::heal, SpellSkill::basic); };
     d.trait_prereqs = {TraitId::cast_heal_i};
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
@@ -804,12 +788,8 @@ static void update_trait_data()
     d.title = "Cast Light";
     d.descr = trait_descr_for_spell(SpellId::light, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::learn_spell(SpellId::light, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::remove_learned_spell(SpellId::light);
-    };
+    d.on_picked = []() { player_spells::learn_spell(SpellId::light, Verbose::no); };
+    d.on_removed = []() { player_spells::remove_learned_spell(SpellId::light); };
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
 
@@ -818,12 +798,8 @@ static void update_trait_data()
     d.title = "Cast Light II";
     d.descr = trait_descr_for_spell(SpellId::light, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::incr_spell_skill(SpellId::light, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::set_spell_skill(SpellId::light, SpellSkill::basic);
-    };
+    d.on_picked = []() { player_spells::incr_spell_skill(SpellId::light, Verbose::no); };
+    d.on_removed = []() { player_spells::set_spell_skill(SpellId::light, SpellSkill::basic); };
     d.trait_prereqs = {TraitId::cast_light_i};
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
@@ -833,12 +809,8 @@ static void update_trait_data()
     d.title = "Cast Sanctuary";
     d.descr = trait_descr_for_spell(SpellId::sanctuary, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::learn_spell(SpellId::sanctuary, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::remove_learned_spell(SpellId::sanctuary);
-    };
+    d.on_picked = []() { player_spells::learn_spell(SpellId::sanctuary, Verbose::no); };
+    d.on_removed = []() { player_spells::remove_learned_spell(SpellId::sanctuary); };
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
 
@@ -847,12 +819,8 @@ static void update_trait_data()
     d.title = "Cast Sanctuary II";
     d.descr = trait_descr_for_spell(SpellId::sanctuary, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::incr_spell_skill(SpellId::sanctuary, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::set_spell_skill(SpellId::sanctuary, SpellSkill::basic);
-    };
+    d.on_picked = []() { player_spells::incr_spell_skill(SpellId::sanctuary, Verbose::no); };
+    d.on_removed = []() { player_spells::set_spell_skill(SpellId::sanctuary, SpellSkill::basic); };
     d.trait_prereqs = {TraitId::cast_sanctuary_i};
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
@@ -862,12 +830,8 @@ static void update_trait_data()
     d.title = "Cast See Invisible";
     d.descr = trait_descr_for_spell(SpellId::see_invis, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::learn_spell(SpellId::see_invis, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::remove_learned_spell(SpellId::see_invis);
-    };
+    d.on_picked = []() { player_spells::learn_spell(SpellId::see_invis, Verbose::no); };
+    d.on_removed = []() { player_spells::remove_learned_spell(SpellId::see_invis); };
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
 
@@ -876,12 +840,8 @@ static void update_trait_data()
     d.title = "Cast See Invisible II";
     d.descr = trait_descr_for_spell(SpellId::see_invis, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
-    d.on_picked = []() {
-        player_spells::incr_spell_skill(SpellId::see_invis, Verbose::no);
-    };
-    d.on_removed = []() {
-        player_spells::set_spell_skill(SpellId::see_invis, SpellSkill::basic);
-    };
+    d.on_picked = []() { player_spells::incr_spell_skill(SpellId::see_invis, Verbose::no); };
+    d.on_removed = []() { player_spells::set_spell_skill(SpellId::see_invis, SpellSkill::basic); };
     d.trait_prereqs = {TraitId::cast_see_invisible_i};
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
@@ -889,18 +849,14 @@ static void update_trait_data()
     // --- Prolonged Life ---
     d.id = TraitId::prolonged_life;
     d.title = "Prolonged Life";
-    d.descr =
-        "Any fatal damage received is instead drained from your "
-        "fervor points";
+    d.descr = "Any fatal damage received is instead drained from your fervor points";
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
 
     // --- Ravenous ---
     d.id = TraitId::ravenous;
     d.title = "Ravenous";
-    d.descr =
-        "You occasionally feed on living victims when attacking "
-        "with claws";
+    d.descr = "You occasionally feed on living victims when attacking with claws";
     d.trait_prereqs = {TraitId::adept_melee};
     d.bg_prereq = Bg::ghoul;
     set_trait_data(d);
@@ -942,9 +898,7 @@ static void update_trait_data()
     // --- Indomitable Fury ---
     d.id = TraitId::indomitable_fury;
     d.title = "Indomitable Fury";
-    d.descr =
-        "While frenzied, you are immune to wounds, and your claw "
-        "attacks cause fear";
+    d.descr = "While frenzied, you are immune to wounds, and your claw attacks cause fear";
     d.trait_prereqs = {TraitId::adept_melee, TraitId::tough};
     d.bg_prereq = Bg::ghoul;
     set_trait_data(d);
@@ -952,9 +906,7 @@ static void update_trait_data()
     // --- Elusive ---
     d.id = TraitId::elusive;
     d.title = "Elusive";
-    d.descr =
-        "Creatures only remember you for half the normal duration "
-        "(rounded up).";
+    d.descr = "Creatures only remember you for half the normal duration (rounded up).";
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
@@ -996,8 +948,7 @@ static void update_trait_data()
 
     d.id = TraitId::enthusiasm;
     d.title = "Enthusiasm";
-    d.descr =
-        "Doubles all bonuses for the moribund effect";
+    d.descr = "Doubles all bonuses for the moribund effect";
     d.bg_prereq = Bg::flagellant;
     set_trait_data(d);
 
