@@ -1168,6 +1168,8 @@ ConsumeItem BoneCharm::activate(actor::Actor* actor)
             actor::AllowRestoreAboveMax::yes);
     }
 
+    game_time::tick();
+
     return ConsumeItem::yes;
 }
 
@@ -1236,28 +1238,14 @@ ConsumeItem AstralOpium::activate(actor::Actor* actor)
 
     msg_log::add("I use the " + item_name + "...");
 
-    map::g_player->m_properties.apply(
-        prop::make(
-            prop::Id::astral_opium_addiction));
-
-    map::g_player->m_properties.end_prop(
-        prop::Id::frenzied);
-
-    map::g_player->m_properties.apply(
-        prop::make(
-            prop::Id::r_shock));
-
-    map::g_player->m_properties.apply(
-        prop::make(
-            prop::Id::r_fear));
-
+    map::g_player->m_properties.end_prop(prop::Id::frenzied);
+    map::g_player->m_properties.apply(prop::make(prop::Id::r_shock));
+    map::g_player->m_properties.apply(prop::make(prop::Id::r_fear));
     map::g_player->restore_shock(999, false);
+    map::g_player->m_properties.apply(prop::make(prop::Id::astral_opium_addiction));
+    map::g_player->m_properties.apply(prop::make(prop::Id::hallucinating));
 
-    auto* const halluc =
-        prop::make(
-            prop::Id::hallucinating);
-
-    map::g_player->m_properties.apply(halluc);
+    game_time::tick();
 
     return ConsumeItem::yes;
 }
