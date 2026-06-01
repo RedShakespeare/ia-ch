@@ -166,8 +166,11 @@ std::string death_msg(const actor::Actor& actor);
 
 int armor_points(const actor::Actor& actor);
 
-// NOTE: If the actors are the same actor, they are considered to be in the same group (the actor is
-// in the same group as itself).
+// NOTE: If the actors are the same actor, they are considered to be allied.
+bool is_allied(const Actor* actor_1, const Actor* actor_2);
+std::vector<Actor*> other_allied_actors(const actor::Actor* actor);
+
+// NOTE: If the actors are the same actor, they are considered to be in the same group.
 bool is_in_same_group(const Actor* actor_1, const Actor* actor_2);
 std::vector<Actor*> other_actors_in_same_group(const actor::Actor* actor);
 int nr_other_actors_in_same_group(const actor::Actor* actor);

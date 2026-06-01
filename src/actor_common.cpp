@@ -698,6 +698,42 @@ int armor_points(const actor::Actor& actor)
     return armor_points;
 }
 
+bool is_allied(const Actor* actor_1, const Actor* actor_2)
+{
+    if (!actor_1 || !actor_2) {
+        return false;
+    }
+
+    if (actor_1 == actor_2) {
+        return true;
+    }
+
+    const bool is_actor_1_in_player_team = is_in_same_group(actor_1, map::g_player);
+    const bool is_actor_2_in_player_team = is_in_same_group(actor_2, map::g_player);
+
+    // Consider the actors allied if both of them are on the player team, or none of them are.
+    return is_actor_1_in_player_team == is_actor_2_in_player_team;
+}
+
+std::vector<Actor*> other_allied_actors(const actor::Actor* const actor)
+{
+    std::vector<Actor*> result;
+
+    if (!actor) {
+        return result;
+    }
+
+    std::copy_if(
+        std::begin(game_time::g_actors),
+        std::end(game_time::g_actors),
+        std::back_inserter(result),
+        [actor](const actor::Actor* const other_actor) {
+            return (is_allied(actor, other_actor) && (actor != other_actor));
+        });
+
+    return result;
+}
+
 bool is_in_same_group(const Actor* actor_1, const Actor* actor_2)
 {
     if (!actor_1 || !actor_2) {
@@ -729,9 +765,7 @@ std::vector<Actor*> other_actors_in_same_group(const actor::Actor* const actor)
         std::end(game_time::g_actors),
         std::back_inserter(result),
         [actor](const actor::Actor* const other_actor) {
-            return (
-                (is_in_same_group(actor, other_actor) &&
-                 (actor != other_actor)));
+            return (is_in_same_group(actor, other_actor) && (actor != other_actor));
         });
 
     return result;

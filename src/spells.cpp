@@ -3938,6 +3938,9 @@ std::vector<CancelledPropData> SpellCancellation::negative_effect_types_cancelle
 std::vector<CancelledPropData> SpellCancellation::positive_effect_types_cancelled() const
 {
     return {
+        {prop::Id::r_spell,
+         CancelledPropIncludeInDescr::no,
+         CancelledPropAllowCancelPermanent::yes},
         {prop::Id::r_phys, CancelledPropIncludeInDescr::no},
         {prop::Id::r_fire, CancelledPropIncludeInDescr::no},
         {prop::Id::r_poison, CancelledPropIncludeInDescr::no},
@@ -3946,11 +3949,6 @@ std::vector<CancelledPropData> SpellCancellation::positive_effect_types_cancelle
         {prop::Id::r_fear, CancelledPropIncludeInDescr::no},
         {prop::Id::r_slow, CancelledPropIncludeInDescr::no},
         {prop::Id::r_conf, CancelledPropIncludeInDescr::no},
-
-        {prop::Id::r_spell,
-         CancelledPropIncludeInDescr::no,
-         CancelledPropAllowCancelPermanent::yes},
-
         {prop::Id::blessed},
         {prop::Id::hasted},
         {prop::Id::extra_hasted, CancelledPropIncludeInDescr::no},
@@ -3983,7 +3981,7 @@ void SpellCancellation::run_effect(
     for (actor::Actor* const actor : game_time::g_actors) {
         if ((actor != caster) &&
             actor::is_alive(*actor) &&
-            (king_dist(caster->m_pos, actor->m_pos) > dist)) {
+            (king_dist(caster->m_pos, actor->m_pos) <= dist)) {
             affected_actors.push_back(actor);
         }
     }
@@ -4009,12 +4007,16 @@ void SpellCancellation::run_effect_on_actor(
     actor::Actor& actor,
     actor::Actor& caster) const
 {
-    if (actor::is_in_same_group(&caster, &actor)) {
-        // Caster and current actor are allies.
+    TRACE << "Cancelling effects on actor '" << actor::name_a(actor) << "'" << std::endl;
+
+    if (actor::is_allied(&caster, &actor)) {
+        TRACE << "Caster and target are allied" << std::endl;
+
         cancel_negative_effects(actor);
     }
     else {
-        // Caster and current actor are enemies.
+        TRACE << "Caster and target are enemies" << std::endl;
+
         cancel_positive_effects(actor);
 
         if (actor::is_alive(actor) && actor::is_alive(*map::g_player)) {
@@ -4025,7 +4027,11 @@ void SpellCancellation::run_effect_on_actor(
 
 void SpellCancellation::cancel_negative_effects(actor::Actor& actor) const
 {
+    TRACE << "Cancelling negative effects" << std::endl;
+
     for (const CancelledPropData& data : negative_effect_types_cancelled()) {
+        TRACE << "Ending '" << prop::g_data[(size_t)data.id].name << "'\n";
+
         if (data.allow_cancel_permanent_effect == CancelledPropAllowCancelPermanent::yes) {
             actor.m_properties.end_prop(data.id);
         }
@@ -4041,7 +4047,11 @@ void SpellCancellation::cancel_negative_effects(actor::Actor& actor) const
 
 void SpellCancellation::cancel_positive_effects(actor::Actor& actor) const
 {
+    TRACE << "Cancelling positive effects" << std::endl;
+
     for (const CancelledPropData& data : positive_effect_types_cancelled()) {
+        TRACE << "Ending '" << prop::g_data[(size_t)data.id].name << "'\n";
+
         bool did_end = false;
 
         if (data.allow_cancel_permanent_effect == CancelledPropAllowCancelPermanent::yes) {
@@ -5932,8 +5942,7 @@ int SpellHealOthers::mon_cooldown() const
 std::vector<actor::Actor*> SpellHealOthers::find_possible_actors_to_heal(
     const actor::Actor* const caster) const
 {
-    const std::vector<actor::Actor*> actors_in_group =
-        actor::other_actors_in_same_group(caster);
+    const std::vector<actor::Actor*> allies = actor::other_allied_actors(caster);
 
     Array2<bool> blocks_los(map::dims());
 
@@ -5944,8 +5953,8 @@ std::vector<actor::Actor*> SpellHealOthers::find_possible_actors_to_heal(
     std::vector<actor::Actor*> actors_to_heal;
 
     std::copy_if(
-        std::begin(actors_in_group),
-        std::end(actors_in_group),
+        std::begin(allies),
+        std::end(allies),
         std::back_inserter(actors_to_heal),
         [caster, blocks_los](const actor::Actor* const actor) {
             const bool can_see = can_mon_see_actor(*caster, *actor, blocks_los);
