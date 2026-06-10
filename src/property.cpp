@@ -1664,7 +1664,6 @@ std::vector<const actor::ActorData*> Hallucinating::get_allowed_fake_mon_data() 
 
         // HACK: Handle via actor data instead.
         if ((d.id == "MON_PLAYER") ||
-            (d.id == "MON_SPECTRAL_WPN") ||
             (d.id == "MON_STRANGE_COLOR") ||
             (d.id == "MON_CULTIST") ||
             (d.id == "MON_TRANSCENDENT_RAT")) {
@@ -3832,93 +3831,6 @@ PropActResult SummonsLocusts::on_act()
     result.prop_ended = PropEnded::no;
 
     return result;
-}
-
-SpectralWpn::SpectralWpn() :
-    Prop(prop::Id::spectral_wpn) {}
-
-void SpectralWpn::on_death()
-{
-    // Remove the item from the inventory to avoid dropping it on the floor
-    // (but do not yet delete the item, in case it's still being used in the
-    // the call stack)
-    item::Item* const item =
-        m_owner->m_inv.remove_item_in_slot(
-            SlotId::wpn,
-            false);  // Do not delete the item
-
-    m_discarded_item.reset(item);
-}
-
-std::string SpectralWpn::get_weapon_name() const
-{
-    item::Item* item = m_owner->m_inv.item_in_slot(SlotId::wpn);
-
-    ASSERT(item);
-
-    std::string name =
-        item->name(
-            ItemNameType::plain,
-            ItemNameInfo::yes,
-            ItemNameAttackInfo::none);
-
-    // HACK: Remove all characters from the first comma. This is intended to
-    // give unique weapons a more sensible name - e.g. "Spectral Gahana",
-    // instead of "Spectral Gahana, The Black Dagger".
-    const size_t comma_pos = name.find_first_of(',');
-
-    if (comma_pos != std::string::npos) {
-        name.erase(comma_pos, name.size());
-    }
-
-    return name;
-}
-
-std::optional<std::string> SpectralWpn::override_actor_name_the() const
-{
-    return "The Spectral " + get_weapon_name();
-}
-
-std::optional<std::string> SpectralWpn::override_actor_name_a() const
-{
-    return "A Spectral " + get_weapon_name();
-}
-
-std::optional<char> SpectralWpn::override_actor_character() const
-{
-    item::Item* item = m_owner->m_inv.item_in_slot(SlotId::wpn);
-
-    ASSERT(item);
-
-    return item->character();
-}
-
-std::optional<gfx::TileId> SpectralWpn::override_actor_tile() const
-{
-    item::Item* item = m_owner->m_inv.item_in_slot(SlotId::wpn);
-
-    ASSERT(item);
-
-    return item->tile();
-}
-
-std::optional<std::string> SpectralWpn::override_actor_descr() const
-{
-    item::Item* item = m_owner->m_inv.item_in_slot(SlotId::wpn);
-
-    ASSERT(item);
-
-    std::string str =
-        item->name(
-            ItemNameType::a,
-            ItemNameInfo::yes,
-            ItemNameAttackInfo::none);
-
-    str = text_format::first_to_upper(str);
-
-    str += ", floating through the air as if wielded by an invisible hand.";
-
-    return str;
 }
 
 void Thorns::save() const

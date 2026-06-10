@@ -56,21 +56,15 @@ public:
     Id id() const;
 
     void save();
-
     void load();
 
     ItemData& data() const;
 
     virtual Color color() const;
-
     char character() const;
-
     gfx::TileId tile() const;
 
-    virtual LightSize light_size() const
-    {
-        return LightSize::none;
-    }
+    virtual LightSize light_size() const { return LightSize::none; }
 
     std::string name(
         ItemNameType name_type,
@@ -80,30 +74,20 @@ public:
 
     std::vector<std::string> descr() const;
 
-    std::string hit_mod_str(
-        ItemNameAttackInfo attack_info,
-        AbbrevItemAttackInfo abbrev) const;
-
-    std::string dmg_str(
-        ItemNameAttackInfo attack_info,
-        ItemNameDmg dmg_value) const;
-
+    std::string hit_mod_str(ItemNameAttackInfo attack_info, AbbrevItemAttackInfo abbrev) const;
+    std::string dmg_str(ItemNameAttackInfo attack_info, ItemNameDmg dmg_value) const;
     std::string plus_str(ItemNameAttackInfo attack_info) const;
 
     // E.g. "(Off)" for Lanterns, or "(4/7)" for Pistols
     virtual std::string name_info_str(
-        const ItemNameIdentified id_type =
-            ItemNameIdentified::use_item_status) const
+        const ItemNameIdentified id_type = ItemNameIdentified::use_item_status) const
     {
         (void)id_type;
 
         return "";
     }
 
-    virtual void identify(const Verbose verbose)
-    {
-        (void)verbose;
-    }
+    virtual void identify(const Verbose verbose) { (void)verbose; }
 
     int weight() const;
 
@@ -111,19 +95,12 @@ public:
 
     virtual ConsumeItem activate(actor::Actor* actor);
 
-    virtual Color interface_color() const
-    {
-        return colors::dark_yellow();
-    }
+    virtual Color interface_color() const { return colors::dark_yellow(); }
 
     void on_std_turn_in_inv(InvType inv_type);
-
     void on_actor_turn_in_inv(InvType inv_type);
 
-    virtual ItemPrePickResult pre_pickup_hook()
-    {
-        return ItemPrePickResult::do_pickup;
-    }
+    virtual ItemPrePickResult pre_pickup_hook() { return ItemPrePickResult::do_pickup; }
 
     void on_pickup(actor::Actor& actor);
 
@@ -145,10 +122,7 @@ public:
 
     void on_player_reached_new_dlvl();
 
-    virtual void on_projectile_blocked(const P& pos)
-    {
-        (void)pos;
-    }
+    virtual void on_projectile_blocked(const P& pos) { (void)pos; }
 
     // Special reasons for not taking damage or getting a status effect applied.
     virtual bool is_resisting_weapon_special(actor::Actor& actor_hit) const
@@ -164,29 +138,12 @@ public:
         (void)dmg;
     }
 
-    virtual void pre_ranged_attack()
-    {
-    }
+    virtual void pre_ranged_attack() {}
 
-    void set_base_melee_dmg(const WpnDmg& range)
-    {
-        m_base_melee_dmg = range;
-    }
-
-    void set_base_ranged_dmg(const WpnDmg& range)
-    {
-        m_base_ranged_dmg = range;
-    }
-
-    WpnDmg base_melee_dmg() const
-    {
-        return m_base_melee_dmg;
-    }
-
-    void set_melee_plus(const int plus)
-    {
-        m_base_melee_dmg.set_plus(plus);
-    }
+    void set_base_melee_dmg(const WpnDmg& range) { m_base_melee_dmg = range; }
+    void set_base_ranged_dmg(const WpnDmg& range) { m_base_ranged_dmg = range; }
+    WpnDmg base_melee_dmg() const { return m_base_melee_dmg; }
+    void set_melee_plus(const int plus) { m_base_melee_dmg.set_plus(plus); }
 
     // Calculated damage taking into account things like player traits.
     WpnDmg melee_dmg(const actor::Actor* attacker) const;
@@ -196,15 +153,9 @@ public:
     ItemAttackProp& prop_applied_on_melee(const actor::Actor* attacker) const;
     ItemAttackProp& prop_applied_on_ranged(const actor::Actor* attacker) const;
 
-    virtual void on_melee_kill(actor::Actor& actor_killed)
-    {
-        (void)actor_killed;
-    }
+    virtual void on_melee_kill(actor::Actor& actor_killed) { (void)actor_killed; }
 
-    virtual void on_ranged_hit(actor::Actor& actor_hit)
-    {
-        (void)actor_hit;
-    }
+    virtual void on_ranged_hit(actor::Actor& actor_hit) { (void)actor_hit; }
 
     void add_carrier_prop(prop::Prop* prop, Verbose verbose);
 
@@ -216,20 +167,11 @@ public:
         return 0;
     }
 
-    actor::Actor* actor_carrying()
-    {
-        return m_actor_carrying;
-    }
+    actor::Actor* actor_carrying() { return m_actor_carrying; }
 
-    void clear_actor_carrying()
-    {
-        m_actor_carrying = nullptr;
-    }
+    void clear_actor_carrying() { m_actor_carrying = nullptr; }
 
-    const std::vector<prop::Prop*>& carrier_props() const
-    {
-        return m_carrier_props;
-    }
+    const std::vector<prop::Prop*>& carrier_props() const { return m_carrier_props; }
 
     virtual bool is_curse_allowed(item_curse::Id id) const
     {
@@ -238,68 +180,33 @@ public:
         return true;
     }
 
-    bool is_cursed() const
-    {
-        return (m_curse.id() != item_curse::Id::END);
-    }
+    bool is_cursed() const { return (m_curse.id() != item_curse::Id::END); }
 
-    item_curse::Curse& current_curse()
-    {
-        return m_curse;
-    }
+    item_curse::Curse& current_curse() { return m_curse; }
 
-    void set_curse(item_curse::Curse&& curse)
-    {
-        m_curse = std::move(curse);
-    }
+    void set_curse(item_curse::Curse&& curse) { m_curse = std::move(curse); }
 
-    void remove_curse()
-    {
-        m_curse = item_curse::Curse();
-    }
+    void remove_curse() { m_curse = item_curse::Curse(); }
 
     int armor_points() const;
 
-    int durability() const
-    {
-        return m_durability;
-    }
-
-    void set_max_durability()
-    {
-        m_durability = 100;
-    }
+    int durability() const { return m_durability; }
+    void set_max_durability() { m_durability = 100; }
 
     int m_nr_items {1};
 
 protected:
     virtual void save_hook() const {}
-
     virtual void load_hook() {}
 
     virtual std::vector<std::string> descr_hook() const;
 
-    virtual void on_std_turn_in_inv_hook(const InvType inv_type)
-    {
-        (void)inv_type;
-    }
-
-    virtual void on_actor_turn_in_inv_hook(const InvType inv_type)
-    {
-        (void)inv_type;
-    }
-
+    virtual void on_std_turn_in_inv_hook(const InvType inv_type) { (void)inv_type; }
+    virtual void on_actor_turn_in_inv_hook(const InvType inv_type) { (void)inv_type; }
     virtual void on_pickup_hook() {}
-
-    virtual void on_equip_hook(const Verbose verbose)
-    {
-        (void)verbose;
-    }
-
+    virtual void on_equip_hook(const Verbose verbose) { (void)verbose; }
     virtual void on_unequip_hook() {}
-
     virtual void on_removed_from_inv_hook() {}
-
     virtual void on_player_reached_new_dlvl_hook() {}
 
     virtual void specific_dmg_mod(
@@ -314,17 +221,29 @@ protected:
 
     ItemData* m_data;
 
+    int m_durability;
+
     actor::Actor* m_actor_carrying {nullptr};
 
     // Base damage (not including actor properties, player traits, etc)
+    //
+    // NOTE: Must be initialized AFTER m_data!
+    //
     WpnDmg m_base_melee_dmg;
     WpnDmg m_base_ranged_dmg;
 
-    int m_durability;
+public:
+    // Hit chance modifiers (just for the weapon itself, not including actor skill etc).
+    //
+    // NOTE: Must be initialized AFTER m_data!
+    //
+    int m_melee_hit_chance_mod;
+    int m_ranged_hit_chance_mod;
+    int m_thrown_hit_chance_mod;
 
 private:
-    // Properties to apply on owning actor (when e.g. wearing the item, or
-    // just keeping it in the inventory).
+    // Properties to apply on owning actor (when e.g. wearing the item, or just keeping it in the
+    // inventory).
     std::vector<prop::Prop*> m_carrier_props;
 
     item_curse::Curse m_curse;

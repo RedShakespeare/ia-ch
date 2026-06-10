@@ -26,6 +26,7 @@
 #include "actor_player_state.hpp"
 #include "actor_see.hpp"
 #include "array2.hpp"
+#include "attack.hpp"
 #include "audio.hpp"
 #include "audio_data.hpp"
 #include "colors.hpp"
@@ -46,6 +47,7 @@
 #include "item.hpp"
 #include "item_data.hpp"
 #include "item_factory.hpp"
+#include "item_weapon.hpp"
 #include "knockback.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
@@ -112,7 +114,7 @@ static const std::unordered_map<std::string, SpellId> s_str_to_spell_id_map = {
     {"SPELL_SANCTUARY", SpellId::sanctuary},
     {"SPELL_SEE_INVIS", SpellId::see_invis},
     {"SPELL_SLOW", SpellId::slow},
-    {"SPELL_SPECTRAL_WEAPONS", SpellId::spectral_weapons},
+    {"SPELL_PROJECTED_STRIKE", SpellId::projected_strike},
     {"SPELL_SPELL_SHIELD", SpellId::spell_shield},
     {"SPELL_SUMMON_RANDOM", SpellId::summon_random},
     {"SPELL_SUMMON_TENTACLES", SpellId::summon_tentacles},
@@ -935,8 +937,8 @@ Spell* make(const SpellId spell_id)
     case SpellId::mirror_images:
         return new SpellMirrorImages();
 
-    case SpellId::spectral_weapons:
-        return new SpellSpectralWeapons();
+    case SpellId::projected_strike:
+        return new SpellProjectedStrike();
 
     case SpellId::control_object:
         return new SpellControlObject();
@@ -3037,146 +3039,71 @@ std::vector<std::string> SpellMirrorImages::descr_specific(
 }
 
 // -----------------------------------------------------------------------------
-// Spectral Weapons
+// Projected Strike
 // -----------------------------------------------------------------------------
-std::string SpellSpectralWeapons::name() const
+std::string SpellProjectedStrike::name() const
 {
-    return "Spectral Weapons";
+    return "Projected Strike";
 }
 
-SpellId SpellSpectralWeapons::id() const
+SpellId SpellProjectedStrike::id() const
 {
-    return SpellId::spectral_weapons;
+    return SpellId::projected_strike;
 }
 
-SpellDomain SpellSpectralWeapons::domain() const
+SpellDomain SpellProjectedStrike::domain() const
 {
     return SpellDomain::mind;
 }
 
-SpellShock SpellSpectralWeapons::shock_type() const
+SpellShock SpellProjectedStrike::shock_type() const
 {
     return SpellShock::mild;
 }
 
-bool SpellSpectralWeapons::is_noisy(const SpellSkill skill) const
+bool SpellProjectedStrike::is_noisy(const SpellSkill skill) const
 {
     (void)skill;
 
     return true;
 }
 
-int SpellSpectralWeapons::max_nr_weapons(const SpellSkill skill) const
+int SpellProjectedStrike::max_nr_weapons(const SpellSkill skill) const
 {
-    return 2 + (int)skill;
-}
-
-Range SpellSpectralWeapons::duration_range(const SpellSkill skill) const
-{
-    switch (skill) {
-    case SpellSkill::basic:        return {5, 10};
-    // NOTE: For balancing reasons, the transcendent level uses the same duration as the expert
-    // level.
-    case SpellSkill::expert:
-    case SpellSkill::transcendent: return {10, 15};
-    case SpellSkill::master:       return {15, 20};
+    if (skill == SpellSkill::transcendent) {
+        return -1;
     }
-
-    ASSERT(false);
-
-    return {1, 1};
+    else {
+        return 2 + (int)skill;
+    }
 }
 
-int SpellSpectralWeapons::base_max_cost(
+int SpellProjectedStrike::base_max_cost(
     const SpellSkill skill,
     const actor::Actor* const caster) const
 {
     (void)skill;
     (void)caster;
 
-    return 7;
+    return 6;
 }
 
-void SpellSpectralWeapons::on_mon_summoned(
-    item::Item* const item,
-    actor::Actor* const mon,
-    const SpellSkill skill) const
+std::vector<const item::Item*> SpellProjectedStrike::get_weapons(SpellSkill skill) const
 {
-    ASSERT(!mon->m_inv.item_in_slot(SlotId::wpn));
-
-    mon->m_inv.put_in_slot(SlotId::wpn, item, Verbose::no);
-
-    {
-        prop::Prop* prop = prop::make(prop::Id::spectral_wpn);
-        prop->set_indefinite();
-        mon->m_properties.apply(prop);
-    }
-
-    {
-        prop::Prop* prop = prop::make(prop::Id::summoned);
-        const int duration = duration_range(skill).roll();
-        prop->set_duration(duration);
-        mon->m_properties.apply(prop);
-    }
-
-    {
-        prop::Prop* prop = prop::make(prop::Id::waiting);
-        prop->set_duration(1);
-        mon->m_properties.apply(prop);
-    }
-
-    if (skill >= SpellSkill::master) {
-        prop::Prop* prop = prop::make(prop::Id::see_invis);
-
-        prop->set_indefinite();
-
-        mon->m_properties.apply(prop, prop::PropSrc::intr, true, Verbose::no);
-    }
-
-    if (skill == SpellSkill::transcendent) {
-        prop::Prop* prop = prop::make(prop::Id::r_phys);
-
-        prop->set_indefinite();
-
-        mon->m_properties.apply(prop, prop::PropSrc::intr, true, Verbose::no);
-    }
-
-    if (actor::can_player_see_actor(*mon)) {
-        msg_log::add(actor::name_a(*mon) + " appears!");
-    }
-}
-
-void SpellSpectralWeapons::run_effect(
-    actor::Actor* const caster,
-    const SpellSkill skill,
-    const std::vector<actor::Actor*>& seen_targets,
-    PlayerAwareOfCast player_aware) const
-{
-    TRACE_FUNC_BEGIN;
-
-    (void)seen_targets;
-    (void)player_aware;
-
-    if (!actor::is_player(caster)) {
-        TRACE_FUNC_END;
-
-        return;
-    }
-
-    // Find available weapons
     auto is_melee_wpn = [](const auto* const item) {
         return item && (item->data().type == ItemType::melee_wpn);
     };
 
     std::vector<const item::Item*> weapons;
 
-    for (const auto& slot : caster->m_inv.m_slots) {
+    // Assuming the caster is always the player.
+    for (const auto& slot : map::g_player->m_inv.m_slots) {
         if (is_melee_wpn(slot.item)) {
             weapons.push_back(slot.item);
         }
     }
 
-    for (const auto& item : caster->m_inv.m_backpack) {
+    for (const auto& item : map::g_player->m_inv.m_backpack) {
         if (is_melee_wpn(item)) {
             weapons.push_back(item);
         }
@@ -3185,75 +3112,104 @@ void SpellSpectralWeapons::run_effect(
     // Cap the number of weapons spawned
     rnd::shuffle(weapons);
 
-    const auto nr_max = (size_t)max_nr_weapons(skill);
+    const int nr_max = max_nr_weapons(skill);
 
-    if (nr_max < weapons.size()) {
+    if ((nr_max != -1) && ((size_t)nr_max < weapons.size())) {
         weapons.resize(nr_max);
     }
 
-    // Spawn weapon monsters
-    for (const auto* const item : weapons) {
-        auto* new_item = item::make(item->id());
+    return weapons;
+}
 
-        new_item->set_base_melee_dmg(item->base_melee_dmg());
+void SpellProjectedStrike::run_effect(
+    actor::Actor* const caster,
+    const SpellSkill skill,
+    const std::vector<actor::Actor*>& seen_targets,
+    PlayerAwareOfCast player_aware) const
+{
+    TRACE_FUNC_BEGIN;
 
-        const actor::MonSpawnResult summoned =
-            actor::spawn(caster->m_pos, {"MON_SPECTRAL_WPN"})
-                .set_leader(caster);
+    (void)player_aware;
 
-        std::for_each(
-            std::begin(summoned.monsters),
-            std::end(summoned.monsters),
-            [this, new_item, skill](auto* const mon) {
-                on_mon_summoned(new_item, mon, skill);
-            });
+    if (!actor::is_player(caster)) {
+        ASSERT(false);
+
+        return;
+    }
+
+    const std::vector<const item::Item*> weapons = get_weapons(skill);
+
+    if (seen_targets.empty() || weapons.empty()) {
+        msg_log::add("Visions of hacking, crushing and stabbing fill my mind.");
+
+        return;
+    }
+
+    std::vector<actor::Actor*> targets = seen_targets;
+
+    for (const item::Item* const origin_wpn : weapons) {
+        std::unique_ptr<item::Item> new_wpn(item::make(origin_wpn->id()));
+
+        new_wpn->m_melee_hit_chance_mod = 999;
+
+        actor::Actor* const target = rnd::element(targets);
+
+        const P attack_origin = dir_utils::rnd_adj_pos(target->m_pos, false);
+
+        attack::melee(
+            nullptr,
+            attack_origin,
+            target->m_pos,
+            *static_cast<item::Wpn*>(new_wpn.get()));
+
+        if (!actor::is_alive(*target)) {
+            // Target is killed, remove from list of possible targets.
+            targets.erase(
+                std::remove(std::begin(targets), std::end(targets), target),
+                std::end(targets));
+        }
+
+        if (targets.empty()) {
+            break;
+        }
     }
 
     TRACE_FUNC_END;
 }
 
-std::vector<std::string> SpellSpectralWeapons::descr_specific(
+std::vector<std::string> SpellProjectedStrike::descr_specific(
     const SpellSkill skill) const
 {
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Conjures ghostly copies of carried weapons, which will float "
-        "through the air and protect their master. It is only "
-        "possible to create copies of basic melee weapons - "
+        "Launches a psychic projection of the caster's carried weapons. "
+        "Each projection attacks a visible enemy with near-perfect accuracy. "
+        "Only basic melee weapons can be projected - "
         "\"modern\" mechanisms such as pistols or machine guns are "
         "far too complex.");
 
-    const auto nr_max = (size_t)max_nr_weapons(skill);
+    const int nr_max = max_nr_weapons(skill);
 
-    std::string nr_and_duration_str =
-        "A maximum of " +
-        std::to_string(nr_max) +
-        " ";
+    std::string nr_str;
 
-    if (nr_max == 1) {
-        nr_and_duration_str += "weapon";
+    if (nr_max == -1) {
+        nr_str = "An unlimited number of weapons can be used for atacking.";
     }
     else {
-        nr_and_duration_str += "weapons";
+        nr_str = "A maximum of " + std::to_string(nr_max) + " ";
+
+        if (nr_max == 1) {
+            nr_str += "weapon";
+        }
+        else {
+            nr_str += "weapons";
+        }
+
+        nr_str += " may be used for attacking.";
     }
 
-    nr_and_duration_str += " may be spawned on casting the spell.";
-
-    nr_and_duration_str +=
-        " The weapons exist for " +
-        duration_range(skill).str() +
-        " turns.";
-
-    descr.push_back(nr_and_duration_str);
-
-    if (skill >= SpellSkill::master) {
-        descr.emplace_back("The weapons can see invisible creatures.");
-    }
-
-    if (skill == SpellSkill::transcendent) {
-        descr.emplace_back("The weapons cannot be harmed by physical damage.");
-    }
+    descr.push_back(nr_str);
 
     return descr;
 }

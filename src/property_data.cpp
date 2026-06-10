@@ -16,7 +16,6 @@
 // Private
 // -----------------------------------------------------------------------------
 static const std::unordered_map<std::string, prop::Id> s_str_to_prop_id_map = {
-    {"PROP_ACTOR_SPECTRAL_WPN", prop::Id::spectral_wpn},
     {"PROP_ALLIES_GHOUL_PLAYER", prop::Id::allies_ghoul_player},
     {"PROP_ALTERS_ENVIRONMENT", prop::Id::alters_env},
     {"PROP_ALWAYS_AWARE", prop::Id::always_aware},

@@ -62,9 +62,12 @@ namespace item
 // -----------------------------------------------------------------------------
 Item::Item(ItemData* item_data) :
     m_data(item_data),
+    m_durability(rnd::range(80, 100)),
     m_base_melee_dmg(item_data->melee.dmg),
     m_base_ranged_dmg(item_data->ranged.dmg),
-    m_durability(rnd::range(80, 100))
+    m_melee_hit_chance_mod(item_data->melee.hit_chance_mod),
+    m_ranged_hit_chance_mod(item_data->ranged.hit_chance_mod),
+    m_thrown_hit_chance_mod(item_data->ranged.throw_hit_chance_mod)
 {
 }
 
@@ -560,13 +563,13 @@ std::string Item::hit_mod_str(
 
     switch (attack_info_used) {
     case ItemNameAttackInfo::melee:
-        return get_hit_mod_str(m_data->melee.hit_chance_mod);
+        return get_hit_mod_str(m_melee_hit_chance_mod);
 
     case ItemNameAttackInfo::ranged:
-        return get_hit_mod_str(m_data->ranged.hit_chance_mod);
+        return get_hit_mod_str(m_ranged_hit_chance_mod);
 
     case ItemNameAttackInfo::thrown:
-        return get_hit_mod_str(m_data->ranged.throw_hit_chance_mod);
+        return get_hit_mod_str(m_thrown_hit_chance_mod);
 
     case ItemNameAttackInfo::none:
         return "";

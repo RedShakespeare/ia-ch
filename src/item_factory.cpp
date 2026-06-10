@@ -330,7 +330,7 @@ Item* make(const Id item_id, const int nr_items)
     case Id::scroll_aza_gaze:
     case Id::scroll_control_object:
     case Id::scroll_light:
-    case Id::scroll_spectral_wpns:
+    case Id::scroll_projected_strike:
     case Id::scroll_transmut:
     case Id::scroll_clairvoyance:
     case Id::scroll_heal:

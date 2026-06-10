@@ -190,9 +190,6 @@ Prop* make(const prop::Id id)
     case prop::Id::shapeshifts:
         return new Shapeshifts();
 
-    case prop::Id::spectral_wpn:
-        return new SpectralWpn();
-
     case prop::Id::zealot_stop:
         return new ZealotStop();
 

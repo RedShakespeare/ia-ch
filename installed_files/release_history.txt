@@ -6,7 +6,8 @@
 ##############################
 # Spells
 - Reworked the spell domains, the domains are now: Channeling, Corruption, Illusion, Mind, Time, Warding and Blood.
-- Added new spells, and made some previous monster-only spells available to the player.
+- Added many new spells, and made some previous monster-only spells available to the player.
+- The Spectral Weapons spell is changed to Projected Strike, and simply performs melee attacks with the carried weapons, instead of summoning floating weapons.
 - Some spells that previously were noisy can now be cast silently.
 - Some spells no longer automatically makes the target creature aware of the caster - i.e. unless a spell casting sound is heard, they can be cast on a target without them becoming aware.
 - The Terrify spell also has a chance to make the victims faint.

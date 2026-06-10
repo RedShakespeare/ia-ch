@@ -160,7 +160,7 @@ enum class Id
     scroll_sacrifice_life,
     scroll_see_invis,
     scroll_slow,
-    scroll_spectral_wpns,
+    scroll_projected_strike,
     scroll_spell_shield,
     scroll_teleport,
     scroll_temporal_echo,

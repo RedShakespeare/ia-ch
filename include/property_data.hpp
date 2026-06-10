@@ -135,7 +135,6 @@ enum class Id
     zealot_stop,        // The Zealot pauses and "gropes about"
     major_clapham_summon,
     allies_ghoul_player,
-    spectral_wpn,
     aiming,
     nailed,
     wound,

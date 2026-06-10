@@ -1672,23 +1672,6 @@ private:
     bool m_has_summoned {false};
 };
 
-class SpectralWpn : public Prop
-{
-public:
-    SpectralWpn();
-
-    void on_death() override;
-    std::optional<std::string> override_actor_name_the() const override;
-    std::optional<std::string> override_actor_name_a() const override;
-    std::optional<gfx::TileId> override_actor_tile() const override;
-    std::optional<char> override_actor_character() const override;
-    std::optional<std::string> override_actor_descr() const override;
-
-private:
-    std::unique_ptr<item::Item> m_discarded_item;
-    std::string get_weapon_name() const;
-};
-
 class Thorns : public Prop
 {
 public:

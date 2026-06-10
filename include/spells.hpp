@@ -83,8 +83,8 @@ enum class SpellId
     erudition,
     identify,
     premonition,
+    projected_strike,
     see_invis,
-    spectral_weapons,
     transmut,
 
     // Domain: Time
@@ -922,10 +922,10 @@ private:
     void on_mirror_image_summoned(actor::Actor* mon, SpellSkill skill) const;
 };
 
-class SpellSpectralWeapons : public Spell
+class SpellProjectedStrike : public Spell
 {
 public:
-    SpellSpectralWeapons() = default;
+    SpellProjectedStrike() = default;
 
     std::string name() const override;
 
@@ -948,12 +948,7 @@ private:
 
     bool is_noisy(SpellSkill skill) const override;
 
-    Range duration_range(SpellSkill skill) const;
-
-    void on_mon_summoned(
-        item::Item* item,
-        actor::Actor* mon,
-        SpellSkill skill) const;
+    std::vector<const item::Item*> get_weapons(SpellSkill skill) const;
 
     int max_nr_weapons(SpellSkill skill) const;
 };
@@ -1012,7 +1007,6 @@ private:
     int base_max_cost(SpellSkill skill, const actor::Actor* caster) const override;
 
     bool is_noisy(SpellSkill skill) const override;
-
     Range burn_duration_range() const;
 };
 

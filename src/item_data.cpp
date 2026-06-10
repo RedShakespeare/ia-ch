@@ -1675,8 +1675,8 @@ void init()
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);
-    d.id = Id::scroll_spectral_wpns;
-    d.spell_cast_from_scroll = SpellId::spectral_weapons;
+    d.id = Id::scroll_projected_strike;
+    d.spell_cast_from_scroll = SpellId::projected_strike;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::scroll);

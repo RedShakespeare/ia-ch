@@ -173,7 +173,7 @@ MeleeAttData::MeleeAttData(
     const bool is_defender_aware = is_defender_aware_of_attack(attacker, *defender);
 
     const int skill_mod = get_attacker_melee_skill(attacker);
-    const int wpn_mod = wpn.data().melee.hit_chance_mod;
+    const int wpn_mod = wpn.m_melee_hit_chance_mod;
 
     int dodging_mod = 0;
 
@@ -312,7 +312,7 @@ RangedAttData::RangedAttData(
     }
 
     const int skill_mod = get_attacker_ranged_skill(attacker);
-    const int wpn_mod = wpn.data().ranged.hit_chance_mod;
+    const int wpn_mod = wpn.m_ranged_hit_chance_mod;
 
     const bool is_defender_aware = is_defender_aware_of_attack(attacker, *defender);
 
@@ -459,7 +459,7 @@ ThrowAttData::ThrowAttData(
     }
 
     const int skill_mod = get_attacker_ranged_skill(attacker);
-    const int wpn_mod = item.data().ranged.throw_hit_chance_mod;
+    const int wpn_mod = item.m_thrown_hit_chance_mod;
 
     const bool is_defender_aware = is_defender_aware_of_attack(attacker, *defender);
 

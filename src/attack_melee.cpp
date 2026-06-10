@@ -247,9 +247,7 @@ static void print_mon_melee_hit_actor_msg(const int dmg, const MeleeAttData& att
 
     std::string used_wpn_str;
 
-    if (!att_data.att_item->data().is_intr &&
-        // TODO: This is hacky
-        (actor::id(*att_data.attacker) != "MON_SPECTRAL_WPN")) {
+    if (!att_data.att_item->data().is_intr) {
         const std::string wpn_name_a =
             att_data.att_item->name(
                 ItemNameType::a,
@@ -315,11 +313,6 @@ static void print_no_attacker_hit_mon_melee_msg(
 static void print_melee_miss_actor_msg(const MeleeAttData& att_data)
 {
     if (!att_data.attacker) {
-        // TODO: It can happen that there is no actor attacking due to
-        // traps (e.g. spear trap), but this should probably still print
-        // some message? See also "print_melee_hit_msg", that case is
-        // actually handling the lack of an attacker.
-
         return;
     }
 
