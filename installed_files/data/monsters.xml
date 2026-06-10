@@ -4844,7 +4844,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
 
         <attacks>
             <attack id="ITEMINTR_MIND_LEECH_STING">
-                <damage>2</damage>
+                <damage>1</damage>
             </attack>
         </attacks>
 
