@@ -3074,7 +3074,7 @@ int SpellProjectedStrike::max_nr_weapons(const SpellSkill skill) const
         return -1;
     }
     else {
-        return 2 + (int)skill;
+        return 3 + ((int)skill * 3);
     }
 }
 
@@ -3162,12 +3162,10 @@ void SpellProjectedStrike::run_effect(
             target->m_pos,
             *static_cast<item::Wpn*>(new_wpn.get()));
 
-        if (!actor::is_alive(*target)) {
-            // Target is killed, remove from list of possible targets.
-            targets.erase(
-                std::remove(std::begin(targets), std::end(targets), target),
-                std::end(targets));
-        }
+        // Each target can only be hit once, remove this target from the list of possible targets.
+        targets.erase(
+            std::remove(std::begin(targets), std::end(targets), target),
+            std::end(targets));
 
         if (targets.empty()) {
             break;
@@ -3185,6 +3183,7 @@ std::vector<std::string> SpellProjectedStrike::descr_specific(
     descr.emplace_back(
         "Launches a psychic projection of the caster's carried weapons. "
         "Each projection attacks a visible enemy with near-perfect accuracy. "
+        "No enemy can be targeted more than once. "
         "Only basic melee weapons can be projected - "
         "\"modern\" mechanisms such as pistols or machine guns are "
         "far too complex.");
