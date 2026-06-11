@@ -146,6 +146,12 @@ enum class DidAction
     yes
 };
 
+enum class AllowTickTime
+{
+    no,
+    yes,
+};
+
 enum class WasDestroyed
 {
     no,

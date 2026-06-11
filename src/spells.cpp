@@ -3078,6 +3078,11 @@ int SpellProjectedStrike::max_nr_weapons(const SpellSkill skill) const
     }
 }
 
+int SpellProjectedStrike::hit_chance_bonus(SpellSkill skill) const
+{
+    return 10 * ((int)skill + 1);
+}
+
 int SpellProjectedStrike::base_max_cost(
     const SpellSkill skill,
     const actor::Actor* const caster) const
@@ -3137,7 +3142,7 @@ void SpellProjectedStrike::run_effect(
         return;
     }
 
-    const std::vector<const item::Item*> weapons = get_weapons(skill);
+    std::vector<const item::Item*> weapons = get_weapons(skill);
 
     if (seen_targets.empty() || weapons.empty()) {
         msg_log::add("Visions of hacking, crushing and stabbing fill my mind.");
@@ -3147,20 +3152,28 @@ void SpellProjectedStrike::run_effect(
 
     std::vector<actor::Actor*> targets = seen_targets;
 
-    for (const item::Item* const origin_wpn : weapons) {
+    rnd::shuffle(weapons);
+    rnd::shuffle(targets);
+
+    for (size_t i = 0; i < weapons.size(); ++i) {
+        const item::Item* const origin_wpn = weapons[i];
+
         std::unique_ptr<item::Item> new_wpn(item::make(origin_wpn->id()));
 
-        new_wpn->m_melee_hit_chance_mod = 999;
+        new_wpn->m_melee_hit_chance_mod += hit_chance_bonus(skill);
 
         actor::Actor* const target = rnd::element(targets);
 
-        const P attack_origin = dir_utils::rnd_adj_pos(target->m_pos, false);
+        // Calculate an origin adjacent to the target creature, for correct knockback direction
+        // based on the relative positions of the caster and the target creature.
+        const P attack_origin = target->m_pos + (caster->m_pos - target->m_pos).signs();
 
         attack::melee(
-            nullptr,
+            caster,
             attack_origin,
             target->m_pos,
-            *static_cast<item::Wpn*>(new_wpn.get()));
+            *static_cast<item::Wpn*>(new_wpn.get()),
+            AllowTickTime::no);
 
         // Each target can only be hit once, remove this target from the list of possible targets.
         targets.erase(
@@ -3169,6 +3182,14 @@ void SpellProjectedStrike::run_effect(
 
         if (targets.empty()) {
             break;
+        }
+
+        // Run a sleep if more attacks will happen, to avoid a bunch of sounds playing at exactly
+        // the same time.
+        if (i < (weapons.size() - 1)) {
+            states::draw();
+            io::update_screen();
+            io::sleep(config::delay_projectile_draw());
         }
     }
 
@@ -3180,13 +3201,13 @@ std::vector<std::string> SpellProjectedStrike::descr_specific(
 {
     std::vector<std::string> descr;
 
+    descr.emplace_back("Launches a psychic projection of the caster's carried melee weapons.");
+
     descr.emplace_back(
-        "Launches a psychic projection of the caster's carried weapons. "
-        "Each projection attacks a visible enemy with near-perfect accuracy. "
-        "No enemy can be targeted more than once. "
-        "Only basic melee weapons can be projected - "
-        "\"modern\" mechanisms such as pistols or machine guns are "
-        "far too complex.");
+        "Each projection attacks a visible enemy, using the caster's combat skill with +" +
+        std::to_string(hit_chance_bonus(skill)) +
+        "% hit chance bonus. "
+        "No enemy can be targeted more than once.");
 
     const int nr_max = max_nr_weapons(skill);
 
@@ -3209,6 +3230,11 @@ std::vector<std::string> SpellProjectedStrike::descr_specific(
     }
 
     descr.push_back(nr_str);
+
+    descr.emplace_back(
+        "The caster acts as attacker - all normal conditions that affect "
+        "hit chance or damage apply "
+        "(e.g. bonus damage from melee traits, or damage penalty from being weakened).");
 
     return descr;
 }

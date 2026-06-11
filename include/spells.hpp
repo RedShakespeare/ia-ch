@@ -951,6 +951,8 @@ private:
     std::vector<const item::Item*> get_weapons(SpellSkill skill) const;
 
     int max_nr_weapons(SpellSkill skill) const;
+
+    int hit_chance_bonus(SpellSkill skill) const;
 };
 
 class SpellControlObject : public Spell

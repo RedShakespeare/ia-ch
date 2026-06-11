@@ -136,6 +136,11 @@ static void print_msg_fall_into_chasm(const actor::Actor& actor)
     }
 }
 
+static P calc_knockback_target_position(const P& origin, const P& target)
+{
+    return target + (target - origin).signs();
+}
+
 // -----------------------------------------------------------------------------
 // knockback
 // -----------------------------------------------------------------------------
@@ -164,8 +169,7 @@ void run(
         map::g_player->interrupt_all_actions(ForceInterruptActions::yes);
     }
 
-    const P d = (actor.m_pos - attacked_from_pos).signs();
-    const P new_pos = actor.m_pos + d;
+    const P new_pos = calc_knockback_target_position(attacked_from_pos, actor.m_pos);
 
     if (map::living_actor_at(new_pos)) {
         // Target position is occupied by another actor

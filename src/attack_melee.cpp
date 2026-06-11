@@ -61,14 +61,9 @@ static void print_mon_melee_miss_actor_msg(const MeleeAttData& att_data)
         return;
     }
 
-    const bool is_player_defender =
-        actor::is_player(att_data.defender);
-
-    const bool is_player_seeing_attacker =
-        can_player_see_actor(*att_data.attacker);
-
-    const bool is_player_seeing_defender =
-        can_player_see_actor(*att_data.defender);
+    const bool is_player_defender = actor::is_player(att_data.defender);
+    const bool is_player_seeing_attacker = can_player_see_actor(*att_data.attacker);
+    const bool is_player_seeing_defender = can_player_see_actor(*att_data.defender);
 
     const bool is_unseen_monsters_fighting =
         !is_player_defender &&
@@ -82,9 +77,7 @@ static void print_mon_melee_miss_actor_msg(const MeleeAttData& att_data)
     std::string attacker_name;
 
     if (is_player_seeing_attacker) {
-        attacker_name =
-            text_format::first_to_upper(
-                actor::name_the(*att_data.attacker));
+        attacker_name = text_format::first_to_upper(actor::name_the(*att_data.attacker));
     }
     else {
         attacker_name = "It";
@@ -122,8 +115,7 @@ static void print_player_melee_hit_actor_msg(
     const int dmg,
     const MeleeAttData& att_data)
 {
-    const std::string wpn_verb =
-        att_data.att_item->data().melee.attack_msgs.player;
+    const std::string wpn_verb = att_data.att_item->data().melee.attack_msgs.player;
 
     std::string other_name;
 
@@ -138,10 +130,7 @@ static void print_player_melee_hit_actor_msg(
     const std::string dmg_punct = hit_size_punctuation_str(attack::relative_hit_size(dmg));
 
     if (att_data.is_intrinsic_att) {
-        const std::string att_mod_str =
-            att_data.is_weak_attack
-            ? " feebly"
-            : "";
+        const std::string att_mod_str = att_data.is_weak_attack ? " feebly" : "";
 
         msg_log::add(
             std::string(
@@ -170,9 +159,7 @@ static void print_player_melee_hit_actor_msg(
             : colors::msg_good();
 
         const std::string wpn_name_a =
-            att_data.att_item->name(
-                ItemNameType::a,
-                ItemNameInfo::none);
+            att_data.att_item->name(ItemNameType::a, ItemNameInfo::none);
 
         msg_log::add(
             std::string(
@@ -197,14 +184,9 @@ static void print_mon_melee_hit_actor_msg(const int dmg, const MeleeAttData& att
         return;
     }
 
-    const bool is_player_defender =
-        actor::is_player(att_data.defender);
-
-    const bool is_player_seeing_attacker =
-        can_player_see_actor(*att_data.attacker);
-
-    const bool is_player_seeing_defender =
-        can_player_see_actor(*att_data.defender);
+    const bool is_player_defender = actor::is_player(att_data.defender);
+    const bool is_player_seeing_attacker = can_player_see_actor(*att_data.attacker);
+    const bool is_player_seeing_defender = can_player_see_actor(*att_data.defender);
 
     const bool is_unseen_monsters_fighting =
         !is_player_defender &&
@@ -226,8 +208,7 @@ static void print_mon_melee_hit_actor_msg(const int dmg, const MeleeAttData& att
         attacker_name = "It";
     }
 
-    std::string wpn_verb =
-        att_data.att_item->data().melee.attack_msgs.other;
+    std::string wpn_verb = att_data.att_item->data().melee.attack_msgs.other;
 
     std::string defender_name;
 
@@ -296,9 +277,8 @@ static void print_no_attacker_hit_mon_melee_msg(
     Color msg_color = colors::msg_good();
 
     if (map::g_player->is_leader_of(att_data.defender)) {
-        // Monster is allied to player, use a neutral color
-        // instead (we do not use red color here, since that
-        // is reserved for player taking damage).
+        // Monster is allied to player, use a neutral color instead (we do not use red color here,
+        // since that is reserved for player taking damage).
         msg_color = colors::white();
     }
 
@@ -356,14 +336,9 @@ static audio::SfxId melee_hit_sfx(const int dmg, const MeleeAttData& att_data)
     const attack::HitSize hit_size = attack::relative_hit_size(dmg);
 
     switch (hit_size) {
-    case attack::HitSize::minor:
-        return att_data.att_item->data().melee.hit_small_sfx;
-
-    case attack::HitSize::medium:
-        return att_data.att_item->data().melee.hit_medium_sfx;
-
-    case attack::HitSize::major:
-        return att_data.att_item->data().melee.hit_hard_sfx;
+    case attack::HitSize::minor:  return att_data.att_item->data().melee.hit_small_sfx;
+    case attack::HitSize::medium: return att_data.att_item->data().melee.hit_medium_sfx;
+    case attack::HitSize::major:  return att_data.att_item->data().melee.hit_hard_sfx;
     }
 
     return audio::SfxId::END;
@@ -411,8 +386,7 @@ static std::string melee_snd_msg(const MeleeAttData& att_data)
     std::string snd_msg;
 
     // Only print a message if player is not involved
-    if (!actor::is_player(att_data.defender) &&
-        !actor::is_player(att_data.attacker)) {
+    if (!actor::is_player(att_data.defender) && !actor::is_player(att_data.attacker)) {
         snd_msg = "I hear fighting.";
     }
 
@@ -460,14 +434,9 @@ static void emit_melee_snd(
     auto ignore_msg_if_origin_seeen = IgnoreMsgIfOriginSeen::yes;
 
     if (att_data.attacker) {
-        const bool is_player_defender =
-            actor::is_player(att_data.defender);
-
-        const bool is_player_seeing_defender =
-            can_player_see_actor(*att_data.defender);
-
-        const bool is_player_seeing_attacker =
-            can_player_see_actor(*att_data.attacker);
+        const bool is_player_defender = actor::is_player(att_data.defender);
+        const bool is_player_seeing_defender = can_player_see_actor(*att_data.defender);
+        const bool is_player_seeing_attacker = can_player_see_actor(*att_data.attacker);
 
         const bool is_unseen_monsters_fighting =
             !is_player_defender &&
@@ -507,16 +476,14 @@ static void apply_melee_attack_props(
             wpn.data().melee.dmg_type);
     }
 
-    // NOTE: The 'can_bleed' flag is used as a condition here for
-    // which monsters can be weakened by crippling strikes - it
-    // should be a good enough rule so that crippling strikes can
-    // only be applied against monsters where it makes sense.
+    // NOTE: The 'can_bleed' flag is used as a condition here for which monsters can be weakened by
+    // crippling strikes - it should be a good enough rule so that crippling strikes can only be
+    // applied against monsters where it makes sense.
     if (actor::is_player(attacker) &&
         player_bon::has_trait(TraitId::crippling_strikes) &&
         defender.m_data->can_bleed &&
-        // TODO: This prevents applying on Worm Masses, but it's
-        // hacky, and only makes sense *right now*, there should be
-        // some better attribute to control this.
+        // TODO: This prevents applying on Worm Masses, but it's hacky, and only makes sense *right
+        //       now*, there should be some better attribute to control this.
         !defender.m_properties.has(prop::Id::splits_on_death) &&
         rnd::percent(60)) {
         prop::Prop* weak = prop::make(prop::Id::weakened);
@@ -624,13 +591,11 @@ static void bump_awareness_after_melee_attack(
 
 static terrain::Terrain* get_blocking_terrain_on_path_to_target(const P& origin, const P& target)
 {
-    // Terrain on the path to the target is considered blocking if it blocks
-    // projectiles.
+    // Terrain on the path to the target is considered blocking if it blocks projectiles.
     //
-    // Rationale: We do not want to check for "open terrain" (floor-like
-    // terrain) here, since the player should be able to attack through some
-    // non-open terrain such as barred gate. It is probably a good enough
-    // approximation that you can attack with a long reach weapon through
+    // Rationale: We do not want to check for "open terrain" (floor-like terrain) here, since the
+    // player should be able to attack through some non-open terrain such as barred gate. It is
+    // probably a good enough approximation that you can attack with a long reach weapon through
     // terrain that you can also shoot through.
     //
 
@@ -648,9 +613,8 @@ static terrain::Terrain* get_blocking_terrain_on_path_to_target(const P& origin,
 
     for (const P& p : line) {
         if (p == origin) {
-            // If the attacker is standing inside blocking terrain
-            // for some reason, this terrain should not be hit or
-            // block the attack.
+            // If the attacker is standing inside blocking terrain for some reason, this terrain
+            // should not be hit or block the attack.
             continue;
         }
 
@@ -688,7 +652,8 @@ static void attack_actor(
     actor::Actor* const attacker,
     const P& origin,
     actor::Actor& defender,
-    item::Wpn& wpn)
+    item::Wpn& wpn,
+    const AllowTickTime allow_tick_time)
 {
     const MeleeAttData att_data(attacker, defender, wpn);
     const ActionResult att_result = ability_roll::roll(att_data.hit_chance_tot);
@@ -714,7 +679,9 @@ static void attack_actor(
 
         attacker->m_properties.on_melee_attack();
 
-        game_time::tick();
+        if (allow_tick_time == AllowTickTime::yes) {
+            game_time::tick();
+        }
     }
 }
 
@@ -722,7 +689,8 @@ static void do_melee_player_attacker(
     actor::Actor* const attacker,
     const P& origin,
     const P& aim_pos,
-    item::Wpn& wpn)
+    item::Wpn& wpn,
+    const AllowTickTime allow_tick_time)
 {
     map::update_vision();
 
@@ -759,7 +727,7 @@ static void do_melee_player_attacker(
                 Verbose::yes);
 
         if (is_melee_allowed) {
-            attack_actor(attacker, origin, *defender, wpn);
+            attack_actor(attacker, origin, *defender, wpn, allow_tick_time);
         }
 
         return;
@@ -785,12 +753,11 @@ static void do_melee_player_attacker(
 
     // --- Attack living actor that the player is UNAWARE of? ---
 
-    // NOTE: This is only allowed on some terrain, and only if the creature
-    // is at least humanoid size - the player cannot melee attack a monster
-    // on the floor that they are unaware of (it is assumed that the player
-    // attacks into the air, not down at the floor - except possibly when
-    // bashing a corpse, but supporting bashing a corpse and accidentally
-    // hitting a creature on the floor doesn't really seem necessary).
+    // NOTE: This is only allowed on some terrain, and only if the creature is at least humanoid
+    // size - the player cannot melee attack a monster on the floor that they are unaware of (it is
+    // assumed that the player attacks into the air, not down at the floor - except possibly when
+    // bashing a corpse, but supporting bashing a corpse and accidentally hitting a creature on the
+    // floor doesn't really seem necessary).
 
     if (defender &&
         (defender->m_data->actor_size >= actor::Size::humanoid) &&
@@ -800,7 +767,7 @@ static void do_melee_player_attacker(
                 Verbose::no);
 
         if (is_melee_allowed) {
-            attack_actor(attacker, origin, *defender, wpn);
+            attack_actor(attacker, origin, *defender, wpn, allow_tick_time);
 
             return;
         }
@@ -893,7 +860,8 @@ static void do_melee_non_player_attacker(
     actor::Actor* const attacker,
     const P& origin,
     const P& aim_pos,
-    item::Wpn& wpn)
+    item::Wpn& wpn,
+    const AllowTickTime allow_tick_time)
 {
     if (attacker) {
         // A monster is attacking, bump monster awareness.
@@ -918,7 +886,7 @@ static void do_melee_non_player_attacker(
         return;
     }
 
-    attack_actor(attacker, origin, *defender, wpn);
+    attack_actor(attacker, origin, *defender, wpn, allow_tick_time);
 }
 
 // -----------------------------------------------------------------------------
@@ -930,13 +898,14 @@ void melee(
     actor::Actor* const attacker,
     const P& origin,
     const P& aim_pos,
-    item::Wpn& wpn)
+    item::Wpn& wpn,
+    const AllowTickTime allow_tick_time)
 {
     if (actor::is_player(attacker)) {
-        do_melee_player_attacker(attacker, origin, aim_pos, wpn);
+        do_melee_player_attacker(attacker, origin, aim_pos, wpn, allow_tick_time);
     }
     else {
-        do_melee_non_player_attacker(attacker, origin, aim_pos, wpn);
+        do_melee_non_player_attacker(attacker, origin, aim_pos, wpn, allow_tick_time);
     }
 }
 

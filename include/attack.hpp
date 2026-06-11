@@ -28,7 +28,8 @@ void melee(
     actor::Actor* attacker,
     const P& origin,
     const P& aim_pos,
-    item::Wpn& wpn);
+    item::Wpn& wpn,
+    AllowTickTime allow_tick_time = AllowTickTime::yes);
 
 DidAction ranged(
     actor::Actor* attacker,
