@@ -3155,6 +3155,21 @@ void SpellProjectedStrike::run_effect(
     rnd::shuffle(weapons);
     rnd::shuffle(targets);
 
+    auto remove_actor = [](std::vector<actor::Actor*>& actors, const actor::Actor* actor) {
+        actors.erase(
+            std::remove(std::begin(actors), std::end(actors), actor),
+            std::end(actors));
+    };
+
+    auto remove_dead_actors = [](std::vector<actor::Actor*>& actors) {
+        actors.erase(
+            std::remove_if(
+                std::begin(actors), std::end(actors), [](const actor::Actor* actor) {
+                    return !actor::is_alive(*actor);
+                }),
+            std::end(actors));
+    };
+
     for (size_t i = 0; i < weapons.size(); ++i) {
         const item::Item* const origin_wpn = weapons[i];
 
@@ -3173,12 +3188,14 @@ void SpellProjectedStrike::run_effect(
             attack_origin,
             target->m_pos,
             *static_cast<item::Wpn*>(new_wpn.get()),
-            AllowTickTime::no);
+            attack::AttackSource::magical);
 
         // Each target can only be hit once, remove this target from the list of possible targets.
-        targets.erase(
-            std::remove(std::begin(targets), std::end(targets), target),
-            std::end(targets));
+        remove_actor(targets, target);
+
+        // Remove all dead actors to handle cases like the attacked actor being a creature that
+        // explodes on death, killing other actors.
+        remove_dead_actors(targets);
 
         if (targets.empty()) {
             break;

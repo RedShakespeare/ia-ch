@@ -653,7 +653,7 @@ static void attack_actor(
     const P& origin,
     actor::Actor& defender,
     item::Wpn& wpn,
-    const AllowTickTime allow_tick_time)
+    const attack::AttackSource attack_source)
 {
     const MeleeAttData att_data(attacker, defender, wpn);
     const ActionResult att_result = ability_roll::roll(att_data.hit_chance_tot);
@@ -679,7 +679,7 @@ static void attack_actor(
 
         attacker->m_properties.on_melee_attack();
 
-        if (allow_tick_time == AllowTickTime::yes) {
+        if (attack_source == attack::AttackSource::normal) {
             game_time::tick();
         }
     }
@@ -690,7 +690,7 @@ static void do_melee_player_attacker(
     const P& origin,
     const P& aim_pos,
     item::Wpn& wpn,
-    const AllowTickTime allow_tick_time)
+    const attack::AttackSource attack_source)
 {
     map::update_vision();
 
@@ -723,11 +723,11 @@ static void do_melee_player_attacker(
     // --- Attack known actor? ---
     if (defender && actor::is_player_aware_of_me(*defender)) {
         const bool is_melee_allowed =
-            map::g_player->m_properties.allow_attack_melee(
-                Verbose::yes);
+            (attack_source != attack::AttackSource::normal) ||
+            map::g_player->m_properties.allow_attack_melee(Verbose::yes);
 
         if (is_melee_allowed) {
-            attack_actor(attacker, origin, *defender, wpn, allow_tick_time);
+            attack_actor(attacker, origin, *defender, wpn, attack_source);
         }
 
         return;
@@ -763,11 +763,11 @@ static void do_melee_player_attacker(
         (defender->m_data->actor_size >= actor::Size::humanoid) &&
         bash::is_open_terrain(*terrain_at_aim_pos)) {
         const bool is_melee_allowed =
-            map::g_player->m_properties.allow_attack_melee(
-                Verbose::no);
+            (attack_source != attack::AttackSource::normal) ||
+            map::g_player->m_properties.allow_attack_melee(Verbose::no);
 
         if (is_melee_allowed) {
-            attack_actor(attacker, origin, *defender, wpn, allow_tick_time);
+            attack_actor(attacker, origin, *defender, wpn, attack_source);
 
             return;
         }
@@ -861,7 +861,7 @@ static void do_melee_non_player_attacker(
     const P& origin,
     const P& aim_pos,
     item::Wpn& wpn,
-    const AllowTickTime allow_tick_time)
+    const attack::AttackSource attack_source)
 {
     if (attacker) {
         // A monster is attacking, bump monster awareness.
@@ -886,7 +886,7 @@ static void do_melee_non_player_attacker(
         return;
     }
 
-    attack_actor(attacker, origin, *defender, wpn, allow_tick_time);
+    attack_actor(attacker, origin, *defender, wpn, attack_source);
 }
 
 // -----------------------------------------------------------------------------
@@ -899,13 +899,13 @@ void melee(
     const P& origin,
     const P& aim_pos,
     item::Wpn& wpn,
-    const AllowTickTime allow_tick_time)
+    const AttackSource attack_source)
 {
     if (actor::is_player(attacker)) {
-        do_melee_player_attacker(attacker, origin, aim_pos, wpn, allow_tick_time);
+        do_melee_player_attacker(attacker, origin, aim_pos, wpn, attack_source);
     }
     else {
-        do_melee_non_player_attacker(attacker, origin, aim_pos, wpn, allow_tick_time);
+        do_melee_non_player_attacker(attacker, origin, aim_pos, wpn, attack_source);
     }
 }
 
