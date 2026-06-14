@@ -52,6 +52,9 @@
 - All "y/n" prompts can now also be accepted with the enter key.
 - There is also a Controller Support mode, which can be enabled in the options menu. This mode is intended for cases such as binding a controller stick to the numpad's eight directional keys. In this mode, you must press the [Enter] key while holding a direction in order to execute a move.
 
+# Other user interface changes
+- Unified the animation delay option to just a single "base delay" option. Also tweaked the default animation delay value and various factors used in different places for nicer animations (in particular, the Tommy Gun animation could previously be almost invisible).
+
 ##############################
 # Fixes
 ##############################

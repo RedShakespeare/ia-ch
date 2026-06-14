@@ -1845,7 +1845,7 @@ void SpellBolt::draw_projectile_travel(
 
             io::update_screen();
 
-            int delay = config::delay_projectile_draw();
+            int delay = config::base_delay();
 
             if (m_impl->nr_projectiles(skill) > 1) {
                 delay /= 2;
@@ -3206,7 +3206,7 @@ void SpellProjectedStrike::run_effect(
         if (i < (weapons.size() - 1)) {
             states::draw();
             io::update_screen();
-            io::sleep(config::delay_projectile_draw());
+            io::sleep(config::base_delay());
         }
     }
 

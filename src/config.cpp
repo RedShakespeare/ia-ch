@@ -79,8 +79,7 @@ static bool s_auto_select_menu = false;
 static HintsMode s_hints_mode = HintsMode::once;
 static bool s_has_seen_hint_global[(size_t)hints::Id::END];
 static bool s_always_warn_new_mon = false;
-static int s_delay_projectile_draw = -1;
-static int s_delay_explosion = -1;
+static int s_base_delay = -1;
 static std::string s_default_player_name;
 static bool s_is_bot_playing = false;
 static bool s_is_stress_test = false;
@@ -332,8 +331,7 @@ static void set_default_variables()
     s_warn_on_ranged_wpn_melee = true;
     s_is_medical_bag_auto_choice = false;
     s_is_ranged_wpn_auto_reload = false;
-    s_delay_projectile_draw = 25;
-    s_delay_explosion = 250;
+    s_base_delay = 50;
     s_default_player_name = "";
 
     for (size_t i = 0; i < (size_t)hints::Id::END; ++i) {
@@ -408,8 +406,7 @@ static bool read_config_file()
     s_warn_on_ranged_wpn_melee = config["warn_on_ranged_wpn_melee"] == "1";
     s_is_medical_bag_auto_choice = config["is_medical_bag_auto_choice"] == "1";
     s_is_ranged_wpn_auto_reload = config["is_ranged_wpn_auto_reload"] == "1";
-    s_delay_projectile_draw = to_int(config["delay_projectile_draw"]);
-    s_delay_explosion = to_int(config["delay_explosion"]);
+    s_base_delay = to_int(config["base_delay"]);
 
     s_default_player_name = "";
 
@@ -442,8 +439,7 @@ static void write_config_file()
     config["is_ambient_audio_preloaded"] = s_is_ambient_audio_preloaded ? "1" : "0";
     config["audio_buffer_size"] = std::to_string(s_audio_buffer_size);
     config["input_mode"] = std::to_string((int)s_input_mode);
-    config["s_is_double_click_toggle_fullscreen"] =
-        s_is_double_click_toggle_fullscreen ? "1" : "0";
+    config["is_double_click_toggle_fullscreen"] = s_is_double_click_toggle_fullscreen ? "1" : "0";
     config["window_px_w"] = std::to_string(s_window_px_w);
     config["window_px_h"] = std::to_string(s_window_px_h);
     config["is_fullscreen"] = s_is_fullscreen ? "1" : "0";
@@ -468,8 +464,7 @@ static void write_config_file()
     config["warn_on_ranged_wpn_melee"] = s_warn_on_ranged_wpn_melee ? "1" : "0";
     config["is_medical_bag_auto_choice"] = s_is_medical_bag_auto_choice ? "1" : "0";
     config["is_ranged_wpn_auto_reload"] = s_is_ranged_wpn_auto_reload ? "1" : "0";
-    config["delay_projectile_draw"] = std::to_string(s_delay_projectile_draw);
-    config["delay_explosion"] = std::to_string(s_delay_explosion);
+    config["base_delay"] = std::to_string(s_base_delay);
 
     config["default_player_name_set"] = s_default_player_name.empty() ? "0" : "1";
 
@@ -557,8 +552,7 @@ void init()
     s_options.emplace_back(std::make_unique<WarnLightExplosivesOption>());
     s_options.emplace_back(std::make_unique<WanDrinkMalignPotionOption>());
     s_options.emplace_back(std::make_unique<WarnRangedWeaponMeleeOption>());
-    s_options.emplace_back(std::make_unique<ProjectileDelayOption>());
-    s_options.emplace_back(std::make_unique<ExplosionDelayOption>());
+    s_options.emplace_back(std::make_unique<BaseDelayOption>());
 
     // Find available fonts
     find_fonts_from_filesystem();
@@ -828,14 +822,9 @@ bool always_warn_new_mon()
     return s_always_warn_new_mon;
 }
 
-int delay_projectile_draw()
+int base_delay()
 {
-    return s_delay_projectile_draw;
-}
-
-int delay_explosion()
-{
-    return s_delay_explosion;
+    return s_base_delay;
 }
 
 void set_default_player_name(const std::string& name)
@@ -1940,29 +1929,29 @@ void AutoReloadOption::change(OptionChangeCommand command) const
     s_is_ranged_wpn_auto_reload = !s_is_ranged_wpn_auto_reload;
 }
 
-std::string ProjectileDelayOption::name() const
+std::string BaseDelayOption::name() const
 {
-    return "Projectile delay (ms)";
+    return "Base animation delay (ms)";
 }
 
-std::string ProjectileDelayOption::descr() const
+std::string BaseDelayOption::descr() const
 {
     return (
-        "Number of milliseconds per step when running "
-        "projectile animations.");
+        "Base delay factor (ms) for animations. "
+        "Higher values will make animations such as projectiles or explosions play slower. ");
 }
 
-std::string ProjectileDelayOption::value_str() const
+std::string BaseDelayOption::value_str() const
 {
-    return std::to_string(s_delay_projectile_draw);
+    return std::to_string(s_base_delay);
 }
 
-OptionSubmenuType ProjectileDelayOption::submenu_type() const
+OptionSubmenuType BaseDelayOption::submenu_type() const
 {
     return OptionSubmenuType::gameplay;
 }
 
-void ProjectileDelayOption::change(OptionChangeCommand command) const
+void BaseDelayOption::change(OptionChangeCommand command) const
 {
     const Range allowed_range(0, 900);
 
@@ -1971,90 +1960,25 @@ void ProjectileDelayOption::change(OptionChangeCommand command) const
         query::QueryNumberConfig query_config;
 
         query_config.allowed_range = allowed_range;
-        query_config.default_value = s_delay_projectile_draw;
+        query_config.default_value = s_base_delay;
         query_config.cancel_returns_default = true;
 
-        const int nr =
-            query::number(
-                query_config,
-                "Projectile delay");
+        const int nr = query::number(query_config, "Projectile delay");
 
         if (nr != -1) {
-            s_delay_projectile_draw = nr;
+            s_base_delay = nr;
         }
     }
     else if (command == OptionChangeCommand::left) {
         // Left
-        s_delay_projectile_draw -= 10;
+        s_base_delay -= 10;
     }
     else {
         // Right
-        s_delay_projectile_draw += 10;
+        s_base_delay += 10;
     }
 
-    s_delay_projectile_draw =
-        std::clamp(
-            s_delay_projectile_draw,
-            allowed_range.min,
-            allowed_range.max);
-}
-
-std::string ExplosionDelayOption::name() const
-{
-    return "Explosion delay (ms)";
-}
-
-std::string ExplosionDelayOption::descr() const
-{
-    return (
-        "Duration of explosion animations (milliseconds).");
-}
-
-std::string ExplosionDelayOption::value_str() const
-{
-    return std::to_string(s_delay_explosion);
-}
-
-OptionSubmenuType ExplosionDelayOption::submenu_type() const
-{
-    return OptionSubmenuType::gameplay;
-}
-
-void ExplosionDelayOption::change(OptionChangeCommand command) const
-{
-    const Range allowed_range(0, 900);
-
-    if (command == OptionChangeCommand::enter) {
-        // Enter
-        query::QueryNumberConfig query_config;
-
-        query_config.allowed_range = allowed_range;
-        query_config.default_value = s_delay_explosion;
-        query_config.cancel_returns_default = true;
-
-        const int nr =
-            query::number(
-                query_config,
-                "Explosion delay");
-
-        if (nr != -1) {
-            s_delay_explosion = nr;
-        }
-    }
-    else if (command == OptionChangeCommand::left) {
-        // Left
-        s_delay_explosion -= 10;
-    }
-    else {
-        // Right
-        s_delay_explosion += 10;
-    }
-
-    s_delay_explosion =
-        std::clamp(
-            s_delay_explosion,
-            allowed_range.min,
-            allowed_range.max);
+    s_base_delay = std::clamp(s_base_delay, allowed_range.min, allowed_range.max);
 }
 
 // std::string ResetDefaultsOption::name() const

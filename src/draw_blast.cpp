@@ -51,7 +51,9 @@ void draw_blast_at_cells(
 
     io::update_screen();
 
-    io::sleep(config::delay_explosion() / delay_div);
+    const int delay_factor = 5;
+
+    io::sleep((config::base_delay() * delay_factor) / delay_div);
 
     states::draw();
 
@@ -71,7 +73,7 @@ void draw_blast_at_cells(
 
     io::update_screen();
 
-    io::sleep(config::delay_explosion() / delay_div);
+    io::sleep((config::base_delay() * delay_factor) / delay_div);
 
     TRACE_FUNC_END;
 }

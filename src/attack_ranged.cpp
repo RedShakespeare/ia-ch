@@ -567,9 +567,9 @@ static void init_projectiles_gfx(ProjectileFireData& fire_data)
 
 static void init_projectiles_animation_delay(ProjectileFireData& fire_data)
 {
-    const auto denom = (int)fire_data.projectiles.size();
+    const int denom = (fire_data.projectiles.size() > 1) ? 2 : 1;
 
-    fire_data.animation_delay = (config::delay_projectile_draw() / denom);
+    fire_data.animation_delay = (config::base_delay() / denom);
 }
 
 static ProjectileFireData init_projectiles_fire_data(

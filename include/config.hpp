@@ -101,8 +101,7 @@ HintsMode hints_mode();
 bool has_seen_hint_global(hints::Id id);
 void set_hint_seen_global(hints::Id id);
 bool always_warn_new_mon();
-int delay_projectile_draw();
-int delay_explosion();
+int base_delay();
 void set_default_player_name(const std::string& name);
 std::string default_player_name();
 

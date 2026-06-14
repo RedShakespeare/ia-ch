@@ -190,7 +190,9 @@ static void draw(
         if (is_any_cell_seen_by_player) {
             io::update_screen();
 
-            io::sleep(config::delay_explosion() / nr_anim_steps);
+            const int delay_factor = 8;
+
+            io::sleep((config::base_delay() * delay_factor) / nr_anim_steps);
         }
     }
 }

@@ -183,7 +183,7 @@ void player_throw_lit_explosive(const P& aim_cell)
 
                 io::update_screen();
 
-                io::sleep(config::delay_projectile_draw());
+                io::sleep(config::base_delay());
             }
         }
     }
@@ -391,7 +391,7 @@ void throw_item(
 
             io::update_screen();
 
-            io::sleep(config::delay_projectile_draw());
+            io::sleep(config::base_delay());
         }
 
         if ((pos == tgt_pos) &&
