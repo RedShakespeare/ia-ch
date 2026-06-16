@@ -123,12 +123,12 @@ void MainMenuState::draw()
 #endif  // NDEBUG
 
     const std::vector<std::string> labels = {
-        "(N)ew journey",
-        "(R)esurrect",
-        "(T)ome of Wisdom",
-        "(O)ptions",
-        "(G)raveyard",
-        "(E)scape to reality"};
+        "(N)新的旅程",
+        "(R)复活",
+        "(T)智慧之书",
+        "(O)选项",
+        "(G)墓园",
+        "(E)逃回现实"};
 
     const P screen_dims = panels::dims(Panel::screen);
 

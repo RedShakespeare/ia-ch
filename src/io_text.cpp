@@ -78,8 +78,10 @@ void draw_text_at_px(
         }
         else {
             // Whole message fits, or we are not yet near the edge
-            draw_character_at_px(
-                utf8::is_single_byte_ascii(str.substr(i, 1)) ? str[i] : '?',
+            const size_t cp_size = utf8::codepoint_size(str, i);
+
+            draw_glyph_at_px(
+                str.substr(i, cp_size),
                 px_pos,
                 sdl_color,
                 draw_bg,

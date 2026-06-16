@@ -8,9 +8,12 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <fstream>
 #include <iterator>
+#include <regex>
 #include <optional>
 #include <ostream>
+#include <unordered_map>
 
 #include "SDL.h"
 #include "SDL_blendmode.h"
@@ -54,6 +57,92 @@ static SDL_Surface* load_surface(const std::string& path)
     }
 
     return surface;
+}
+
+static std::unordered_map<std::string, int> s_font_glyph_indices;
+static int s_font_glyph_columns = 95;
+
+static std::string font_map_path_from_img_path(const std::string& img_path)
+{
+    const size_t suffix_pos = img_path.find_last_of('.');
+
+    if (suffix_pos == std::string::npos) {
+        return img_path + ".json";
+    }
+
+    return img_path.substr(0, suffix_pos) + ".json";
+}
+
+static void load_font_map(const std::string& img_path)
+{
+    s_font_glyph_indices.clear();
+    s_font_glyph_columns = 95;
+
+    const std::string map_path = font_map_path_from_img_path(img_path);
+
+    std::ifstream file(map_path);
+
+    if (!file) {
+        TRACE << "No font map found at: " << map_path << "\n";
+
+        return;
+    }
+
+    TRACE << "Loading font map: " << map_path << "\n";
+
+    const std::regex columns_regex(R"(^  "columns": ([0-9]+),?$)");
+    const std::regex glyph_regex(R"REGEX(^    "(.+)": \{$)REGEX");
+    const std::regex index_regex(R"(^      "index": ([0-9]+),?$)");
+
+    std::string current_glyph;
+    std::string line;
+
+    while (std::getline(file, line)) {
+        std::smatch match;
+
+        if (std::regex_match(line, match, columns_regex)) {
+            s_font_glyph_columns = std::stoi(match[1].str());
+
+            continue;
+        }
+
+        if (std::regex_match(line, match, glyph_regex)) {
+            current_glyph = match[1].str();
+
+            continue;
+        }
+
+        if (!current_glyph.empty() &&
+            std::regex_match(line, match, index_regex)) {
+            const bool is_non_ascii =
+                static_cast<unsigned char>(current_glyph[0]) >= 0x80;
+
+            if (is_non_ascii) {
+                s_font_glyph_indices[current_glyph] = std::stoi(match[1].str());
+            }
+
+            current_glyph.clear();
+        }
+    }
+}
+
+static int glyph_index(const std::string& glyph)
+{
+    if (glyph.size() == 1) {
+        const auto c = static_cast<unsigned char>(glyph[0]);
+
+        if ((c >= ' ') && (c <= '~')) {
+            return c - ' ';
+        }
+    }
+
+    const auto it = s_font_glyph_indices.find(glyph);
+
+    if (it != std::end(s_font_glyph_indices)) {
+        return it->second;
+    }
+
+    return '?' - ' ';
 }
 
 static void swap_surface_color(
@@ -385,6 +474,8 @@ static void load_font()
 
     TRACE << "Loading font image: " << img_path << "\n";
 
+    load_font_map(img_path);
+
     SDL_Surface* const surface = load_surface(img_path);
 
     swap_surface_color(*surface, colors::black(), colors::magenta());
@@ -637,8 +728,8 @@ void disable_clip_rect()
     SDL_RenderSetClipRect(g_sdl_renderer, nullptr);
 }
 
-void draw_character_at_px(
-    const char character,
+static void draw_glyph_index_at_px(
+    const int glyph_idx,
     P px_pos,
     const Color& color,
     const io::DrawBg draw_bg,
@@ -662,7 +753,9 @@ void draw_character_at_px(
 
     // Set up the texture clip rectangle, before calculating scaling
     // NOTE: We expect one pixel separator between each glyph.
-    auto char_px_pos = gfx::character_pos(character);
+    P char_px_pos(
+        glyph_idx % s_font_glyph_columns,
+        glyph_idx / s_font_glyph_columns);
 
     char_px_pos.x *= (gui_cell_px_dims.x + 1);
     char_px_pos.y *= (gui_cell_px_dims.y);
@@ -713,6 +806,36 @@ void draw_character_at_px(
         color_adapted.b());
 
     SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
+}
+
+void draw_character_at_px(
+    const char character,
+    P px_pos,
+    const Color& color,
+    const io::DrawBg draw_bg,
+    const Color& bg_color)
+{
+    draw_glyph_index_at_px(
+        glyph_index(std::string(1, character)),
+        px_pos,
+        color,
+        draw_bg,
+        bg_color);
+}
+
+void draw_glyph_at_px(
+    const std::string& glyph,
+    P px_pos,
+    const Color& color,
+    const io::DrawBg draw_bg,
+    const Color& bg_color)
+{
+    draw_glyph_index_at_px(
+        glyph_index(glyph),
+        px_pos,
+        color,
+        draw_bg,
+        bg_color);
 }
 
 void draw_character(const CharacterDrawObj& obj)
