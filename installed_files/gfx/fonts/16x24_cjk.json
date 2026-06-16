@@ -1,0 +1,725 @@
+{
+  "cell": {
+    "width": 16,
+    "height": 24
+  },
+  "columns": 117,
+  "glyphs": {
+    " ": {
+      "codepoint": "U+0020",
+      "index": 0,
+      "x": 0,
+      "y": 0
+    },
+    "!": {
+      "codepoint": "U+0021",
+      "index": 1,
+      "x": 1,
+      "y": 0
+    },
+    "\"": {
+      "codepoint": "U+0022",
+      "index": 2,
+      "x": 2,
+      "y": 0
+    },
+    "#": {
+      "codepoint": "U+0023",
+      "index": 3,
+      "x": 3,
+      "y": 0
+    },
+    "$": {
+      "codepoint": "U+0024",
+      "index": 4,
+      "x": 4,
+      "y": 0
+    },
+    "%": {
+      "codepoint": "U+0025",
+      "index": 5,
+      "x": 5,
+      "y": 0
+    },
+    "&": {
+      "codepoint": "U+0026",
+      "index": 6,
+      "x": 6,
+      "y": 0
+    },
+    "'": {
+      "codepoint": "U+0027",
+      "index": 7,
+      "x": 7,
+      "y": 0
+    },
+    "(": {
+      "codepoint": "U+0028",
+      "index": 8,
+      "x": 8,
+      "y": 0
+    },
+    ")": {
+      "codepoint": "U+0029",
+      "index": 9,
+      "x": 9,
+      "y": 0
+    },
+    "*": {
+      "codepoint": "U+002A",
+      "index": 10,
+      "x": 10,
+      "y": 0
+    },
+    "+": {
+      "codepoint": "U+002B",
+      "index": 11,
+      "x": 11,
+      "y": 0
+    },
+    ",": {
+      "codepoint": "U+002C",
+      "index": 12,
+      "x": 12,
+      "y": 0
+    },
+    "-": {
+      "codepoint": "U+002D",
+      "index": 13,
+      "x": 13,
+      "y": 0
+    },
+    ".": {
+      "codepoint": "U+002E",
+      "index": 14,
+      "x": 14,
+      "y": 0
+    },
+    "/": {
+      "codepoint": "U+002F",
+      "index": 15,
+      "x": 15,
+      "y": 0
+    },
+    "0": {
+      "codepoint": "U+0030",
+      "index": 16,
+      "x": 16,
+      "y": 0
+    },
+    "1": {
+      "codepoint": "U+0031",
+      "index": 17,
+      "x": 17,
+      "y": 0
+    },
+    "2": {
+      "codepoint": "U+0032",
+      "index": 18,
+      "x": 18,
+      "y": 0
+    },
+    "3": {
+      "codepoint": "U+0033",
+      "index": 19,
+      "x": 19,
+      "y": 0
+    },
+    "4": {
+      "codepoint": "U+0034",
+      "index": 20,
+      "x": 20,
+      "y": 0
+    },
+    "5": {
+      "codepoint": "U+0035",
+      "index": 21,
+      "x": 21,
+      "y": 0
+    },
+    "6": {
+      "codepoint": "U+0036",
+      "index": 22,
+      "x": 22,
+      "y": 0
+    },
+    "7": {
+      "codepoint": "U+0037",
+      "index": 23,
+      "x": 23,
+      "y": 0
+    },
+    "8": {
+      "codepoint": "U+0038",
+      "index": 24,
+      "x": 24,
+      "y": 0
+    },
+    "9": {
+      "codepoint": "U+0039",
+      "index": 25,
+      "x": 25,
+      "y": 0
+    },
+    ":": {
+      "codepoint": "U+003A",
+      "index": 26,
+      "x": 26,
+      "y": 0
+    },
+    ";": {
+      "codepoint": "U+003B",
+      "index": 27,
+      "x": 27,
+      "y": 0
+    },
+    "<": {
+      "codepoint": "U+003C",
+      "index": 28,
+      "x": 28,
+      "y": 0
+    },
+    "=": {
+      "codepoint": "U+003D",
+      "index": 29,
+      "x": 29,
+      "y": 0
+    },
+    ">": {
+      "codepoint": "U+003E",
+      "index": 30,
+      "x": 30,
+      "y": 0
+    },
+    "?": {
+      "codepoint": "U+003F",
+      "index": 31,
+      "x": 31,
+      "y": 0
+    },
+    "@": {
+      "codepoint": "U+0040",
+      "index": 32,
+      "x": 32,
+      "y": 0
+    },
+    "A": {
+      "codepoint": "U+0041",
+      "index": 33,
+      "x": 33,
+      "y": 0
+    },
+    "B": {
+      "codepoint": "U+0042",
+      "index": 34,
+      "x": 34,
+      "y": 0
+    },
+    "C": {
+      "codepoint": "U+0043",
+      "index": 35,
+      "x": 35,
+      "y": 0
+    },
+    "D": {
+      "codepoint": "U+0044",
+      "index": 36,
+      "x": 36,
+      "y": 0
+    },
+    "E": {
+      "codepoint": "U+0045",
+      "index": 37,
+      "x": 37,
+      "y": 0
+    },
+    "F": {
+      "codepoint": "U+0046",
+      "index": 38,
+      "x": 38,
+      "y": 0
+    },
+    "G": {
+      "codepoint": "U+0047",
+      "index": 39,
+      "x": 39,
+      "y": 0
+    },
+    "H": {
+      "codepoint": "U+0048",
+      "index": 40,
+      "x": 40,
+      "y": 0
+    },
+    "I": {
+      "codepoint": "U+0049",
+      "index": 41,
+      "x": 41,
+      "y": 0
+    },
+    "J": {
+      "codepoint": "U+004A",
+      "index": 42,
+      "x": 42,
+      "y": 0
+    },
+    "K": {
+      "codepoint": "U+004B",
+      "index": 43,
+      "x": 43,
+      "y": 0
+    },
+    "L": {
+      "codepoint": "U+004C",
+      "index": 44,
+      "x": 44,
+      "y": 0
+    },
+    "M": {
+      "codepoint": "U+004D",
+      "index": 45,
+      "x": 45,
+      "y": 0
+    },
+    "N": {
+      "codepoint": "U+004E",
+      "index": 46,
+      "x": 46,
+      "y": 0
+    },
+    "O": {
+      "codepoint": "U+004F",
+      "index": 47,
+      "x": 47,
+      "y": 0
+    },
+    "P": {
+      "codepoint": "U+0050",
+      "index": 48,
+      "x": 48,
+      "y": 0
+    },
+    "Q": {
+      "codepoint": "U+0051",
+      "index": 49,
+      "x": 49,
+      "y": 0
+    },
+    "R": {
+      "codepoint": "U+0052",
+      "index": 50,
+      "x": 50,
+      "y": 0
+    },
+    "S": {
+      "codepoint": "U+0053",
+      "index": 51,
+      "x": 51,
+      "y": 0
+    },
+    "T": {
+      "codepoint": "U+0054",
+      "index": 52,
+      "x": 52,
+      "y": 0
+    },
+    "U": {
+      "codepoint": "U+0055",
+      "index": 53,
+      "x": 53,
+      "y": 0
+    },
+    "V": {
+      "codepoint": "U+0056",
+      "index": 54,
+      "x": 54,
+      "y": 0
+    },
+    "W": {
+      "codepoint": "U+0057",
+      "index": 55,
+      "x": 55,
+      "y": 0
+    },
+    "X": {
+      "codepoint": "U+0058",
+      "index": 56,
+      "x": 56,
+      "y": 0
+    },
+    "Y": {
+      "codepoint": "U+0059",
+      "index": 57,
+      "x": 57,
+      "y": 0
+    },
+    "Z": {
+      "codepoint": "U+005A",
+      "index": 58,
+      "x": 58,
+      "y": 0
+    },
+    "[": {
+      "codepoint": "U+005B",
+      "index": 59,
+      "x": 59,
+      "y": 0
+    },
+    "\\": {
+      "codepoint": "U+005C",
+      "index": 60,
+      "x": 60,
+      "y": 0
+    },
+    "]": {
+      "codepoint": "U+005D",
+      "index": 61,
+      "x": 61,
+      "y": 0
+    },
+    "^": {
+      "codepoint": "U+005E",
+      "index": 62,
+      "x": 62,
+      "y": 0
+    },
+    "_": {
+      "codepoint": "U+005F",
+      "index": 63,
+      "x": 63,
+      "y": 0
+    },
+    "`": {
+      "codepoint": "U+0060",
+      "index": 64,
+      "x": 64,
+      "y": 0
+    },
+    "a": {
+      "codepoint": "U+0061",
+      "index": 65,
+      "x": 65,
+      "y": 0
+    },
+    "b": {
+      "codepoint": "U+0062",
+      "index": 66,
+      "x": 66,
+      "y": 0
+    },
+    "c": {
+      "codepoint": "U+0063",
+      "index": 67,
+      "x": 67,
+      "y": 0
+    },
+    "d": {
+      "codepoint": "U+0064",
+      "index": 68,
+      "x": 68,
+      "y": 0
+    },
+    "e": {
+      "codepoint": "U+0065",
+      "index": 69,
+      "x": 69,
+      "y": 0
+    },
+    "f": {
+      "codepoint": "U+0066",
+      "index": 70,
+      "x": 70,
+      "y": 0
+    },
+    "g": {
+      "codepoint": "U+0067",
+      "index": 71,
+      "x": 71,
+      "y": 0
+    },
+    "h": {
+      "codepoint": "U+0068",
+      "index": 72,
+      "x": 72,
+      "y": 0
+    },
+    "i": {
+      "codepoint": "U+0069",
+      "index": 73,
+      "x": 73,
+      "y": 0
+    },
+    "j": {
+      "codepoint": "U+006A",
+      "index": 74,
+      "x": 74,
+      "y": 0
+    },
+    "k": {
+      "codepoint": "U+006B",
+      "index": 75,
+      "x": 75,
+      "y": 0
+    },
+    "l": {
+      "codepoint": "U+006C",
+      "index": 76,
+      "x": 76,
+      "y": 0
+    },
+    "m": {
+      "codepoint": "U+006D",
+      "index": 77,
+      "x": 77,
+      "y": 0
+    },
+    "n": {
+      "codepoint": "U+006E",
+      "index": 78,
+      "x": 78,
+      "y": 0
+    },
+    "o": {
+      "codepoint": "U+006F",
+      "index": 79,
+      "x": 79,
+      "y": 0
+    },
+    "p": {
+      "codepoint": "U+0070",
+      "index": 80,
+      "x": 80,
+      "y": 0
+    },
+    "q": {
+      "codepoint": "U+0071",
+      "index": 81,
+      "x": 81,
+      "y": 0
+    },
+    "r": {
+      "codepoint": "U+0072",
+      "index": 82,
+      "x": 82,
+      "y": 0
+    },
+    "s": {
+      "codepoint": "U+0073",
+      "index": 83,
+      "x": 83,
+      "y": 0
+    },
+    "t": {
+      "codepoint": "U+0074",
+      "index": 84,
+      "x": 84,
+      "y": 0
+    },
+    "u": {
+      "codepoint": "U+0075",
+      "index": 85,
+      "x": 85,
+      "y": 0
+    },
+    "v": {
+      "codepoint": "U+0076",
+      "index": 86,
+      "x": 86,
+      "y": 0
+    },
+    "w": {
+      "codepoint": "U+0077",
+      "index": 87,
+      "x": 87,
+      "y": 0
+    },
+    "x": {
+      "codepoint": "U+0078",
+      "index": 88,
+      "x": 88,
+      "y": 0
+    },
+    "y": {
+      "codepoint": "U+0079",
+      "index": 89,
+      "x": 89,
+      "y": 0
+    },
+    "z": {
+      "codepoint": "U+007A",
+      "index": 90,
+      "x": 90,
+      "y": 0
+    },
+    "{": {
+      "codepoint": "U+007B",
+      "index": 91,
+      "x": 91,
+      "y": 0
+    },
+    "|": {
+      "codepoint": "U+007C",
+      "index": 92,
+      "x": 92,
+      "y": 0
+    },
+    "}": {
+      "codepoint": "U+007D",
+      "index": 93,
+      "x": 93,
+      "y": 0
+    },
+    "~": {
+      "codepoint": "U+007E",
+      "index": 94,
+      "x": 94,
+      "y": 0
+    },
+    "ø": {
+      "codepoint": "U+00F8",
+      "index": 95,
+      "x": 95,
+      "y": 0
+    },
+    "»": {
+      "codepoint": "U+00BB",
+      "index": 96,
+      "x": 96,
+      "y": 0
+    },
+    "–": {
+      "codepoint": "U+2013",
+      "index": 97,
+      "x": 97,
+      "y": 0
+    },
+    "ö": {
+      "codepoint": "U+00F6",
+      "index": 98,
+      "x": 98,
+      "y": 0
+    },
+    "新": {
+      "codepoint": "U+65B0",
+      "index": 99,
+      "x": 99,
+      "y": 0
+    },
+    "的": {
+      "codepoint": "U+7684",
+      "index": 100,
+      "x": 100,
+      "y": 0
+    },
+    "旅": {
+      "codepoint": "U+65C5",
+      "index": 101,
+      "x": 101,
+      "y": 0
+    },
+    "程": {
+      "codepoint": "U+7A0B",
+      "index": 102,
+      "x": 102,
+      "y": 0
+    },
+    "复": {
+      "codepoint": "U+590D",
+      "index": 103,
+      "x": 103,
+      "y": 0
+    },
+    "活": {
+      "codepoint": "U+6D3B",
+      "index": 104,
+      "x": 104,
+      "y": 0
+    },
+    "智": {
+      "codepoint": "U+667A",
+      "index": 105,
+      "x": 105,
+      "y": 0
+    },
+    "慧": {
+      "codepoint": "U+6167",
+      "index": 106,
+      "x": 106,
+      "y": 0
+    },
+    "之": {
+      "codepoint": "U+4E4B",
+      "index": 107,
+      "x": 107,
+      "y": 0
+    },
+    "书": {
+      "codepoint": "U+4E66",
+      "index": 108,
+      "x": 108,
+      "y": 0
+    },
+    "选": {
+      "codepoint": "U+9009",
+      "index": 109,
+      "x": 109,
+      "y": 0
+    },
+    "项": {
+      "codepoint": "U+9879",
+      "index": 110,
+      "x": 110,
+      "y": 0
+    },
+    "墓": {
+      "codepoint": "U+5893",
+      "index": 111,
+      "x": 111,
+      "y": 0
+    },
+    "园": {
+      "codepoint": "U+56ED",
+      "index": 112,
+      "x": 112,
+      "y": 0
+    },
+    "逃": {
+      "codepoint": "U+9003",
+      "index": 113,
+      "x": 113,
+      "y": 0
+    },
+    "回": {
+      "codepoint": "U+56DE",
+      "index": 114,
+      "x": 114,
+      "y": 0
+    },
+    "现": {
+      "codepoint": "U+73B0",
+      "index": 115,
+      "x": 115,
+      "y": 0
+    },
+    "实": {
+      "codepoint": "U+5B9E",
+      "index": 116,
+      "x": 116,
+      "y": 0
+    }
+  },
+  "cjk_words": [
+    "墓园",
+    "复活",
+    "新的旅程",
+    "智慧之书",
+    "逃回现实",
+    "选项"
+  ],
+  "fonts": [
+    {
+      "path": "/usr/share/fonts/truetype/unifont/unifont.ttf",
+      "size": 22
+    }
+  ]
+}

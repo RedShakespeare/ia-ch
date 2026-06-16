@@ -43,6 +43,13 @@ class FontSpec:
     size: int
 
 
+@dataclass(frozen=True)
+class LoadedFont:
+    spec: FontSpec
+    font: object
+    missing_glyph_signatures: frozenset[tuple[tuple[int, int, int, int] | None, bytes]]
+
+
 def parse_cell(value: str) -> tuple[int, int]:
     match = re.fullmatch(r"(\d+)x(\d+)", value)
     if not match:
@@ -149,23 +156,49 @@ def load_fonts(fonts: list[str], font_size: int):
             "Pillow is required to render PNG fonts. Install it with: python3 -m pip install Pillow"
         ) from exc
 
-    specs = [FontSpec(resolve_font(font), font_size) for font in fonts]
-    return [(spec, ImageFont.truetype(str(spec.path), spec.size)) for spec in specs]
+    result: list[LoadedFont] = []
+
+    for font in fonts:
+        spec = FontSpec(resolve_font(font), font_size)
+        loaded_font = ImageFont.truetype(str(spec.path), spec.size)
+        missing_glyph_signatures = frozenset(
+            glyph_signature(loaded_font, char)
+            for char in ["\uffff", "\ufffd"]
+        )
+
+        result.append(
+            LoadedFont(
+                spec=spec,
+                font=loaded_font,
+                missing_glyph_signatures=missing_glyph_signatures,
+            )
+        )
+
+    return result
 
 
-def glyph_has_pixels(font, char: str) -> bool:
+def glyph_signature(font, char: str) -> tuple[tuple[int, int, int, int] | None, bytes]:
     mask = font.getmask(char)
-    bbox = mask.getbbox()
 
-    return bbox is not None
+    return mask.getbbox(), bytes(mask)
 
 
-def choose_font(loaded_fonts, char: str):
-    for _, font in loaded_fonts:
-        if glyph_has_pixels(font, char):
-            return font
+def glyph_has_real_pixels(loaded_font: LoadedFont, char: str) -> bool:
+    if char == " ":
+        return True
 
-    return loaded_fonts[0][1]
+    signature = glyph_signature(loaded_font.font, char)
+    bbox, _ = signature
+
+    return (bbox is not None) and (signature not in loaded_font.missing_glyph_signatures)
+
+
+def choose_font(loaded_fonts: list[LoadedFont], char: str) -> LoadedFont | None:
+    for loaded_font in loaded_fonts:
+        if glyph_has_real_pixels(loaded_font, char):
+            return loaded_font
+
+    return None
 
 
 def render_font_png(
@@ -177,6 +210,8 @@ def render_font_png(
     columns: int,
     output: Path,
     ink: int,
+    allow_missing: bool,
+    fit_glyphs: bool,
 ):
     try:
         from PIL import Image, ImageDraw
@@ -186,6 +221,22 @@ def render_font_png(
         ) from exc
 
     loaded_fonts = load_fonts(fonts, font_size)
+    unsupported_chars = [
+        char
+        for char in chars
+        if choose_font(loaded_fonts, char) is None
+    ]
+
+    if unsupported_chars and not allow_missing:
+        unsupported_str = "".join(unsupported_chars)
+        raise SystemExit(
+            "No supplied font can render these glyphs without using a missing-glyph box: "
+            f"{unsupported_str}"
+        )
+
+    if columns <= 0:
+        columns = len(chars)
+
     rows = (len(chars) + columns - 1) // columns
     width = (columns * (cell_w + 1)) - 1
     height = rows * cell_h
@@ -197,13 +248,30 @@ def render_font_png(
         row = index // columns
         x0 = col * (cell_w + 1)
         y0 = row * cell_h
-        font = choose_font(loaded_fonts, char)
+        loaded_font = choose_font(loaded_fonts, char) or loaded_fonts[0]
+        font = loaded_font.font
         bbox = draw.textbbox((0, 0), char, font=font)
         glyph_w = bbox[2] - bbox[0]
         glyph_h = bbox[3] - bbox[1]
-        x = x0 + ((cell_w - glyph_w) // 2) - bbox[0]
-        y = y0 + ((cell_h - glyph_h) // 2) - bbox[1]
-        draw.text((x, y), char, font=font, fill=(ink, ink, ink, 255))
+
+        if fit_glyphs and (glyph_w > 0) and (glyph_h > 0) and ((glyph_w > cell_w) or (glyph_h > cell_h)):
+            glyph_image = Image.new("RGBA", (glyph_w, glyph_h), (0, 0, 0, 0))
+            glyph_draw = ImageDraw.Draw(glyph_image)
+            glyph_draw.text((-bbox[0], -bbox[1]), char, font=font, fill=(ink, ink, ink, 255))
+
+            scale = min(cell_w / glyph_w, cell_h / glyph_h)
+            resized_size = (
+                max(1, int(glyph_w * scale)),
+                max(1, int(glyph_h * scale)),
+            )
+            glyph_image = glyph_image.resize(resized_size, Image.Resampling.LANCZOS)
+            x = x0 + ((cell_w - resized_size[0]) // 2)
+            y = y0 + ((cell_h - resized_size[1]) // 2)
+            image.alpha_composite(glyph_image, (x, y))
+        else:
+            x = x0 + ((cell_w - glyph_w) // 2) - bbox[0]
+            y = y0 + ((cell_h - glyph_h) // 2) - bbox[1]
+            draw.text((x, y), char, font=font, fill=(ink, ink, ink, 255))
 
     output.parent.mkdir(parents=True, exist_ok=True)
     image.save(output)
@@ -234,8 +302,8 @@ def write_map(
         },
         "cjk_words": cjk_words,
         "fonts": [
-            {"path": str(spec.path), "size": spec.size}
-            for spec, _ in fonts_used
+            {"path": str(loaded_font.spec.path), "size": loaded_font.spec.size}
+            for loaded_font in fonts_used
         ],
     }
 
@@ -268,8 +336,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--columns",
         type=int,
-        default=95,
-        help="Number of glyph cells per row. The current renderer expects 95 for ASCII compatibility.",
+        default=0,
+        help="Number of glyph cells per row. Default 0 writes all glyphs in one row.",
     )
     parser.add_argument(
         "--output",
@@ -310,6 +378,16 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Print collected character and word counts without writing image files.",
     )
+    parser.add_argument(
+        "--allow-missing",
+        action="store_true",
+        help="Draw a missing-glyph box for unsupported characters instead of failing.",
+    )
+    parser.add_argument(
+        "--no-fit-glyphs",
+        action="store_true",
+        help="Do not scale glyphs down when they are larger than the output cell.",
+    )
 
     return parser.parse_args()
 
@@ -343,11 +421,14 @@ def main() -> int:
         columns=args.columns,
         output=args.output,
         ink=args.ink,
+        allow_missing=args.allow_missing,
+        fit_glyphs=not args.no_fit_glyphs,
     )
+    columns = args.columns if args.columns > 0 else len(chars)
     write_map(
         chars=chars,
         cjk_words=cjk_words,
-        columns=args.columns,
+        columns=columns,
         cell_w=cell_w,
         cell_h=cell_h,
         output=map_output,

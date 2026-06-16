@@ -7,7 +7,10 @@ The helper script `tools/generate-bitmap-font.py` can generate a compatible
 PNG atlas from TrueType/OpenType fonts and all text found in the game data and
 source string literals. It keeps printable ASCII in the current atlas positions
 and appends extra UTF-8 characters after them, writing a JSON map beside the
-PNG.
+PNG. By default the generated atlas is a single horizontal row, and glyphs
+that are wider or taller than the target cell are scaled down to fit the fixed
+game cell size. The script rejects fonts that only render a missing-glyph box
+for required characters.
 
 Example:
 
