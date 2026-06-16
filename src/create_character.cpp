@@ -7,6 +7,7 @@
 #include "create_character.hpp"
 
 #include <algorithm>
+#include <cctype>
 #include <cstddef>
 #include <iterator>
 #include <memory>
@@ -39,6 +40,7 @@
 #include "spells.hpp"
 #include "text.hpp"
 #include "text_format.hpp"
+#include "utf8.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -106,6 +108,29 @@ static void handle_show_player_info_command()
         states::run_until_state_done(std::make_unique<ViewMinimap>());
     } break;
     }
+}
+
+static bool is_valid_player_name_input_text(const std::string& text)
+{
+    if (!utf8::is_valid(text)) {
+        return false;
+    }
+
+    for (size_t pos = 0; pos < text.size();) {
+        const size_t cp_size = utf8::codepoint_size(text, pos);
+
+        if (cp_size == 1) {
+            const auto c = static_cast<unsigned char>(text[pos]);
+
+            if (!std::isalnum(c)) {
+                return false;
+            }
+        }
+
+        pos += cp_size;
+    }
+
+    return true;
 }
 
 // -----------------------------------------------------------------------------
@@ -1036,7 +1061,17 @@ void EnterNameState::update()
         return;
     }
 
-    if (m_current_str.size() < g_player_name_max_len) {
+    if (utf8::display_width(m_current_str) < g_player_name_max_len) {
+        if (!input.text.empty() &&
+            is_valid_player_name_input_text(input.text)) {
+            m_current_str =
+                utf8::truncate_to_display_width(
+                    m_current_str + input.text,
+                    g_player_name_max_len);
+
+            return;
+        }
+
         const bool is_space = input.key == SDLK_SPACE;
 
         if (is_space) {
@@ -1059,7 +1094,7 @@ void EnterNameState::update()
 
     if (!m_current_str.empty()) {
         if (input.key == SDLK_BACKSPACE) {
-            m_current_str.erase(m_current_str.end() - 1);
+            utf8::erase_last_codepoint(m_current_str);
         }
     }
 }
@@ -1081,7 +1116,7 @@ void EnterNameState::draw()
 
     std::string name_str = m_current_str;
 
-    if ((m_current_str.size() < g_player_name_max_len) &&
+    if ((utf8::display_width(m_current_str) < g_player_name_max_len) &&
         ((io::graphics_cycle_nr(io::GraphicsCycle::fast) % 2) == 0)) {
         name_str += "_";
     }

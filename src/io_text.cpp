@@ -16,6 +16,7 @@
 #include "io_internal.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
+#include "utf8.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -38,7 +39,7 @@ void draw_text_at_px(
     }
 
     const int cell_px_w = config::gui_cell_px_w();
-    const int msg_w = (int)str.size();
+    const int msg_w = (int)utf8::display_width(str);
     const int msg_px_w = msg_w * cell_px_w;
 
     const SDL_Color sdl_color = color.sdl_color();
@@ -56,7 +57,7 @@ void draw_text_at_px(
     size_t dots_idx = 0;
     const int px_x_dots = screen_px_w - (cell_px_w * 5);
 
-    for (int i = 0; i < msg_w; ++i) {
+    for (size_t i = 0; i < str.size();) {
         if (px_pos.x < 0 || px_pos.x >= screen_px_w) {
             return;
         }
@@ -78,7 +79,7 @@ void draw_text_at_px(
         else {
             // Whole message fits, or we are not yet near the edge
             draw_character_at_px(
-                str[i],
+                utf8::is_single_byte_ascii(str.substr(i, 1)) ? str[i] : '?',
                 px_pos,
                 sdl_color,
                 draw_bg,
@@ -86,6 +87,7 @@ void draw_text_at_px(
         }
 
         px_pos.x += cell_px_w;
+        i += utf8::codepoint_size(str, i);
     }
 }
 
@@ -113,7 +115,7 @@ void draw_text(
                 draw_bg,
                 bg_color);
 
-            pos.x += (int)action.str.length();
+            pos.x += (int)utf8::display_width(action.str);
         } break;
 
         case TextActionId::newline: {
@@ -141,7 +143,7 @@ void draw_text_center(
     const Color& bg_color,
     const bool is_pixel_pos_adj_allowed)
 {
-    const int len = (int)str.size();
+    const int len = (int)utf8::display_width(str);
     const int len_half = len / 2;
     const int x_pos_left = pos.x - len_half;
 
@@ -167,7 +169,7 @@ void draw_text_right(
     const DrawBg draw_bg,
     const Color& bg_color)
 {
-    const int x_pos_left = pos.x - (int)str.size() + 1;
+    const int x_pos_left = pos.x - (int)utf8::display_width(str) + 1;
 
     P px_pos = gui_to_px_coords(panel, {x_pos_left, pos.y});
 

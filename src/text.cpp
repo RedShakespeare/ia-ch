@@ -16,6 +16,7 @@
 #include "misc.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
+#include "utf8.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -117,7 +118,7 @@ std::vector<TextAction> TextCompiler::compile()
         actions.push_back(action);
 
         if (action.id == TextActionId::write_str) {
-            m_line_w += action.str.size();
+            m_line_w += utf8::display_width(action.str);
         }
         else if (action.id == TextActionId::done) {
             break;
@@ -132,9 +133,13 @@ bool TextCompiler::should_add_newline_before_write_action(
 {
     size_t new_line_w =
         m_line_w +
-        current_action.str.size();
+        utf8::display_width(current_action.str);
 
-    if (current_action.str != " ") {
+    const bool is_utf8_codepoint =
+        (current_action.str.size() > 1) &&
+        (utf8::display_width(current_action.str) == 1);
+
+    if ((current_action.str != " ") && !is_utf8_codepoint) {
         auto fwd_pos = m_raw_str_pos;
 
         while (true) {
@@ -158,7 +163,7 @@ bool TextCompiler::should_add_newline_before_write_action(
             }
 
             if (fwd_action.id == TextActionId::write_str) {
-                new_line_w += fwd_action.str.size();
+                new_line_w += utf8::display_width(fwd_action.str);
             }
         }
     }
@@ -228,6 +233,7 @@ std::pair<std::string, size_t> TextCompiler::next_token(size_t pos) const
     }
 
     const auto starting_c = m_raw_str[pos];
+    const auto starting_c_unsigned = static_cast<unsigned char>(starting_c);
 
     if (starting_c == '\n') {
         // Newline
@@ -256,6 +262,14 @@ std::pair<std::string, size_t> TextCompiler::next_token(size_t pos) const
                 break;
             }
         }
+
+        return {token, pos};
+    }
+
+    if (starting_c_unsigned >= 0x80) {
+        const size_t cp_size = utf8::codepoint_size(m_raw_str, pos);
+        token = m_raw_str.substr(pos, cp_size);
+        pos += cp_size;
 
         return {token, pos};
     }

@@ -86,6 +86,7 @@ struct MapDrawObj
 struct InputData
 {
     int key {-1};
+    std::string text {};
     bool is_shift_held {false};
     bool is_ctrl_held {false};
     bool is_alt_held {false};

@@ -19,6 +19,7 @@
 #include "io_internal.hpp"
 #include "pos.hpp"
 #include "state.hpp"
+#include "utf8.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -365,9 +366,15 @@ static void handle_keyup_event()
 
 static void handle_textinput_event()
 {
-    const auto c = s_sdl_event.text.text[0];
+    const std::string text = s_sdl_event.text.text;
 
-    if (c == '+' || c == '-') {
+    if (text.empty()) {
+        return;
+    }
+
+    const auto c = text[0];
+
+    if ((text.size() == 1) && (c == '+' || c == '-')) {
         if (config::is_fullscreen() || io::is_window_maximized()) {
             return;
         }
@@ -383,10 +390,18 @@ static void handle_textinput_event()
         return;
     }
 
-    if (is_printable_ascii_char(c)) {
+    if ((text.size() == 1) && is_printable_ascii_char(c)) {
         io::clear_input();
 
         s_input.key = (unsigned char)c;
+        s_input.text = text;
+
+        s_is_done_reading_input = true;
+    }
+    else if (utf8::is_valid(text)) {
+        io::clear_input();
+
+        s_input.text = text;
 
         s_is_done_reading_input = true;
     }

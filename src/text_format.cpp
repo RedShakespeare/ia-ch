@@ -11,6 +11,8 @@
 #include <iterator>
 #include <memory>
 
+#include "utf8.hpp"
+
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
@@ -40,7 +42,7 @@ static bool is_word_fit(
     const std::string& word_to_fit,
     const size_t max_w)
 {
-    return (current_string.size() + word_to_fit.size() + 1) <= max_w;
+    return (utf8::display_width(current_string) + utf8::display_width(word_to_fit) + 1) <= max_w;
 }
 
 // -----------------------------------------------------------------------------
@@ -153,8 +155,10 @@ std::string pad_before(
 {
     std::string result = str;
 
-    if (tot_w > str.size()) {
-        result.insert(0, tot_w - str.size(), c);
+    const size_t str_w = utf8::display_width(str);
+
+    if (tot_w > str_w) {
+        result.insert(0, tot_w - str_w, c);
     }
 
     return result;
@@ -167,8 +171,10 @@ std::string pad_after(
 {
     std::string result = str;
 
-    if (tot_w > str.size()) {
-        result.insert(result.size(), tot_w - str.size(), c);
+    const size_t str_w = utf8::display_width(str);
+
+    if (tot_w > str_w) {
+        result.insert(result.size(), tot_w - str_w, c);
     }
 
     return result;

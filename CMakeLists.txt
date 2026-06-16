@@ -169,6 +169,7 @@ set(COMMON_SRC
         include/text_format.hpp
         include/throwing.hpp
         include/time.hpp
+        include/utf8.hpp
         include/version.hpp
         include/view.hpp
         include/view_actor_descr.hpp
@@ -333,6 +334,7 @@ set(COMMON_SRC
         src/text_format.cpp
         src/throwing.cpp
         src/time.cpp
+        src/utf8.cpp
         src/version.cpp
         src/view.cpp
         src/view_actor_descr.cpp

@@ -382,3 +382,35 @@ TEST_CASE("Text with newlines")
     REQUIRE(actions[idx].id == TextActionId::write_str);
     REQUIRE(actions[idx].str == "eeee");
 }
+
+TEST_CASE("Text with Chinese UTF-8 characters wraps by character")
+{
+    std::string str = "玩家角色";
+
+    Text text(str);
+
+    text.set_w(2);
+    text.set_color(colors::white());
+
+    const auto actions = text.actions();
+
+    size_t idx = 0;
+
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "玩");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "家");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::newline);
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "角");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "色");
+}

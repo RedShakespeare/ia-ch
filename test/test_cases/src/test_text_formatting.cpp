@@ -54,3 +54,15 @@ TEST_CASE("Text formatting")
     lines = text_format::split(str, 4);
     REQUIRE(lines.empty());
 }
+
+TEST_CASE("Text formatting counts Chinese UTF-8 characters as display cells")
+{
+    std::string str = "one 玩家 two";
+
+    const auto lines = text_format::split(str, 5);
+
+    REQUIRE(lines.size() == 3);
+    REQUIRE(lines[0] == "one");
+    REQUIRE(lines[1] == "玩家");
+    REQUIRE(lines[2] == "two");
+}
