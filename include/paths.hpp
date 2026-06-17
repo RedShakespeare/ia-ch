@@ -37,6 +37,7 @@ std::string audio_dir();
 std::string data_dir();
 
 std::string messages_dir();
+std::string locale_dir();
 
 }  // namespace paths
 

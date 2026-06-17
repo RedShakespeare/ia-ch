@@ -104,6 +104,8 @@ bool always_warn_new_mon();
 int base_delay();
 void set_default_player_name(const std::string& name);
 std::string default_player_name();
+std::string language();
+void set_language(const std::string& language);
 
 }  // namespace config
 

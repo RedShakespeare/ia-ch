@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "debug.hpp"
+#include "i18n.hpp"
 #include "paths.hpp"
 #include "random.hpp"
 
@@ -62,18 +63,21 @@ static std::vector<std::string> read_msg_file(const std::string& filename)
 // -----------------------------------------------------------------------------
 namespace messages
 {
+std::string resolved_path(const std::string& filename)
+{
+    return i18n::localized_data_file("messages/" + filename);
+}
+
 void init()
 {
-    const std::string dir = paths::messages_dir();
-
     s_menu_quotes =
-        read_msg_file(dir + "menu_quotes.txt");
+        read_msg_file(resolved_path("menu_quotes.txt"));
 
     s_terrain_inscription_messages_generic =
-        read_msg_file(dir + "terrain_inscription_messages_generic.txt");
+        read_msg_file(resolved_path("terrain_inscription_messages_generic.txt"));
 
     s_terrain_inscription_messages_reveal_knowledge =
-        read_msg_file(dir + "terrain_inscription_messages_reveal_knowledge.txt");
+        read_msg_file(resolved_path("terrain_inscription_messages_reveal_knowledge.txt"));
 }
 
 std::string get_random_menu_quote()

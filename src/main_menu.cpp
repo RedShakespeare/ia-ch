@@ -25,6 +25,7 @@
 #include "highscore.hpp"
 #include "init.hpp"
 #include "io.hpp"
+#include "i18n.hpp"
 #include "manual.hpp"
 #include "messages.hpp"
 #include "panel.hpp"
@@ -47,10 +48,12 @@ static bool query_overwrite_savefile()
     int choice = 0;
 
     popup::Popup(popup::AddToMsgHistory::no)
-        .set_title("A saved game exists")
-        .set_msg("Start a new game?")
+        .set_title(i18n::get("main_menu.saved_game_exists_title", "A saved game exists"))
+        .set_msg(i18n::get("main_menu.saved_game_exists_msg", "Start a new game?"))
         .setup_menu_mode(
-            {"(Y)es", "(N)o"},
+            {
+                i18n::get("main_menu.yes", "(Y)es"),
+                i18n::get("main_menu.no", "(N)o")},
             {'y', 'n'},
             popup::MenuModeShowCancelHint::no,
             &choice)
@@ -123,12 +126,12 @@ void MainMenuState::draw()
 #endif  // NDEBUG
 
     const std::vector<std::string> labels = {
-        "(N)新的旅程",
-        "(R)复活",
-        "(T)智慧之书",
-        "(O)选项",
-        "(G)墓园",
-        "(E)逃回现实"};
+        i18n::get("main_menu.new_journey", "(N)New Journey"),
+        i18n::get("main_menu.resurrect", "(R)Resurrect"),
+        i18n::get("main_menu.tome_of_wisdom", "(T)Tome of Wisdom"),
+        i18n::get("main_menu.options", "(O)Options"),
+        i18n::get("main_menu.graveyard", "(G)Graveyard"),
+        i18n::get("main_menu.escape_to_reality", "(E)Escape to Reality")};
 
     const P screen_dims = panels::dims(Panel::screen);
 
@@ -319,7 +322,7 @@ void MainMenuState::update()
             else {
                 // No save available
                 popup::Popup(popup::AddToMsgHistory::no)
-                    .set_msg("No saved game found")
+                    .set_msg(i18n::get("main_menu.no_saved_game_found", "No saved game found"))
                     .run();
             }
         } break;
@@ -369,6 +372,8 @@ void MainMenuState::on_start()
 
 void MainMenuState::on_resume()
 {
+    s_current_quote = messages::get_random_menu_quote();
+
     // Do not play the music in debug mode (it gets extremely repetitive).
 #ifdef NDEBUG
     audio::play_music(audio::MusId::cthulhiana_madness);

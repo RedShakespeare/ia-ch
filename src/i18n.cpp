@@ -1,0 +1,168 @@
+// =============================================================================
+// Copyright Martin Törnqvist <m.tornq@gmail.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-or-later
+// =============================================================================
+
+#include "i18n.hpp"
+
+#include <algorithm>
+#include <filesystem>
+#include <string>
+#include <vector>
+
+#include "config.hpp"
+#include "debug.hpp"
+#include "ini.h"
+#include "paths.hpp"
+
+// -----------------------------------------------------------------------------
+// Private
+// -----------------------------------------------------------------------------
+static mINI::INIStructure s_ui_ini;
+static std::string s_current_language = "en";
+
+static std::string locale_root_dir()
+{
+    return paths::data_dir() + "/locale/";
+}
+
+static std::string locale_dir(const std::string& language)
+{
+    return locale_root_dir() + language + "/";
+}
+
+static std::string ui_ini_path(const std::string& language)
+{
+    return locale_dir(language) + "ui.ini";
+}
+
+static bool has_ui_ini(const std::string& language)
+{
+    return std::filesystem::exists(ui_ini_path(language));
+}
+
+// -----------------------------------------------------------------------------
+// i18n
+// -----------------------------------------------------------------------------
+namespace i18n
+{
+void init()
+{
+    reload();
+}
+
+void reload()
+{
+    s_ui_ini.clear();
+
+    s_current_language = config::language();
+
+    if (s_current_language == "en") {
+        return;
+    }
+
+    const auto path = ui_ini_path(s_current_language);
+
+    if (!std::filesystem::exists(path)) {
+        TRACE
+            << "Locale ui file not found for language '"
+            << s_current_language
+            << "', falling back to English"
+            << "\n";
+
+        s_current_language = "en";
+        return;
+    }
+
+    mINI::INIFile file(path);
+
+    if (!file.read(s_ui_ini)) {
+        TRACE_ERROR_RELEASE
+            << "Unable to read locale ui file: "
+            << path
+            << "\n";
+
+        s_ui_ini.clear();
+        s_current_language = "en";
+    }
+}
+
+std::string get(const std::string& key, const std::string& fallback)
+{
+    if (!s_ui_ini.has("text")) {
+        return fallback;
+    }
+
+    const auto section = s_ui_ini.get("text");
+
+    if (!section.has(key)) {
+        return fallback;
+    }
+
+    const auto value = section.get(key);
+
+    if (value.empty()) {
+        return fallback;
+    }
+
+    return value;
+}
+
+std::string current_language()
+{
+    return s_current_language;
+}
+
+std::vector<std::string> available_languages()
+{
+    std::vector<std::string> result {"en"};
+
+    if (std::filesystem::exists(locale_root_dir())) {
+        for (const auto& entry : std::filesystem::directory_iterator(locale_root_dir())) {
+            if (!entry.is_directory()) {
+                continue;
+            }
+
+            const auto code = entry.path().filename().string();
+
+            if (code == "en") {
+                continue;
+            }
+
+            if (has_ui_ini(code)) {
+                result.push_back(code);
+            }
+        }
+    }
+
+    std::sort(std::begin(result) + 1, std::end(result));
+
+    return result;
+}
+
+std::string language_name(const std::string& code)
+{
+    if (code == "en") {
+        return "English";
+    }
+
+    if (code == "zh_CN") {
+        return "简体中文";
+    }
+
+    return code;
+}
+
+std::string localized_data_file(const std::string& relative_path)
+{
+    const auto localized_path = locale_dir(s_current_language) + relative_path;
+
+    if ((s_current_language != "en") && std::filesystem::exists(localized_path)) {
+        return localized_path;
+    }
+
+    return paths::data_dir() + "/" + relative_path;
+}
+
+}  // namespace i18n

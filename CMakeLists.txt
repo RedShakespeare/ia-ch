@@ -88,6 +88,7 @@ set(COMMON_SRC
         include/hints.hpp
         include/info_screen_state.hpp
         include/init.hpp
+        include/i18n.hpp
         include/insanity.hpp
         include/inventory.hpp
         include/inventory_handling.hpp
@@ -238,6 +239,7 @@ set(COMMON_SRC
         src/hints.cpp
         src/info_screen_state.cpp
         src/init.cpp
+        src/i18n.cpp
         src/insanity.cpp
         src/inventory.cpp
         src/inventory_handling.cpp

@@ -13,6 +13,7 @@
 #include "audio.hpp"
 #include "bot.hpp"
 #include "colors.hpp"
+#include "common_text.hpp"
 #include "config.hpp"
 #include "debug.hpp"
 #include "game.hpp"
@@ -21,6 +22,7 @@
 #include "hints.hpp"
 #include "insanity.hpp"
 #include "io.hpp"
+#include "i18n.hpp"
 #include "item_curse.hpp"
 #include "item_data.hpp"
 #include "item_potion.hpp"
@@ -68,6 +70,8 @@ void init_io()
     paths::init();
 
     config::init();
+    i18n::init();
+    common_text::init();
     colors::init();
     io::init_other();
 
@@ -75,7 +79,7 @@ void init_io()
 
     // TODO: Use more creative loading messages
     io::draw_text_center(
-        "Loading...",
+        i18n::get("init.loading", "Loading..."),
         Panel::screen,
         panels::center(Panel::screen),
         colors::menu_dark());
@@ -92,7 +96,7 @@ void init_io()
 
         popup::Popup popup(popup::AddToMsgHistory::no);
 
-        popup.set_title("Warning");
+        popup.set_title(i18n::get("init.warning", "Warning"));
 
         popup.set_msg(msg);
 

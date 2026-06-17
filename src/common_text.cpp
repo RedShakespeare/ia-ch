@@ -6,80 +6,110 @@
 
 #include "common_text.hpp"
 
+#include "i18n.hpp"
+
 namespace common_text
 {
-const std::string g_next_page_up_hint =
-    "[page up, <] more";
+std::string g_next_page_up_hint;
+std::string g_next_page_down_hint;
+std::string g_screen_exit_hint;
+std::string g_minimap_exit_hint;
+std::string g_game_over_summary_exit_hint;
+std::string g_set_option_hint;
+std::string g_scroll_hint;
+std::string g_scrollable_info_screen_hint;
+std::string g_cancel_hint;
+std::string g_confirm_hint;
+std::string g_confirm_drop_hint;
+std::string g_any_key_hint;
+std::string g_yes_or_no_hint;
+std::string g_direction_query;
+std::string g_disarm_no_trap;
+std::string g_mon_prevent_cmd;
+std::string g_fire_prevent_cmd;
+std::string g_shock_prevent_cmd;
+std::string g_mon_disappear;
+std::string g_mon_disappear_reappear;
+std::string g_miscast_player;
+std::string g_miscast_mon;
 
-const std::string g_next_page_down_hint =
-    "[page down, >] more";
+std::vector<std::string> g_exorcist_purge_phrases;
 
-const std::string g_screen_exit_hint =
-    "[space, esc] to exit";
+void init()
+{
+    g_next_page_up_hint =
+        i18n::get("common.next_page_up_hint", "[page up, <] more");
 
-const std::string g_minimap_exit_hint =
-    "[space, esc, m] to exit";
+    g_next_page_down_hint =
+        i18n::get("common.next_page_down_hint", "[page down, >] more");
 
-const std::string g_game_over_summary_exit_hint =
-    "[space, esc] to show high scores";
+    g_screen_exit_hint =
+        i18n::get("common.screen_exit_hint", "[space, esc] to exit");
 
-const std::string g_set_option_hint =
-    "[enter, left, right] to set option";
+    g_minimap_exit_hint =
+        i18n::get("common.minimap_exit_hint", "[space, esc, m] to exit");
 
-const std::string g_scroll_hint =
-    "[2/8, down/up, pgup/pgdown, home/end] to scroll";
+    g_game_over_summary_exit_hint =
+        i18n::get("common.game_over_summary_exit_hint", "[space, esc] to show high scores");
 
-const std::string g_scrollable_info_screen_hint =
-    g_scroll_hint +
-    " " +
-    g_screen_exit_hint;
+    g_set_option_hint =
+        i18n::get("common.set_option_hint", "[enter, left, right] to set option");
 
-const std::string g_cancel_hint =
-    "[space, esc] to cancel";
+    g_scroll_hint =
+        i18n::get("common.scroll_hint", "[2/8, down/up, pgup/pgdown, home/end] to scroll");
 
-const std::string g_confirm_hint =
-    "[space, esc, enter] to continue";
+    g_scrollable_info_screen_hint =
+        g_scroll_hint +
+        " " +
+        g_screen_exit_hint;
 
-const std::string g_confirm_drop_hint =
-    "[enter] to confirm";
+    g_cancel_hint =
+        i18n::get("common.cancel_hint", "[space, esc] to cancel");
 
-const std::string g_any_key_hint =
-    "[any key] to continue";
+    g_confirm_hint =
+        i18n::get("common.confirm_hint", "[space, esc, enter] to continue");
 
-const std::string g_yes_or_no_hint =
-    "[y/n]";
+    g_confirm_drop_hint =
+        i18n::get("common.confirm_drop_hint", "[enter] to confirm");
 
-const std::string g_direction_query =
-    "Which direction?";
+    g_any_key_hint =
+        i18n::get("common.any_key_hint", "[any key] to continue");
 
-const std::string g_disarm_no_trap =
-    "I find nothing there to disarm.";
+    g_yes_or_no_hint =
+        i18n::get("common.yes_or_no_hint", "[y/n]");
 
-const std::string g_mon_prevent_cmd =
-    "Not while an enemy is near.";
+    g_direction_query =
+        i18n::get("common.direction_query", "Which direction?");
 
-const std::string g_shock_prevent_cmd =
-    "Not while insanity is near.";
+    g_disarm_no_trap =
+        i18n::get("common.disarm_no_trap", "I find nothing there to disarm.");
 
-const std::string g_fire_prevent_cmd =
-    "Fire is spreading!";
+    g_mon_prevent_cmd =
+        i18n::get("common.mon_prevent_cmd", "Not while an enemy is near.");
 
-const std::string g_mon_disappear =
-    "suddenly disappears!";
+    g_shock_prevent_cmd =
+        i18n::get("common.shock_prevent_cmd", "Not while insanity is near.");
 
-const std::string g_mon_disappear_reappear =
-    "suddenly disappears and reappears!";
+    g_fire_prevent_cmd =
+        i18n::get("common.fire_prevent_cmd", "Fire is spreading!");
 
-const std::string g_miscast_player =
-    "I fail to concentrate!";
+    g_mon_disappear =
+        i18n::get("common.mon_disappear", "suddenly disappears!");
 
-const std::string g_miscast_mon =
-    "fails to concentrate.";
+    g_mon_disappear_reappear =
+        i18n::get("common.mon_disappear_reappear", "suddenly disappears and reappears!");
 
-const std::vector<std::string> g_exorcist_purge_phrases = {
-    "This place feels more serene now.",
-    "The sanctity of this place has been somewhat restored.",
-    "A great wickedness has been extinguished.",
-    "I sense a stillness permeating throughout the area."};
+    g_miscast_player =
+        i18n::get("common.miscast_player", "I fail to concentrate!");
+
+    g_miscast_mon =
+        i18n::get("common.miscast_mon", "fails to concentrate.");
+
+    g_exorcist_purge_phrases = {
+        i18n::get("common.exorcist_purge_phrase_1", "This place feels more serene now."),
+        i18n::get("common.exorcist_purge_phrase_2", "The sanctity of this place has been somewhat restored."),
+        i18n::get("common.exorcist_purge_phrase_3", "A great wickedness has been extinguished."),
+        i18n::get("common.exorcist_purge_phrase_4", "I sense a stillness permeating throughout the area.")};
+}
 
 }  // namespace common_text

@@ -50,7 +50,7 @@ TEXT_EXTENSIONS = {
     ".txt",
     ".xml",
 }
-CJK_RE = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]+")
+CJK_RE = re.compile(r"[\u3000-\u303f\uff00-\uffef\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]+")
 CPP_STRING_RE = re.compile(r'"(?:\\.|[^"\\])*"')
 
 

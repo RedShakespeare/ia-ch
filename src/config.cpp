@@ -26,8 +26,10 @@
 #include "draw_box.hpp"
 #include "hints.hpp"
 #include "ini.h"
+#include "i18n.hpp"
 #include "io.hpp"
 #include "misc.hpp"
+#include "messages.hpp"
 #include "msg_log.hpp"
 #include "panel.hpp"
 #include "paths.hpp"
@@ -95,21 +97,22 @@ static int s_gui_cell_px_w = -1;
 static int s_gui_cell_px_h = -1;
 static int s_map_cell_px_w = -1;
 static int s_map_cell_px_h = -1;
+static std::string s_language = "en";
 
 static std::string submenu_name(config::OptionSubmenuType submenu_type)
 {
     switch (submenu_type) {
     case config::OptionSubmenuType::video:
-        return "Video";
+        return i18n::get("options.submenu.video", "Video");
 
     case config::OptionSubmenuType::audio:
-        return "Audio";
+        return i18n::get("options.submenu.audio", "Audio");
 
     case config::OptionSubmenuType::input:
-        return "Input";
+        return i18n::get("options.submenu.input", "Input");
 
     case config::OptionSubmenuType::gameplay:
-        return "Gameplay";
+        return i18n::get("options.submenu.gameplay", "Gameplay");
 
     case config::OptionSubmenuType::END:
         break;
@@ -125,16 +128,16 @@ static std::string submenu_name_with_key_shortcut(
 {
     switch (submenu_type) {
     case config::OptionSubmenuType::video:
-        return "(V)ideo";
+        return i18n::get("options.submenu.video_key", "(V)ideo");
 
     case config::OptionSubmenuType::audio:
-        return "(A)udio";
+        return i18n::get("options.submenu.audio_key", "(A)udio");
 
     case config::OptionSubmenuType::input:
-        return "(I)nput";
+        return i18n::get("options.submenu.input_key", "(I)nput");
 
     case config::OptionSubmenuType::gameplay:
-        return "(G)ameplay";
+        return i18n::get("options.submenu.gameplay_key", "(G)ameplay");
 
     case config::OptionSubmenuType::END:
         break;
@@ -333,6 +336,7 @@ static void set_default_variables()
     s_is_ranged_wpn_auto_reload = false;
     s_base_delay = 50;
     s_default_player_name = "";
+    s_language = "en";
 
     for (size_t i = 0; i < (size_t)hints::Id::END; ++i) {
         s_has_seen_hint_global[i] = false;
@@ -407,6 +411,7 @@ static bool read_config_file()
     s_is_medical_bag_auto_choice = config["is_medical_bag_auto_choice"] == "1";
     s_is_ranged_wpn_auto_reload = config["is_ranged_wpn_auto_reload"] == "1";
     s_base_delay = to_int(config["base_delay"]);
+    s_language = config["language"].empty() ? "en" : config["language"];
 
     s_default_player_name = "";
 
@@ -465,6 +470,7 @@ static void write_config_file()
     config["is_medical_bag_auto_choice"] = s_is_medical_bag_auto_choice ? "1" : "0";
     config["is_ranged_wpn_auto_reload"] = s_is_ranged_wpn_auto_reload ? "1" : "0";
     config["base_delay"] = std::to_string(s_base_delay);
+    config["language"] = s_language;
 
     config["default_player_name_set"] = s_default_player_name.empty() ? "0" : "1";
 
@@ -553,6 +559,7 @@ void init()
     s_options.emplace_back(std::make_unique<WanDrinkMalignPotionOption>());
     s_options.emplace_back(std::make_unique<WarnRangedWeaponMeleeOption>());
     s_options.emplace_back(std::make_unique<BaseDelayOption>());
+    s_options.emplace_back(std::make_unique<LanguageOption>());
 
     // Find available fonts
     find_fonts_from_filesystem();
@@ -837,6 +844,16 @@ void set_default_player_name(const std::string& name)
 std::string default_player_name()
 {
     return s_default_player_name;
+}
+
+std::string language()
+{
+    return s_language;
+}
+
+void set_language(const std::string& language)
+{
+    s_language = language;
 }
 
 void set_fullscreen(const bool value)
@@ -1931,14 +1948,14 @@ void AutoReloadOption::change(OptionChangeCommand command) const
 
 std::string BaseDelayOption::name() const
 {
-    return "Base animation delay (ms)";
+    return i18n::get("option.base_delay.name", "Base animation delay (ms)");
 }
 
 std::string BaseDelayOption::descr() const
 {
-    return (
-        "Base delay factor (ms) for animations. "
-        "Higher values will make animations such as projectiles or explosions play slower. ");
+    return i18n::get(
+        "option.base_delay.descr",
+        "Base delay factor (ms) for animations. Higher values will make animations such as projectiles or explosions play slower.");
 }
 
 std::string BaseDelayOption::value_str() const
@@ -1979,6 +1996,51 @@ void BaseDelayOption::change(OptionChangeCommand command) const
     }
 
     s_base_delay = std::clamp(s_base_delay, allowed_range.min, allowed_range.max);
+}
+
+std::string LanguageOption::name() const
+{
+    return i18n::get("option.language.name", "Language");
+}
+
+std::string LanguageOption::descr() const
+{
+    return i18n::get(
+        "option.language.descr",
+        "Language used for menus, prompts and localized message files. English remains the fallback for missing translations.");
+}
+
+std::string LanguageOption::value_str() const
+{
+    return i18n::language_name(s_language);
+}
+
+OptionSubmenuType LanguageOption::submenu_type() const
+{
+    return OptionSubmenuType::gameplay;
+}
+
+void LanguageOption::change(OptionChangeCommand command) const
+{
+    const auto languages = i18n::available_languages();
+
+    auto it = std::find(std::cbegin(languages), std::cend(languages), s_language);
+
+    size_t idx = (it == std::cend(languages)) ? 0 : (size_t)std::distance(std::cbegin(languages), it);
+
+    if ((command == OptionChangeCommand::enter) ||
+        (command == OptionChangeCommand::right)) {
+        idx = (idx + 1) % languages.size();
+    }
+    else {
+        idx = (idx == 0) ? (languages.size() - 1) : (idx - 1);
+    }
+
+    s_language = languages[idx];
+
+    i18n::reload();
+    common_text::init();
+    messages::init();
 }
 
 // std::string ResetDefaultsOption::name() const
@@ -2067,7 +2129,7 @@ void OptionsState::draw()
     draw_box(panels::area(Panel::screen));
 
     io::draw_text_center(
-        " Options ",
+        " " + i18n::get("options.title", "Options") + " ",
         Panel::screen,
         {panels::center_x(Panel::screen), 0},
         colors::title(),

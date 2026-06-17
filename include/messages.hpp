@@ -12,6 +12,7 @@
 namespace messages
 {
 void init();
+std::string resolved_path(const std::string& filename);
 
 // Get random main menu quote.
 std::string get_random_menu_quote();

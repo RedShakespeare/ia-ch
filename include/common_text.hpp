@@ -12,30 +12,32 @@
 
 namespace common_text
 {
-extern const std::string g_screen_exit_hint;
-extern const std::string g_minimap_exit_hint;
-extern const std::string g_game_over_summary_exit_hint;
-extern const std::string g_set_option_hint;
-extern const std::string g_scroll_hint;
-extern const std::string g_scrollable_info_screen_hint;
-extern const std::string g_next_page_up_hint;
-extern const std::string g_next_page_down_hint;
-extern const std::string g_cancel_hint;
-extern const std::string g_confirm_hint;
-extern const std::string g_confirm_drop_hint;
-extern const std::string g_any_key_hint;
-extern const std::string g_yes_or_no_hint;
-extern const std::string g_direction_query;
-extern const std::string g_disarm_no_trap;
-extern const std::string g_mon_prevent_cmd;
-extern const std::string g_fire_prevent_cmd;
-extern const std::string g_shock_prevent_cmd;
-extern const std::string g_mon_disappear;
-extern const std::string g_mon_disappear_reappear;
-extern const std::string g_miscast_player;
-extern const std::string g_miscast_mon;
+void init();
 
-extern const std::vector<std::string> g_exorcist_purge_phrases;
+extern std::string g_screen_exit_hint;
+extern std::string g_minimap_exit_hint;
+extern std::string g_game_over_summary_exit_hint;
+extern std::string g_set_option_hint;
+extern std::string g_scroll_hint;
+extern std::string g_scrollable_info_screen_hint;
+extern std::string g_next_page_up_hint;
+extern std::string g_next_page_down_hint;
+extern std::string g_cancel_hint;
+extern std::string g_confirm_hint;
+extern std::string g_confirm_drop_hint;
+extern std::string g_any_key_hint;
+extern std::string g_yes_or_no_hint;
+extern std::string g_direction_query;
+extern std::string g_disarm_no_trap;
+extern std::string g_mon_prevent_cmd;
+extern std::string g_fire_prevent_cmd;
+extern std::string g_shock_prevent_cmd;
+extern std::string g_mon_disappear;
+extern std::string g_mon_disappear_reappear;
+extern std::string g_miscast_player;
+extern std::string g_miscast_mon;
+
+extern std::vector<std::string> g_exorcist_purge_phrases;
 
 }  // namespace common_text
 

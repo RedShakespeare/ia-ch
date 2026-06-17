@@ -313,4 +313,9 @@ std::string messages_dir()
     return data_dir() + "/messages/";
 }
 
+std::string locale_dir()
+{
+    return data_dir() + "/locale/";
+}
+
 }  // namespace paths
