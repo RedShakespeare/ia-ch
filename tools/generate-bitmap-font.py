@@ -96,6 +96,14 @@ class GlyphMetadata:
     font_size: int
 
 
+@dataclass(frozen=True)
+class PackedGlyphPosition:
+    col: int
+    row: int
+    x_px: int
+    y_px: int
+
+
 def parse_cell(value: str) -> tuple[int, int]:
     match = re.fullmatch(r"(\d+)x(\d+)", value)
     if not match:
@@ -293,6 +301,78 @@ def layout_for_char(
     return default_layout
 
 
+def packed_positions(
+    layouts: list[GlyphLayout],
+    columns: int,
+    single_row: bool,
+) -> tuple[list[PackedGlyphPosition], int, int, int]:
+    if not layouts:
+        return [], 1, 1, 0
+
+    if single_row:
+        x = 0
+        positions: list[PackedGlyphPosition] = []
+        height = 0
+
+        for index, layout in enumerate(layouts):
+            positions.append(PackedGlyphPosition(index, 0, x, 0))
+            x += layout.atlas_w + 1
+            height = max(height, layout.atlas_h)
+
+        return positions, max(1, x - 1), height, len(layouts)
+
+    if columns <= 0:
+        approx_columns = max(1, int(len(layouts) ** 0.5))
+        widest_slot = max(layout.atlas_w for layout in layouts)
+        target_width = max(1, approx_columns * (widest_slot + 1) - 1)
+        wrap_on_count = 0
+    else:
+        target_width = 0
+        wrap_on_count = columns
+
+    positions = []
+    row_widths: list[int] = []
+    row_heights: list[int] = []
+    x = 0
+    y = 0
+    row = 0
+    col = 0
+    row_height = 0
+
+    for index, layout in enumerate(layouts):
+        glyph_width = layout.atlas_w
+        projected_width = glyph_width if col == 0 else x + 1 + glyph_width
+
+        if (col > 0) and (
+            ((wrap_on_count > 0) and (col >= wrap_on_count)) or
+            ((wrap_on_count == 0) and (projected_width > target_width))
+        ):
+            row_widths.append(x)
+            row_heights.append(row_height)
+            y += row_height
+            x = 0
+            row += 1
+            col = 0
+            row_height = 0
+
+        if col > 0:
+            x += 1
+
+        positions.append(PackedGlyphPosition(col, row, x, y))
+        x += glyph_width
+        row_height = max(row_height, layout.atlas_h)
+        col += 1
+
+    row_widths.append(x)
+    row_heights.append(row_height)
+
+    width = max(1, max(row_widths))
+    height = max(1, sum(row_heights))
+    columns_actual = max(col + 1 for col in (position.col for position in positions))
+
+    return positions, width, height, columns_actual
+
+
 def render_font_png(
     chars: list[str],
     fonts: list[str],
@@ -305,6 +385,7 @@ def render_font_png(
     cjk_font_size: int,
     cjk_layout: GlyphLayout | None,
     columns: int,
+    single_row: bool,
     output: Path,
     ink: int,
     allow_missing: bool,
@@ -338,50 +419,27 @@ def render_font_png(
             f"{unsupported_str}"
         )
 
-    if columns > 0:
-        layouts = [
-            layout_for_char(char, default_layout, ascii_layout, cjk_layout)
-            for char in chars
-        ]
-        if len({(layout.atlas_w, layout.atlas_h) for layout in layouts}) > 1:
-            raise SystemExit("--columns is only supported when all glyph atlas cells have the same size")
-
-        columns_actual = columns
-        rows = (len(chars) + columns_actual - 1) // columns_actual
-        atlas_w = layouts[0].atlas_w if layouts else default_layout.atlas_w
-        atlas_h = layouts[0].atlas_h if layouts else default_layout.atlas_h
-        width = (columns_actual * (atlas_w + 1)) - 1
-        height = rows * atlas_h
-        positions = [
-            (
-                index % columns_actual,
-                index // columns_actual,
-                (index % columns_actual) * (atlas_w + 1),
-                (index // columns_actual) * atlas_h,
-            )
-            for index in range(len(chars))
-        ]
-    else:
-        columns_actual = len(chars)
-        x = 0
-        positions = []
-        height = 0
-
-        for index, char in enumerate(chars):
-            layout = layout_for_char(char, default_layout, ascii_layout, cjk_layout)
-            positions.append((index, 0, x, 0))
-            x += layout.atlas_w + 1
-            height = max(height, layout.atlas_h)
-
-        width = max(1, x - 1)
+    layouts = [
+        layout_for_char(char, default_layout, ascii_layout, cjk_layout)
+        for char in chars
+    ]
+    positions, width, height, columns_actual = packed_positions(
+        layouts=layouts,
+        columns=columns,
+        single_row=single_row,
+    )
 
     image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
     metadata: list[GlyphMetadata] = []
 
     for index, char in enumerate(chars):
-        layout = layout_for_char(char, default_layout, ascii_layout, cjk_layout)
-        col, row, x0, y0 = positions[index]
+        layout = layouts[index]
+        position = positions[index]
+        col = position.col
+        row = position.row
+        x0 = position.x_px
+        y0 = position.y_px
         loaded_font = choose_font_for_char(
             loaded_ascii_fonts,
             loaded_cjk_fonts,
@@ -445,7 +503,7 @@ def render_font_png(
     output.parent.mkdir(parents=True, exist_ok=True)
     image.save(output)
 
-    return loaded_fonts, metadata
+    return loaded_fonts, metadata, columns_actual
 
 
 def write_map(
@@ -564,9 +622,14 @@ def parse_args() -> argparse.Namespace:
         type=int,
         default=0,
         help=(
-            "Number of glyph cells per row. Default 0 writes all glyphs in one row. "
-            "Only valid when every glyph uses the same atlas cell size."
+            "Preferred maximum number of glyph slots per row. Default 0 picks an "
+            "automatic multi-line packing width."
         ),
+    )
+    parser.add_argument(
+        "--single-row",
+        action="store_true",
+        help="Force the legacy single-row atlas layout.",
     )
     parser.add_argument(
         "--output",
@@ -652,7 +715,7 @@ def main() -> int:
 
         return 0
 
-    fonts_used, glyphs = render_font_png(
+    fonts_used, glyphs, columns = render_font_png(
         chars=chars,
         fonts=args.font,
         font_size=args.font_size,
@@ -664,12 +727,12 @@ def main() -> int:
         cjk_font_size=args.cjk_font_size or args.font_size,
         cjk_layout=cjk_layout,
         columns=args.columns,
+        single_row=args.single_row,
         output=args.output,
         ink=args.ink,
         allow_missing=args.allow_missing,
         fit_glyphs=args.fit_glyphs,
     )
-    columns = args.columns if args.columns > 0 else len(chars)
     write_map(
         chars=chars,
         cjk_words=cjk_words,
