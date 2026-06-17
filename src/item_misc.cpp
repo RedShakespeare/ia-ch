@@ -24,6 +24,7 @@
 #include "game.hpp"
 #include "game_over.hpp"
 #include "game_time.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
@@ -125,7 +126,9 @@ ConsumeItem MedicalBag::activate(actor::Actor* const actor)
     (void)actor;
 
     if (player_bon::bg() == Bg::ghoul) {
-        msg_log::add("It is of no use to me.");
+        msg_log::add(i18n::get(
+            "item_misc.medical_bag.no_use",
+            "It is of no use to me."));
 
         m_current_action = MedBagAction::END;
 
@@ -149,7 +152,9 @@ ConsumeItem MedicalBag::activate(actor::Actor* const actor)
     const bool is_enough_supplies = m_nr_supplies >= nr_supplies_needed;
 
     if (!is_enough_supplies) {
-        msg_log::add("I do not have enough medical supplies.");
+        msg_log::add(i18n::get(
+            "item_misc.medical_bag.not_enough_supplies",
+            "I do not have enough medical supplies."));
 
         m_current_action = MedBagAction::END;
 
@@ -164,16 +169,33 @@ ConsumeItem MedicalBag::activate(actor::Actor* const actor)
     std::string start_msg;
 
     switch (m_current_action) {
-    case MedBagAction::quick_patch_up:     start_msg = "I patch up some minor injuries."; break;
-    case MedBagAction::treat_wound:        start_msg = "I start treating a wound"; break;
-    case MedBagAction::sanitize_infection: start_msg = "I start to sanitize an infection"; break;
+    case MedBagAction::quick_patch_up:
+        start_msg = i18n::get(
+            "item_misc.medical_bag.start_quick_patch",
+            "I patch up some minor injuries.");
+        break;
+
+    case MedBagAction::treat_wound:
+        start_msg = i18n::get(
+            "item_misc.medical_bag.start_treat_wound",
+            "I start treating a wound");
+        break;
+
+    case MedBagAction::sanitize_infection:
+        start_msg = i18n::get(
+            "item_misc.medical_bag.start_sanitize_infection",
+            "I start to sanitize an infection");
+        break;
 
     case MedBagAction::END:
         ASSERT(false);
         break;
     }
 
-    start_msg += " (" + std::to_string(m_nr_turns_left_action) + " turns)...";
+    start_msg +=
+        i18n::get("item_misc.medical_bag.turns_prefix", " (") +
+        std::to_string(m_nr_turns_left_action) +
+        i18n::get("item_misc.medical_bag.turns_suffix", " turns)...");
 
     msg_log::add(start_msg);
 
@@ -201,7 +223,9 @@ MedBagAction MedicalBag::choose_action_auto() const
 
     msg_log::clear();
 
-    msg_log::add("There is nothing to treat.");
+    msg_log::add(i18n::get(
+        "item_misc.medical_bag.nothing_to_treat",
+        "There is nothing to treat."));
 
     return MedBagAction::END;
 }
@@ -213,29 +237,32 @@ MedBagAction MedicalBag::choose_action_manual() const
         const int turns = tot_turns_for_action(action);
 
         return (
-            "(supplies: " +
+            i18n::get("item_misc.medical_bag.cost_supplies_prefix", "(supplies: ") +
             std::to_string(cost) +
-            ", turns: " +
+            i18n::get("item_misc.medical_bag.cost_turns_prefix", ", turns: ") +
             std::to_string(turns) +
-            ")");
+            i18n::get("item_misc.medical_bag.cost_suffix", ")"));
     };
 
     const std::vector<std::string> choices = {
-        ("(q) Quick patch-up, restores " +
+        (i18n::get("item_misc.medical_bag.choice_quick_patch_prefix", "(q) Quick patch-up, restores ") +
          std::to_string(m_hp_restored_by_quick_patch_up) +
-         " hit points " +
+         i18n::get("item_misc.medical_bag.choice_quick_patch_suffix", " hit points ") +
          cost_info_hint(MedBagAction::quick_patch_up)),
-        "(s) Sanitize infection " + cost_info_hint(MedBagAction::sanitize_infection),
-        "(w) Treat wound " + cost_info_hint(MedBagAction::treat_wound),
+        i18n::get("item_misc.medical_bag.choice_sanitize_infection", "(s) Sanitize infection ") + cost_info_hint(MedBagAction::sanitize_infection),
+        i18n::get("item_misc.medical_bag.choice_treat_wound", "(w) Treat wound ") + cost_info_hint(MedBagAction::treat_wound),
     };
 
     int choice = -1;
 
-    const std::string title = "Select treatment";
+    const std::string title =
+        i18n::get("item_misc.medical_bag.select_treatment", "Select treatment");
 
     popup::Popup(popup::AddToMsgHistory::no)
         .set_title(title)
-        .set_msg("Available supplies: " + std::to_string(m_nr_supplies))
+        .set_msg(
+            i18n::get("item_misc.medical_bag.available_supplies", "Available supplies: ") +
+            std::to_string(m_nr_supplies))
         .setup_menu_mode(
             choices,
             {'q', 's', 'w'},
@@ -249,7 +276,9 @@ MedBagAction MedicalBag::choose_action_manual() const
             return MedBagAction::quick_patch_up;
         }
         else {
-            msg_log::add("There are no minor injuries to patch up.");
+            msg_log::add(i18n::get(
+                "item_misc.medical_bag.no_minor_injuries",
+                "There are no minor injuries to patch up."));
         }
     } break;
 
@@ -258,7 +287,9 @@ MedBagAction MedicalBag::choose_action_manual() const
             return MedBagAction::sanitize_infection;
         }
         else {
-            msg_log::add("I am not infected.");
+            msg_log::add(i18n::get(
+                "item_misc.medical_bag.not_infected",
+                "I am not infected."));
         }
         break;
 
@@ -267,7 +298,9 @@ MedBagAction MedicalBag::choose_action_manual() const
             return MedBagAction::treat_wound;
         }
         else {
-            msg_log::add("I have no wounds to treat.");
+            msg_log::add(i18n::get(
+                "item_misc.medical_bag.no_wounds",
+                "I have no wounds to treat."));
         }
         break;
     }
@@ -376,7 +409,9 @@ void MedicalBag::finish_current_action()
     if (m_nr_supplies <= 0) {
         map::g_player->m_inv.remove_item_in_backpack_with_ptr(this, true);
 
-        game::add_history_event("Ran out of medical supplies");
+        game::add_history_event(i18n::get(
+            "item_misc.medical_bag.ran_out_history",
+            "Ran out of medical supplies"));
     }
 }
 
@@ -392,11 +427,11 @@ void MedicalBag::interrupted(const ForceInterruptActions is_forced)
                 ItemNameInfo::none);
 
         const std::string msg =
-            "Continue using " +
+            i18n::get("item_misc.medical_bag.continue_using_prefix", "Continue using ") +
             item_name +
-            " (" +
+            i18n::get("item_misc.medical_bag.continue_turns_prefix", " (") +
             std::to_string(m_nr_turns_left_action) +
-            " turns left)? " +
+            i18n::get("item_misc.medical_bag.continue_turns_suffix", " turns left)? ") +
             common_text::g_yes_or_no_hint;
 
         msg_log::add(
@@ -417,7 +452,9 @@ void MedicalBag::interrupted(const ForceInterruptActions is_forced)
     }
     else {
         // Forced interruption.
-        msg_log::add("My healing is disrupted.");
+        msg_log::add(i18n::get(
+            "item_misc.medical_bag.healing_disrupted",
+            "My healing is disrupted."));
 
         should_continue = false;
     }
