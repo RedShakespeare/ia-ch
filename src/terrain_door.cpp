@@ -45,6 +45,7 @@
 #include "terrain_event.hpp"
 #include "terrain_factory.hpp"
 #include "text_format.hpp"
+#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -218,7 +219,7 @@ static void communicate_player_bash_futile(const audio::SfxId sfx)
 
     snd.run();
 
-    msg_log::add("It seems futile.");
+    msg_log::add(i18n::get("terrain_door.futile", "It seems futile."));
 }
 
 static void communicate_player_bash_success(
@@ -240,10 +241,20 @@ static void communicate_player_bash_success(
     snd.run();
 
     if (is_hidden) {
-        msg_log::add("A " + door_name + " crashes " + break_descr + "!");
+        msg_log::add(
+            i18n::get("terrain_door.door_crashes_a", "A ") +
+            door_name +
+            i18n::get("terrain_door.door_crashes_b", " crashes ") +
+            break_descr +
+            i18n::get("terrain_door.exclaim", "!"));
     }
     else {
-        msg_log::add("The " + door_name + " crashes " + break_descr + "!");
+        msg_log::add(
+            i18n::get("terrain_door.the", "The ") +
+            door_name +
+            i18n::get("terrain_door.door_crashes_b", " crashes ") +
+            break_descr +
+            i18n::get("terrain_door.exclaim", "!"));
     }
 }
 
@@ -277,10 +288,20 @@ static void communicate_mon_bash_success(
     snd.run();
 
     if (is_actor_seen) {
-        msg_log::add("The " + door_name + " crashes " + break_descr + "!");
+        msg_log::add(
+            i18n::get("terrain_door.the", "The ") +
+            door_name +
+            i18n::get("terrain_door.door_crashes_b", " crashes ") +
+            break_descr +
+            i18n::get("terrain_door.exclaim", "!"));
     }
     else if (is_door_seen) {
-        msg_log::add("A " + door_name + " crashes " + break_descr + "!");
+        msg_log::add(
+            i18n::get("terrain_door.door_crashes_a", "A ") +
+            door_name +
+            i18n::get("terrain_door.door_crashes_b", " crashes ") +
+            break_descr +
+            i18n::get("terrain_door.exclaim", "!"));
 
         mon.make_player_aware_of_me();
     }

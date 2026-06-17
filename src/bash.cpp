@@ -43,6 +43,7 @@
 #include "terrain_data.hpp"
 #include "text_format.hpp"
 #include "wpn_dmg.hpp"
+#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -76,14 +77,22 @@ static void print_player_attack_seen_terrain_msg(
     const std::string terrain_name = terrain.name(Article::the);
     const std::string melee_att_msg = wpn.data().melee.attack_msgs.player;
 
-    msg_log::add("I " + melee_att_msg + " " + terrain_name + "!");
+    msg_log::add(
+        i18n::get("bash.attack_prefix", "I ") +
+        melee_att_msg +
+        i18n::get("bash.attack_middle", " ") +
+        terrain_name +
+        i18n::get("bash.exclaim", "!"));
 }
 
 static void print_player_attack_unseen_terrain_msg(const item::Item& wpn)
 {
     const std::string melee_att_msg = wpn.data().melee.attack_msgs.player;
 
-    msg_log::add("I " + melee_att_msg + " something!");
+    msg_log::add(
+        i18n::get("bash.attack_prefix", "I ") +
+        melee_att_msg +
+        i18n::get("bash.attack_something", " something!"));
 }
 
 static void print_player_attack_terrain_msg(
@@ -218,7 +227,9 @@ static void bash_something_at_pos(const P& pos)
     }
 
     if (is_player_pos) {
-        msg_log::add("I cannot find anything there to bash.");
+        msg_log::add(i18n::get(
+            "bash.cannot_find_anything",
+            "I cannot find anything there to bash."));
 
         return;
     }
@@ -237,7 +248,10 @@ static void bash_something_at_pos(const P& pos)
         // not possible to attack the terrain itself).
         const std::string terrain_name = terrain->name(Article::the);
 
-        msg_log::add("Kicking " + terrain_name + " would be useless.");
+        msg_log::add(
+            i18n::get("bash.kicking_prefix", "Kicking ") +
+            terrain_name +
+            i18n::get("bash.kicking_suffix", " would be useless."));
 
         return;
     }
@@ -314,7 +328,7 @@ void try_sprain_player()
     }
 
     if (rnd::one_in(sprain_one_in_n)) {
-        msg_log::add("I sprain myself.", colors::msg_bad());
+        msg_log::add(i18n::get("bash.sprain_myself", "I sprain myself."), colors::msg_bad());
 
         const int dmg = rnd::range(1, 2);
 
@@ -453,7 +467,7 @@ void do_fake_attack_on_unseen_terrain(const P& pos, const item::Item& wpn)
 
 void attack_air()
 {
-    msg_log::add("*Whoosh!*");
+    msg_log::add(i18n::get("bash.whoosh", "*Whoosh!*"));
 
     audio::play(audio::SfxId::miss_medium);
 

@@ -37,6 +37,7 @@
 #include "saving.hpp"
 #include "terrain.hpp"
 #include "viewport.hpp"
+#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -57,7 +58,9 @@ static void trigger_insanity_sympts_for_descent()
 {
     // Phobia of deep places
     if (insanity::has_sympt(InsSymptId::phobia_deep)) {
-        msg_log::add("I am plagued by my phobia of deep places!");
+        msg_log::add(i18n::get(
+            "map_travel.phobia_deep_places",
+            "I am plagued by my phobia of deep places!"));
 
         map::g_player->m_properties.apply(prop::make(prop::Id::terrified));
     }
@@ -302,7 +305,9 @@ void go_to_nxt()
     map_builder->build();
 
     if (map::g_player->m_properties.has(prop::Id::descend)) {
-        msg_log::add("My sinking feeling disappears.");
+        msg_log::add(i18n::get(
+            "map_travel.sinking_feeling_disappears",
+            "My sinking feeling disappears."));
 
         map::g_player->m_properties.end_prop(
             prop::Id::descend,
@@ -324,7 +329,9 @@ void go_to_nxt()
 
     map::g_player->update_tmp_shock();
 
-    msg_log::add("I have discovered a new area.");
+    msg_log::add(i18n::get(
+        "map_travel.discovered_new_area",
+        "I have discovered a new area."));
 
     // NOTE: When the "intro level" is skipped, "go_to_nxt" is called when
     // the game starts - so no XP is missed in that case (same thing when
@@ -334,7 +341,7 @@ void go_to_nxt()
     map::g_player->on_new_dlvl_reached();
 
     game::add_history_event(
-        "Reached dungeon level " +
+        i18n::get("map_travel.reached_dlvl_prefix", "Reached dungeon level ") +
         std::to_string(map::g_dlvl));
 
     trigger_insanity_sympts_for_descent();

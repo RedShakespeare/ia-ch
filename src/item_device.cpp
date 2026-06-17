@@ -42,6 +42,7 @@
 #include "terrain_factory.hpp"
 #include "terrain_mob.hpp"
 #include "text_format.hpp"
+#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -85,11 +86,18 @@ void Device::identify(const Verbose verbose)
                 ItemNameType::a,
                 ItemNameInfo::none);
 
-        msg_log::add("I have identified " + name_after + ".");
+        msg_log::add(
+            i18n::get("item_device.identified_prefix", "I have identified ") +
+            name_after +
+            ".");
 
-        msg_log::add("All its properties are now known to me.");
+        msg_log::add(i18n::get(
+            "item_device.all_properties_known",
+            "All its properties are now known to me."));
 
-        game::add_history_event("Comprehended " + name_after);
+        game::add_history_event(
+            i18n::get("item_device.history_comprehended_prefix", "Comprehended ") +
+            name_after);
 
         game::incr_player_xp(g_xp_on_identify_device);
     }
@@ -143,9 +151,9 @@ ConsumeItem Device::activate(actor::Actor* const actor)
     ASSERT(actor);
 
     if (!m_data->is_identified) {
-        msg_log::add(
-            "This device is completely alien to me, I could never "
-            "understand it through normal means.");
+        msg_log::add(i18n::get(
+            "item_device.alien",
+            "This device is completely alien to me, I could never understand it through normal means."));
 
         return ConsumeItem::no;
     }
@@ -208,13 +216,17 @@ ConsumeItem Device::activate(actor::Actor* const actor)
             ItemNameType::a,
             ItemNameInfo::none);
 
-    msg_log::add("I activate " + item_name_a + "...");
+    msg_log::add(
+        i18n::get("item_device.activate_prefix", "I activate ") +
+        item_name_a +
+        i18n::get("item_device.ellipsis", "..."));
 
     ConsumeItem consumed = ConsumeItem::no;
 
     if (should_hurt_user) {
-        msg_log::add(
-            "It hits me with a jolt of electricity!",
+        msg_log::add(i18n::get(
+            "item_device.electric_jolt",
+            "It hits me with a jolt of electricity!"),
             colors::msg_bad());
 
         actor::hit(
@@ -225,7 +237,7 @@ ConsumeItem Device::activate(actor::Actor* const actor)
     }
 
     if (should_fail) {
-        msg_log::add("It suddenly stops.");
+        msg_log::add(i18n::get("item_device.suddenly_stops", "It suddenly stops."));
     }
     else {
         consumed = run_effect();
@@ -234,23 +246,31 @@ ConsumeItem Device::activate(actor::Actor* const actor)
     if (consumed == ConsumeItem::no) {
         if (should_degrade) {
             if (m_condition == Condition::breaking) {
-                msg_log::add("The " + item_name + " breaks!");
+                msg_log::add(
+                    i18n::get("item_device.breaks_prefix", "The ") +
+                    item_name +
+                    i18n::get("item_device.breaks_suffix", " breaks!"));
 
                 consumed = ConsumeItem::yes;
             }
             else {
-                msg_log::add(
-                    "The " +
+                msg_log::add(i18n::get(
+                    "item_device.damaged",
+                    "The ") +
                     item_name +
-                    " makes a terrible grinding noise. "
-                    "I seem to have damaged it.");
+                    i18n::get(
+                        "item_device.damaged_suffix",
+                        " makes a terrible grinding noise. I seem to have damaged it."));
 
                 m_condition = (Condition)((int)m_condition - 1);
             }
         }
 
         if (should_warn) {
-            msg_log::add("The " + item_name + " hums ominously.");
+            msg_log::add(
+                i18n::get("item_device.hums_prefix", "The ") +
+                item_name +
+                i18n::get("item_device.hums_suffix", " hums ominously."));
         }
     }
 
@@ -287,7 +307,7 @@ ConsumeItem Blaster::run_effect()
     const auto tgt_bucket = actor::seen_foes(*map::g_player);
 
     if (tgt_bucket.empty()) {
-        msg_log::add("It seems to peruse area.");
+        msg_log::add(i18n::get("item_device.peruse_area", "It seems to peruse area."));
 
         return ConsumeItem::no;
     }
@@ -318,7 +338,7 @@ std::string Blaster::descr_identified() const
 // -----------------------------------------------------------------------------
 ConsumeItem Rejuvenator::run_effect()
 {
-    msg_log::add("It repairs my body.");
+    msg_log::add(i18n::get("item_device.repairs_body", "It repairs my body."));
 
     const std::vector<prop::Id> props_can_heal = {
         prop::Id::blind,
@@ -357,7 +377,7 @@ ConsumeItem Translocator::run_effect()
     const auto seen_foes = actor::seen_foes(*map::g_player);
 
     if (seen_foes.empty()) {
-        msg_log::add("It seems to peruse area.");
+        msg_log::add(i18n::get("item_device.peruse_area", "It seems to peruse area."));
     }
     else {
         // Seen targets are available
@@ -389,7 +409,7 @@ std::string Translocator::descr_identified() const
 // -----------------------------------------------------------------------------
 ConsumeItem SentryDrone::run_effect()
 {
-    msg_log::add("The Sentry Drone awakens!");
+    msg_log::add(i18n::get("item_device.sentry_awakes", "The Sentry Drone awakens!"));
 
     actor::spawn(map::g_player->m_pos, {"MON_SENTRY_DRONE"})
         .make_aware_of_player()
@@ -403,7 +423,7 @@ ConsumeItem SentryDrone::run_effect()
 // -----------------------------------------------------------------------------
 ConsumeItem ForceField::run_effect()
 {
-    msg_log::add("The air thickens around me.");
+    msg_log::add(i18n::get("item_device.air_thickens", "The air thickens around me."));
 
     Range duration_range(85, 100);
 

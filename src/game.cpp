@@ -52,6 +52,7 @@
 #include "terrain.hpp"
 #include "text_format.hpp"
 #include "viewport.hpp"
+#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -229,7 +230,10 @@ void incr_player_xp(const int xp_gained, const Verbose verbose)
     }
 
     if (verbose == Verbose::yes) {
-        msg_log::add("(+" + std::to_string(xp_gained) + "% XP)");
+        msg_log::add(
+            i18n::get("game.xp_gain_prefix", "(+") +
+            std::to_string(xp_gained) +
+            i18n::get("game.xp_gain_suffix", "% XP)"));
     }
 
     s_xp_pct += xp_gained;
@@ -241,10 +245,9 @@ void incr_player_xp(const int xp_gained, const Verbose verbose)
             ++s_clvl;
 
             msg_log::add(
-                std::string(
-                    "Welcome to level " +
-                    std::to_string(s_clvl) +
-                    "!"),
+                i18n::get("game.welcome_level_prefix", "Welcome to level ") +
+                std::to_string(s_clvl) +
+                i18n::get("game.welcome_level_suffix", "!"),
                 colors::green(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
@@ -285,7 +288,7 @@ void incr_player_xp(const int xp_gained, const Verbose verbose)
 
             states::push(
                 std::make_unique<PickTraitState>(
-                    "Which trait do you gain?",
+                    i18n::get("game.pick_trait_prompt", "Which trait do you gain?"),
                     IsCharacterCreationTraitPick::no));
         }
 
@@ -338,13 +341,18 @@ void player_discover_monster(actor::Actor& actor)
 
     const std::string name = actor::name_a(actor);
 
-    msg_log::add("I have discovered " + name + "!");
+    msg_log::add(
+        i18n::get("game.discovered_prefix", "I have discovered ") +
+        name +
+        i18n::get("game.exclaim", "!"));
 
     incr_player_xp(xp_gained);
 
     msg_log::more_prompt();
 
-    add_history_event("Discovered " + name);
+    add_history_event(
+        i18n::get("game.history_discovered_prefix", "Discovered ") +
+        name);
 
     map::g_player->incr_shock(shock_value, ShockSrc::see_mon);
 
@@ -391,7 +399,9 @@ void on_mon_killed(actor::Actor& actor)
     if (d.is_unique) {
         const std::string name = actor::name_the(actor);
 
-        add_history_event("Defeated " + name);
+        add_history_event(
+            i18n::get("game.history_defeated_prefix", "Defeated ") +
+            name);
     }
 }
 
@@ -436,7 +446,7 @@ void GameState::on_start()
 
         actor_items::make_for_actor(*map::g_player);
 
-        game::add_history_event("Started journey");
+        game::add_history_event(i18n::get("game.started_journey", "Started journey"));
 
         if (!config::is_intro_lvl_skipped() &&
             !config::is_intro_popup_skipped()) {
@@ -455,7 +465,7 @@ void GameState::on_start()
             }
 
             popup::Popup(popup::AddToMsgHistory::yes)
-                .set_title("The story so far...")
+                .set_title(i18n::get("game.story_so_far_title", "The story so far..."))
                 .set_msg(intro_msg)
                 .run();
         }
