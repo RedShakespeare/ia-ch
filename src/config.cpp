@@ -2033,6 +2033,9 @@ void LanguageOption::change(OptionChangeCommand command) const
     s_language = languages[idx];
 
     i18n::reload();
+    if (config::is_tiles_mode()) {
+        io::reload_logo();
+    }
     common_text::init();
     messages::init();
 }

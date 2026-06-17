@@ -47,6 +47,8 @@ void init_other()
     panels::init({100, 100});
 }
 
+void reload_logo() {}
+
 void cleanup_sdl() {}
 
 void cleanup_other() {}

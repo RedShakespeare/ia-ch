@@ -100,6 +100,7 @@ void cleanup_sdl_audio();
 
 void init_other();
 void cleanup_other();
+void reload_logo();
 
 // Updates the sceen with what is currently drawn
 #ifndef NDEBUG

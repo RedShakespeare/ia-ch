@@ -374,6 +374,10 @@ void MainMenuState::on_resume()
 {
     s_current_quote = messages::get_random_menu_quote();
 
+    if (config::is_tiles_mode()) {
+        io::reload_logo();
+    }
+
     // Do not play the music in debug mode (it gets extremely repetitive).
 #ifdef NDEBUG
     audio::play_music(audio::MusId::cthulhiana_madness);

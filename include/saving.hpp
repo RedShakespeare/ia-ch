@@ -20,6 +20,7 @@ void load_game();
 void erase_save();
 
 bool is_save_available();
+int save_file_insanity_for_menu();
 
 bool is_loading();
 

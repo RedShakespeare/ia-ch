@@ -19,6 +19,7 @@ std::queue<std::string>& pending_error_messages();
 std::string user_dir();
 
 std::string save_file_path();
+std::string save_insanity_file_path();
 
 std::string config_file_path();
 

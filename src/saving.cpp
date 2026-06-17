@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <filesystem>
 #include <fstream>
 #include <iterator>
 #include <vector>
@@ -49,6 +50,15 @@ enum class SaveLoadState
 static SaveLoadState s_state;
 
 static std::vector<std::string> s_lines;
+
+static void write_save_insanity_file()
+{
+    std::ofstream file(paths::save_insanity_file_path(), std::ios::trunc);
+
+    if (file.is_open()) {
+        file << map::g_player->insanity();
+    }
+}
 
 static void save_modules()
 {
@@ -184,6 +194,7 @@ void save_game()
 
     // Write the save lines to the save file
     write_file();
+    write_save_insanity_file();
 
     s_lines.clear();
 }
@@ -215,6 +226,9 @@ void erase_save()
 
     // Write empty save file
     write_file();
+
+    std::error_code err;
+    std::filesystem::remove(paths::save_insanity_file_path(), err);
 }
 
 bool is_save_available()
@@ -235,6 +249,20 @@ bool is_save_available()
 
         return false;
     }
+}
+
+int save_file_insanity_for_menu()
+{
+    std::ifstream file(paths::save_insanity_file_path());
+
+    if (!file.good()) {
+        return 0;
+    }
+
+    int insanity = 0;
+    file >> insanity;
+
+    return std::clamp(insanity, 0, 100);
 }
 
 bool is_loading()

@@ -8,14 +8,19 @@
 
 #include <cstdlib>
 #include <filesystem>
+#include <optional>
 #include <ostream>
 #include <queue>
+#include <regex>
 #include <string>
+#include <vector>
 
 #include "SDL.h"
 #include "debug.hpp"
+#include "i18n.hpp"
 #include "ini.h"
 #include "io.hpp"
+#include "saving.hpp"
 #include "version.hpp"
 
 // -----------------------------------------------------------------------------
@@ -27,6 +32,61 @@ static std::queue<std::string> s_pending_error_messages;
 
 // Can be used by the player for overriding the user data directory.
 const static std::string s_user_data_ini_file_name = "user_data.ini";
+
+static std::optional<std::string> numbered_logo_variant_path(
+    const std::string& directory,
+    const std::string& stem,
+    const int insanity)
+{
+    if (!std::filesystem::exists(directory)) {
+        return std::nullopt;
+    }
+
+    const std::regex pattern("^" + stem + "_([0-9]+)\\.png$");
+    std::vector<std::pair<int, std::string>> matches;
+
+    for (const auto& entry : std::filesystem::directory_iterator(directory)) {
+        if (!entry.is_regular_file()) {
+            continue;
+        }
+
+        const std::string filename = entry.path().filename().string();
+        std::smatch match;
+
+        if (!std::regex_match(filename, match, pattern)) {
+            continue;
+        }
+
+        matches.emplace_back(std::stoi(match[1].str()), entry.path().string());
+    }
+
+    if (matches.empty()) {
+        return std::nullopt;
+    }
+
+    std::sort(std::begin(matches), std::end(matches), [](const auto& lhs, const auto& rhs) {
+        return lhs.first < rhs.first;
+    });
+
+    const size_t idx = matches.size() == 1
+        ? 0
+        : std::min(
+              matches.size() - 1,
+              (size_t)((insanity * (int)matches.size()) / 101));
+
+    return matches[idx].second;
+}
+
+static std::string logo_path_from_directory(
+    const std::string& directory,
+    const int insanity)
+{
+    if (const auto numbered = numbered_logo_variant_path(directory, "main_menu_logo", insanity)) {
+        return *numbered;
+    }
+
+    return directory + "/main_menu_logo.png";
+}
 
 // NOTE: This will also attempt to create the directories.
 static bool ensure_writable_location(const std::string& path)
@@ -263,6 +323,11 @@ std::string save_file_path()
     return user_dir() + "save";
 }
 
+std::string save_insanity_file_path()
+{
+    return user_dir() + "save_insanity";
+}
+
 std::string config_file_path()
 {
     return user_dir() + "config";
@@ -295,7 +360,19 @@ std::string images_dir()
 
 std::string logo_img_path()
 {
-    return images_dir() + "/main_menu_logo.png";
+    const int insanity = saving::save_file_insanity_for_menu();
+    const std::string language = i18n::current_language();
+    const std::string localized_dir = locale_dir() + language + "/gfx/images";
+
+    if ((language != "en") && std::filesystem::exists(localized_dir)) {
+        const std::string localized_path = logo_path_from_directory(localized_dir, insanity);
+
+        if (std::filesystem::exists(localized_path)) {
+            return localized_path;
+        }
+    }
+
+    return logo_path_from_directory(images_dir(), insanity);
 }
 
 std::string audio_dir()
