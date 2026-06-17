@@ -15,6 +15,7 @@
 #include "common_text.hpp"
 #include "config.hpp"
 #include "explosion.hpp"
+#include "i18n.hpp"
 #include "game_time.hpp"
 #include "item_data.hpp"
 #include "item_factory.hpp"
@@ -47,7 +48,9 @@ ConsumeItem Explosive::activate(actor::Actor* const actor)
     (void)actor;
 
     if (map::g_player->m_properties.has(prop::Id::burning)) {
-        msg_log::add("Not while burning.");
+        msg_log::add(i18n::get(
+            "item_explosive.not_while_burning",
+            "Not while burning."));
 
         return ConsumeItem::no;
     }
@@ -61,7 +64,10 @@ ConsumeItem Explosive::activate(actor::Actor* const actor)
                 ItemNameType::a,
                 ItemNameInfo::none);
 
-        msg_log::add("I am already holding " + name_held + ".");
+        msg_log::add(
+            i18n::get("item_explosive.already_holding", "I am already holding ") +
+            name_held +
+            ".");
 
         return ConsumeItem::no;
     }
@@ -70,9 +76,9 @@ ConsumeItem Explosive::activate(actor::Actor* const actor)
         const std::string name = this->name(ItemNameType::a);
 
         const std::string msg =
-            "Light " +
+            i18n::get("item_explosive.light_query", "Light ") +
             name +
-            "? " +
+            i18n::get("item_explosive.query_suffix", "? ") +
             common_text::g_yes_or_no_hint;
 
         msg_log::add(
@@ -105,7 +111,9 @@ ConsumeItem Explosive::activate(actor::Actor* const actor)
 
 void Dynamite::on_player_ignite() const
 {
-    msg_log::add("I light a dynamite stick.");
+    msg_log::add(i18n::get(
+        "item_explosive.light_dynamite",
+        "I light a dynamite stick."));
 
     game_time::tick();
 }
@@ -136,7 +144,9 @@ void Dynamite::on_std_turn_player_hold_ignited()
     }
     else {
         // Fuse has run out
-        msg_log::add("The dynamite explodes in my hand!");
+        msg_log::add(i18n::get(
+            "item_explosive.dynamite_explodes",
+            "The dynamite explodes in my hand!"));
 
         actor::player_state::g_active_explosive.reset();
 
@@ -159,7 +169,9 @@ void Dynamite::on_thrown_ignited_landing(const P& p)
 
 void Dynamite::on_player_paralyzed()
 {
-    msg_log::add("The lit Dynamite stick falls from my hand!");
+    msg_log::add(i18n::get(
+        "item_explosive.dynamite_falls",
+        "The lit Dynamite stick falls from my hand!"));
 
     const int fuse_turns = m_fuse_turns;
 
@@ -184,7 +196,9 @@ void Dynamite::on_player_paralyzed()
 
 void Molotov::on_player_ignite() const
 {
-    msg_log::add("I light a Molotov Cocktail.");
+    msg_log::add(i18n::get(
+        "item_explosive.light_molotov",
+        "I light a Molotov Cocktail."));
 
     game_time::tick();
 }
@@ -195,7 +209,9 @@ void Molotov::on_std_turn_player_hold_ignited()
 
     if (m_fuse_turns == 2) {
         msg_log::add(
-            "The Molotov Cocktail will soon explode.",
+            i18n::get(
+                "item_explosive.molotov_soon_explode",
+                "The Molotov Cocktail will soon explode."),
             colors::text(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::yes);
@@ -203,14 +219,18 @@ void Molotov::on_std_turn_player_hold_ignited()
 
     if (m_fuse_turns == 1) {
         msg_log::add(
-            "The Molotov Cocktail is about to explode!",
+            i18n::get(
+                "item_explosive.molotov_about_to_explode",
+                "The Molotov Cocktail is about to explode!"),
             colors::text(),
             MsgInterruptPlayer::yes,
             MorePromptOnMsg::yes);
     }
 
     if (m_fuse_turns <= 0) {
-        msg_log::add("The Molotov Cocktail explodes in my hand!");
+        msg_log::add(i18n::get(
+            "item_explosive.molotov_explodes",
+            "The Molotov Cocktail explodes in my hand!"));
 
         actor::player_state::g_active_explosive.reset();
 
@@ -242,7 +262,7 @@ void Molotov::on_std_turn_player_hold_ignited()
 void Molotov::on_thrown_ignited_landing(const P& p)
 {
     Snd snd(
-        "I hear an explosion!",
+        i18n::get("item_explosive.hear_explosion", "I hear an explosion!"),
         audio::SfxId::explosion_molotov,
         IgnoreMsgIfOriginSeen::yes,
         p,
@@ -263,7 +283,9 @@ void Molotov::on_thrown_ignited_landing(const P& p)
 
 void Molotov::on_player_paralyzed()
 {
-    msg_log::add("The lit Molotov Cocktail falls from my hand!");
+    msg_log::add(i18n::get(
+        "item_explosive.molotov_falls",
+        "The lit Molotov Cocktail falls from my hand!"));
 
     actor::player_state::g_active_explosive.reset();
 
@@ -272,7 +294,7 @@ void Molotov::on_player_paralyzed()
     const P player_pos = map::g_player->m_pos;
 
     Snd snd(
-        "I hear an explosion!",
+        i18n::get("item_explosive.hear_explosion", "I hear an explosion!"),
         audio::SfxId::explosion_molotov,
         IgnoreMsgIfOriginSeen::yes,
         player_pos,
@@ -293,7 +315,7 @@ void Molotov::on_player_paralyzed()
 
 void Flare::on_player_ignite() const
 {
-    msg_log::add("I light a Flare.");
+    msg_log::add(i18n::get("item_explosive.light_flare", "I light a Flare."));
 
     game_time::tick();
 }
@@ -303,7 +325,9 @@ void Flare::on_std_turn_player_hold_ignited()
     --m_fuse_turns;
 
     if (m_fuse_turns <= 0) {
-        msg_log::add("The flare is extinguished.");
+        msg_log::add(i18n::get(
+            "item_explosive.flare_extinguished",
+            "The flare is extinguished."));
 
         actor::player_state::g_active_explosive.reset();
     }
@@ -322,7 +346,9 @@ void Flare::on_thrown_ignited_landing(const P& p)
 
 void Flare::on_player_paralyzed()
 {
-    msg_log::add("The lit Flare falls from my hand!");
+    msg_log::add(i18n::get(
+        "item_explosive.flare_falls",
+        "The lit Flare falls from my hand!"));
 
     const int fuse_turns = m_fuse_turns;
 
@@ -347,7 +373,9 @@ void Flare::on_player_paralyzed()
 
 void SmokeGrenade::on_player_ignite() const
 {
-    msg_log::add("I ignite a smoke grenade.");
+    msg_log::add(i18n::get(
+        "item_explosive.ignite_smoke_grenade",
+        "I ignite a smoke grenade."));
 
     game_time::tick();
 }
@@ -361,7 +389,9 @@ void SmokeGrenade::on_std_turn_player_hold_ignited()
     --m_fuse_turns;
 
     if (m_fuse_turns <= 0) {
-        msg_log::add("The smoke grenade is extinguished.");
+        msg_log::add(i18n::get(
+            "item_explosive.smoke_grenade_extinguished",
+            "The smoke grenade is extinguished."));
 
         actor::player_state::g_active_explosive.reset();
 
@@ -376,7 +406,9 @@ void SmokeGrenade::on_thrown_ignited_landing(const P& p)
 
 void SmokeGrenade::on_player_paralyzed()
 {
-    msg_log::add("The ignited smoke grenade falls from my hand!");
+    msg_log::add(i18n::get(
+        "item_explosive.smoke_grenade_falls",
+        "The ignited smoke grenade falls from my hand!"));
 
     actor::player_state::g_active_explosive.reset();
 

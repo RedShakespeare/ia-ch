@@ -13,6 +13,7 @@
 #include "colors.hpp"
 #include "common_text.hpp"
 #include "direction.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
@@ -32,12 +33,14 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
 
     if (terrain->id() != terrain::Id::door) {
         if (can_see_terrain) {
-            msg_log::add(
-                "I see nothing there to close or jam shut.");
+            msg_log::add(i18n::get(
+                "close.nothing_to_close_visible",
+                "I see nothing there to close or jam shut."));
         }
         else {
-            msg_log::add(
-                "I find nothing there to close or jam shut.");
+            msg_log::add(i18n::get(
+                "close.nothing_to_close_hidden",
+                "I find nothing there to close or jam shut."));
         }
 
         return;
@@ -58,10 +61,14 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
     if ((door->type() == terrain::DoorType::metal) ||
         door->is_warded()) {
         if (can_see_terrain) {
-            msg_log::add("This door cannot be jammed.");
+            msg_log::add(i18n::get(
+                "close.door_cannot_be_jammed",
+                "This door cannot be jammed."));
         }
         else {
-            msg_log::add("I find nothing there to close or jam shut.");
+            msg_log::add(i18n::get(
+                "close.nothing_to_close_hidden",
+                "I find nothing there to close or jam shut."));
         }
 
         return;
@@ -72,7 +79,9 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
             item::Id::iron_spike);
 
     if (!has_spike) {
-        msg_log::add("I have nothing to jam the door with.");
+        msg_log::add(i18n::get(
+            "close.no_spike",
+            "I have nothing to jam the door with."));
 
         return;
     }
@@ -95,13 +104,15 @@ static void player_try_close_or_jam_terrain(terrain::Terrain* const terrain)
                 item::Id::iron_spike);
 
     if (nr_spikes_left == 0) {
-        msg_log::add("I have no iron spikes left.");
+        msg_log::add(i18n::get(
+            "close.no_spikes_left",
+            "I have no iron spikes left."));
     }
     else {
         msg_log::add(
-            "I have " +
+            i18n::get("close.spikes_left_prefix", "I have ") +
             std::to_string(nr_spikes_left) +
-            " iron spikes left.");
+            i18n::get("close.spikes_left_suffix", " iron spikes left."));
     }
 }  // player_try_close_or_jam_terrain
 

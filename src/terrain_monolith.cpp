@@ -15,6 +15,7 @@
 #include "global.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
+#include "i18n.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
 #include "property_handler.hpp"
@@ -42,7 +43,9 @@ void Monolith::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The monolith is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain_monolith.destroyed",
+                "The monolith is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -92,7 +95,7 @@ std::optional<map::MinimapAppearance> Monolith::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Monolith";
+    appearance.legend_text = i18n::get("terrain_monolith.legend_text", "Monolith");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -109,29 +112,35 @@ void Monolith::bump(actor::Actor& actor_bumping)
 
     if (!map::g_player->m_properties.allow_see()) {
         if (player_bon::is_bg(Bg::exorcist)) {
-            msg_log::add(
-                "There is a carved rock defiled with blasphemous carvings here. "
-                "It must be destroyed!");
+            msg_log::add(i18n::get(
+                "terrain_monolith.defiled_rock_here",
+                "There is a carved rock defiled with blasphemous carvings here. It must be destroyed!"));
         }
         else {
-            msg_log::add("There is a carved rock here.");
+            msg_log::add(i18n::get(
+                "terrain_monolith.carved_rock_here",
+                "There is a carved rock here."));
         }
 
         return;
     }
 
     if (player_bon::is_bg(Bg::exorcist)) {
-        msg_log::add(
-            "This rock is defiled with blasphemous carvings, "
-            "it must be destroyed!");
+        msg_log::add(i18n::get(
+            "terrain_monolith.defiled_rock_notice",
+            "This rock is defiled with blasphemous carvings, it must be destroyed!"));
 
         return;
     }
 
-    msg_log::add("I recite the inscriptions on the Monolith...");
+    msg_log::add(i18n::get(
+        "terrain_monolith.recite_inscriptions",
+        "I recite the inscriptions on the Monolith..."));
 
     if (m_is_activated) {
-        msg_log::add("Nothing happens.");
+        msg_log::add(i18n::get(
+            "terrain_monolith.nothing_happens",
+            "Nothing happens."));
     }
     else {
         activate();
@@ -145,7 +154,7 @@ void Monolith::bump(actor::Actor& actor_bumping)
 
 void Monolith::activate()
 {
-    msg_log::add("I feel powerful!");
+    msg_log::add(i18n::get("terrain_monolith.feel_powerful", "I feel powerful!"));
 
     audio::play(audio::SfxId::monolith);
 

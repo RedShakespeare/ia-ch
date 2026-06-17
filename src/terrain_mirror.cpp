@@ -23,6 +23,7 @@
 #include "item_data.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
+#include "i18n.hpp"
 #include "player_bon.hpp"
 #include "property_handler.hpp"
 #include "random.hpp"
@@ -147,7 +148,7 @@ std::optional<map::MinimapAppearance> Mirror::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = colors::orange();
-    appearance.legend_text = "Hazy Mirror";
+    appearance.legend_text = i18n::get("terrain_mirror.legend_text", "Hazy Mirror");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -163,12 +164,16 @@ void Mirror::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_player->m_properties.allow_see()) {
-        msg_log::add("There is a glass surface here.");
+        msg_log::add(i18n::get(
+            "terrain_mirror.glass_surface",
+            "There is a glass surface here."));
 
         if (player_bon::is_bg(Bg::exorcist)) {
             // NOTE: No return in this case - we also want to print
             // the second message below about destroying the mirror.
-            msg_log::add("As I touch it, I am chilled to the bone.");
+            msg_log::add(i18n::get(
+                "terrain_mirror.chilled_to_bone",
+                "As I touch it, I am chilled to the bone."));
         }
         else {
             return;
@@ -176,15 +181,20 @@ void Mirror::bump(actor::Actor& actor_bumping)
     }
 
     if (player_bon::is_bg(Bg::exorcist)) {
-        msg_log::add("This evil artifact must be destroyed!");
+        msg_log::add(i18n::get(
+            "terrain_mirror.must_be_destroyed",
+            "This evil artifact must be destroyed!"));
 
         return;
     }
 
-    msg_log::add("I stare deep into the " + name(Article::the) + ".");
+    msg_log::add(
+        i18n::get("terrain_mirror.stare_deep_prefix", "I stare deep into the ") +
+        name(Article::the) +
+        ".");
 
     if (m_is_activated || !player_has_unidentified_item()) {
-        msg_log::add("Nothing happens.");
+        msg_log::add(i18n::get("terrain_mirror.nothing_happens", "Nothing happens."));
     }
     else {
         audio::play(audio::SfxId::mirror_activate);

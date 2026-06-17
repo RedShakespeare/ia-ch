@@ -32,14 +32,39 @@ static std::string locale_dir(const std::string& language)
     return locale_root_dir() + language + "/";
 }
 
+static constexpr const char* kLocaleTextFile = "text.ini";
+static constexpr const char* kLegacyLocaleTextFile = "ui.ini";
+
 static std::string ui_ini_path(const std::string& language)
 {
-    return locale_dir(language) + "ui.ini";
+    return locale_dir(language) + kLocaleTextFile;
 }
 
 static bool has_ui_ini(const std::string& language)
 {
     return std::filesystem::exists(ui_ini_path(language));
+}
+
+static std::string legacy_ui_ini_path(const std::string& language)
+{
+    return locale_dir(language) + kLegacyLocaleTextFile;
+}
+
+static std::string locale_text_path(const std::string& language)
+{
+    const auto path = ui_ini_path(language);
+
+    if (std::filesystem::exists(path)) {
+        return path;
+    }
+
+    const auto legacy_path = legacy_ui_ini_path(language);
+
+    if (std::filesystem::exists(legacy_path)) {
+        return legacy_path;
+    }
+
+    return path;
 }
 
 // -----------------------------------------------------------------------------
@@ -62,7 +87,7 @@ void reload()
         return;
     }
 
-    const auto path = ui_ini_path(s_current_language);
+    const auto path = locale_text_path(s_current_language);
 
     if (!std::filesystem::exists(path)) {
         TRACE
@@ -130,7 +155,7 @@ std::vector<std::string> available_languages()
                 continue;
             }
 
-            if (has_ui_ini(code)) {
+            if (has_ui_ini(code) || std::filesystem::exists(legacy_ui_ini_path(code))) {
                 result.push_back(code);
             }
         }

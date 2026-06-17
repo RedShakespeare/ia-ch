@@ -24,6 +24,7 @@
 #include "item_factory.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
+#include "i18n.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
 #include "property_data.hpp"
@@ -304,9 +305,14 @@ ItemPrePickResult Scroll::pre_pickup_hook()
 
     // Is exorcist
 
-    const std::string noun = (m_nr_items == 1) ? "text" : "texts";
+    const std::string noun = (m_nr_items == 1)
+        ? i18n::get("item_scroll.text_singular", "text")
+        : i18n::get("item_scroll.text_plural", "texts");
 
-    msg_log::add("I destroy the profane " + noun + "!");
+    msg_log::add(
+        i18n::get("item_scroll.destroy_profane_prefix", "I destroy the profane ") +
+        noun +
+        i18n::get("item_scroll.exclaim", "!"));
 
     game::incr_player_xp(g_xp_on_exorcist_destroy_scroll * m_nr_items);
 
@@ -336,7 +342,9 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
     if (map::g_dark.at(player_pos) &&
         !map::g_light.at(player_pos) &&
         !map::g_player->m_properties.has(prop::Id::darkvision)) {
-        msg_log::add("It's too dark to read here.");
+        msg_log::add(i18n::get(
+            "item_scroll.too_dark",
+            "It's too dark to read here."));
 
         TRACE_FUNC_END;
 
@@ -350,14 +358,21 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
     if (is_identified_before) {
         const std::string scroll_name = name(ItemNameType::a, ItemNameInfo::none);
 
-        msg_log::add("I read " + scroll_name + "...");
+        msg_log::add(
+            i18n::get("item_scroll.read_prefix", "I read ") +
+            scroll_name +
+            i18n::get("item_scroll.ellipsis", "..."));
     }
     else {
         // Not already identified
-        msg_log::add("I recite the forbidden incantations on the manuscript...");
+        msg_log::add(i18n::get(
+            "item_scroll.recite_forbidden",
+            "I recite the forbidden incantations on the manuscript..."));
     }
 
-    const std::string crumble_str = "The Manuscript crumbles to dust.";
+    const std::string crumble_str = i18n::get(
+        "item_scroll.manuscript_crumbles",
+        "The Manuscript crumbles to dust.");
 
     // Check properties which MAY allow reading, with a random chance
     if (!actor->m_properties.allow_read_chance(Verbose::yes)) {
@@ -414,9 +429,14 @@ void Scroll::identify(const Verbose verbose)
                 ItemNameType::a,
                 ItemNameInfo::none);
 
-        msg_log::add("I have identified " + name_after + ".");
+        msg_log::add(
+            i18n::get("item_scroll.identified_prefix", "I have identified ") +
+            name_after +
+            ".");
 
-        game::add_history_event("Identified " + name_after);
+        game::add_history_event(
+            i18n::get("item_scroll.history_identified_prefix", "Identified ") +
+            name_after);
     }
 }
 
