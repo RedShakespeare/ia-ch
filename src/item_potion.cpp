@@ -43,6 +43,7 @@
 #include "terrain.hpp"
 #include "terrain_data.hpp"
 #include "text_format.hpp"
+#include "i18n.hpp"
 
 struct P;
 
@@ -265,14 +266,20 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
             const std::string potion_name =
                 name(ItemNameType::a, ItemNameInfo::none);
 
-            msg_log::add("I drink " + potion_name + "...");
+            msg_log::add(
+                i18n::get("item_potion.drink_prefix", "I drink ") +
+                potion_name +
+                i18n::get("item_potion.ellipsis", "..."));
         }
         else {
             // Not identified
             const std::string potion_name =
                 name(ItemNameType::plain, ItemNameInfo::none);
 
-            msg_log::add("I drink an unknown " + potion_name + "...");
+            msg_log::add(
+                i18n::get("item_potion.drink_unknown_prefix", "I drink an unknown ") +
+                potion_name +
+                i18n::get("item_potion.ellipsis", "..."));
         }
 
         map::g_player->incr_shock(12.0, ShockSrc::use_strange_item);
@@ -315,9 +322,14 @@ void Potion::identify(const Verbose verbose)
         const std::string name_after =
             name(ItemNameType::a, ItemNameInfo::none);
 
-        msg_log::add("I have identified " + name_after + ".");
+        msg_log::add(
+            i18n::get("item_potion.identified_prefix", "I have identified ") +
+            name_after +
+            ".");
 
-        game::add_history_event("Identified " + name_after);
+        game::add_history_event(
+            i18n::get("item_potion.history_identified_prefix", "Identified ") +
+            name_after);
     }
 }
 
@@ -331,14 +343,15 @@ std::vector<std::string> Potion::descr_hook() const
 
         if (m_data->is_alignment_known) {
             lines.push_back(
-                "This potion is " +
+                i18n::get("item_potion.this_potion_is", "This potion is ") +
                 text_format::first_to_lower(alignment_str()) +
                 ".");
         }
         else {
             lines.emplace_back(
-                "Perhaps keeping it for a while will reveal "
-                "something about it.");
+                i18n::get(
+                    "item_potion.keep_it_for_a_while",
+                    "Perhaps keeping it for a while will reveal something about it."));
         }
 
         return lines;
@@ -347,7 +360,9 @@ std::vector<std::string> Potion::descr_hook() const
 
 std::string Potion::alignment_str() const
 {
-    return ((alignment() == PotionAlignment::good) ? "Benign" : "Malign");
+    return ((alignment() == PotionAlignment::good)
+        ? i18n::get("item_potion.benign", "Benign")
+        : i18n::get("item_potion.malign", "Malign"));
 }
 
 void Potion::reveal_alignment() const
@@ -366,11 +381,11 @@ void Potion::reveal_alignment() const
 
     msg_log::add(
         std::string(
-            "I feel like " +
+            i18n::get("item_potion.feel_like_prefix", "I feel like ") +
             name_plural +
-            " are " +
+            i18n::get("item_potion.are", " are ") +
             align_str +
-            "."));
+            i18n::get("item_potion.period", ".")));
 
     m_data->is_alignment_known = true;
 }
@@ -389,7 +404,10 @@ void Potion::on_collide(const P& pos, actor::Actor* const actor)
                 ? actor::name_the(*actor)
                 : "it";
 
-            msg_log::add("The potion shatters on " + actor_name + ".");
+            msg_log::add(
+                i18n::get("item_potion.shatters_on_prefix", "The potion shatters on ") +
+                actor_name +
+                i18n::get("item_potion.period", "."));
 
             actor->make_player_aware_of_me();
         }
@@ -402,9 +420,9 @@ void Potion::on_collide(const P& pos, actor::Actor* const actor)
 
         if (!map_parsers::IsAnyOfTerrains(deep_terrains).run(pos)) {
             msg_log::add(
-                "The potion shatters on " +
+                i18n::get("item_potion.shatters_on_prefix", "The potion shatters on ") +
                 terrain->name(Article::the) +
-                ".");
+                i18n::get("item_potion.period", "."));
         }
     }
 }

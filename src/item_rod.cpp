@@ -43,6 +43,7 @@
 #include "terrain_door.hpp"
 #include "terrain_factory.hpp"
 #include "text_format.hpp"
+#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -186,7 +187,10 @@ ConsumeItem Rod::activate(actor::Actor* const actor)
     if ((m_nr_charge_turns_left > 0) && m_data->is_identified) {
         const std::string rod_name = name(ItemNameType::plain, ItemNameInfo::none);
 
-        msg_log::add("The " + rod_name + " is still charging.");
+        msg_log::add(
+            i18n::get("item_rod.still_charging_prefix", "The ") +
+            rod_name +
+            i18n::get("item_rod.still_charging_suffix", " is still charging."));
 
         return ConsumeItem::no;
     }
@@ -197,7 +201,10 @@ ConsumeItem Rod::activate(actor::Actor* const actor)
 
     const std::string rod_name_a = name(ItemNameType::a, ItemNameInfo::none);
 
-    msg_log::add("I activate " + rod_name_a + "...");
+    msg_log::add(
+        i18n::get("item_rod.activate_prefix", "I activate ") +
+        rod_name_a +
+        i18n::get("item_rod.ellipsis", "..."));
 
     if (m_nr_charge_turns_left == 0) {
         run_effect();
@@ -210,7 +217,7 @@ ConsumeItem Rod::activate(actor::Actor* const actor)
     }
     else {
         // Not identified
-        msg_log::add("Nothing happens.");
+        msg_log::add(i18n::get("item_rod.nothing_happens", "Nothing happens."));
     }
 
     if (actor::is_alive(*map::g_player)) {
@@ -238,7 +245,10 @@ void Rod::on_std_turn_in_inv_hook(const InvType inv_type)
     if ((m_nr_charge_turns_left == 0) && m_data->is_identified) {
         const std::string my_name = name(ItemNameType::plain, ItemNameInfo::none);
 
-        msg_log::add("The " + my_name + " has finished charging.");
+        msg_log::add(
+            i18n::get("item_rod.finished_charging_prefix", "The ") +
+            my_name +
+            i18n::get("item_rod.finished_charging_suffix", " has finished charging."));
     }
 }
 
@@ -264,9 +274,14 @@ void Rod::identify(const Verbose verbose)
     if (verbose == Verbose::yes) {
         const std::string name_after = name(ItemNameType::a, ItemNameInfo::none);
 
-        msg_log::add("I have identified " + name_after + ".");
+        msg_log::add(
+            i18n::get("item_rod.identified_prefix", "I have identified ") +
+            name_after +
+            ".");
 
-        game::add_history_event("Identified " + name_after);
+        game::add_history_event(
+            i18n::get("item_rod.history_identified_prefix", "Identified ") +
+            name_after);
     }
 }
 
@@ -290,15 +305,15 @@ std::string Rod::name_info_str(const ItemNameIdentified id_type) const
 
 std::string Opening::real_name() const
 {
-    return "Opening";
+    return i18n::get("item_rod.opening_name", "Opening");
 }
 
 std::string Opening::descr_identified() const
 {
     return (
-        "When activated, this device opens all locks, lids and "
-        "doors in the surrounding area (except heavy doors "
-        "operated externally by a switch).");
+        i18n::get(
+            "item_rod.opening_descr",
+            "When activated, this device opens all locks, lids and doors in the surrounding area (except heavy doors operated externally by a switch)."));
 }
 
 void Opening::run_effect()
@@ -327,15 +342,15 @@ void Opening::run_effect()
 
 std::string CloudMinds::real_name() const
 {
-    return "Cloud Minds";
+    return i18n::get("item_rod.cloud_minds_name", "Cloud Minds");
 }
 
 std::string CloudMinds::descr_identified() const
 {
     return (
-        "When activated, this device clouds the memories of "
-        "all creatures in the area, causing them to forget "
-        "the presence of the user.");
+        i18n::get(
+            "item_rod.cloud_minds_descr",
+            "When activated, this device clouds the memories of all creatures in the area, causing them to forget the presence of the user."));
 }
 
 int CloudMinds::nr_turns_to_recharge() const
@@ -345,7 +360,9 @@ int CloudMinds::nr_turns_to_recharge() const
 
 void CloudMinds::run_effect()
 {
-    msg_log::add("I vanish from the minds of my enemies.");
+    msg_log::add(i18n::get(
+        "item_rod.vanish_from_minds",
+        "I vanish from the minds of my enemies."));
 
     for (actor::Actor* actor : game_time::g_actors) {
         if (actor::is_player(actor)) {
@@ -361,20 +378,22 @@ void CloudMinds::run_effect()
 
 std::string Shockwave::real_name() const
 {
-    return "Shockwave";
+    return i18n::get("item_rod.shockwave_name", "Shockwave");
 }
 
 std::string Shockwave::descr_identified() const
 {
     return (
-        "When activated, this device generates a shock wave "
-        "which violently pushes away any adjacent creatures "
-        "and destroys structures.");
+        i18n::get(
+            "item_rod.shockwave_descr",
+            "When activated, this device generates a shock wave which violently pushes away any adjacent creatures and destroys structures."));
 }
 
 void Shockwave::run_effect()
 {
-    msg_log::add("It triggers a shock wave around me.");
+    msg_log::add(i18n::get(
+        "item_rod.triggers_shock_wave",
+        "It triggers a shock wave around me."));
 
     const P& player_pos = map::g_player->m_pos;
 
@@ -406,7 +425,7 @@ void Shockwave::run_effect()
         if (actor::can_player_see_actor(*actor)) {
             std::string msg =
                 text_format::first_to_upper(actor::name_the(*actor)) +
-                " is hit!";
+                i18n::get("item_rod.is_hit", " is hit!");
 
             msg = text_format::first_to_upper(msg);
 
@@ -446,14 +465,15 @@ void Shockwave::run_effect()
 
 std::string Deafening::real_name() const
 {
-    return "Deafening";
+    return i18n::get("item_rod.deafening_name", "Deafening");
 }
 
 std::string Deafening::descr_identified() const
 {
     return (
-        "When activated, this device causes temporary deafness in "
-        "all creatures in a large area, except for the user.");
+        i18n::get(
+            "item_rod.deafening_descr",
+            "When activated, this device causes temporary deafness in all creatures in a large area, except for the user."));
 }
 
 void Deafening::run_effect()
@@ -483,14 +503,15 @@ void Deafening::run_effect()
 
 std::string DoorCreation::real_name() const
 {
-    return "Gateways";
+    return i18n::get("item_rod.gateways_name", "Gateways");
 }
 
 std::string DoorCreation::descr_identified() const
 {
     return (
-        "When activated, this device materializes an entryway somewhere "
-        "in an adjacent surface.");
+        i18n::get(
+            "item_rod.gateways_descr",
+            "When activated, this device materializes an entryway somewhere in an adjacent surface."));
 }
 
 void DoorCreation::run_effect()
@@ -520,7 +541,7 @@ void DoorCreation::run_effect()
     const bool is_seen = map::g_seen.at(pos);
 
     if (is_seen) {
-        msg_log::add("A door appears!");
+        msg_log::add(i18n::get("item_rod.door_appears", "A door appears!"));
     }
 
     auto* const door =
@@ -538,14 +559,15 @@ void DoorCreation::run_effect()
 
 std::string Unbinding::real_name() const
 {
-    return "Unbinding";
+    return i18n::get("item_rod.unbinding_name", "Unbinding");
 }
 
 std::string Unbinding::descr_identified() const
 {
     return (
-        "When activated, this device breaks the user free from any bonds "
-        "(entangled, stuck, nailed), and ends slowing.");
+        i18n::get(
+            "item_rod.unbinding_descr",
+            "When activated, this device breaks the user free from any bonds (entangled, stuck, nailed), and ends slowing."));
 }
 
 void Unbinding::run_effect()
@@ -573,20 +595,20 @@ void Unbinding::run_effect()
 
 std::string Mist::real_name() const
 {
-    return "Mist";
+    return i18n::get("item_rod.mist_name", "Mist");
 }
 
 std::string Mist::descr_identified() const
 {
     return (
-        "When activated, this device alters the atmosphere in order to "
-        "cover the user in a dense mist. "
-        "The mist is also strangely soothing (-10% temporary shock).");
+        i18n::get(
+            "item_rod.mist_descr",
+            "When activated, this device alters the atmosphere in order to cover the user in a dense mist. The mist is also strangely soothing (-10% temporary shock)."));
 }
 
 void Mist::run_effect()
 {
-    msg_log::add("A shroud of vapor envelops me.");
+    msg_log::add(i18n::get("item_rod.vapor_envelops", "A shroud of vapor envelops me."));
 
     explosion::run_mist_explosion_at(map::g_player->m_pos);
 
@@ -595,15 +617,15 @@ void Mist::run_effect()
 
 std::string MiGoHypno::real_name() const
 {
-    return "Sleep";
+    return i18n::get("item_rod.sleep_name", "Sleep");
 }
 
 std::string MiGoHypno::descr_identified() const
 {
     return (
-        "When activated, this device selects a single nearby seen creature, "
-        "and attempts to hypnotize it, putting them to sleep if susceptible. "
-        "It is unknown how the target selection works.");
+        i18n::get(
+            "item_rod.sleep_descr",
+            "When activated, this device selects a single nearby seen creature, and attempts to hypnotize it, putting them to sleep if susceptible. It is unknown how the target selection works."));
 }
 
 void MiGoHypno::run_effect()

@@ -44,6 +44,7 @@
 #include "terrain.hpp"
 #include "terrain_event.hpp"
 #include "terrain_factory.hpp"
+#include "i18n.hpp"
 
 struct P;
 
@@ -419,7 +420,7 @@ bool GainXp::is_allowed() const
 
 void GainXp::run_effect()
 {
-    msg_log::add("I feel more experienced.");
+    msg_log::add(i18n::get("terrain_gong.more_experienced", "I feel more experienced."));
 
     game::incr_player_xp(50, Verbose::no);
 }
@@ -434,7 +435,7 @@ bool RemoveInsanity::is_allowed() const
 
 void RemoveInsanity::run_effect()
 {
-    msg_log::add("I feel more sane.");
+    msg_log::add(i18n::get("terrain_gong.more_sane", "I feel more sane."));
 
     actor::player_state::g_insanity -= 25;
 }
@@ -466,7 +467,10 @@ void GainItem::run_effect()
 
     const std::string name_a = item->name(ItemNameType::a);
 
-    msg_log::add("I have received " + name_a + ".");
+    msg_log::add(
+        i18n::get("terrain_gong.received_prefix", "I have received ") +
+        name_a +
+        i18n::get("terrain_gong.period", "."));
 
     map::g_player->m_inv.put_in_backpack(item);
 }
@@ -557,7 +561,10 @@ void Blessed::run_effect()
                 ItemNameType::plain,
                 ItemNameInfo::none);
 
-        msg_log::add("The " + name + " seems cleansed!");
+        msg_log::add(
+            i18n::get("terrain_gong.the_prefix", "The ") +
+            name +
+            i18n::get("terrain_gong.seems_cleansed", " seems cleansed!"));
 
         cursed_item->current_curse().on_curse_end();
 
@@ -606,7 +613,7 @@ std::vector<BonusId> XpReduced::bonuses_not_allowed_with() const
 
 void XpReduced::run_effect()
 {
-    msg_log::add("I feel less experienced.");
+    msg_log::add(i18n::get("terrain_gong.less_experienced", "I feel less experienced."));
 
     game::decr_player_xp(50);
 }
@@ -693,7 +700,7 @@ void SpawnMonsters::run_effect()
         return;
     }
 
-    msg_log::add("Something approaches...");
+    msg_log::add(i18n::get("terrain_gong.something_approaches", "Something approaches..."));
 
     const size_t nr_mon = rnd::range(3, 4);
 
@@ -790,11 +797,11 @@ void Gong::bump(actor::Actor& actor_bumping)
     if (!map::g_seen.at(m_pos)) {
         msg_log::clear();
 
-        msg_log::add("There is a temple gong here.");
+        msg_log::add(i18n::get("terrain_gong.temple_gong_here", "There is a temple gong here."));
 
         if (!player_bon::is_bg(Bg::exorcist)) {
             msg_log::add(
-                "Strike it? " + common_text::g_yes_or_no_hint,
+                i18n::get("terrain_gong.strike_it", "Strike it? ") + common_text::g_yes_or_no_hint,
                 colors::light_white(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,
@@ -811,15 +818,15 @@ void Gong::bump(actor::Actor& actor_bumping)
     }
 
     if (player_bon::is_bg(Bg::exorcist)) {
-        msg_log::add("This unholy instrument must be destroyed!");
+        msg_log::add(i18n::get("terrain_gong.must_be_destroyed", "This unholy instrument must be destroyed!"));
 
         return;
     }
 
-    msg_log::add("I strike the temple gong!");
+    msg_log::add(i18n::get("terrain_gong.strike_gong", "I strike the temple gong!"));
 
     Snd snd(
-        "The crash resonates through the air!",
+        i18n::get("terrain_gong.crash_resonates", "The crash resonates through the air!"),
         audio::SfxId::gong,
         IgnoreMsgIfOriginSeen::no,
         m_pos,
@@ -830,7 +837,7 @@ void Gong::bump(actor::Actor& actor_bumping)
     snd.run();
 
     if (m_is_used) {
-        msg_log::add("Nothing happens.");
+        msg_log::add(i18n::get("terrain_gong.nothing_happens", "Nothing happens."));
     }
     else {
         msg_log::more_prompt();
@@ -862,7 +869,7 @@ void Gong::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The gong is destroyed.");
+            msg_log::add(i18n::get("terrain_gong.gong_destroyed", "The gong is destroyed."));
         }
 
         map::update_terrain(terrain::make(terrain::Id::rubble_low, m_pos));

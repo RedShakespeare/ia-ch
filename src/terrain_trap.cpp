@@ -51,6 +51,7 @@
 #include "terrain_data.hpp"
 #include "terrain_factory.hpp"
 #include "text_format.hpp"
+#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -78,7 +79,7 @@ static void communicate_sigil_trigger(const terrain::Trap& trap, const actor::Ac
 
     if (actor::is_player(&actor)) {
         if (can_player_see_trap) {
-            std::string msg = "A beam of light shoots out from ";
+            std::string msg = i18n::get("terrain_trap.beam_from", "A beam of light shoots out from ");
 
             if (trap.is_hidden()) {
                 msg += "the floor";
@@ -94,7 +95,9 @@ static void communicate_sigil_trigger(const terrain::Trap& trap, const actor::Ac
             msg_log::add(msg);
         }
         else {
-            msg_log::add("I feel a peculiar energy around me!");
+            msg_log::add(i18n::get(
+                "terrain_trap.peculiar_energy",
+                "I feel a peculiar energy around me!"));
         }
     }
     else {
@@ -108,7 +111,10 @@ static void communicate_sigil_trigger(const terrain::Trap& trap, const actor::Ac
                 ? actor::name_the(actor)
                 : "it";
 
-            msg_log::add("A beam of light shoots out under " + actor_name + ".");
+            msg_log::add(
+                i18n::get("terrain_trap.beam_under", "A beam of light shoots out under ") +
+                actor_name +
+                i18n::get("terrain_trap.period", "."));
         }
     }
 
@@ -141,7 +147,7 @@ static void communicate_sigil_strained(const terrain::Trap& trap)
     if (map::g_seen.at(trap.pos()) && !trap.is_hidden()) {
         const std::string name = text_format::first_to_upper(trap.name(Article::the));
 
-        msg_log::add(name + " wavers.");
+        msg_log::add(name + i18n::get("terrain_trap.wavers", " wavers."));
     }
 }
 
@@ -149,7 +155,7 @@ static std::string sigil_fade_msg(const terrain::Trap& trap)
 {
     const std::string name = text_format::first_to_upper(trap.name(Article::the));
 
-    return name + " fades out.";
+    return name + i18n::get("terrain_trap.fades_out", " fades out.");
 }
 
 static void communicate_sigil_destroyed(const terrain::Trap& trap)
@@ -178,7 +184,7 @@ static void communicate_sigil_destroyed(const terrain::Trap& trap)
 
 static void communicate_mechanical_trap_trigger(const actor::Actor& actor, const P& pos)
 {
-    std::string msg = "I hear a click.";
+    std::string msg = i18n::get("terrain_trap.click", "I hear a click.");
 
     auto alerts = AlertsMon::no;
 
@@ -204,7 +210,9 @@ static void communicate_mechanical_trap_trigger(const actor::Actor& actor, const
         const bool is_deaf = map::g_player->m_properties.has(prop::Id::deaf);
 
         if (is_deaf) {
-            msg_log::add("I feel the ground shifting slightly under my foot.");
+            msg_log::add(i18n::get(
+                "terrain_trap.ground_shifting",
+                "I feel the ground shifting slightly under my foot."));
         }
 
         msg_log::more_prompt();
