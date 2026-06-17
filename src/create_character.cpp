@@ -28,6 +28,7 @@
 #include "init.hpp"
 #include "inventory_handling.hpp"
 #include "io.hpp"
+#include "i18n.hpp"
 #include "map.hpp"
 #include "marker.hpp"
 #include "minimap.hpp"
@@ -51,11 +52,11 @@ static void handle_show_player_info_command()
 
     popup::Popup(popup::AddToMsgHistory::no)
         .setup_menu_mode(
-            {"(c) Character information",
-             "(i) Inventory",
-             "(x) Known spells",
-             "(v) Look around",
-             "(m) View map"},
+            {i18n::get("create_character.info.character", "(c) Character information"),
+             i18n::get("create_character.info.inventory", "(i) Inventory"),
+             i18n::get("create_character.info.known_spells", "(x) Known spells"),
+             i18n::get("create_character.info.look_around", "(v) Look around"),
+             i18n::get("create_character.info.view_map", "(m) View map")},
             {'c',
              'i',
              'x',
@@ -144,7 +145,9 @@ void NewGameState::on_pushed()
 
     states::push(
         std::make_unique<PickTraitState>(
-            "Which extra trait do you start with?",
+            i18n::get(
+                "create_character.starting_trait_title",
+                "Which extra trait do you start with?"),
             IsCharacterCreationTraitPick::yes));
 
     states::push(std::make_unique<PickBgState>());
@@ -223,7 +226,7 @@ void PickBgState::draw()
     const int screen_center_x = panels::center_x(Panel::screen);
 
     io::draw_text_center(
-        " What is your background? ",
+        " " + i18n::get("create_character.background_title", "What is your background?") + " ",
         Panel::screen,
         {screen_center_x, 0},
         colors::title(),
@@ -340,7 +343,7 @@ void PickOccultistBgState::draw()
     const int screen_center_x = panels::center_x(Panel::screen);
 
     io::draw_text_center(
-        " Choose starting spells ",
+        " " + i18n::get("create_character.starting_spells_title", "Choose starting spells") + " ",
         Panel::screen,
         {screen_center_x, 0},
         colors::title(),
@@ -504,14 +507,18 @@ void PickTraitState::update()
             if (!is_character_creation) {
                 states::draw();
 
-                const std::string title = "Gain trait \"" + name + "\"?";
+                const std::string title =
+                    i18n::get("create_character.gain_trait_prefix", "Gain trait \"") +
+                    name +
+                    i18n::get("create_character.trait_query_suffix", "\"?");
 
                 int choice = 0;
 
                 popup::Popup(popup::AddToMsgHistory::no)
                     .set_title(title)
                     .setup_menu_mode(
-                        {"(Y)es", "(N)o"},
+                        {i18n::get("common.yes_key", "(Y)es"),
+                         i18n::get("common.no_key", "(N)o")},
                         {'y', 'n'},
                         popup::MenuModeShowCancelHint::no,
                         &choice)
@@ -525,9 +532,9 @@ void PickTraitState::update()
 
                 if (!is_character_creation) {
                     game::add_history_event(
-                        "Gained trait \"" +
+                        i18n::get("create_character.gained_trait_prefix", "Gained trait \"") +
                         name +
-                        "\"");
+                        i18n::get("create_character.trait_quote_suffix", "\""));
                 }
 
                 states::pop();
@@ -555,16 +562,24 @@ void PickTraitState::draw()
     std::string cmd_info;
 
     if (m_screen_mode == TraitScreenMode::pick_new) {
-        cmd_info = "[TAB] to view unavailable traits";
+        cmd_info = i18n::get(
+            "create_character.view_unavailable_traits_hint",
+            "[TAB] to view unavailable traits");
     }
     else {
         // Viewing unavailable traits
-        title = "Currently unavailable traits";
-        cmd_info = "[TAB] to view available traits";
+        title = i18n::get(
+            "create_character.unavailable_traits_title",
+            "Currently unavailable traits");
+        cmd_info = i18n::get(
+            "create_character.view_available_traits_hint",
+            "[TAB] to view available traits");
     }
 
     if (m_is_char_creation == IsCharacterCreationTraitPick::no) {
-        cmd_info += " [i] to view game info";
+        cmd_info += " " + i18n::get(
+            "create_character.view_game_info_hint",
+            "[i] to view game info");
     }
 
     const int screen_center_x = panels::center_x(Panel::screen);
@@ -670,7 +685,8 @@ void PickTraitState::draw()
         !prereq_data.traits.empty()) {
         int x = 0;
 
-        const std::string label = "Prerequisite(s):";
+        const std::string label =
+            i18n::get("create_character.prerequisites_label", "Prerequisite(s):");
 
         io::draw_text(label, Panel::create_char_descr, {x, y}, colors::text());
 
@@ -760,7 +776,7 @@ void PickTraitState::draw_trait_prereq_info(
         const auto& color = is_clvl_ok ? clr_prereq_ok : clr_prereq_not_ok;
 
         const std::string clvl_prereq_str =
-            "Character level " +
+            i18n::get("create_character.character_level_prefix", "Character level ") +
             std::to_string(prereq_data.clvl);
 
         prereq_titles.emplace_back(clvl_prereq_str, color);
@@ -862,14 +878,18 @@ void RemoveTraitState::update()
 
         states::draw();
 
-        const std::string title = "Remove trait \"" + name + "\"?";
+        const std::string title =
+            i18n::get("create_character.remove_trait_prefix", "Remove trait \"") +
+            name +
+            i18n::get("create_character.trait_query_suffix", "\"?");
 
         int choice = 0;
 
         popup::Popup(popup::AddToMsgHistory::no)
             .set_title(title)
             .setup_menu_mode(
-                {"(Y)es", "(N)o"},
+                {i18n::get("common.yes_key", "(Y)es"),
+                 i18n::get("common.no_key", "(N)o")},
                 {'y', 'n'},
                 popup::MenuModeShowCancelHint::no,
                 &choice)
@@ -881,9 +901,9 @@ void RemoveTraitState::update()
             player_bon::remove_trait(trait);
 
             game::add_history_event(
-                "Lost trait \"" +
+                i18n::get("create_character.lost_trait_prefix", "Lost trait \"") +
                 name +
-                "\"");
+                i18n::get("create_character.trait_quote_suffix", "\""));
 
             states::pop();
         }
@@ -901,7 +921,7 @@ void RemoveTraitState::draw()
     const int screen_center_x = panels::center_x(Panel::screen);
 
     io::draw_text_center(
-        " Lose which trait? ",
+        " " + i18n::get("create_character.lose_trait_title", "Lose which trait?") + " ",
         Panel::screen,
         {screen_center_x, 0},
         colors::title(),
@@ -910,7 +930,7 @@ void RemoveTraitState::draw()
         true);
 
     io::draw_text_center(
-        " [i] to view game info ",
+        " " + i18n::get("create_character.view_game_info_hint", "[i] to view game info") + " ",
         Panel::screen,
         {screen_center_x, panels::y1(Panel::screen)},
         colors::title());
@@ -1106,7 +1126,7 @@ void EnterNameState::draw()
     const int screen_center_x = panels::center_x(Panel::screen);
 
     io::draw_text_center(
-        " What is your name? ",
+        " " + i18n::get("create_character.name_title", "What is your name?") + " ",
         Panel::screen,
         {screen_center_x, 0},
         colors::title(),

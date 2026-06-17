@@ -15,6 +15,7 @@
 #include "game_summary_data.hpp"
 #include "insanity.hpp"
 #include "io.hpp"
+#include "i18n.hpp"
 #include "panel.hpp"
 #include "property_handler.hpp"
 #include "spells.hpp"
@@ -36,10 +37,14 @@ static void add_properties_descr(
     const game_summary_data::GameSummaryData& data,
     std::vector<ColoredString>& lines)
 {
-    lines.emplace_back("Current status effects", s_color_heading);
+    lines.emplace_back(
+        i18n::get("character_descr.current_status_heading", "Current status effects"),
+        s_color_heading);
 
     if (data.properties.empty()) {
-        lines.emplace_back(s_indent + "None", colors::text());
+        lines.emplace_back(
+            s_indent + i18n::get("character_descr.none", "None"),
+            colors::text());
         lines.emplace_back("", colors::text());
     }
     else {
@@ -76,14 +81,23 @@ static void add_insanity_descr(
     const game_summary_data::GameSummaryData& data,
     std::vector<ColoredString>& lines)
 {
-    lines.emplace_back("Sanity of mind", s_color_heading);
+    lines.emplace_back(
+        i18n::get("character_descr.sanity_heading", "Sanity of mind"),
+        s_color_heading);
 
     lines.emplace_back(
-        s_indent + std::to_string(data.insanity) + "% insane",
+        s_indent +
+            std::to_string(data.insanity) +
+            i18n::get("character_descr.insane_suffix", "% insane"),
         colors::text());
 
     if (data.insanity_symptons.empty()) {
-        lines.emplace_back(s_indent + "No specific mental disorders", colors::text());
+        lines.emplace_back(
+            s_indent +
+                i18n::get(
+                    "character_descr.no_mental_disorders",
+                    "No specific mental disorders"),
+            colors::text());
     }
     else {
         for (const InsSympt* const sympt : data.insanity_symptons) {
@@ -98,16 +112,18 @@ static void add_insanity_descr(
     lines.emplace_back(
         (
             s_indent +
-            "Current shock level (including temporary sources) is " +
+            i18n::get(
+                "character_descr.current_shock_prefix",
+                "Current shock level (including temporary sources) is ") +
             std::to_string(data.current_shock) +
             "% "),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
-         "Total shock received is " +
+         i18n::get("game_over_summary.total_shock_prefix", "Total shock received is ") +
          std::to_string(data.total_shock) +
-         "%, derived from (rounded values):"),
+         i18n::get("game_over_summary.total_shock_suffix", "%, derived from (rounded values):")),
         colors::text());
 
     const int padding = 10;
@@ -116,42 +132,42 @@ static void add_insanity_descr(
         (s_indent +
          s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::time), padding) +
-         "from the passing of time"),
+         i18n::get("game_over_summary.shock_time", "from the passing of time")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::see_mon), padding) +
-         "from observing creatures"),
+         i18n::get("game_over_summary.shock_see_mon", "from observing creatures")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::take_damage), padding) +
-         "from being harmed"),
+         i18n::get("game_over_summary.shock_take_damage", "from being harmed")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::use_strange_item), padding) +
-         "from using items"),
+         i18n::get("game_over_summary.shock_use_items", "from using items")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          s_indent +
          to_pct_str_padded(data.total_shock_from_casting_spells, padding) +
-         "from casting learned spells"),
+         i18n::get("game_over_summary.shock_cast_spells", "from casting learned spells")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::misc), padding) +
-         "from other sources"),
+         i18n::get("game_over_summary.shock_other", "from other sources")),
         colors::text());
 
     lines.emplace_back("", colors::text());
@@ -161,7 +177,9 @@ static void add_item_knowledge_descr(
     const game_summary_data::GameSummaryData& data,
     std::vector<ColoredString>& lines)
 {
-    lines.emplace_back("Item knowledge", s_color_heading);
+    lines.emplace_back(
+        i18n::get("character_descr.item_knowledge_heading", "Item knowledge"),
+        s_color_heading);
 
     std::vector<std::vector<game_summary_data::ItemKnowledgeData>> item_knowledge =
         data.item_knowledge;
@@ -191,7 +209,9 @@ static void add_traits_descr(
     const game_summary_data::GameSummaryData& data,
     std::vector<ColoredString>& lines)
 {
-    lines.emplace_back("Traits gained", s_color_heading);
+    lines.emplace_back(
+        i18n::get("character_descr.traits_heading", "Traits gained"),
+        s_color_heading);
 
     for (const game_summary_data::TraitData& trait : data.current_traits) {
         lines.emplace_back(s_indent + trait.name, colors::text());
@@ -211,7 +231,9 @@ static void add_history_descr(
     const game_summary_data::GameSummaryData& data,
     std::vector<ColoredString>& lines)
 {
-    lines.emplace_back("History of " + data.player_name, s_color_heading);
+    lines.emplace_back(
+        i18n::get("game_over_summary.history_of_prefix", "History of ") + data.player_name,
+        s_color_heading);
 
     int longest_turn_w = 0;
 

@@ -13,6 +13,7 @@
 #include "browser.hpp"
 #include "global.hpp"
 #include "info_screen_state.hpp"
+#include "i18n.hpp"
 #include "player_bon.hpp"
 #include "state.hpp"
 
@@ -89,7 +90,7 @@ public:
 private:
     std::string title() const override
     {
-        return "Game summary";
+        return i18n::get("game_over_summary.title", "Game summary");
     }
 
     InfoScreenType type() const override

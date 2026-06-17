@@ -17,6 +17,7 @@
 #include "common_text.hpp"
 #include "debug.hpp"
 #include "draw_box.hpp"
+#include "i18n.hpp"
 #include "io.hpp"
 #include "panel.hpp"
 #include "rect.hpp"
@@ -139,7 +140,7 @@ void BrowseManual::draw()
     draw_box(panels::area(Panel::screen));
 
     io::draw_text_center(
-        " Browsing manual ",
+        " " + i18n::get("manual.browsing_title", "Browsing manual") + " ",
         Panel::screen,
         {panels::center_x(Panel::screen), 0},
         colors::title(),
@@ -166,9 +167,9 @@ void BrowseManual::draw()
         const int y = labels_y0 + idx;
 
         auto str =
-            std::string("(") +
+            i18n::get("manual.menu_key_prefix", "(") +
             m_browser.menu_keys()[idx] +
-            std::string(")");
+            i18n::get("manual.menu_key_suffix", ")");
 
         auto color =
             is_marked

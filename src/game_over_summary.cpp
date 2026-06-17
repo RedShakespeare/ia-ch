@@ -18,6 +18,7 @@
 #include "game.hpp"
 #include "game_summary_data.hpp"
 #include "highscore.hpp"
+#include "i18n.hpp"
 #include "insanity.hpp"
 #include "io.hpp"
 #include "msg_log.hpp"
@@ -43,35 +44,55 @@ static void add_player_summary_descr(
 
     if (data.dlvl == 0) {
         lines.emplace_back(
-            s_indent + "Died before entering the dungeon",
+            s_indent + i18n::get(
+                "game_over_summary.died_before_dungeon",
+                "Died before entering the dungeon"),
             s_color_info);
     }
     else {
         lines.emplace_back(
-            s_indent + "Explored to dungeon level " + std::to_string(data.dlvl),
+            s_indent +
+                i18n::get(
+                    "game_over_summary.explored_prefix",
+                    "Explored to dungeon level ") +
+                std::to_string(data.dlvl),
             s_color_info);
     }
 
     lines.emplace_back(
-        s_indent + "Spent " + std::to_string(data.turns) + " turns",
+        s_indent +
+            i18n::get("game_over_summary.spent_prefix", "Spent ") +
+            std::to_string(data.turns) +
+            i18n::get("game_over_summary.turns_suffix", " turns"),
         s_color_info);
 
     lines.emplace_back(
-        s_indent + "Was " + std::to_string(data.insanity) + "% insane",
+        s_indent +
+            i18n::get("game_over_summary.was_prefix", "Was ") +
+            std::to_string(data.insanity) +
+            i18n::get("game_over_summary.insane_suffix", "% insane"),
         s_color_info);
 
     lines.emplace_back(
-        s_indent + "Killed " + std::to_string(data.nr_kills_tot) + " monsters",
+        s_indent +
+            i18n::get("game_over_summary.killed_prefix", "Killed ") +
+            std::to_string(data.nr_kills_tot) +
+            i18n::get("game_over_summary.monsters_suffix", " monsters"),
         s_color_info);
 
     lines.emplace_back(
-        s_indent + "Gained " + std::to_string(data.xp) + " experience points",
+        s_indent +
+            i18n::get("game_over_summary.gained_prefix", "Gained ") +
+            std::to_string(data.xp) +
+            i18n::get("game_over_summary.xp_suffix", " experience points"),
         s_color_info);
 
     const int score = data.highscore.calculate_score();
 
     lines.emplace_back(
-        s_indent + "Gained a score of " + std::to_string(score),
+        s_indent +
+            i18n::get("game_over_summary.score_prefix", "Gained a score of ") +
+            std::to_string(score),
         s_color_info);
 
     if (!data.insanity_symptons.empty()) {
@@ -104,9 +125,9 @@ static void add_total_shock_received_descr(
     std::vector<ColoredString>& lines)
 {
     lines.emplace_back(
-        ("Total shock received is " +
+        (i18n::get("game_over_summary.total_shock_prefix", "Total shock received is ") +
          std::to_string(data.total_shock) +
-         "%, derived from (rounded values):"),
+         i18n::get("game_over_summary.total_shock_suffix", "%, derived from (rounded values):")),
         s_color_heading);
 
     const int padding = 10;
@@ -114,37 +135,37 @@ static void add_total_shock_received_descr(
     lines.emplace_back(
         (s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::time), padding) +
-         "from the passing of time"),
+         i18n::get("game_over_summary.shock_time", "from the passing of time")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::see_mon), padding) +
-         "from observing creatures"),
+         i18n::get("game_over_summary.shock_see_mon", "from observing creatures")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::take_damage), padding) +
-         "from being harmed"),
+         i18n::get("game_over_summary.shock_take_damage", "from being harmed")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::use_strange_item), padding) +
-         "from using items"),
+         i18n::get("game_over_summary.shock_use_items", "from using items")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          to_pct_str_padded(data.total_shock_from_casting_spells, padding) +
-         "from casting learned spells"),
+         i18n::get("game_over_summary.shock_cast_spells", "from casting learned spells")),
         colors::text());
 
     lines.emplace_back(
         (s_indent +
          to_pct_str_padded(shock_from_src(data, ShockSrc::misc), padding) +
-         "from other sources"),
+         i18n::get("game_over_summary.shock_other", "from other sources")),
         colors::text());
 
     lines.emplace_back("", colors::text());
@@ -155,11 +176,15 @@ static void add_traits_descr(
     std::vector<ColoredString>& lines)
 {
     lines.emplace_back(
-        "Traits gained (at character level)",
+        i18n::get(
+            "game_over_summary.traits_heading",
+            "Traits gained (at character level)"),
         s_color_heading);
 
     if (data.trait_log.empty()) {
-        lines.emplace_back(s_indent + "None", s_color_info);
+        lines.emplace_back(
+            s_indent + i18n::get("game_over_summary.none", "None"),
+            s_color_info);
     }
     else {
         bool has_double_digit =
@@ -178,7 +203,10 @@ static void add_traits_descr(
             }
 
             const std::string title = player_bon::trait_title(e.trait_id);
-            const std::string removed_str = e.is_removal ? " - REMOVED" : "";
+            const std::string removed_str =
+                e.is_removal
+                    ? i18n::get("game_over_summary.removed_suffix", " - REMOVED")
+                    : "";
             const std::string str = clvl_str + " " + title + removed_str;
 
             lines.emplace_back(s_indent + str, s_color_info);
@@ -192,10 +220,14 @@ static void add_unique_monsters_killed_descr(
     const game_summary_data::GameSummaryData& data,
     std::vector<ColoredString>& lines)
 {
-    lines.emplace_back("Unique monsters killed", s_color_heading);
+    lines.emplace_back(
+        i18n::get("game_over_summary.unique_monsters_heading", "Unique monsters killed"),
+        s_color_heading);
 
     if (data.unique_monsters_killed.empty()) {
-        lines.emplace_back(s_indent + "None", s_color_info);
+        lines.emplace_back(
+            s_indent + i18n::get("game_over_summary.none", "None"),
+            s_color_info);
     }
     else {
         for (const std::string& monster_name : data.unique_monsters_killed) {
@@ -218,10 +250,14 @@ static void add_inventory_descr(
     const game_summary_data::GameSummaryData& data,
     std::vector<ColoredString>& lines)
 {
-    lines.emplace_back("Inventory", s_color_heading);
+    lines.emplace_back(
+        i18n::get("game_over_summary.inventory_heading", "Inventory"),
+        s_color_heading);
 
     if (data.inventory.empty()) {
-        lines.emplace_back(s_indent + "Empty", colors::text());
+        lines.emplace_back(
+            s_indent + i18n::get("game_over_summary.empty", "Empty"),
+            colors::text());
     }
     else {
         for (const game_summary_data::InventoryItemData& item : data.inventory) {
@@ -237,7 +273,9 @@ static void add_inventory_descr(
 
                 str = text_format::pad_after(str, 9, ' ');
 
-                str += item.item_name.empty() ? "<empty>" : item.item_name;
+                str += item.item_name.empty()
+                    ? i18n::get("game_over_summary.empty_slot", "<empty>")
+                    : item.item_name;
 
                 lines.emplace_back(s_indent + str, color);
             }
@@ -251,7 +289,9 @@ static void add_player_history(
     const game_summary_data::GameSummaryData& data,
     std::vector<ColoredString>& lines)
 {
-    lines.emplace_back("History of " + data.player_name, s_color_heading);
+    lines.emplace_back(
+        i18n::get("game_over_summary.history_of_prefix", "History of ") + data.player_name,
+        s_color_heading);
 
     int longest_turn_w = 0;
 
@@ -280,7 +320,9 @@ static void add_last_messages(
     const game_summary_data::GameSummaryData& data,
     std::vector<ColoredString>& lines)
 {
-    lines.emplace_back("Last messages", s_color_heading);
+    lines.emplace_back(
+        i18n::get("game_over_summary.last_messages_heading", "Last messages"),
+        s_color_heading);
 
     const int max_nr_messages_to_show = 20;
 

@@ -12,6 +12,7 @@
 
 #include "colors.hpp"
 #include "info_screen_state.hpp"
+#include "i18n.hpp"
 #include "state.hpp"
 
 namespace game_summary_data
@@ -46,7 +47,7 @@ public:
 private:
     std::string title() const override
     {
-        return "Game summary";
+        return i18n::get("game_over_summary.title", "Game summary");
     }
 
     InfoScreenType type() const override

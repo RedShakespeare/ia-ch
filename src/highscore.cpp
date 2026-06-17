@@ -22,6 +22,7 @@
 #include "game.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
+#include "i18n.hpp"
 #include "map.hpp"
 #include "misc.hpp"
 #include "panel.hpp"
@@ -283,7 +284,7 @@ void BrowseHighscore::draw()
     draw_box(panels::area(Panel::screen));
 
     io::draw_text_center(
-        " Browsing high scores ",
+        " " + i18n::get("highscore.browsing_title", "Browsing high scores") + " ",
         Panel::screen,
         {panels::center_x(Panel::screen), 0},
         colors::title(),
@@ -293,7 +294,9 @@ void BrowseHighscore::draw()
 
     io::draw_text_center(
         std::string(
-            " [select] to view game summary " +
+            " " +
+            i18n::get("highscore.select_summary_hint", "[select] to view game summary") +
+            " " +
             common_text::g_screen_exit_hint +
             " "),
         Panel::screen,
@@ -316,12 +319,12 @@ void BrowseHighscore::draw()
     const int x_score = x_win + 5;
 
     const std::vector<std::pair<std::string, int>> labels {
-        {"Level", x_lvl},
-        {"Depth", x_dlvl},
-        {"Turns", x_turns},
-        {"Ins", x_ins},
-        {"Win", x_win},
-        {"Score", x_score}};
+        {i18n::get("highscore.column_level", "Level"), x_lvl},
+        {i18n::get("highscore.column_depth", "Depth"), x_dlvl},
+        {i18n::get("highscore.column_turns", "Turns"), x_turns},
+        {i18n::get("highscore.column_ins", "Ins"), x_ins},
+        {i18n::get("highscore.column_win", "Win"), x_win},
+        {i18n::get("highscore.column_score", "Score"), x_score}};
 
     for (const auto& label : labels) {
         io::draw_text(
@@ -347,7 +350,9 @@ void BrowseHighscore::draw()
         const auto dlvl = std::to_string(entry.dlvl);
         const auto turns = std::to_string(entry.turn_count);
         const auto ins = std::to_string(entry.ins);
-        const auto* const win = (entry.is_win == IsWin::yes) ? "Yes" : "No";
+        const auto win = (entry.is_win == IsWin::yes)
+            ? i18n::get("common.yes", "Yes")
+            : i18n::get("common.no", "No");
         const auto score = std::to_string(entry.calculate_score());
 
         const bool is_marked = m_browser.is_at_idx(i);
@@ -385,7 +390,7 @@ void BrowseHighscore::draw()
     // Draw "more" labels
     if (!m_browser.is_on_top_page()) {
         io::draw_text(
-            "(More - Page Up)",
+            i18n::get("highscore.more_page_up", "(More - Page Up)"),
             Panel::screen,
             {0, 1},
             colors::light_white());
@@ -393,7 +398,7 @@ void BrowseHighscore::draw()
 
     if (!m_browser.is_on_btm_page()) {
         io::draw_text(
-            "(More - Page Down)",
+            i18n::get("highscore.more_page_down", "(More - Page Down)"),
             Panel::screen,
             {0, panels::y1(Panel::screen)},
             colors::light_white());
@@ -404,7 +409,7 @@ void BrowseHighscore::update()
 {
     if (m_entries.empty()) {
         popup::Popup(popup::AddToMsgHistory::no)
-            .set_msg("No high score entries found.")
+            .set_msg(i18n::get("highscore.no_entries", "No high score entries found."))
             .run();
 
         // Exit screen
@@ -499,8 +504,13 @@ void BrowseHighscoreEntry::read_file()
 
     if (!file.is_open()) {
         popup::Popup(popup::AddToMsgHistory::no)
-            .set_title("Game summary file could not be opened")
-            .set_msg("Path: \"" + m_file_path + "\"")
+            .set_title(i18n::get(
+                "highscore.summary_file_open_failed_title",
+                "Game summary file could not be opened"))
+            .set_msg(
+                i18n::get("highscore.summary_file_path_prefix", "Path: \"") +
+                m_file_path +
+                i18n::get("highscore.summary_file_path_suffix", "\""))
             .run();
 
         states::pop();
