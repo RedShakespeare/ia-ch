@@ -41,6 +41,12 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("manual.browsing_title", "Browsing manual") == "浏览手册");
     REQUIRE(i18n::get("character_descr.title", "Character description") == "角色描述");
     REQUIRE(i18n::get("game_over_summary.title", "Game summary") == "游戏总结");
+    REQUIRE(i18n::get("inventory.slot.weapon", "Weapon") == "武器");
+    REQUIRE(i18n::get("inventory.browsing_title", "Browsing inventory") == "浏览物品栏");
+    REQUIRE(i18n::get("inventory.throw.title", "Throw which item?") == "投掷哪件物品？");
+    REQUIRE(i18n::get("inventory.not_while_burning", "Not while burning.") == "燃烧时不能这么做。");
+    REQUIRE(i18n::get("player_spells.known_title", "Known spells") == "已知法术");
+    REQUIRE(i18n::get("player_spells.skill_label", "Skill: ") == "技能：");
     REQUIRE(i18n::get("option.skip_intro_level.name", "Skip intro level") == "跳过开场关卡");
     REQUIRE(i18n::get("option.display_hints.once", "Once") == "一次");
     REQUIRE(i18n::get("option.auto_reload_weapons.descr", "Automatically perform a reload action instead if attempting to fire a ranged weapon with no ammo loaded.") == "如果试图在没有装填弹药的情况下开火，则自动执行装填动作。");

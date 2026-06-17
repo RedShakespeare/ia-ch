@@ -25,6 +25,7 @@
 #include "direction.hpp"
 #include "draw_box.hpp"
 #include "io.hpp"
+#include "i18n.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
@@ -96,8 +97,9 @@ static void try_cast(Spell* const spell)
 
         msg_log::add(
             name +
-            " has faded from my memory, I can no longer "
-            "cast it.");
+            i18n::get(
+                "player_spells.faded_from_memory_suffix",
+                " has faded from my memory, I can no longer cast it."));
 
         return;
     }
@@ -129,13 +131,15 @@ static void try_cast(Spell* const spell)
     if (cost_range.max >= resource_avail) {
         const std::string resource_name =
             (spell->cost_type() == SpellCostType::spirit)
-            ? "spirit"
-            : "health";
+            ? i18n::get("player_spells.resource_spirit", "spirit")
+            : i18n::get("player_spells.resource_health", "health");
 
         const std::string msg =
-            "Low " +
+            i18n::get("player_spells.low_resource_prefix", "Low ") +
             resource_name +
-            ", try casting spell anyway? " +
+            i18n::get(
+                "player_spells.low_resource_suffix",
+                ", try casting spell anyway? ") +
             common_text::g_yes_or_no_hint;
 
         msg_log::add(
@@ -154,7 +158,10 @@ static void try_cast(Spell* const spell)
         msg_log::clear();
     }
 
-    msg_log::add("I cast " + spell->name() + "!");
+    msg_log::add(
+        i18n::get("player_spells.cast_prefix", "I cast ") +
+        spell->name() +
+        i18n::get("player_spells.exclaim", "!"));
 
     if (actor::is_alive(*map::g_player)) {
         const std::vector<actor::Actor*> seen_foes =
@@ -239,8 +246,8 @@ static void draw_spell_menu_line(
 
         const std::string cost_label =
             (spell->cost_type() == SpellCostType::spirit)
-            ? "SP: "
-            : "HP: ";
+            ? i18n::get("player_spells.sp_label", "SP: ")
+            : i18n::get("player_spells.hp_label", "HP: ");
 
         io::draw_text(
             cost_label,
@@ -261,7 +268,7 @@ static void draw_spell_menu_line(
     if (spell->can_be_improved_with_skill()) {
         x = skill_label_x;
 
-        std::string str = "Skill: ";
+        std::string str = i18n::get("player_spells.skill_label", "Skill: ");
 
         io::draw_text(
             str,
@@ -299,7 +306,7 @@ static void draw_spell_menu_line(
     if (spell->shock_type() != SpellShock::none) {
         x = shock_label_x;
 
-        std::string str = "Shock: ";
+        std::string str = i18n::get("player_spells.shock_label", "Shock: ");
 
         io::draw_text(
             str,
@@ -419,7 +426,10 @@ void learn_spell(const SpellId id, const Verbose verbose)
     Spell* const spell = spells::make(id);
 
     if (verbose == Verbose::yes) {
-        msg_log::add("I can now cast " + spell->name() + " from memory.");
+        msg_log::add(
+            i18n::get("player_spells.learned_prefix", "I can now cast ") +
+            spell->name() +
+            i18n::get("player_spells.learned_suffix", " from memory."));
     }
 
     s_learned_spells.push_back(spell);
@@ -470,7 +480,10 @@ void forget_spell(const SpellId id)
 
     const std::string name = spell->name();
 
-    msg_log::add("I no longer recall how to cast " + name + "!");
+    msg_log::add(
+        i18n::get("player_spells.forget_prefix", "I no longer recall how to cast ") +
+        name +
+        i18n::get("player_spells.exclaim", "!"));
 
     s_is_forgotten[(size_t)id] = true;
 }
@@ -495,7 +508,10 @@ bool recall_spell(const SpellId id)
 
     const std::string name = spell->name();
 
-    msg_log::add("I remember how to cast " + name + " again!");
+    msg_log::add(
+        i18n::get("player_spells.recall_prefix", "I remember how to cast ") +
+        name +
+        i18n::get("player_spells.recall_suffix", " again!"));
 
     s_is_forgotten[(size_t)id] = false;
 
@@ -535,7 +551,10 @@ void incr_spell_skill(const SpellId id, const Verbose verbose)
 
             const auto name = spell->name();
 
-            msg_log::add("I am more skilled at casting " + name + "!");
+            msg_log::add(
+                i18n::get("player_spells.skill_up_prefix", "I am more skilled at casting ") +
+                name +
+                i18n::get("player_spells.exclaim", "!"));
         }
     }
 
@@ -560,7 +579,10 @@ void decr_spell_skill(const SpellId id, const Verbose verbose)
 
             const auto name = spell->name();
 
-            msg_log::add("I am less skilled at casting " + name + "!");
+            msg_log::add(
+                i18n::get("player_spells.skill_down_prefix", "I am less skilled at casting ") +
+                name +
+                i18n::get("player_spells.exclaim", "!"));
         }
     }
 
@@ -645,7 +667,7 @@ void BrowseSpell::on_start()
         // Exit screen
         states::pop();
 
-        msg_log::add("I do not know any spells.");
+        msg_log::add(i18n::get("player_spells.none_known", "I do not know any spells."));
         return;
     }
 
@@ -661,7 +683,7 @@ void BrowseSpell::draw()
     const int nr_spells = (int)s_learned_spells.size();
 
     io::draw_text_center(
-        " Known spells ",
+        " " + i18n::get("player_spells.known_title", "Known spells") + " ",
         Panel::screen,
         {panels::center_x(Panel::screen), 0},
         colors::title());

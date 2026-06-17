@@ -28,6 +28,7 @@
 #include "game_commands.hpp"
 #include "game_time.hpp"
 #include "io.hpp"
+#include "i18n.hpp"
 #include "item.hpp"
 #include "item_curse.hpp"
 #include "item_data.hpp"
@@ -142,7 +143,10 @@ static void print_cannot_remove_torture_collar_msg(const item::Item& item)
             ItemNameType::plain,
             ItemNameInfo::none);
 
-    msg_log::add("The " + name + " cannot be removed!");
+    msg_log::add(
+        i18n::get("inventory.cannot_remove_prefix", "The ") +
+        name +
+        i18n::get("inventory.cannot_remove_suffix", " cannot be removed!"));
 }
 
 static void on_equipable_backpack_item_selected(const size_t backpack_idx)
@@ -187,7 +191,7 @@ static void on_equipable_backpack_item_selected(const size_t backpack_idx)
 
     case ItemType::armor: {
         if (map::g_player->m_properties.has(prop::Id::burning)) {
-            msg_log::add("Not while burning.");
+            msg_log::add(i18n::get("inventory.not_while_burning", "Not while burning."));
 
             return;
         }
@@ -588,7 +592,10 @@ std::vector<std::string> InvState::make_detailed_descr_lines() const
         (m_viewed_item->m_nr_items > 1) &&
         m_viewed_item->data().is_stackable;
 
-    const std::string ref_str = is_plural ? "They are " : "It is ";
+    const std::string ref_str =
+        is_plural
+        ? i18n::get("inventory.descr.ref_plural", "They are ")
+        : i18n::get("inventory.descr.ref_singular", "It is ");
 
     const item::ItemData& d = m_viewed_item->data();
 
@@ -597,8 +604,9 @@ std::vector<std::string> InvState::make_detailed_descr_lines() const
     // -------------------------------------------------------------
     if (d.melee.reach > 1) {
         lines.emplace_back(
-            "This weapon has a long reach, "
-            "press [f] to attack further away.");
+            i18n::get(
+                "inventory.descr.long_reach",
+                "This weapon has a long reach, press [f] to attack further away."));
     }
 
     // -------------------------------------------------------------
@@ -620,11 +628,13 @@ std::vector<std::string> InvState::make_detailed_descr_lines() const
         if (!dmg_str.empty() && !dmg_str_avg.empty()) {
             text_format::append_with_space(
                 combat_descr,
-                ("The damage dealt with this weapon is " +
+                (i18n::get(
+                     "inventory.descr.damage_prefix",
+                     "The damage dealt with this weapon is ") +
                  dmg_str +
-                 " (average " +
+                 i18n::get("inventory.descr.average_prefix", " (average ") +
                  dmg_str_avg +
-                 ")."));
+                 i18n::get("inventory.descr.average_suffix", ").")));
         }
 
         const std::string plus_str =
@@ -634,9 +644,9 @@ std::vector<std::string> InvState::make_detailed_descr_lines() const
         if (!plus_str.empty()) {
             text_format::append_with_space(
                 combat_descr,
-                ("Due to its quality, damage is " +
+                (i18n::get("inventory.descr.quality_prefix", "Due to its quality, damage is ") +
                  plus_str +
-                 " higher than normal."));
+                 i18n::get("inventory.descr.quality_suffix", " higher than normal.")));
         }
 
         const std::string hit_mod_str =
@@ -647,9 +657,9 @@ std::vector<std::string> InvState::make_detailed_descr_lines() const
         if (!hit_mod_str.empty()) {
             text_format::append_with_space(
                 combat_descr,
-                ("It has a hit chance modifier of " +
+                (i18n::get("inventory.descr.hit_mod_prefix", "It has a hit chance modifier of ") +
                  hit_mod_str +
-                 "."));
+                 i18n::get("inventory.descr.period", ".")));
         }
 
         if (!combat_descr.empty()) {
@@ -666,26 +676,28 @@ std::vector<std::string> InvState::make_detailed_descr_lines() const
     std::string att_obj_str;
 
     if (can_att_door || can_att_corpse) {
-        att_obj_str = "This weapon can be used for ";
+        att_obj_str = i18n::get(
+            "inventory.descr.attack_object_prefix",
+            "This weapon can be used for ");
     }
 
     if (can_att_door) {
-        att_obj_str += "breaching doors";
+        att_obj_str += i18n::get("inventory.descr.breaching_doors", "breaching doors");
     }
 
     if (can_att_corpse) {
         if (can_att_door) {
-            att_obj_str += " and ";
+            att_obj_str += i18n::get("inventory.descr.and", " and ");
         }
 
-        att_obj_str += "destroying corpses";
+        att_obj_str += i18n::get("inventory.descr.destroying_corpses", "destroying corpses");
     }
 
     if (can_att_door || can_att_corpse) {
         att_obj_str +=
-            " more effectively (while the weapon is "
-            "wielded, its attack damage is automatically "
-            "used instead of the kick damage).";
+            i18n::get(
+                "inventory.descr.attack_object_suffix",
+                " more effectively (while the weapon is wielded, its attack damage is automatically used instead of the kick damage).");
 
         lines.emplace_back(att_obj_str);
     }
@@ -698,7 +710,7 @@ std::vector<std::string> InvState::make_detailed_descr_lines() const
     std::string weight_str =
         ref_str +
         m_viewed_item->weight_str() +
-        " to carry";
+        i18n::get("inventory.descr.to_carry", " to carry");
 
     const int weight_carried_tot =
         map::g_player->m_inv.total_item_weight();
@@ -715,9 +727,9 @@ std::vector<std::string> InvState::make_detailed_descr_lines() const
 
     if ((weight_pct > 0) && (weight_pct < 100)) {
         weight_str +=
-            " (" +
+            i18n::get("inventory.descr.carried_weight_prefix", " (") +
             std::to_string(weight_pct) +
-            "% of carried weight)";
+            i18n::get("inventory.descr.carried_weight_suffix", "% of carried weight)");
     }
 
     weight_str += ".";
@@ -840,7 +852,7 @@ void BrowseInv::draw()
     const auto nr_slots = (size_t)SlotId::END;
 
     io::draw_text_center(
-        " Browsing inventory ",
+        " " + i18n::get("inventory.browsing_title", "Browsing inventory") + " ",
         Panel::screen,
         {panels::center_x(Panel::screen), 0},
         colors::title());
@@ -982,7 +994,7 @@ void BrowseInv::on_inventory_slot_with_item_selected(InvSlot& slot) const
     }
     else if (slot.id == SlotId::body) {
         if (map::g_player->m_properties.has(prop::Id::burning)) {
-            msg_log::add("Not while burning.");
+            msg_log::add(i18n::get("inventory.not_while_burning", "Not while burning."));
 
             return;
         }
@@ -1050,7 +1062,7 @@ void Apply::on_start()
         // Exit screen
         states::pop();
 
-        msg_log::add("I carry nothing to apply.");
+        msg_log::add(i18n::get("inventory.nothing_to_apply", "I carry nothing to apply."));
 
         return;
     }
@@ -1083,7 +1095,7 @@ void Apply::draw()
     const int browser_y = m_browser.y();
 
     io::draw_text_center(
-        " Apply which item? ",
+        " " + i18n::get("inventory.apply_title", "Apply which item?") + " ",
         Panel::screen,
         {panels::center_x(Panel::screen), 0},
         colors::title());
@@ -1223,7 +1235,7 @@ void Drop::draw()
     draw_box(panels::area(Panel::screen));
 
     io::draw_text_center(
-        " Drop which item? ",
+        " " + i18n::get("inventory.drop_title", "Drop which item?") + " ",
         Panel::screen,
         {panels::center_x(Panel::screen), 0},
         colors::title());
@@ -1362,7 +1374,10 @@ void Drop::on_selected() const
                 ItemNameInfo::none,
                 ItemNameAttackInfo::none);
 
-        msg_log::add("I refuse to drop the " + name + "!");
+        msg_log::add(
+            i18n::get("inventory.refuse_drop_prefix", "I refuse to drop the ") +
+            name +
+            i18n::get("inventory.exclaim", "!"));
 
         return;
     }
@@ -1462,29 +1477,29 @@ void Equip::draw()
     case SlotId::wpn:
         heading =
             has_item
-            ? "Wield which item?"
-            : "I carry no weapon to wield.";
+            ? i18n::get("inventory.equip.wield_title", "Wield which item?")
+            : i18n::get("inventory.equip.no_weapon", "I carry no weapon to wield.");
         break;
 
     case SlotId::wpn_alt:
         heading =
             has_item
-            ? "Prepare which weapon?"
-            : "I carry no weapon to wield.";
+            ? i18n::get("inventory.equip.prepare_title", "Prepare which weapon?")
+            : i18n::get("inventory.equip.no_weapon", "I carry no weapon to wield.");
         break;
 
     case SlotId::body:
         heading =
             has_item
-            ? "Wear which armor?"
-            : "I carry no armor.";
+            ? i18n::get("inventory.equip.armor_title", "Wear which armor?")
+            : i18n::get("inventory.equip.no_armor", "I carry no armor.");
         break;
 
     case SlotId::head:
         heading =
             has_item
-            ? "Wear what on head?"
-            : "I carry no headwear.";
+            ? i18n::get("inventory.equip.head_title", "Wear what on head?")
+            : i18n::get("inventory.equip.no_headwear", "I carry no headwear.");
         break;
 
     case SlotId::END:
@@ -1592,7 +1607,7 @@ void Equip::update()
 
         if (slot_id == SlotId::body) {
             if (map::g_player->m_properties.has(prop::Id::burning)) {
-                msg_log::add("Not while burning.");
+                msg_log::add(i18n::get("inventory.not_while_burning", "Not while burning."));
 
                 return;
             }
@@ -1666,7 +1681,9 @@ void SelectThrow::on_start()
         // Nothing to throw, exit screen.
         states::pop();
 
-        msg_log::add("I carry no throwing weapons.");
+        msg_log::add(i18n::get(
+            "inventory.throw.no_throwing_weapons",
+            "I carry no throwing weapons."));
 
         return;
     }
@@ -1685,7 +1702,7 @@ void SelectThrow::draw()
     draw_box(panels::area(Panel::screen));
 
     io::draw_text_center(
-        " Throw which item? ",
+        " " + i18n::get("inventory.throw.title", "Throw which item?") + " ",
         Panel::screen,
         {panels::center_x(Panel::screen), 0},
         colors::title());
@@ -1785,7 +1802,10 @@ void SelectThrow::update()
                 ItemNameAttackInfo::none);
 
         if (item->current_curse().is_active()) {
-            msg_log::add("I refuse to throw the " + name + "!");
+            msg_log::add(
+                i18n::get("inventory.throw.refuse_prefix", "I refuse to throw the ") +
+                name +
+                i18n::get("inventory.exclaim", "!"));
 
             return;
         }
@@ -1799,9 +1819,9 @@ void SelectThrow::update()
         if (config::warn_on_throw_valuable() &&
             (is_potion || is_equipped)) {
             const std::string msg =
-                "Throw the " +
+                i18n::get("inventory.throw.confirm_prefix", "Throw the ") +
                 name +
-                "? " +
+                i18n::get("inventory.throw.confirm_suffix", "? ") +
                 common_text::g_yes_or_no_hint;
 
             msg_log::add(
@@ -1933,7 +1953,9 @@ void SelectIdentify::on_start()
         // Nothing to identify, exit screen
         states::pop();
 
-        msg_log::add("There is nothing to identify.");
+        msg_log::add(i18n::get(
+            "inventory.identify.nothing",
+            "There is nothing to identify."));
 
         return;
     }
@@ -1954,7 +1976,7 @@ void SelectIdentify::draw()
     const int browser_y = m_browser.y();
 
     io::draw_text_center(
-        " Identify which item? ",
+        " " + i18n::get("inventory.identify.title", "Identify which item?") + " ",
         Panel::screen,
         {panels::center_x(Panel::screen), 0},
         colors::title());

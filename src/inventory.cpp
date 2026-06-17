@@ -21,6 +21,7 @@
 #include "item_data.hpp"
 #include "item_factory.hpp"
 #include "item_weapon.hpp"
+#include "i18n.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "saving.hpp"
@@ -32,10 +33,10 @@ Inventory::Inventory(actor::Actor* const owning_actor) :
         m_slots[(size_t)id] = {id, name};
     };
 
-    set_slot(SlotId::wpn, "Weapon");
-    set_slot(SlotId::wpn_alt, "Ready");
-    set_slot(SlotId::body, "Body");
-    set_slot(SlotId::head, "Head");
+    set_slot(SlotId::wpn, i18n::get("inventory.slot.weapon", "Weapon"));
+    set_slot(SlotId::wpn_alt, i18n::get("inventory.slot.ready", "Ready"));
+    set_slot(SlotId::body, i18n::get("inventory.slot.body", "Body"));
+    set_slot(SlotId::head, i18n::get("inventory.slot.head", "Head"));
 }
 
 Inventory::~Inventory()
@@ -684,22 +685,31 @@ void Inventory::print_equip_message(
 
     switch (slot_id) {
     case SlotId::wpn:
-        msg = "I am now wielding " + name + ".";
+        msg =
+            i18n::get("inventory.equip_msg.wield_prefix", "I am now wielding ") +
+            name +
+            i18n::get("inventory.period", ".");
         break;
 
     case SlotId::wpn_alt:
         msg =
-            "I am now using " +
+            i18n::get("inventory.equip_msg.ready_prefix", "I am now using ") +
             name +
-            " as a prepared weapon.";
+            i18n::get("inventory.equip_msg.ready_suffix", " as a prepared weapon.");
         break;
 
     case SlotId::body:
-        msg = "I am now wearing " + name + ".";
+        msg =
+            i18n::get("inventory.equip_msg.wear_prefix", "I am now wearing ") +
+            name +
+            i18n::get("inventory.period", ".");
         break;
 
     case SlotId::head:
-        msg = "I am now wearing " + name + ".";
+        msg =
+            i18n::get("inventory.equip_msg.wear_prefix", "I am now wearing ") +
+            name +
+            i18n::get("inventory.period", ".");
         break;
 
     case SlotId::END: {
@@ -731,19 +741,31 @@ void Inventory::print_unequip_message(
 
     switch (slot_id) {
     case SlotId::wpn:
-        msg = "I put away my " + name + ".";
+        msg =
+            i18n::get("inventory.unequip_msg.put_away_prefix", "I put away my ") +
+            name +
+            i18n::get("inventory.period", ".");
         break;
 
     case SlotId::wpn_alt:
-        msg = "I put away my " + name + ".";
+        msg =
+            i18n::get("inventory.unequip_msg.put_away_prefix", "I put away my ") +
+            name +
+            i18n::get("inventory.period", ".");
         break;
 
     case SlotId::body:
-        msg = "I have taken off my " + name + ".";
+        msg =
+            i18n::get("inventory.unequip_msg.taken_off_prefix", "I have taken off my ") +
+            name +
+            i18n::get("inventory.period", ".");
         break;
 
     case SlotId::head:
-        msg = "I have taken off my " + name + ".";
+        msg =
+            i18n::get("inventory.unequip_msg.taken_off_prefix", "I have taken off my ") +
+            name +
+            i18n::get("inventory.period", ".");
         break;
 
     case SlotId::END:
