@@ -31,6 +31,7 @@
 #include "gfx.hpp"
 #include "global.hpp"
 #include "io.hpp"
+#include "i18n.hpp"
 #include "item.hpp"
 #include "item_att_property.hpp"
 #include "item_data.hpp"
@@ -192,7 +193,10 @@ static void print_player_fire_ranged_msg(const item::Wpn& wpn)
 {
     const std::string attack_verb = wpn.data().ranged.attack_msgs.player;
 
-    msg_log::add("I " + attack_verb + ".");
+    msg_log::add(
+        i18n::get("attack_ranged.player_prefix", "I ") +
+        attack_verb +
+        i18n::get("attack_ranged.period", "."));
 }
 
 static void print_mon_fire_ranged_msg(const RangedAttData& att_data)
@@ -261,7 +265,10 @@ static void print_projectile_hit_player_msg(const Projectile& projectile)
                 projectile.att_data->dmg));
 
     // NOTE: Interruption is not needed here, the player will be interrupted by the hit.
-    msg_log::add("I am hit" + dmg_punct, colors::msg_bad());
+    msg_log::add(
+        i18n::get("attack_ranged.i_am_hit", "I am hit") +
+        dmg_punct,
+        colors::msg_bad());
 }
 
 static void print_projectile_hit_mon_msg(const Projectile& projectile)
@@ -279,7 +286,11 @@ static void print_projectile_hit_mon_msg(const Projectile& projectile)
             attack::relative_hit_size(
                 projectile.att_data->dmg));
 
-    msg_log::add(other_name + " is hit" + dmg_punct, colors::msg_good());
+    msg_log::add(
+        other_name +
+        i18n::get("attack_ranged.is_hit", " is hit") +
+        dmg_punct,
+        colors::msg_good());
 }
 
 static void print_projectile_hit_actor_msg(const Projectile& projectile)
@@ -339,7 +350,7 @@ static std::unique_ptr<Snd> ranged_fire_snd(
 static void emit_projectile_hit_actor_snd(const P& pos)
 {
     Snd snd(
-        "A creature is hit.",
+        i18n::get("attack_ranged.creature_hit", "A creature is hit."),
         audio::SfxId::hit_small,
         IgnoreMsgIfOriginSeen::yes,
         pos,
@@ -358,7 +369,7 @@ static void emit_projectile_hit_terrain_snd(
         // TODO: Check hit material, soft and wood should not cause
         // a ricochet sound
         Snd snd(
-            "I hear a ricochet.",
+            i18n::get("attack_ranged.ricochet", "I hear a ricochet."),
             audio::SfxId::ricochet,
             IgnoreMsgIfOriginSeen::yes,
             pos,
