@@ -1339,8 +1339,6 @@ void draw_logo(Color color)
     SDL_RenderCopy(g_sdl_renderer, g_logo_texture, nullptr, &render_rect);
 }
 
-namespace io
-{
 void reload_logo()
 {
     if (g_logo_texture) {
@@ -1350,7 +1348,6 @@ void reload_logo()
 
     load_logo();
 }
-}  // namespace io
 
 std::string sdl_pref_dir()
 {
