@@ -18,6 +18,7 @@
 #include "debug.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
 #include "item_ammo.hpp"
@@ -41,7 +42,10 @@ static void msg_reload_fumble(
     const std::string ammo_name = ammo.name(ItemNameType::a);
 
     if (actor::is_player(&actor)) {
-        msg_log::add("I fumble with " + ammo_name + ".");
+        msg_log::add(
+            i18n::get("reload.fumble_player_prefix", "I fumble with ") +
+            ammo_name +
+            i18n::get("reload.period", "."));
     }
     else {
         // Is monster
@@ -52,9 +56,9 @@ static void msg_reload_fumble(
 
             msg_log::add(
                 name_the +
-                " fumbles with " +
+                i18n::get("reload.fumbles_with", " fumbles with ") +
                 ammo_name +
-                ".");
+                i18n::get("reload.period", "."));
         }
     }
 }
@@ -85,13 +89,13 @@ static void msg_reloaded(
                     ItemNameInfo::none);
 
             msg_log::add(
-                "I reload my " +
+                i18n::get("reload.reload_my_prefix", "I reload my ") +
                 wpn_name +
-                " (" +
+                i18n::get("reload.ammo_count_prefix", " (") +
                 ammo_loaded_str +
                 "/" +
                 ammo_max_str +
-                ").");
+                i18n::get("reload.ammo_count_suffix", ")."));
         }
         else {
             // Not a magazine
@@ -99,13 +103,13 @@ static void msg_reloaded(
                 ammo.name(ItemNameType::a);
 
             msg_log::add(
-                "I load " +
+                i18n::get("reload.load_prefix", "I load ") +
                 ammo_name +
-                " (" +
+                i18n::get("reload.ammo_count_prefix", " (") +
                 ammo_loaded_str +
                 "/" +
                 ammo_max_str +
-                ").");
+                i18n::get("reload.ammo_count_suffix", ")."));
         }
     }
     else {
@@ -115,7 +119,9 @@ static void msg_reloaded(
                 text_format::first_to_upper(
                     actor::name_the(actor));
 
-            msg_log::add(name_the + " reloads.");
+            msg_log::add(
+                name_the +
+                i18n::get("reload.reloads", " reloads."));
         }
     }
 }
@@ -128,7 +134,9 @@ namespace reload
 void try_reload(actor::Actor& actor, item::Item* const item_to_reload)
 {
     if (!item_to_reload) {
-        msg_log::add("I am not wielding a weapon.");
+        msg_log::add(i18n::get(
+            "reload.not_wielding_weapon",
+            "I am not wielding a weapon."));
 
         return;
     }
@@ -141,7 +149,9 @@ void try_reload(actor::Actor& actor, item::Item* const item_to_reload)
 
     if (wpn->data().ranged.has_infinite_ammo ||
         (wpn_max_ammo == 0)) {
-        msg_log::add("This weapon does not use ammo.");
+        msg_log::add(i18n::get(
+            "reload.weapon_no_ammo",
+            "This weapon does not use ammo."));
         return;
     }
 
@@ -153,7 +163,10 @@ void try_reload(actor::Actor& actor, item::Item* const item_to_reload)
                 ItemNameType::plain,
                 ItemNameInfo::none);
 
-        msg_log::add("My " + item_name + " is already loaded.");
+        msg_log::add(
+            i18n::get("reload.already_loaded_prefix", "My ") +
+            item_name +
+            i18n::get("reload.already_loaded_suffix", " is already loaded."));
         return;
     }
 
@@ -218,12 +231,16 @@ void try_reload(actor::Actor& actor, item::Item* const item_to_reload)
                 ammo_data.base_name.names[idx];
 
             msg_log::add(
-                "I carry no " +
+                i18n::get("reload.no_better_mag_prefix", "I carry no ") +
                 mag_name +
-                " with more ammo than already loaded.");
+                i18n::get(
+                    "reload.no_better_mag_suffix",
+                    " with more ammo than already loaded."));
         }
         else {
-            msg_log::add("I carry no ammunition for this weapon.");
+            msg_log::add(i18n::get(
+                "reload.no_ammunition",
+                "I carry no ammunition for this weapon."));
         }
 
         return;
@@ -358,16 +375,18 @@ void player_arrange_pistol_mags()
                 ItemNameInfo::yes);
 
         msg_log::add(
-            "I move a round from a magazine to my " +
+            i18n::get("reload.move_round_to_weapon_prefix", "I move a round from a magazine to my ") +
             name +
-            ".");
+            i18n::get("reload.period", "."));
     }
     // Otherwise, if two non-full mags exists, move from least to most full
     else if (max_mag && (min_mag != max_mag)) {
         --min_mag->m_ammo;
         ++max_mag->m_ammo;
 
-        msg_log::add("I move a round from one magazine to another.");
+        msg_log::add(i18n::get(
+            "reload.move_round_between_mags",
+            "I move a round from one magazine to another."));
     }
 
     if (min_mag->m_ammo == 0) {
