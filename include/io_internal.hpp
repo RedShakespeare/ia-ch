@@ -94,6 +94,8 @@ void draw_glyph_at_px(
     io::DrawBg draw_bg = io::DrawBg::yes,
     const Color& bg_color = {0, 0, 0});
 
+int glyph_advance_px(const std::string& glyph);
+
 void draw_text_at_px(
     const std::string& str,
     P px_pos,

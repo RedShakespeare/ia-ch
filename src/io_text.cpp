@@ -27,6 +27,19 @@
 // -----------------------------------------------------------------------------
 namespace io
 {
+static int text_advance_px(const std::string& str)
+{
+    int w = 0;
+
+    for (size_t i = 0; i < str.size();) {
+        const size_t cp_size = utf8::codepoint_size(str, i);
+        w += glyph_advance_px(str.substr(i, cp_size));
+        i += cp_size;
+    }
+
+    return w;
+}
+
 void draw_text_at_px(
     const std::string& str,
     P px_pos,
@@ -39,8 +52,7 @@ void draw_text_at_px(
     }
 
     const int cell_px_w = config::gui_cell_px_w();
-    const int msg_w = (int)utf8::display_width(str);
-    const int msg_px_w = msg_w * cell_px_w;
+    const int msg_px_w = text_advance_px(str);
 
     const SDL_Color sdl_color = color.sdl_color();
     const SDL_Color sdl_bg_color = bg_color.sdl_color();
@@ -88,7 +100,9 @@ void draw_text_at_px(
                 sdl_bg_color);
         }
 
-        px_pos.x += cell_px_w;
+        px_pos.x += draw_dots
+            ? cell_px_w
+            : glyph_advance_px(str.substr(i, utf8::codepoint_size(str, i)));
         i += utf8::codepoint_size(str, i);
     }
 }

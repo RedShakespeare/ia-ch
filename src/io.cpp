@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <cstddef>
+#include <charconv>
 #include <fstream>
 #include <iterator>
 #include <regex>
@@ -62,6 +63,18 @@ static SDL_Surface* load_surface(const std::string& path)
 static std::unordered_map<std::string, int> s_font_glyph_indices;
 static int s_font_glyph_columns = 95;
 
+struct FontGlyph
+{
+    SDL_Rect source_rect {};
+    int logical_w {};
+    int logical_h {};
+    int advance {};
+    int render_offset_x {};
+    int render_offset_y {};
+};
+
+static std::unordered_map<std::string, FontGlyph> s_font_glyphs;
+
 static std::string font_map_path_from_img_path(const std::string& img_path)
 {
     const size_t suffix_pos = img_path.find_last_of('.');
@@ -73,9 +86,73 @@ static std::string font_map_path_from_img_path(const std::string& img_path)
     return img_path.substr(0, suffix_pos) + ".json";
 }
 
+static std::optional<int> parse_json_int(const std::string& line, const std::string& key)
+{
+    const std::regex regex("^\\s*\"" + key + "\"\\s*:\\s*(-?[0-9]+),?\\s*$");
+    std::smatch match;
+
+    if (!std::regex_match(line, match, regex)) {
+        return std::nullopt;
+    }
+
+    return std::stoi(match[1].str());
+}
+
+static std::optional<int> parse_json_codepoint(const std::string& line)
+{
+    const std::regex regex(
+        R"REGEX(^\s*"codepoint"\s*:\s*"U\+([0-9A-Fa-f]+)",?\s*$)REGEX");
+    std::smatch match;
+
+    if (!std::regex_match(line, match, regex)) {
+        return std::nullopt;
+    }
+
+    int codepoint = 0;
+    const std::string codepoint_str = match[1].str();
+    const auto result = std::from_chars(
+        codepoint_str.data(),
+        codepoint_str.data() + codepoint_str.size(),
+        codepoint,
+        16);
+
+    if (result.ec != std::errc()) {
+        return std::nullopt;
+    }
+
+    return codepoint;
+}
+
+static std::string codepoint_to_utf8(const int codepoint)
+{
+    std::string result;
+
+    if (codepoint <= 0x7f) {
+        result.push_back(static_cast<char>(codepoint));
+    }
+    else if (codepoint <= 0x7ff) {
+        result.push_back(static_cast<char>(0xc0 | ((codepoint >> 6) & 0x1f)));
+        result.push_back(static_cast<char>(0x80 | (codepoint & 0x3f)));
+    }
+    else if (codepoint <= 0xffff) {
+        result.push_back(static_cast<char>(0xe0 | ((codepoint >> 12) & 0x0f)));
+        result.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+        result.push_back(static_cast<char>(0x80 | (codepoint & 0x3f)));
+    }
+    else {
+        result.push_back(static_cast<char>(0xf0 | ((codepoint >> 18) & 0x07)));
+        result.push_back(static_cast<char>(0x80 | ((codepoint >> 12) & 0x3f)));
+        result.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
+        result.push_back(static_cast<char>(0x80 | (codepoint & 0x3f)));
+    }
+
+    return result;
+}
+
 static void load_font_map(const std::string& img_path)
 {
     s_font_glyph_indices.clear();
+    s_font_glyphs.clear();
     s_font_glyph_columns = 95;
 
     const std::string map_path = font_map_path_from_img_path(img_path);
@@ -90,12 +167,71 @@ static void load_font_map(const std::string& img_path)
 
     TRACE << "Loading font map: " << map_path << "\n";
 
-    const std::regex columns_regex(R"(^  "columns": ([0-9]+),?$)");
-    const std::regex glyph_regex(R"REGEX(^    "(.+)": \{$)REGEX");
-    const std::regex index_regex(R"(^      "index": ([0-9]+),?$)");
+    const std::regex columns_regex(R"(^\s*"columns"\s*:\s*([0-9]+),?\s*$)");
+    const std::regex glyph_regex(R"REGEX(^\s{4}"((?:[^"\\]|\\.)+)"\s*:\s*\{\s*$)REGEX");
+    const std::regex index_regex(R"(^\s*"index"\s*:\s*([0-9]+),?\s*$)");
+    const std::regex glyph_end_regex(R"(^\s{4}\},?\s*$)");
 
     std::string current_glyph;
     std::string line;
+    std::optional<int> current_codepoint;
+    std::optional<int> current_index;
+    std::optional<int> current_x_px;
+    std::optional<int> current_y_px;
+    std::optional<int> current_w;
+    std::optional<int> current_h;
+    std::optional<int> current_logical_w;
+    std::optional<int> current_logical_h;
+    std::optional<int> current_advance;
+    std::optional<int> current_render_offset_x;
+    std::optional<int> current_render_offset_y;
+
+    const auto finish_glyph = [&]() {
+        if (current_glyph.empty()) {
+            return;
+        }
+
+        const std::string glyph =
+            current_codepoint ? codepoint_to_utf8(*current_codepoint) : current_glyph;
+
+        if (current_x_px &&
+            current_y_px &&
+            current_w &&
+            current_h) {
+            const int logical_w = current_logical_w.value_or(config::gui_cell_px_w());
+            const int logical_h = current_logical_h.value_or(config::gui_cell_px_h());
+
+            s_font_glyphs[glyph] = FontGlyph {
+                {*current_x_px, *current_y_px, *current_w, *current_h},
+                logical_w,
+                logical_h,
+                current_advance.value_or(logical_w),
+                current_render_offset_x.value_or(0),
+                current_render_offset_y.value_or(0)};
+        }
+
+        if (current_index) {
+            const bool is_non_ascii =
+                static_cast<unsigned char>(glyph[0]) >= 0x80;
+
+            if (is_non_ascii) {
+                s_font_glyph_indices[glyph] = *current_index;
+            }
+        }
+
+        current_glyph.clear();
+        current_codepoint.reset();
+        current_index.reset();
+        current_x_px.reset();
+        current_y_px.reset();
+        current_w.reset();
+        current_h.reset();
+        current_logical_w.reset();
+        current_logical_h.reset();
+        current_advance.reset();
+        current_render_offset_x.reset();
+        current_render_offset_y.reset();
+    };
 
     while (std::getline(file, line)) {
         std::smatch match;
@@ -107,23 +243,58 @@ static void load_font_map(const std::string& img_path)
         }
 
         if (std::regex_match(line, match, glyph_regex)) {
+            finish_glyph();
             current_glyph = match[1].str();
 
             continue;
         }
 
-        if (!current_glyph.empty() &&
-            std::regex_match(line, match, index_regex)) {
-            const bool is_non_ascii =
-                static_cast<unsigned char>(current_glyph[0]) >= 0x80;
+        if (current_glyph.empty()) {
+            continue;
+        }
 
-            if (is_non_ascii) {
-                s_font_glyph_indices[current_glyph] = std::stoi(match[1].str());
-            }
+        if (std::regex_match(line, match, index_regex)) {
+            current_index = std::stoi(match[1].str());
 
-            current_glyph.clear();
+            continue;
+        }
+
+        if (const auto codepoint_value = parse_json_codepoint(line)) {
+            current_codepoint = *codepoint_value;
+        }
+        else if (const auto x_px_value = parse_json_int(line, "x_px")) {
+            current_x_px = *x_px_value;
+        }
+        else if (const auto y_px_value = parse_json_int(line, "y_px")) {
+            current_y_px = *y_px_value;
+        }
+        else if (const auto width_value = parse_json_int(line, "width")) {
+            current_w = *width_value;
+        }
+        else if (const auto height_value = parse_json_int(line, "height")) {
+            current_h = *height_value;
+        }
+        else if (const auto logical_width_value = parse_json_int(line, "logical_width")) {
+            current_logical_w = *logical_width_value;
+        }
+        else if (const auto logical_height_value = parse_json_int(line, "logical_height")) {
+            current_logical_h = *logical_height_value;
+        }
+        else if (const auto advance_value = parse_json_int(line, "advance")) {
+            current_advance = *advance_value;
+        }
+        else if (const auto render_offset_x_value = parse_json_int(line, "render_offset_x")) {
+            current_render_offset_x = *render_offset_x_value;
+        }
+        else if (const auto render_offset_y_value = parse_json_int(line, "render_offset_y")) {
+            current_render_offset_y = *render_offset_y_value;
+        }
+        else if (std::regex_match(line, glyph_end_regex)) {
+            finish_glyph();
         }
     }
+
+    finish_glyph();
 }
 
 static int glyph_index(const std::string& glyph)
@@ -143,6 +314,17 @@ static int glyph_index(const std::string& glyph)
     }
 
     return '?' - ' ';
+}
+
+static std::optional<FontGlyph> glyph_metadata(const std::string& glyph)
+{
+    const auto it = s_font_glyphs.find(glyph);
+
+    if (it != std::end(s_font_glyphs)) {
+        return it->second;
+    }
+
+    return std::nullopt;
 }
 
 static void swap_surface_color(
@@ -808,6 +990,58 @@ static void draw_glyph_index_at_px(
     SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
 }
 
+static void draw_glyph_metadata_at_px(
+    const FontGlyph& glyph,
+    P px_pos,
+    const Color& color,
+    const io::DrawBg draw_bg,
+    const Color& bg_color)
+{
+    ASSERT(color != colors::black());
+
+    const P logical_px_dims(glyph.logical_w, glyph.logical_h);
+
+    if (draw_bg == io::DrawBg::yes) {
+        io::draw_rectangle_filled(
+            {px_pos, px_pos + logical_px_dims - 1},
+            bg_color);
+    }
+
+    const int scale_factor = config::video_scale_factor();
+
+    SDL_Rect clip_rect = glyph.source_rect;
+
+    px_pos.x += glyph.render_offset_x;
+    px_pos.y += glyph.render_offset_y;
+    px_pos = px_pos.scaled_up(scale_factor);
+    px_pos = px_pos.with_offsets(g_rendering_px_offset);
+
+    SDL_Rect render_rect;
+    render_rect.x = px_pos.x;
+    render_rect.y = px_pos.y;
+    render_rect.w = glyph.source_rect.w * scale_factor;
+    render_rect.h = glyph.source_rect.h * scale_factor;
+
+    SDL_Texture* texture = nullptr;
+
+    if (bg_color == colors::black()) {
+        texture = g_font_texture;
+    }
+    else {
+        texture = g_font_texture_with_contours;
+    }
+
+    const Color color_adapted = color.with_brightness(config::brightness_pct());
+
+    SDL_SetTextureColorMod(
+        texture,
+        color_adapted.r(),
+        color_adapted.g(),
+        color_adapted.b());
+
+    SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
+}
+
 void draw_character_at_px(
     const char character,
     P px_pos,
@@ -815,12 +1049,7 @@ void draw_character_at_px(
     const io::DrawBg draw_bg,
     const Color& bg_color)
 {
-    draw_glyph_index_at_px(
-        glyph_index(std::string(1, character)),
-        px_pos,
-        color,
-        draw_bg,
-        bg_color);
+    draw_glyph_at_px(std::string(1, character), px_pos, color, draw_bg, bg_color);
 }
 
 void draw_glyph_at_px(
@@ -830,12 +1059,32 @@ void draw_glyph_at_px(
     const io::DrawBg draw_bg,
     const Color& bg_color)
 {
+    if (const auto metadata = glyph_metadata(glyph)) {
+        draw_glyph_metadata_at_px(
+            *metadata,
+            px_pos,
+            color,
+            draw_bg,
+            bg_color);
+
+        return;
+    }
+
     draw_glyph_index_at_px(
         glyph_index(glyph),
         px_pos,
         color,
         draw_bg,
         bg_color);
+}
+
+int glyph_advance_px(const std::string& glyph)
+{
+    if (const auto metadata = glyph_metadata(glyph)) {
+        return metadata->advance;
+    }
+
+    return config::gui_cell_px_w();
 }
 
 void draw_character(const CharacterDrawObj& obj)

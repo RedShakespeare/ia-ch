@@ -50,6 +50,35 @@ class LoadedFont:
     missing_glyph_signatures: frozenset[tuple[tuple[int, int, int, int] | None, bytes]]
 
 
+@dataclass(frozen=True)
+class GlyphLayout:
+    logical_w: int
+    logical_h: int
+    atlas_w: int
+    atlas_h: int
+
+
+@dataclass(frozen=True)
+class GlyphMetadata:
+    codepoint: str
+    index: int
+    x: int
+    y: int
+    x_px: int
+    y_px: int
+    width: int
+    height: int
+    logical_width: int
+    logical_height: int
+    advance: int
+    render_width: int
+    render_height: int
+    render_offset_x: int
+    render_offset_y: int
+    font: str
+    font_size: int
+
+
 def parse_cell(value: str) -> tuple[int, int]:
     match = re.fullmatch(r"(\d+)x(\d+)", value)
     if not match:
@@ -125,6 +154,14 @@ def collect_cjk_words(corpus: str) -> list[str]:
     return sorted(set(CJK_RE.findall(corpus)))
 
 
+def is_ascii_printable(char: str) -> bool:
+    return len(char) == 1 and " " <= char <= "~"
+
+
+def is_cjk(char: str) -> bool:
+    return bool(CJK_RE.fullmatch(char))
+
+
 def resolve_font(font: str) -> Path:
     path = Path(font)
 
@@ -177,6 +214,10 @@ def load_fonts(fonts: list[str], font_size: int):
     return result
 
 
+def load_font_group(fonts: list[str], font_size: int, fallback_fonts: list[str]) -> list[LoadedFont]:
+    return load_fonts(fonts or fallback_fonts, font_size)
+
+
 def glyph_signature(font, char: str) -> tuple[tuple[int, int, int, int] | None, bytes]:
     mask = font.getmask(char)
 
@@ -201,18 +242,57 @@ def choose_font(loaded_fonts: list[LoadedFont], char: str) -> LoadedFont | None:
     return None
 
 
+def choose_font_for_char(
+    ascii_fonts: list[LoadedFont],
+    cjk_fonts: list[LoadedFont],
+    fallback_fonts: list[LoadedFont],
+    char: str,
+) -> LoadedFont | None:
+    if is_ascii_printable(char):
+        font = choose_font(ascii_fonts, char)
+        if font is not None:
+            return font
+
+    if is_cjk(char):
+        font = choose_font(cjk_fonts, char)
+        if font is not None:
+            return font
+
+    return choose_font(fallback_fonts, char)
+
+
+def layout_for_char(
+    char: str,
+    default_layout: GlyphLayout,
+    ascii_layout: GlyphLayout | None,
+    cjk_layout: GlyphLayout | None,
+) -> GlyphLayout:
+    if is_ascii_printable(char) and ascii_layout is not None:
+        return ascii_layout
+
+    if is_cjk(char) and cjk_layout is not None:
+        return cjk_layout
+
+    return default_layout
+
+
 def render_font_png(
     chars: list[str],
     fonts: list[str],
     font_size: int,
-    cell_w: int,
-    cell_h: int,
+    default_layout: GlyphLayout,
+    ascii_fonts: list[str],
+    ascii_font_size: int,
+    ascii_layout: GlyphLayout | None,
+    cjk_fonts: list[str],
+    cjk_font_size: int,
+    cjk_layout: GlyphLayout | None,
     columns: int,
     output: Path,
     ink: int,
     allow_missing: bool,
     fit_glyphs: bool,
-):
+) -> tuple[list[LoadedFont], list[GlyphMetadata]]:
     try:
         from PIL import Image, ImageDraw
     except ModuleNotFoundError as exc:
@@ -220,11 +300,18 @@ def render_font_png(
             "Pillow is required to render PNG fonts. Install it with: python3 -m pip install Pillow"
         ) from exc
 
-    loaded_fonts = load_fonts(fonts, font_size)
+    fallback_fonts = load_fonts(fonts, font_size)
+    loaded_ascii_fonts = load_font_group(ascii_fonts, ascii_font_size, fonts)
+    loaded_cjk_fonts = load_font_group(cjk_fonts, cjk_font_size, fonts)
+    loaded_fonts = fallback_fonts + loaded_ascii_fonts + loaded_cjk_fonts
     unsupported_chars = [
         char
         for char in chars
-        if choose_font(loaded_fonts, char) is None
+        if choose_font_for_char(
+            loaded_ascii_fonts,
+            loaded_cjk_fonts,
+            fallback_fonts,
+            char) is None
     ]
 
     if unsupported_chars and not allow_missing:
@@ -234,71 +321,134 @@ def render_font_png(
             f"{unsupported_str}"
         )
 
-    if columns <= 0:
-        columns = len(chars)
+    if columns > 0:
+        layouts = [
+            layout_for_char(char, default_layout, ascii_layout, cjk_layout)
+            for char in chars
+        ]
+        if len({(layout.atlas_w, layout.atlas_h) for layout in layouts}) > 1:
+            raise SystemExit("--columns is only supported when all glyph atlas cells have the same size")
 
-    rows = (len(chars) + columns - 1) // columns
-    width = (columns * (cell_w + 1)) - 1
-    height = rows * cell_h
+        columns_actual = columns
+        rows = (len(chars) + columns_actual - 1) // columns_actual
+        atlas_w = layouts[0].atlas_w if layouts else default_layout.atlas_w
+        atlas_h = layouts[0].atlas_h if layouts else default_layout.atlas_h
+        width = (columns_actual * (atlas_w + 1)) - 1
+        height = rows * atlas_h
+        positions = [
+            (
+                index % columns_actual,
+                index // columns_actual,
+                (index % columns_actual) * (atlas_w + 1),
+                (index // columns_actual) * atlas_h,
+            )
+            for index in range(len(chars))
+        ]
+    else:
+        columns_actual = len(chars)
+        x = 0
+        positions = []
+        height = 0
+
+        for index, char in enumerate(chars):
+            layout = layout_for_char(char, default_layout, ascii_layout, cjk_layout)
+            positions.append((index, 0, x, 0))
+            x += layout.atlas_w + 1
+            height = max(height, layout.atlas_h)
+
+        width = max(1, x - 1)
+
     image = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     draw = ImageDraw.Draw(image)
+    metadata: list[GlyphMetadata] = []
 
     for index, char in enumerate(chars):
-        col = index % columns
-        row = index // columns
-        x0 = col * (cell_w + 1)
-        y0 = row * cell_h
-        loaded_font = choose_font(loaded_fonts, char) or loaded_fonts[0]
+        layout = layout_for_char(char, default_layout, ascii_layout, cjk_layout)
+        col, row, x0, y0 = positions[index]
+        loaded_font = choose_font_for_char(
+            loaded_ascii_fonts,
+            loaded_cjk_fonts,
+            fallback_fonts,
+            char) or fallback_fonts[0]
         font = loaded_font.font
-        bbox = draw.textbbox((0, 0), char, font=font)
+        ascent, descent = font.getmetrics()
+        line_h = ascent + descent
+        baseline = y0 + ((layout.atlas_h - line_h) // 2) + ascent
+        bbox = draw.textbbox((x0, baseline), char, font=font, anchor="ls")
         glyph_w = bbox[2] - bbox[0]
         glyph_h = bbox[3] - bbox[1]
+        x = x0 + ((layout.atlas_w - glyph_w) // 2) - (bbox[0] - x0)
 
-        if fit_glyphs and (glyph_w > 0) and (glyph_h > 0) and ((glyph_w > cell_w) or (glyph_h > cell_h)):
+        if fit_glyphs and (glyph_w > 0) and (glyph_h > 0) and ((glyph_w > layout.atlas_w) or (glyph_h > layout.atlas_h)):
             glyph_image = Image.new("RGBA", (glyph_w, glyph_h), (0, 0, 0, 0))
             glyph_draw = ImageDraw.Draw(glyph_image)
             glyph_draw.text((-bbox[0], -bbox[1]), char, font=font, fill=(ink, ink, ink, 255))
 
-            scale = min(cell_w / glyph_w, cell_h / glyph_h)
+            scale = min(layout.atlas_w / glyph_w, layout.atlas_h / glyph_h)
             resized_size = (
                 max(1, int(glyph_w * scale)),
                 max(1, int(glyph_h * scale)),
             )
             glyph_image = glyph_image.resize(resized_size, Image.Resampling.LANCZOS)
-            x = x0 + ((cell_w - resized_size[0]) // 2)
-            y = y0 + ((cell_h - resized_size[1]) // 2)
-            image.alpha_composite(glyph_image, (x, y))
+            draw_x = x0 + ((layout.atlas_w - resized_size[0]) // 2)
+            draw_y = y0 + ((layout.atlas_h - resized_size[1]) // 2)
+            image.alpha_composite(glyph_image, (draw_x, draw_y))
         else:
-            x = x0 + ((cell_w - glyph_w) // 2) - bbox[0]
-            y = y0 + ((cell_h - glyph_h) // 2) - bbox[1]
-            draw.text((x, y), char, font=font, fill=(ink, ink, ink, 255))
+            if (glyph_w > layout.atlas_w) or (glyph_h > layout.atlas_h):
+                raise SystemExit(
+                    f"Glyph {char!r} rendered as {glyph_w}x{glyph_h}, "
+                    f"larger than atlas cell {layout.atlas_w}x{layout.atlas_h}; "
+                    "increase the atlas cell or pass --fit-glyphs"
+                )
+
+            draw.text((x, baseline), char, font=font, anchor="ls", fill=(ink, ink, ink, 255))
+
+        metadata.append(
+            GlyphMetadata(
+                codepoint=f"U+{ord(char):04X}",
+                index=index,
+                x=col,
+                y=row,
+                x_px=x0,
+                y_px=y0,
+                width=layout.atlas_w,
+                height=layout.atlas_h,
+                logical_width=layout.logical_w,
+                logical_height=layout.logical_h,
+                advance=layout.logical_w,
+                render_width=layout.atlas_w,
+                render_height=layout.atlas_h,
+                render_offset_x=0,
+                render_offset_y=(layout.logical_h - layout.atlas_h) // 2,
+                font=str(loaded_font.spec.path),
+                font_size=loaded_font.spec.size,
+            )
+        )
 
     output.parent.mkdir(parents=True, exist_ok=True)
     image.save(output)
 
-    return loaded_fonts
+    return loaded_fonts, metadata
 
 
 def write_map(
     chars: list[str],
     cjk_words: list[str],
     columns: int,
-    cell_w: int,
-    cell_h: int,
+    default_layout: GlyphLayout,
+    glyphs: list[GlyphMetadata],
     output: Path,
     fonts_used,
 ) -> None:
+    atlas_w = max((glyph.width for glyph in glyphs), default=default_layout.atlas_w)
+    atlas_h = max((glyph.height for glyph in glyphs), default=default_layout.atlas_h)
     data = {
-        "cell": {"width": cell_w, "height": cell_h},
+        "cell": {"width": default_layout.logical_w, "height": default_layout.logical_h},
+        "atlas_cell": {"width": atlas_w, "height": atlas_h},
         "columns": columns,
         "glyphs": {
-            char: {
-                "codepoint": f"U+{ord(char):04X}",
-                "index": index,
-                "x": index % columns,
-                "y": index // columns,
-            }
-            for index, char in enumerate(chars)
+            char: glyph.__dict__
+            for char, glyph in zip(chars, glyphs)
         },
         "cjk_words": cjk_words,
         "fonts": [
@@ -308,7 +458,7 @@ def write_map(
     }
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    output.write_text(json.dumps(data, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:
@@ -331,7 +481,54 @@ def parse_args() -> argparse.Namespace:
         "--cell",
         type=parse_cell,
         required=True,
-        help="Output cell size as WIDTHxHEIGHT, for example 12x24.",
+        help="Default logical character size as WIDTHxHEIGHT, for example 12x24.",
+    )
+    parser.add_argument(
+        "--atlas-cell",
+        type=parse_cell,
+        help="Default source atlas slot size. Defaults to --cell.",
+    )
+    parser.add_argument(
+        "--ascii-font",
+        action="append",
+        default=[],
+        help="Font path or fontconfig family used first for ASCII glyphs.",
+    )
+    parser.add_argument(
+        "--ascii-font-size",
+        type=int,
+        help="ASCII font rasterization size. Defaults to --font-size.",
+    )
+    parser.add_argument(
+        "--ascii-cell",
+        type=parse_cell,
+        help="ASCII logical character size. Defaults to --cell.",
+    )
+    parser.add_argument(
+        "--ascii-atlas-cell",
+        type=parse_cell,
+        help="ASCII source atlas slot size. Defaults to --atlas-cell.",
+    )
+    parser.add_argument(
+        "--cjk-font",
+        action="append",
+        default=[],
+        help="Font path or fontconfig family used first for CJK glyphs.",
+    )
+    parser.add_argument(
+        "--cjk-font-size",
+        type=int,
+        help="CJK font rasterization size. Defaults to --font-size.",
+    )
+    parser.add_argument(
+        "--cjk-cell",
+        type=parse_cell,
+        help="CJK logical character size. Defaults to --cell.",
+    )
+    parser.add_argument(
+        "--cjk-atlas-cell",
+        type=parse_cell,
+        help="CJK source atlas slot size. Defaults to --atlas-cell.",
     )
     parser.add_argument(
         "--columns",
@@ -384,9 +581,9 @@ def parse_args() -> argparse.Namespace:
         help="Draw a missing-glyph box for unsupported characters instead of failing.",
     )
     parser.add_argument(
-        "--no-fit-glyphs",
+        "--fit-glyphs",
         action="store_true",
-        help="Do not scale glyphs down when they are larger than the output cell.",
+        help="Scale individual glyphs down when they are larger than their atlas slot.",
     )
 
     return parser.parse_args()
@@ -399,6 +596,14 @@ def main() -> int:
     chars = collect_chars(corpus, include_ascii=not args.no_ascii)
     cjk_words = collect_cjk_words(corpus)
     cell_w, cell_h = args.cell
+    atlas_cell_w, atlas_cell_h = args.atlas_cell or args.cell
+    default_layout = GlyphLayout(cell_w, cell_h, atlas_cell_w, atlas_cell_h)
+    ascii_cell_w, ascii_cell_h = args.ascii_cell or args.cell
+    ascii_atlas_w, ascii_atlas_h = args.ascii_atlas_cell or args.atlas_cell or args.ascii_cell or args.cell
+    ascii_layout = GlyphLayout(ascii_cell_w, ascii_cell_h, ascii_atlas_w, ascii_atlas_h)
+    cjk_cell_w, cjk_cell_h = args.cjk_cell or args.cell
+    cjk_atlas_w, cjk_atlas_h = args.cjk_atlas_cell or args.atlas_cell or args.cjk_cell or args.cell
+    cjk_layout = GlyphLayout(cjk_cell_w, cjk_cell_h, cjk_atlas_w, cjk_atlas_h)
     map_output = args.map_output or args.output.with_suffix(".json")
 
     print(f"Collected {len(chars)} unique glyphs from {len(list(iter_text_files(roots)))} files")
@@ -412,25 +617,30 @@ def main() -> int:
 
         return 0
 
-    fonts_used = render_font_png(
+    fonts_used, glyphs = render_font_png(
         chars=chars,
         fonts=args.font,
         font_size=args.font_size,
-        cell_w=cell_w,
-        cell_h=cell_h,
+        default_layout=default_layout,
+        ascii_fonts=args.ascii_font,
+        ascii_font_size=args.ascii_font_size or args.font_size,
+        ascii_layout=ascii_layout,
+        cjk_fonts=args.cjk_font,
+        cjk_font_size=args.cjk_font_size or args.font_size,
+        cjk_layout=cjk_layout,
         columns=args.columns,
         output=args.output,
         ink=args.ink,
         allow_missing=args.allow_missing,
-        fit_glyphs=not args.no_fit_glyphs,
+        fit_glyphs=args.fit_glyphs,
     )
     columns = args.columns if args.columns > 0 else len(chars)
     write_map(
         chars=chars,
         cjk_words=cjk_words,
         columns=columns,
-        cell_w=cell_w,
-        cell_h=cell_h,
+        default_layout=default_layout,
+        glyphs=glyphs,
         output=map_output,
         fonts_used=fonts_used,
     )
