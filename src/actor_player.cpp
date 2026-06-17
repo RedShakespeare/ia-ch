@@ -24,6 +24,7 @@
 #include "attack.hpp"
 #include "colors.hpp"
 #include "common_text.hpp"
+#include "i18n.hpp"
 #include "config.hpp"
 #include "debug.hpp"
 #include "direction.hpp"
@@ -60,10 +61,19 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
-static const std::vector<std::string> m_item_feeling_messages = {
-    "I feel like I should examine this place thoroughly.",
-    "I feel like there is something of great interest here.",
-    "I sense an object of great power here."};
+static std::vector<std::string> item_feeling_messages()
+{
+    return {
+        i18n::get(
+            "actor_player.feel_examine_place",
+            "I feel like I should examine this place thoroughly."),
+        i18n::get(
+            "actor_player.feel_great_interest",
+            "I feel like there is something of great interest here."),
+        i18n::get(
+            "actor_player.sense_great_power",
+            "I sense an object of great power here.")};
+}
 
 static double shock_taken_for_mon_shock_lvl(const MonShockLvl shock_lvl)
 {
@@ -603,7 +613,7 @@ void Actor::item_feeling()
     }
 
     if (print_feeling) {
-        const std::string msg = rnd::element(m_item_feeling_messages);
+        const std::string msg = rnd::element(item_feeling_messages());
 
         msg_log::add(
             msg,

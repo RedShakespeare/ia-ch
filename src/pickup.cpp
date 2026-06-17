@@ -22,6 +22,7 @@
 #include "item_data.hpp"
 #include "item_factory.hpp"
 #include "item_weapon.hpp"
+#include "i18n.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "state.hpp"
@@ -36,7 +37,7 @@ void try_pick()
     item::Item* const item = map::g_items.at(pos);
 
     if (!item) {
-        msg_log::add("I see nothing to pick up here.");
+        msg_log::add(i18n::get("pickup.nothing_here", "I see nothing to pick up here."));
 
         return;
     }
@@ -49,7 +50,7 @@ void try_pick()
 
         const std::string item_name = item->name(ItemNameType::plural);
 
-        msg_log::add("I pick up " + item_name + ".");
+        msg_log::add(i18n::get("pickup.pick_up", "I pick up ") + item_name + ".");
 
         // NOTE: This may destroy the item (e.g. combine with others)
         map::g_player->m_inv.put_in_backpack(item);
@@ -123,7 +124,7 @@ void try_unload_or_pick()
                     ItemNameType::a,
                     ItemNameInfo::yes);
 
-            msg_log::add("I unload " + name_a + ".");
+            msg_log::add(i18n::get("pickup.unload", "I unload ") + name_a + ".");
 
             map::g_player->m_inv.put_in_backpack(spawned_ammo);
 

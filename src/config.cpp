@@ -868,12 +868,13 @@ void set_fullscreen(const bool value)
 // -----------------------------------------------------------------------------
 std::string MasterVolumeOption::name() const
 {
-    return "Audio volume level";
+    return i18n::get("option.audio_volume_level.name", "Audio volume level");
 }
 
 std::string MasterVolumeOption::descr() const
 {
-    return (
+    return i18n::get(
+        "option.audio_volume_level.descr",
         "Master volume control (0-100%).");
 }
 
@@ -932,19 +933,21 @@ void MasterVolumeOption::change(const OptionChangeCommand command) const
 
 std::string AmbientAudioEnabledOption::name() const
 {
-    return "Play ambient sounds";
+    return i18n::get("option.play_ambient_sounds.name", "Play ambient sounds");
 }
 
 std::string AmbientAudioEnabledOption::descr() const
 {
-    return (
-        "If enabled, ambient sound effects such as howling wind or "
-        "dripping water will occasionally be played.");
+    return i18n::get(
+        "option.play_ambient_sounds.descr",
+        "If enabled, ambient sound effects such as howling wind or dripping water will occasionally be played.");
 }
 
 std::string AmbientAudioEnabledOption::value_str() const
 {
-    return s_is_ambient_audio_enabled ? "Yes" : "No";
+    return s_is_ambient_audio_enabled
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType AmbientAudioEnabledOption::submenu_type() const
@@ -965,20 +968,21 @@ void AmbientAudioEnabledOption::change(const OptionChangeCommand command) const
 
 std::string PreloadAmbientAudioOption::name() const
 {
-    return "Preload ambient sounds";
+    return i18n::get("option.preload_ambient_sounds.name", "Preload ambient sounds");
 }
 
 std::string PreloadAmbientAudioOption::descr() const
 {
-    return (
-        "Load all ambient sound clips on game startup, otherwise load "
-        "each sound individually when played for the first time "
-        "(a small delay may occur when this happens).");
+    return i18n::get(
+        "option.preload_ambient_sounds.descr",
+        "Load all ambient sound clips on game startup, otherwise load each sound individually when played for the first time (a small delay may occur when this happens).");
 }
 
 std::string PreloadAmbientAudioOption::value_str() const
 {
-    return s_is_ambient_audio_preloaded ? "Yes" : "No";
+    return s_is_ambient_audio_preloaded
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType PreloadAmbientAudioOption::submenu_type() const
@@ -995,17 +999,14 @@ void PreloadAmbientAudioOption::change(const OptionChangeCommand command) const
 
 std::string AudioBufferSizeOption::name() const
 {
-    return "Audio buffer size";
+    return i18n::get("option.audio_buffer_size.name", "Audio buffer size");
 }
 
 std::string AudioBufferSizeOption::descr() const
 {
-    return (
-        "Lower values decrease latency, but may cause "
-        "sound crackling (audio buffer underruns) "
-        "on devices with slow CPU.\n"
-        "Increase it to get smoother sound, "
-        "but with the cost of increasing sound delay.");
+    return i18n::get(
+        "option.audio_buffer_size.descr",
+        "Lower values decrease latency, but may cause sound crackling (audio buffer underruns) on devices with slow CPU.\nIncrease it to get smoother sound, but with the cost of increasing sound delay.");
 }
 
 std::string AudioBufferSizeOption::value_str() const
@@ -1048,37 +1049,27 @@ void AudioBufferSizeOption::change(const OptionChangeCommand command) const
 
 std::string InputModeOption::name() const
 {
-    return "Input mode";
+    return i18n::get("option.input_mode.name", "Input mode");
 }
 
 std::string InputModeOption::descr() const
 {
-    return (
-        "Use any of the following input modes:"
-        "\n\n{COLOR_LIGHT_WHITE}Default:{color_reset} "
-        "Numerical keypad or arrow keys"
-        "\n\n{COLOR_LIGHT_WHITE}Vi-keys:{color_reset} "
-        "hjkl for orthogonal movement and yubn for diagonal movement."
-        "\n\n{COLOR_LIGHT_WHITE}Controller support:{color_reset} "
-        "Intended to be used for cases such as binding a "
-        "controller stick to the numpad's 8 directional keys. "
-        "Movement requires confirmation with the [Enter] key. "
-        "Only pressing [Enter] issues a wait command."
-        "\n\nSee the game manual for more information "
-        "on game input.");
+    return i18n::get(
+        "option.input_mode.descr",
+        "Use any of the following input modes:\n\n{COLOR_LIGHT_WHITE}Default:{color_reset} Numerical keypad or arrow keys\n\n{COLOR_LIGHT_WHITE}Vi-keys:{color_reset} hjkl for orthogonal movement and yubn for diagonal movement.\n\n{COLOR_LIGHT_WHITE}Controller support:{color_reset} Intended to be used for cases such as binding a controller stick to the numpad's 8 directional keys. Movement requires confirmation with the [Enter] key. Only pressing [Enter] issues a wait command.\n\nSee the game manual for more information on game input.");
 }
 
 std::string InputModeOption::value_str() const
 {
     switch (s_input_mode) {
     case InputMode::standard:
-        return "Default";
+        return i18n::get("option.input_mode.standard", "Default");
 
     case InputMode::vi_keys:
-        return "Vi-keys";
+        return i18n::get("option.input_mode.vi_keys", "Vi-keys");
 
     case InputMode::controller_support:
-        return "Controller support";
+        return i18n::get("option.input_mode.controller_support", "Controller support");
 
     case InputMode::END:
         break;
@@ -1125,17 +1116,19 @@ void InputModeOption::change(const OptionChangeCommand command) const
 
 std::string DoubleClickTogglesFullscreenOption::name() const
 {
-    return "Double click fullscreen";
+    return i18n::get("option.double_click_fullscreen.name", "Double click fullscreen");
 }
 
 std::string DoubleClickTogglesFullscreenOption::descr() const
 {
-    return "Double click anywhere to toggle fullscreen?";
+    return i18n::get("option.double_click_fullscreen.descr", "Double click anywhere to toggle fullscreen?");
 }
 
 std::string DoubleClickTogglesFullscreenOption::value_str() const
 {
-    return s_is_double_click_toggle_fullscreen ? "Yes" : "No";
+    return s_is_double_click_toggle_fullscreen
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType DoubleClickTogglesFullscreenOption::submenu_type() const
@@ -1152,19 +1145,21 @@ void DoubleClickTogglesFullscreenOption::change(const OptionChangeCommand comman
 
 std::string AlwaysCenterViewOption::name() const
 {
-    return "Always center view";
+    return i18n::get("option.always_center_view.name", "Always center view");
 }
 
 std::string AlwaysCenterViewOption::descr() const
 {
-    return (
-        "Keep the view centered on the player, otherwise only center "
-        "when the player is near the edge of the view.");
+    return i18n::get(
+        "option.always_center_view.descr",
+        "Keep the view centered on the player, otherwise only center when the player is near the edge of the view.");
 }
 
 std::string AlwaysCenterViewOption::value_str() const
 {
-    return s_always_center_view_on_player ? "Yes" : "No";
+    return s_always_center_view_on_player
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType AlwaysCenterViewOption::submenu_type() const
@@ -1181,19 +1176,21 @@ void AlwaysCenterViewOption::change(OptionChangeCommand command) const
 
 std::string TilesModeOption::name() const
 {
-    return "Use tile set";
+    return i18n::get("option.use_tile_set.name", "Use tile set");
 }
 
 std::string TilesModeOption::descr() const
 {
-    return (
-        "Use tile graphics to represent the game environment, "
-        "otherwise use text symbols only.");
+    return i18n::get(
+        "option.use_tile_set.descr",
+        "Use tile graphics to represent the game environment, otherwise use text symbols only.");
 }
 
 std::string TilesModeOption::value_str() const
 {
-    return s_is_tiles_mode ? "Yes" : "No";
+    return s_is_tiles_mode
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType TilesModeOption::submenu_type() const
@@ -1213,13 +1210,12 @@ void TilesModeOption::change(OptionChangeCommand command) const
 
 std::string FontOption::name() const
 {
-    return "Font";
+    return i18n::get("option.font.name", "Font");
 }
 
 std::string FontOption::descr() const
 {
-    return (
-        "Font used for text.");
+    return i18n::get("option.font.descr", "Font used for text.");
 }
 
 std::string FontOption::value_str() const
@@ -1273,20 +1269,21 @@ void FontOption::change(OptionChangeCommand command) const
 
 std::string FullscreenOption::name() const
 {
-    return "Fullscreen";
+    return i18n::get("option.fullscreen.name", "Fullscreen");
 }
 
 std::string FullscreenOption::descr() const
 {
-    return (
-        "Run in fullscreen mode (borderless fullscreen window) or "
-        "use resizable window. This can also be toggled by pressing "
-        "Alt-Enter.");
+    return i18n::get(
+        "option.fullscreen.descr",
+        "Run in fullscreen mode (borderless fullscreen window) or use resizable window. This can also be toggled by pressing Alt-Enter.");
 }
 
 std::string FullscreenOption::value_str() const
 {
-    return s_is_fullscreen ? "Yes" : "No";
+    return s_is_fullscreen
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType FullscreenOption::submenu_type() const
@@ -1305,27 +1302,24 @@ void FullscreenOption::change(OptionChangeCommand command) const
 
 std::string RendererTypeOption::name() const
 {
-    return "Use hardware acceleration";
+    return i18n::get("option.hardware_acceleration.name", "Use hardware acceleration");
 }
 
 std::string RendererTypeOption::descr() const
 {
-    return (
-        "Use automatic selection (attempt to use hardware "
-        "acceleration first, or use software fallback), or "
-        "force using software renderer. "
-        "If you experience any graphical issues, setting this option "
-        "to \"Software\" may fix the problem.");
+    return i18n::get(
+        "option.hardware_acceleration.descr",
+        "Use automatic selection (attempt to use hardware acceleration first, or use software fallback), or force using software renderer. If you experience any graphical issues, setting this option to \"Software\" may fix the problem.");
 }
 
 std::string RendererTypeOption::value_str() const
 {
     switch (s_renderer_type) {
     case RendererType::auto_select:
-        return "Auto select";
+        return i18n::get("option.hardware_acceleration.auto_select", "Auto select");
 
     case RendererType::sw:
-        return "Software";
+        return i18n::get("option.hardware_acceleration.software", "Software");
 
     case RendererType::END:
         break;
@@ -1373,12 +1367,12 @@ void RendererTypeOption::change(OptionChangeCommand command) const
 
 std::string VideoScaleOption::name() const
 {
-    return "Video scale factor";
+    return i18n::get("option.video_scale_factor.name", "Video scale factor");
 }
 
 std::string VideoScaleOption::descr() const
 {
-    return "Scale all graphics by this factor.";
+    return i18n::get("option.video_scale_factor.descr", "Scale all graphics by this factor.");
 }
 
 std::string VideoScaleOption::value_str() const
@@ -1425,12 +1419,12 @@ void VideoScaleOption::change(OptionChangeCommand command) const
 
 std::string BrightnessOption::name() const
 {
-    return "Brightness";
+    return i18n::get("option.brightness.name", "Brightness");
 }
 
 std::string BrightnessOption::descr() const
 {
-    return ("Change brightness of colors.");
+    return i18n::get("option.brightness.descr", "Change brightness of colors.");
 }
 
 std::string BrightnessOption::value_str() const
@@ -1470,19 +1464,21 @@ void BrightnessOption::change(const OptionChangeCommand command) const
 
 std::string TextModeFilledWallsOption::name() const
 {
-    return "Text mode wall symbol";
+    return i18n::get("option.text_mode_wall_symbol.name", "Text mode wall symbol");
 }
 
 std::string TextModeFilledWallsOption::descr() const
 {
-    return (
-        "Symbol used for representing walls in text mode "
-        "(when tiles are not used).");
+    return i18n::get(
+        "option.text_mode_wall_symbol.descr",
+        "Symbol used for representing walls in text mode (when tiles are not used).");
 }
 
 std::string TextModeFilledWallsOption::value_str() const
 {
-    return s_text_mode_filled_walls ? "Filled rectangle" : "Hash sign";
+    return s_text_mode_filled_walls
+        ? i18n::get("option.text_mode_wall_symbol.filled_rectangle", "Filled rectangle")
+        : i18n::get("option.text_mode_wall_symbol.hash_sign", "Hash sign");
 }
 
 OptionSubmenuType TextModeFilledWallsOption::submenu_type() const
@@ -1502,17 +1498,21 @@ void TextModeFilledWallsOption::change(OptionChangeCommand command) const
 
 std::string DisplayHealthBarsOption::name() const
 {
-    return "Display health bars";
+    return i18n::get("option.display_health_bars.name", "Display health bars");
 }
 
 std::string DisplayHealthBarsOption::descr() const
 {
-    return "Show health bars under creatures when not at full health.";
+    return i18n::get(
+        "option.display_health_bars.descr",
+        "Show health bars under creatures when not at full health.");
 }
 
 std::string DisplayHealthBarsOption::value_str() const
 {
-    return s_display_health_bars ? "Yes" : "No";
+    return s_display_health_bars
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType DisplayHealthBarsOption::submenu_type() const
@@ -1529,22 +1529,21 @@ void DisplayHealthBarsOption::change(OptionChangeCommand command) const
 
 std::string UseTrapColorWhenObscuredOption::name() const
 {
-    return "Use trap color when obscured";
+    return i18n::get("option.use_trap_color_when_obscured.name", "Use trap color when obscured");
 }
 
 std::string UseTrapColorWhenObscuredOption::descr() const
 {
-    return (
-        "If a trap is obscured by another object (e.g. an item), use "
-        "the color of the specific trap type as background color to "
-        "signify that there is a trap underneath the objct, "
-        "otherwise use the same background color regardless of "
-        "trap type.");
+    return i18n::get(
+        "option.use_trap_color_when_obscured.descr",
+        "If a trap is obscured by another object (e.g. an item), use the color of the specific trap type as background color to signify that there is a trap underneath the objct, otherwise use the same background color regardless of trap type.");
 }
 
 std::string UseTrapColorWhenObscuredOption::value_str() const
 {
-    return s_use_trap_color_when_obscured ? "Yes" : "No";
+    return s_use_trap_color_when_obscured
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType UseTrapColorWhenObscuredOption::submenu_type() const

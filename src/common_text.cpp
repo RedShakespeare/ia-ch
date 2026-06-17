@@ -25,6 +25,13 @@ std::string g_any_key_hint;
 std::string g_yes_or_no_hint;
 std::string g_direction_query;
 std::string g_disarm_no_trap;
+std::string g_not_while_blind;
+std::string g_not_while_entangled;
+std::string g_not_while_stuck;
+std::string g_cannot_see_there;
+std::string g_cannot_remove_normal_means;
+std::string g_blocked;
+std::string g_something_blocking_it;
 std::string g_mon_prevent_cmd;
 std::string g_fire_prevent_cmd;
 std::string g_shock_prevent_cmd;
@@ -83,6 +90,27 @@ void init()
 
     g_disarm_no_trap =
         i18n::get("common.disarm_no_trap", "I find nothing there to disarm.");
+
+    g_not_while_blind =
+        i18n::get("common.not_while_blind", "Not while blind.");
+
+    g_not_while_entangled =
+        i18n::get("common.not_while_entangled", "Not while entangled.");
+
+    g_not_while_stuck =
+        i18n::get("common.not_while_stuck", "Not while stuck.");
+
+    g_cannot_see_there =
+        i18n::get("common.cannot_see_there", "I cannot see there.");
+
+    g_cannot_remove_normal_means =
+        i18n::get("common.cannot_remove_normal_means", "It cannot be removed through normal means.");
+
+    g_blocked =
+        i18n::get("common.blocked", "It's blocked.");
+
+    g_something_blocking_it =
+        i18n::get("common.something_blocking_it", "Something is blocking it.");
 
     g_mon_prevent_cmd =
         i18n::get("common.mon_prevent_cmd", "Not while an enemy is near.");

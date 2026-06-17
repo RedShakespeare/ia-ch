@@ -34,6 +34,7 @@
 #include "teleport.hpp"
 #include "terrain.hpp"
 #include "terrain_data.hpp"
+#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -59,12 +60,13 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
     io::update_screen();
 
     const std::string msg =
-        "Strange emptiness surrounds me. An eternity passes as I lay "
-        "frozen in a world of shadows. Suddenly I awake!";
+        i18n::get(
+            "actor_death.resurrect_message",
+            "Strange emptiness surrounds me. An eternity passes as I lay frozen in a world of shadows. Suddenly I awake!");
 
     popup::Popup(popup::AddToMsgHistory::yes)
         .set_msg(msg)
-        .set_title("Dead")
+        .set_title(i18n::get("actor_death.dead_title", "Dead"))
         .run();
 
     for (auto* const a : game_time::g_actors) {
@@ -93,7 +95,7 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
         teleport(*map::g_player, ShouldCtrlTele::never);
     }
 
-    msg_log::add("I LIVE AGAIN!");
+    msg_log::add(i18n::get("actor_death.live_again", "I LIVE AGAIN!"));
 
     game::add_history_event("Was brought back from the dead");
 

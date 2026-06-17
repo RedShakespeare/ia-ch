@@ -19,6 +19,7 @@
 #include "game_time.hpp"
 #include "global.hpp"
 #include "item.hpp"
+#include "i18n.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
 #include "pos.hpp"
@@ -49,7 +50,7 @@ static void print_player_memory_at(const P& p)
     }
 
     msg_log::add(
-        "I remember here:",
+        i18n::get("view.remember_here", "I remember here:"),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::no,
@@ -121,7 +122,7 @@ void print_location_info_msgs(const P& pos)
         // Describe darkness
         if (map::g_dark.at(pos) && !map::g_light.at(pos)) {
             msg_log::add(
-                "It is very dark here.",
+                i18n::get("view.very_dark_here", "It is very dark here."),
                 colors::text(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,
@@ -197,7 +198,7 @@ void print_living_actor_info_msg(const P& pos)
         // Cannot see actor
         if (actor::is_player_aware_of_me(*actor)) {
             msg_log::add(
-                "There is a creature here.",
+                i18n::get("view.creature_here", "There is a creature here."),
                 colors::text(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,

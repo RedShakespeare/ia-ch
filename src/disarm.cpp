@@ -32,19 +32,19 @@
 static bool handle_player_allowed_disarm_traps()
 {
     if (!map::g_player->m_properties.allow_see()) {
-        msg_log::add("Not while blind.");
+        msg_log::add(common_text::g_not_while_blind);
 
         return false;
     }
 
     if (map::g_player->m_properties.has(prop::Id::entangled)) {
-        msg_log::add("Not while entangled.");
+        msg_log::add(common_text::g_not_while_entangled);
 
         return false;
     }
 
     if (map::g_player->m_properties.has(prop::Id::stuck)) {
-        msg_log::add("Not while stuck.");
+        msg_log::add(common_text::g_not_while_stuck);
 
         return false;
     }
@@ -55,7 +55,7 @@ static bool handle_player_allowed_disarm_traps()
 static void try_disarm_terrain_at(const P& pos)
 {
     if (!map::g_seen.at(pos)) {
-        msg_log::add("I cannot see there.");
+        msg_log::add(common_text::g_cannot_see_there);
 
         return;
     }
@@ -84,7 +84,7 @@ static void try_disarm_terrain_at(const P& pos)
     // There is a known and seen trap here.
 
     if (trap->is_sigil()) {
-        msg_log::add("It cannot be removed through normal means.");
+        msg_log::add(common_text::g_cannot_remove_normal_means);
 
         return;
     }
@@ -93,10 +93,10 @@ static void try_disarm_terrain_at(const P& pos)
 
     if (actor_on_trap && !actor::is_player(actor_on_trap)) {
         if (can_player_see_actor(*actor_on_trap)) {
-            msg_log::add("It's blocked.");
+            msg_log::add(common_text::g_blocked);
         }
         else {
-            msg_log::add("Something is blocking it.");
+            msg_log::add(common_text::g_something_blocking_it);
         }
 
         return;
