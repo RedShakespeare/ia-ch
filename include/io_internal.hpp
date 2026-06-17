@@ -96,6 +96,8 @@ void draw_glyph_at_px(
 
 int glyph_advance_px(const std::string& glyph);
 
+int text_advance_px(const std::string& str);
+
 void draw_text_at_px(
     const std::string& str,
     P px_pos,

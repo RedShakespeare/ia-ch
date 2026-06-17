@@ -168,14 +168,31 @@ static void load_font_map(const std::string& img_path)
     TRACE << "Loading font map: " << map_path << "\n";
 
     const std::regex columns_regex(R"(^\s*"columns"\s*:\s*([0-9]+),?\s*$)");
+    const std::regex cell_begin_regex(R"(^\s{2}"cell"\s*:\s*\{\s*$)");
+    const std::regex atlas_cell_begin_regex(R"(^\s{2}"atlas_cell"\s*:\s*\{\s*$)");
+    const std::regex top_level_object_end_regex(R"(^\s{2}\},?\s*$)");
     const std::regex glyph_regex(R"REGEX(^\s{4}"((?:[^"\\]|\\.)+)"\s*:\s*\{\s*$)REGEX");
     const std::regex index_regex(R"(^\s*"index"\s*:\s*([0-9]+),?\s*$)");
     const std::regex glyph_end_regex(R"(^\s{4}\},?\s*$)");
 
+    enum class FontMapSection
+    {
+        none,
+        cell,
+        atlas_cell
+    };
+
+    FontMapSection current_section = FontMapSection::none;
     std::string current_glyph;
     std::string line;
+    std::optional<int> cell_w;
+    std::optional<int> cell_h;
+    std::optional<int> atlas_cell_w;
+    std::optional<int> atlas_cell_h;
     std::optional<int> current_codepoint;
     std::optional<int> current_index;
+    std::optional<int> current_x;
+    std::optional<int> current_y;
     std::optional<int> current_x_px;
     std::optional<int> current_y_px;
     std::optional<int> current_w;
@@ -194,15 +211,57 @@ static void load_font_map(const std::string& img_path)
         const std::string glyph =
             current_codepoint ? codepoint_to_utf8(*current_codepoint) : current_glyph;
 
-        if (current_x_px &&
-            current_y_px &&
-            current_w &&
-            current_h) {
+        int source_x = 0;
+        int source_y = 0;
+        int source_w = 0;
+        int source_h = 0;
+
+        const bool has_source_x = current_x_px || (current_x && cell_w);
+        const bool has_source_y = current_y_px || (current_y && cell_h);
+        const bool has_source_w = current_w || current_logical_w || atlas_cell_w || cell_w;
+        const bool has_source_h = current_h || current_logical_h || atlas_cell_h || cell_h;
+
+        if (has_source_x) {
+            source_x = current_x_px
+                ? *current_x_px
+                : *current_x * (*cell_w + 1);
+        }
+
+        if (has_source_y) {
+            source_y = current_y_px
+                ? *current_y_px
+                : *current_y * *cell_h;
+        }
+
+        if (has_source_w) {
+            source_w = current_w
+                ? *current_w
+                : current_logical_w
+                      ? *current_logical_w
+                      : atlas_cell_w
+                            ? *atlas_cell_w
+                            : *cell_w;
+        }
+
+        if (has_source_h) {
+            source_h = current_h
+                ? *current_h
+                : current_logical_h
+                      ? *current_logical_h
+                      : atlas_cell_h
+                            ? *atlas_cell_h
+                            : *cell_h;
+        }
+
+        if (has_source_x &&
+            has_source_y &&
+            has_source_w &&
+            has_source_h) {
             const int logical_w = current_logical_w.value_or(config::gui_cell_px_w());
             const int logical_h = current_logical_h.value_or(config::gui_cell_px_h());
 
             s_font_glyphs[glyph] = FontGlyph {
-                {*current_x_px, *current_y_px, *current_w, *current_h},
+                {source_x, source_y, source_w, source_h},
                 logical_w,
                 logical_h,
                 current_advance.value_or(logical_w),
@@ -222,6 +281,8 @@ static void load_font_map(const std::string& img_path)
         current_glyph.clear();
         current_codepoint.reset();
         current_index.reset();
+        current_x.reset();
+        current_y.reset();
         current_x_px.reset();
         current_y_px.reset();
         current_w.reset();
@@ -238,6 +299,45 @@ static void load_font_map(const std::string& img_path)
 
         if (std::regex_match(line, match, columns_regex)) {
             s_font_glyph_columns = std::stoi(match[1].str());
+
+            continue;
+        }
+
+        if (std::regex_match(line, cell_begin_regex)) {
+            current_section = FontMapSection::cell;
+
+            continue;
+        }
+
+        if (std::regex_match(line, atlas_cell_begin_regex)) {
+            current_section = FontMapSection::atlas_cell;
+
+            continue;
+        }
+
+        if (std::regex_match(line, top_level_object_end_regex)) {
+            current_section = FontMapSection::none;
+
+            continue;
+        }
+
+        if (current_section != FontMapSection::none) {
+            if (const auto width_value = parse_json_int(line, "width")) {
+                if (current_section == FontMapSection::cell) {
+                    cell_w = *width_value;
+                }
+                else {
+                    atlas_cell_w = *width_value;
+                }
+            }
+            else if (const auto height_value = parse_json_int(line, "height")) {
+                if (current_section == FontMapSection::cell) {
+                    cell_h = *height_value;
+                }
+                else {
+                    atlas_cell_h = *height_value;
+                }
+            }
 
             continue;
         }
@@ -261,6 +361,12 @@ static void load_font_map(const std::string& img_path)
 
         if (const auto codepoint_value = parse_json_codepoint(line)) {
             current_codepoint = *codepoint_value;
+        }
+        else if (const auto x_value = parse_json_int(line, "x")) {
+            current_x = *x_value;
+        }
+        else if (const auto y_value = parse_json_int(line, "y")) {
+            current_y = *y_value;
         }
         else if (const auto x_px_value = parse_json_int(line, "x_px")) {
             current_x_px = *x_px_value;

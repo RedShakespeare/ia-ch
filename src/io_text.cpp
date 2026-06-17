@@ -27,7 +27,7 @@
 // -----------------------------------------------------------------------------
 namespace io
 {
-static int text_advance_px(const std::string& str)
+int text_advance_px(const std::string& str)
 {
     int w = 0;
 
@@ -117,13 +117,12 @@ void draw_text(
 {
     text.set_color(color);
 
-    const P origin_pos = pos;
+    const P line_start_px = gui_to_px_coords(panel, pos);
+    P px_pos = line_start_px;
 
     for (const TextAction& action : text.actions()) {
         switch (action.id) {
         case TextActionId::write_str: {
-            const P px_pos = gui_to_px_coords(panel, pos);
-
             draw_text_at_px(
                 action.str,
                 px_pos,
@@ -131,12 +130,12 @@ void draw_text(
                 draw_bg,
                 bg_color);
 
-            pos.x += (int)utf8::display_width(action.str);
+            px_pos.x += text_advance_px(action.str);
         } break;
 
         case TextActionId::newline: {
-            ++pos.y;
-            pos.x = origin_pos.x;
+            px_pos.x = line_start_px.x;
+            px_pos.y += config::gui_cell_px_h();
         } break;
 
         case TextActionId::change_color: {
