@@ -27,6 +27,7 @@
 #include "game_time.hpp"
 #include "gfx.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
 #include "item_data.hpp"
@@ -504,14 +505,16 @@ bool restore_hp(
 
     if ((verbose == Verbose::yes) && is_hp_gained) {
         if (is_player(&actor)) {
-            msg_log::add("I feel healthier!", colors::msg_good());
+            msg_log::add(i18n::get("actor_common.feel_healthier", "I feel healthier!"), colors::msg_good());
         }
         else if (can_player_see_actor(actor)) {
             const std::string actor_name_the =
                 text_format::first_to_upper(
                     actor.m_data->name_the);
 
-            msg_log::add(actor_name_the + " looks healthier.");
+            msg_log::add(
+                actor_name_the +
+                i18n::get("actor_common.looks_healthier", " looks healthier."));
         }
     }
 
@@ -540,7 +543,7 @@ bool restore_sp(
 
     if ((verbose == Verbose::yes) && is_sp_gained) {
         if (is_player(&actor)) {
-            msg_log::add("I feel more spirited!", colors::msg_good());
+            msg_log::add(i18n::get("actor_common.feel_more_spirited", "I feel more spirited!"), colors::msg_good());
         }
         else {
             if (can_player_see_actor(actor)) {
@@ -548,7 +551,9 @@ bool restore_sp(
                     text_format::first_to_upper(
                         actor.m_data->name_the);
 
-                msg_log::add(actor_name_the + " looks more spirited.");
+                msg_log::add(
+                    actor_name_the +
+                    i18n::get("actor_common.looks_more_spirited", " looks more spirited."));
             }
         }
     }
@@ -569,10 +574,10 @@ void change_max_hp(
 
     if (is_player(&actor)) {
         if (change > 0) {
-            msg_log::add("I feel more vigorous!", colors::msg_good());
+            msg_log::add(i18n::get("actor_common.feel_more_vigorous", "I feel more vigorous!"), colors::msg_good());
         }
         else if (change < 0) {
-            msg_log::add("I feel frailer!", colors::msg_bad());
+            msg_log::add(i18n::get("actor_common.feel_frailer", "I feel frailer!"), colors::msg_bad());
         }
     }
     else if (can_player_see_actor(actor)) {
@@ -581,10 +586,14 @@ void change_max_hp(
                 name_the(actor));
 
         if (change > 0) {
-            msg_log::add(actor_name_the + " looks more vigorous.");
+            msg_log::add(
+                actor_name_the +
+                i18n::get("actor_common.looks_more_vigorous", " looks more vigorous."));
         }
         else if (change < 0) {
-            msg_log::add(actor_name_the + " looks frailer.");
+            msg_log::add(
+                actor_name_the +
+                i18n::get("actor_common.looks_frailer", " looks frailer."));
         }
     }
 }
@@ -602,10 +611,10 @@ void change_max_sp(
 
     if (is_player(&actor)) {
         if (change > 0) {
-            msg_log::add("My spirit is stronger!", colors::msg_good());
+            msg_log::add(i18n::get("actor_common.spirit_stronger", "My spirit is stronger!"), colors::msg_good());
         }
         else if (change < 0) {
-            msg_log::add("My spirit is weaker!", colors::msg_bad());
+            msg_log::add(i18n::get("actor_common.spirit_weaker", "My spirit is weaker!"), colors::msg_bad());
         }
     }
     else if (can_player_see_actor(actor)) {
@@ -614,10 +623,14 @@ void change_max_sp(
                 name_the(actor));
 
         if (change > 0) {
-            msg_log::add(actor_name_the + " appears to grow in spirit.");
+            msg_log::add(
+                actor_name_the +
+                i18n::get("actor_common.grow_in_spirit", " appears to grow in spirit."));
         }
         else if (change < 0) {
-            msg_log::add(actor_name_the + " appears to shrink in spirit.");
+            msg_log::add(
+                actor_name_the +
+                i18n::get("actor_common.shrink_in_spirit", " appears to shrink in spirit."));
         }
     }
 }

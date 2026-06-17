@@ -22,6 +22,7 @@
 #include "debug.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
 #include "item_data.hpp"
@@ -99,7 +100,10 @@ static void player_displace_allied_mon(actor::Actor& mon, const P& new_mon_pos)
             ? actor::name_a(mon)
             : "it";
 
-        msg_log::add("I displace " + mon_name + ".");
+        msg_log::add(
+            i18n::get("actor_move.displace_prefix", "I displace ") +
+            mon_name +
+            i18n::get("actor_move.period", "."));
     }
 
     mon.m_pos = new_mon_pos;
@@ -322,12 +326,18 @@ static void handle_player_slowed_movement(const P& target)
         should_wait = true;
     }
     else if (is_player_staggering_from_wounds()) {
-        msg_log::add("My wounds cause me to stagger.", colors::msg_note());
+        msg_log::add(
+            i18n::get("actor_move.wounds_stagger", "My wounds cause me to stagger."),
+            colors::msg_note());
 
         should_wait = true;
     }
     else if (is_player_stagger_from_carry_weight()) {
-        msg_log::add("I stagger under the weight of my carried load.", colors::msg_note());
+        msg_log::add(
+            i18n::get(
+                "actor_move.load_stagger",
+                "I stagger under the weight of my carried load."),
+            colors::msg_note());
 
         should_wait = true;
     }
@@ -345,7 +355,9 @@ static void move_player_non_center_direction(const P& target)
         player.m_properties.has(prop::Id::burrowing)) {
         // The player attempted to move into the outer walls of the map with the burrowing
         // status effect, print some message.
-        msg_log::add("An unknown barrier blocks me. Perhaps it's for the best.");
+        msg_log::add(i18n::get(
+            "actor_move.unknown_barrier",
+            "An unknown barrier blocks me. Perhaps it's for the best."));
 
         return;
     }
@@ -384,7 +396,9 @@ static void move_player_non_center_direction(const P& target)
             // TODO: Currently you can attempt to attack hidden adjacent monsters "for
             // free" while you are too encumbered to move (very minor issue, but it's
             // weird)
-            msg_log::add("I am too encumbered to move!");
+            msg_log::add(i18n::get(
+                "actor_move.too_encumbered",
+                "I am too encumbered to move!"));
 
             return;
         }
