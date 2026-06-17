@@ -27,6 +27,7 @@
 #include "audio_data.hpp"
 #include "colors.hpp"
 #include "common_text.hpp"
+#include "i18n.hpp"
 #include "debug.hpp"
 #include "direction.hpp"
 #include "draw_blast.hpp"
@@ -512,7 +513,7 @@ PropEnded Entangled::affect_move_dir(Dir& dir)
     dir = Dir::center;
 
     if (actor::is_player(m_owner)) {
-        msg_log::add("I struggle to tear free!", colors::msg_bad());
+        msg_log::add(i18n::get("property.struggle_tear_free", "I struggle to tear free!"), colors::msg_bad());
     }
     else {
         // Is monster
@@ -551,7 +552,7 @@ bool Entangled::try_player_end_with_machete()
     item::Item* item = m_owner->m_inv.item_in_slot(SlotId::wpn);
 
     if (item && (item->id() == item::Id::machete)) {
-        msg_log::add("I cut myself free with my Machete.");
+        msg_log::add(i18n::get("property.cut_free_machete", "I cut myself free with my Machete."));
 
         m_owner->m_properties.end_prop(
             id(),
@@ -595,7 +596,7 @@ PropEnded Stuck::affect_move_dir(Dir& dir)
     dir = Dir::center;
 
     if (actor::is_player(m_owner)) {
-        msg_log::add("I struggle to pull free!", colors::msg_bad());
+        msg_log::add(i18n::get("property.struggle_pull_free", "I struggle to pull free!"), colors::msg_bad());
     }
     else {
         // Is monster
@@ -1230,7 +1231,7 @@ int Terrified::ability_mod(const AbilityId ability) const
 bool Terrified::allow_attack_melee(const Verbose verbose) const
 {
     if (actor::is_player(m_owner) && verbose == Verbose::yes) {
-        msg_log::add("I am too terrified to engage in close combat!");
+        msg_log::add(i18n::get("property.too_terrified", "I am too terrified to engage in close combat!"));
     }
 
     return false;
@@ -1301,7 +1302,7 @@ PropEnded Nailed::affect_move_dir(Dir& dir)
 
     if (m_nr_spikes > 0) {
         if (actor::is_player(m_owner)) {
-            msg_log::add("I rip out a spike from my flesh!");
+            msg_log::add(i18n::get("property.rip_spike_flesh", "I rip out a spike from my flesh!"));
         }
         else if (actor::can_player_see_actor(*m_owner)) {
             const std::string actor_name_the =
@@ -1432,7 +1433,7 @@ void Wound::on_more(const Prop& new_prop)
 
     if (m_nr_wounds >= nr_wounds_fatal) {
         if (actor::is_player(m_owner)) {
-            msg_log::add("I succumb to my wounds!");
+            msg_log::add(i18n::get("property.succumb_wounds", "I succumb to my wounds!"));
         }
 
         actor::kill(*m_owner, IsDestroyed::no, AllowGore::no, AllowDropItems::yes);
@@ -1503,7 +1504,7 @@ int MagicCarapace::armor_points() const
 bool Confused::allow_read_absolute(const Verbose verbose) const
 {
     if (actor::is_player(m_owner) && verbose == Verbose::yes) {
-        msg_log::add("I am too confused to read.");
+        msg_log::add(i18n::get("property.too_confused_read", "I am too confused to read."));
     }
 
     return false;
@@ -1513,7 +1514,7 @@ bool Confused::allow_cast_intr_spell_absolute(
     const Verbose verbose) const
 {
     if (actor::is_player(m_owner) && (verbose == Verbose::yes)) {
-        msg_log::add("I am too confused to concentrate!");
+        msg_log::add(i18n::get("property.too_confused_concentrate", "I am too confused to concentrate!"));
     }
 
     return false;
@@ -1522,7 +1523,7 @@ bool Confused::allow_cast_intr_spell_absolute(
 bool Confused::allow_pray(Verbose verbose) const
 {
     if (actor::is_player(m_owner) && (verbose == Verbose::yes)) {
-        msg_log::add("I am too confused to concentrate!");
+        msg_log::add(i18n::get("property.too_confused_concentrate", "I am too confused to concentrate!"));
     }
 
     return false;
@@ -1789,7 +1790,7 @@ void AstralOpiumAddict::on_more(const Prop& new_prop)
 {
     (void)new_prop;
 
-    msg_log::add("I need more!!");
+    msg_log::add(i18n::get("property.need_more", "I need more!!"));
 
     reset_penalty_countdown();
 
@@ -1912,7 +1913,7 @@ bool Frenzied::allow_move_dir(const Dir dir)
         }
     }
 
-    msg_log::add("I will not step away!");
+    msg_log::add(i18n::get("property.will_not_step_away", "I will not step away!"));
 
     return false;
 }
@@ -1961,7 +1962,7 @@ void Frenzied::on_end()
 bool Frenzied::allow_read_absolute(const Verbose verbose) const
 {
     if (actor::is_player(m_owner) && verbose == Verbose::yes) {
-        msg_log::add("I am too enraged to read!");
+        msg_log::add(i18n::get("property.too_enraged_read", "I am too enraged to read!"));
     }
 
     return false;
@@ -1971,7 +1972,7 @@ bool Frenzied::allow_cast_intr_spell_absolute(
     const Verbose verbose) const
 {
     if (actor::is_player(m_owner) && (verbose == Verbose::yes)) {
-        msg_log::add("I am too enraged to concentrate!");
+        msg_log::add(i18n::get("property.too_enraged_concentrate", "I am too enraged to concentrate!"));
     }
 
     return false;
@@ -1980,7 +1981,7 @@ bool Frenzied::allow_cast_intr_spell_absolute(
 bool Frenzied::allow_pray(Verbose verbose) const
 {
     if (actor::is_player(m_owner) && (verbose == Verbose::yes)) {
-        msg_log::add("I am too enraged to concentrate!");
+        msg_log::add(i18n::get("property.too_enraged_concentrate", "I am too enraged to concentrate!"));
     }
 
     return false;
@@ -2003,7 +2004,7 @@ int Burning::ability_mod(const AbilityId ability) const
 PropEnded Burning::on_actor_turn()
 {
     if (actor::is_player(m_owner)) {
-        msg_log::add("AAAARGH IT BURNS!!!", colors::light_red());
+        msg_log::add(i18n::get("property.burns", "AAAARGH IT BURNS!!!"), colors::light_red());
     }
 
     actor::hit(*m_owner, rnd::range(1, 3), DmgType::fire, nullptr);
@@ -2066,7 +2067,7 @@ bool Burning::allow_cast_intr_spell_chance(const Verbose verbose) const
 bool Burning::allow_pray(Verbose verbose) const
 {
     if (actor::is_player(m_owner) && (verbose == Verbose::yes)) {
-        msg_log::add("I am burning!");
+        msg_log::add(i18n::get("property.am_burning", "I am burning!"));
     }
 
     return false;
@@ -2075,7 +2076,7 @@ bool Burning::allow_pray(Verbose verbose) const
 bool Burning::allow_attack_ranged(const Verbose verbose) const
 {
     if (actor::is_player(m_owner) && (verbose == Verbose::yes)) {
-        msg_log::add("Not while burning.");
+        msg_log::add(i18n::get("property.not_while_burning", "Not while burning."));
     }
 
     return false;
@@ -2154,7 +2155,7 @@ int Blind::ability_mod(const AbilityId ability) const
 bool Blind::allow_read_absolute(const Verbose verbose) const
 {
     if (actor::is_player(m_owner) && (verbose == Verbose::yes)) {
-        msg_log::add("I cannot read while blind.");
+        msg_log::add(i18n::get("property.cannot_read_blind", "I cannot read while blind."));
     }
 
     return false;
@@ -2550,7 +2551,7 @@ PropActResult Vortex::on_act()
         msg_log::add(name_the + " pulls me!");
     }
     else {
-        msg_log::add("A powerful wind is pulling me!");
+        msg_log::add(i18n::get("property.powerful_wind_pulling", "A powerful wind is pulling me!"));
     }
 
     TRACE << "Attempt pull (knockback)" << "\n";
@@ -3388,7 +3389,7 @@ void AuraOfDecay::run_effect_on_env_at(const P& p) const
 void AuraOfDecay::print_msg_actor_hit(const actor::Actor& actor) const
 {
     if (actor::is_player(&actor)) {
-        msg_log::add("I am decaying!", colors::msg_bad());
+        msg_log::add(i18n::get("property.am_decaying", "I am decaying!"), colors::msg_bad());
     }
 }
 
@@ -3413,7 +3414,7 @@ PropActResult MajorClaphamSummon::on_act()
     snd.run();
 
     if (actor::can_player_see_actor(*m_owner)) {
-        msg_log::add("Major Clapham Lee calls forth his Tomb-Legions!");
+        msg_log::add(i18n::get("property.major_clapham_calls", "Major Clapham Lee calls forth his Tomb-Legions!"));
     }
 
     std::vector<std::string> ids_to_summon = {"MON_DEAN_HALSEY"};
@@ -3649,7 +3650,7 @@ void Clairvoyance::on_more(const Prop& new_prop)
 bool CannotReadCurse::allow_read_absolute(const Verbose verbose) const
 {
     if (actor::is_player(m_owner) && verbose == Verbose::yes) {
-        msg_log::add("I cannot read it.");
+        msg_log::add(i18n::get("property.cannot_read_it", "I cannot read it."));
     }
 
     return false;

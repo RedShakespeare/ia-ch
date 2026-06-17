@@ -13,6 +13,7 @@
 #include "array2.hpp"
 #include "colors.hpp"
 #include "common_text.hpp"
+#include "i18n.hpp"
 #include "debug.hpp"
 #include "direction.hpp"
 #include "game.hpp"
@@ -227,7 +228,12 @@ void PylonImpl::reveal() const
 
     const std::string descr = effect_descr();
 
-    msg_log::add("I now know that " + fake_name + " " + descr + ".");
+    msg_log::add(
+        i18n::get("terrain_pylon.now_know_prefix", "I now know that ") +
+        fake_name +
+        i18n::get("terrain_pylon.space", " ") +
+        descr +
+        i18n::get("terrain_pylon.period", "."));
 
     game::incr_player_xp(g_xp_on_identify_pylon);
 }
