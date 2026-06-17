@@ -36,6 +36,9 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::current_language() == "zh_CN");
     REQUIRE(i18n::get("main_menu.options", "(O)Options") == "(O)选项");
     REQUIRE(common_text::g_screen_exit_hint == "[space, esc] 退出");
+    REQUIRE(i18n::get("option.skip_intro_level.name", "Skip intro level") == "跳过开场关卡");
+    REQUIRE(i18n::get("option.display_hints.once", "Once") == "一次");
+    REQUIRE(i18n::get("option.auto_reload_weapons.descr", "Automatically perform a reload action instead if attempting to fire a ranged weapon with no ammo loaded.") == "如果试图在没有装填弹药的情况下开火，则自动执行装填动作。");
 
     const auto path = messages::resolved_path("menu_quotes.txt");
 

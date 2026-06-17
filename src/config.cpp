@@ -1561,21 +1561,21 @@ void UseTrapColorWhenObscuredOption::change(
 
 std::string SkipIntroLevelOption::name() const
 {
-    return "Skip intro level";
+    return i18n::get("option.skip_intro_level.name", "Skip intro level");
 }
 
 std::string SkipIntroLevelOption::descr() const
 {
-    return (
-        "Skip the introduction level. This level merely serves to "
-        "provide a backstory and to set up the atmosphere, there are "
-        "no gameplay benefits such as items or experience points that "
-        "can be gained from playing through it.");
+    return i18n::get(
+        "option.skip_intro_level.descr",
+        "Skip the introduction level. This level merely serves to provide a backstory and to set up the atmosphere, there are no gameplay benefits such as items or experience points that can be gained from playing through it.");
 }
 
 std::string SkipIntroLevelOption::value_str() const
 {
-    return s_is_intro_lvl_skipped ? "Yes" : "No";
+    return s_is_intro_lvl_skipped
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType SkipIntroLevelOption::submenu_type() const
@@ -1592,18 +1592,21 @@ void SkipIntroLevelOption::change(OptionChangeCommand command) const
 
 std::string SkipIntroPopupOption::name() const
 {
-    return "Skip intro popup";
+    return i18n::get("option.skip_intro_popup.name", "Skip intro popup");
 }
 
 std::string SkipIntroPopupOption::descr() const
 {
-    return (
+    return i18n::get(
+        "option.skip_intro_popup.descr",
         "Skip the story popup on the introduction level.");
 }
 
 std::string SkipIntroPopupOption::value_str() const
 {
-    return s_is_intro_popup_skipped ? "Yes" : "No";
+    return s_is_intro_popup_skipped
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType SkipIntroPopupOption::submenu_type() const
@@ -1620,23 +1623,21 @@ void SkipIntroPopupOption::change(OptionChangeCommand command) const
 
 std::string AnyKeyConfirmMoreOption::name() const
 {
-    return "Any key to proceed";
+    return i18n::get("option.any_key_confirm_more.name", "Any key to proceed");
 }
 
 std::string AnyKeyConfirmMoreOption::descr() const
 {
-    return (
-        "Any key confirms \"" +
-        msg_log::g_more_str +
-        "\" prompts in the message log (which can happen for example "
-        "when a monster appears as a warning to the player), "
-        "otherwise only space (and a few other keys) confirms these "
-        "prompts. Keeping the option disabled is safer.");
+    return i18n::get(
+        "option.any_key_confirm_more.descr",
+        "Any key confirms \"" + msg_log::g_more_str + "\" prompts in the message log (which can happen for example when a monster appears as a warning to the player), otherwise only space (and a few other keys) confirms these prompts. Keeping the option disabled is safer.");
 }
 
 std::string AnyKeyConfirmMoreOption::value_str() const
 {
-    return s_is_any_key_confirm_more ? "Yes" : "No";
+    return s_is_any_key_confirm_more
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType AnyKeyConfirmMoreOption::submenu_type() const
@@ -1653,22 +1654,21 @@ void AnyKeyConfirmMoreOption::change(OptionChangeCommand command) const
 
 std::string AutoSelectMenuOption::name() const
 {
-    return "Auto select menu entries";
+    return i18n::get("option.auto_select_menu.name", "Auto select menu entries");
 }
 
 std::string AutoSelectMenuOption::descr() const
 {
-    return (
-        "If disabled, pressing a letter key while in a menu only jumps "
-        "to that position, and a second press (or enter) is required "
-        "to select it (this is only applicable for menus where the options "
-        "have descriptions, such as the trait selection menu). "
-        "If enabled, pressing a letter immediately selects that entry.");
+    return i18n::get(
+        "option.auto_select_menu.descr",
+        "If disabled, pressing a letter key while in a menu only jumps to that position, and a second press (or enter) is required to select it (this is only applicable for menus where the options have descriptions, such as the trait selection menu). If enabled, pressing a letter immediately selects that entry.");
 }
 
 std::string AutoSelectMenuOption::value_str() const
 {
-    return s_auto_select_menu ? "Yes" : "No";
+    return s_auto_select_menu
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType AutoSelectMenuOption::submenu_type() const
@@ -1685,33 +1685,27 @@ void AutoSelectMenuOption::change(OptionChangeCommand command) const
 
 std::string DisplayHintsOption::name() const
 {
-    return "Display hints";
+    return i18n::get("option.display_hints.name", "Display hints");
 }
 
 std::string DisplayHintsOption::descr() const
 {
-    return (
-        "Controls when in-game hints should be displayed. "
-        "\n\n{COLOR_LIGHT_WHITE}Once per game:{color_reset} "
-        "Show all hints once in each game session "
-        "(and repeat them again in other sessions). "
-        "\n\n{COLOR_LIGHT_WHITE}Once:{color_reset} "
-        "Only show each hint once across all game sessions. "
-        "\n\n{COLOR_LIGHT_WHITE}Never:{color_reset} "
-        "Completely disable hints.");
+    return i18n::get(
+        "option.display_hints.descr",
+        "Controls when in-game hints should be displayed. \n\n{COLOR_LIGHT_WHITE}Once per game:{color_reset} Show all hints once in each game session (and repeat them again in other sessions). \n\n{COLOR_LIGHT_WHITE}Once:{color_reset} Only show each hint once across all game sessions. \n\n{COLOR_LIGHT_WHITE}Never:{color_reset} Completely disable hints.");
 }
 
 std::string DisplayHintsOption::value_str() const
 {
     switch (s_hints_mode) {
     case HintsMode::once_per_game:
-        return "Once per game";
+        return i18n::get("option.display_hints.once_per_game", "Once per game");
 
     case HintsMode::once:
-        return "Once";
+        return i18n::get("option.display_hints.once", "Once");
 
     case HintsMode::never:
-        return "Never";
+        return i18n::get("option.display_hints.never", "Never");
 
     case HintsMode::END:
         break;
@@ -1741,20 +1735,21 @@ void DisplayHintsOption::change(OptionChangeCommand command) const
 
 std::string AlwaysWarnMonsterOption::name() const
 {
-    return "Always warn monster appears";
+    return i18n::get("option.always_warn_monster.name", "Always warn monster appears");
 }
 
 std::string AlwaysWarnMonsterOption::descr() const
 {
-    return (
-        "Always warn when a monster appears in view (and no other "
-        "monster is already seen), otherwise only warn while "
-        "performing long actions like treating wounds.");
+    return i18n::get(
+        "option.always_warn_monster.descr",
+        "Always warn when a monster appears in view (and no other monster is already seen), otherwise only warn while performing long actions like treating wounds.");
 }
 
 std::string AlwaysWarnMonsterOption::value_str() const
 {
-    return s_always_warn_new_mon ? "Yes" : "No";
+    return s_always_warn_new_mon
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType AlwaysWarnMonsterOption::submenu_type() const
@@ -1771,12 +1766,13 @@ void AlwaysWarnMonsterOption::change(OptionChangeCommand command) const
 
 std::string WarnThrowValuableOption::name() const
 {
-    return "Warn throwing valuable item";
+    return i18n::get("option.warn_throw_valuable.name", "Warn throwing valuable item");
 }
 
 std::string WarnThrowValuableOption::descr() const
 {
-    return (
+    return i18n::get(
+        "option.warn_throw_valuable.descr",
         "Warn before throwing \"valuable\" items such as potions.");
 }
 
@@ -1799,13 +1795,12 @@ void WarnThrowValuableOption::change(OptionChangeCommand command) const
 
 std::string WarnLightExplosivesOption::name() const
 {
-    return "Warn lighting explosive";
+    return i18n::get("option.warn_light_explosives.name", "Warn lighting explosive");
 }
 
 std::string WarnLightExplosivesOption::descr() const
 {
-    return (
-        "Warn before lighting explosives");
+    return i18n::get("option.warn_light_explosives.descr", "Warn before lighting explosives");
 }
 
 std::string WarnLightExplosivesOption::value_str() const
@@ -1827,12 +1822,13 @@ void WarnLightExplosivesOption::change(OptionChangeCommand command) const
 
 std::string WanDrinkMalignPotionOption::name() const
 {
-    return "Warn malign potion";
+    return i18n::get("option.warn_drink_malign_potion.name", "Warn malign potion");
 }
 
 std::string WanDrinkMalignPotionOption::descr() const
 {
-    return (
+    return i18n::get(
+        "option.warn_drink_malign_potion.descr",
         "Warn before drinking potions that are known to be malignant.");
 }
 
@@ -1855,15 +1851,14 @@ void WanDrinkMalignPotionOption::change(OptionChangeCommand command) const
 
 std::string WarnRangedWeaponMeleeOption::name() const
 {
-    return "Warn ranged weapon melee";
+    return i18n::get("option.warn_ranged_weapon_melee.name", "Warn ranged weapon melee");
 }
 
 std::string WarnRangedWeaponMeleeOption::descr() const
 {
-    return (
-        "Warn if attempting to perform a close combat melee attack "
-        "with a ranged weapon (such as a pistol), which is possible "
-        "but perhaps unintended.");
+    return i18n::get(
+        "option.warn_ranged_weapon_melee.descr",
+        "Warn if attempting to perform a close combat melee attack with a ranged weapon (such as a pistol), which is possible but perhaps unintended.");
 }
 
 std::string WarnRangedWeaponMeleeOption::value_str() const
@@ -1885,23 +1880,21 @@ void WarnRangedWeaponMeleeOption::change(OptionChangeCommand command) const
 
 std::string MedicalBagAutoChoiceOption::name() const
 {
-    return "Auto medical bag choice";
+    return i18n::get("option.medical_bag_auto_choice.name", "Auto medical bag choice");
 }
 
 std::string MedicalBagAutoChoiceOption::descr() const
 {
-    return (
-        "Automatically choose Medical Bag action, "
-        "according to the following priority: "
-        "\n1) Treat infection"
-        "\n2) Treat wound"
-        "\n3) Quick patch-up"
-        "\nIf this option is disabled, the action is chosen in a popup menu instead.");
+    return i18n::get(
+        "option.medical_bag_auto_choice.descr",
+        "Automatically choose Medical Bag action, according to the following priority: \n1) Treat infection\n2) Treat wound\n3) Quick patch-up\nIf this option is disabled, the action is chosen in a popup menu instead.");
 }
 
 std::string MedicalBagAutoChoiceOption::value_str() const
 {
-    return s_is_medical_bag_auto_choice ? "Yes" : "No";
+    return s_is_medical_bag_auto_choice
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType MedicalBagAutoChoiceOption::submenu_type() const
@@ -1918,19 +1911,21 @@ void MedicalBagAutoChoiceOption::change(OptionChangeCommand command) const
 
 std::string AutoReloadOption::name() const
 {
-    return "Auto reload weapons";
+    return i18n::get("option.auto_reload_weapons.name", "Auto reload weapons");
 }
 
 std::string AutoReloadOption::descr() const
 {
-    return (
-        "Automatically perform a reload action instead if attempting "
-        "to fire a ranged weapon with no ammo loaded.");
+    return i18n::get(
+        "option.auto_reload_weapons.descr",
+        "Automatically perform a reload action instead if attempting to fire a ranged weapon with no ammo loaded.");
 }
 
 std::string AutoReloadOption::value_str() const
 {
-    return s_is_ranged_wpn_auto_reload ? "Yes" : "No";
+    return s_is_ranged_wpn_auto_reload
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType AutoReloadOption::submenu_type() const
