@@ -4,7 +4,24 @@ Generate a bitmap font atlas from the text used by the game.
 
 The first 95 glyphs keep the current game atlas layout: ASCII 32..126 at
 positions codepoint - 32. Extra UTF-8 characters are appended after that and
-written to a JSON map beside the PNG.
+written to a JSON map beside the PNG. The script can use different fonts and
+different logical/atlas cell sizes for ASCII and CJK glyphs while keeping them
+in the same atlas image.
+
+Example mixed-font command:
+    ./tools/generate-bitmap-font.py \
+        --font /usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf \
+        --ascii-font /usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf \
+        --cjk-font /usr/share/fonts/truetype/adobe/dengkuanheiti.ttf \
+        --font-size 18 \
+        --cjk-font-size 16 \
+        --cell 12x24 \
+        --atlas-cell 12x32 \
+        --ascii-cell 12x24 \
+        --ascii-atlas-cell 12x32 \
+        --cjk-cell 16x24 \
+        --cjk-atlas-cell 16x24 \
+        --output installed_files/gfx/fonts/12x24_cjk.png
 
 Requires Pillow:
     python3 -m pip install Pillow
@@ -463,19 +480,25 @@ def write_map(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Generate a bitmap PNG font atlas from game text characters.",
+        description=(
+            "Generate a bitmap PNG font atlas and JSON glyph map from game text. "
+            "Supports mixed ASCII/CJK fonts and mixed logical or atlas cell sizes."
+        ),
     )
     parser.add_argument(
         "--font",
         action="append",
         required=True,
-        help="Font path or fontconfig family. May be repeated for fallback fonts.",
+        help=(
+            "Fallback font path or fontconfig family. May be repeated. "
+            "Used for glyphs not covered by the ASCII or CJK font groups."
+        ),
     )
     parser.add_argument(
         "--font-size",
         type=int,
         default=22,
-        help="TrueType/OpenType font size used for rasterization.",
+        help="Fallback font rasterization size.",
     )
     parser.add_argument(
         "--cell",
@@ -492,7 +515,10 @@ def parse_args() -> argparse.Namespace:
         "--ascii-font",
         action="append",
         default=[],
-        help="Font path or fontconfig family used first for ASCII glyphs.",
+        help=(
+            "Font path or fontconfig family preferred for printable ASCII glyphs. "
+            "May be repeated for fallbacks within the ASCII group."
+        ),
     )
     parser.add_argument(
         "--ascii-font-size",
@@ -513,7 +539,10 @@ def parse_args() -> argparse.Namespace:
         "--cjk-font",
         action="append",
         default=[],
-        help="Font path or fontconfig family used first for CJK glyphs.",
+        help=(
+            "Font path or fontconfig family preferred for CJK glyphs. "
+            "May be repeated for fallbacks within the CJK group."
+        ),
     )
     parser.add_argument(
         "--cjk-font-size",
@@ -534,25 +563,31 @@ def parse_args() -> argparse.Namespace:
         "--columns",
         type=int,
         default=0,
-        help="Number of glyph cells per row. Default 0 writes all glyphs in one row.",
+        help=(
+            "Number of glyph cells per row. Default 0 writes all glyphs in one row. "
+            "Only valid when every glyph uses the same atlas cell size."
+        ),
     )
     parser.add_argument(
         "--output",
         type=Path,
         required=True,
-        help="Output PNG path, usually installed_files/gfx/fonts/WxH_name.png.",
+        help="Output PNG atlas path, usually installed_files/gfx/fonts/WxH_name.png.",
     )
     parser.add_argument(
         "--map-output",
         type=Path,
-        help="Output JSON character map. Defaults to OUTPUT with .json suffix.",
+        help="Output JSON glyph map. Defaults to OUTPUT with .json suffix.",
     )
     parser.add_argument(
         "--source",
         action="append",
         type=Path,
         default=[],
-        help="File or directory to scan. May be repeated. Defaults to installed_files, src, and include.",
+        help=(
+            "File or directory to scan for text. May be repeated. "
+            "Defaults to installed_files, src, and include."
+        ),
     )
     parser.add_argument(
         "--extra-text",
@@ -562,7 +597,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-ascii",
         action="store_true",
-        help="Do not force ASCII 32..126 into the first row.",
+        help="Do not force ASCII 32..126 into the atlas.",
     )
     parser.add_argument(
         "--ink",
@@ -573,12 +608,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--dry-run",
         action="store_true",
-        help="Print collected character and word counts without writing image files.",
+        help="Print collected character and CJK word counts without writing files.",
     )
     parser.add_argument(
         "--allow-missing",
         action="store_true",
-        help="Draw a missing-glyph box for unsupported characters instead of failing.",
+        help="Allow missing-glyph boxes for unsupported characters instead of failing.",
     )
     parser.add_argument(
         "--fit-glyphs",
