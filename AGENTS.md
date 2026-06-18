@@ -38,3 +38,7 @@ The scripts create and use `build/`; treat it as generated output.
 
 - The working tree may contain user changes. Do not revert or overwrite unrelated changes.
 - Do not commit generated build outputs, local binaries, or temporary artifacts.
+- Commit messages must start with `[type]`, where `type` summarizes the change category
+  such as `fix`, `assets`, `i18n`, `docs`, or `test`.
+- Commit messages should include enough detail to explain what changed and why; use a
+  multi-paragraph body for non-trivial changes.
