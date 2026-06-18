@@ -30,3 +30,10 @@ Example:
         --output installed_files/gfx/fonts/12x24_cjk.png
 
 The script requires Pillow (`python3 -m pip install Pillow`).
+
+Current CJK atlas composition:
+
+* 12x24_cjk.png uses 12x24 DejaVu Sans Mono for ASCII glyphs and
+  16x24 Dengkuanheiti for CJK glyphs.
+* 16x24_cjk.png uses 16x24 DejaVu Sans for ASCII glyphs and
+  24x24 Dengkuanheiti for CJK glyphs.
