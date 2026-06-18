@@ -457,7 +457,13 @@ def render_font_png(
         if fit_glyphs and (glyph_w > 0) and (glyph_h > 0) and ((glyph_w > layout.atlas_w) or (glyph_h > layout.atlas_h)):
             glyph_image = Image.new("RGBA", (glyph_w, glyph_h), (0, 0, 0, 0))
             glyph_draw = ImageDraw.Draw(glyph_image)
-            glyph_draw.text((-bbox[0], -bbox[1]), char, font=font, fill=(ink, ink, ink, 255))
+            glyph_draw.text(
+                (x0 - bbox[0], baseline - bbox[1]),
+                char,
+                font=font,
+                anchor="ls",
+                fill=(ink, ink, ink, 255),
+            )
 
             scale = min(layout.atlas_w / glyph_w, layout.atlas_h / glyph_h)
             resized_size = (
