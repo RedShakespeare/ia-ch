@@ -11,9 +11,9 @@
 #include <charconv>
 #include <fstream>
 #include <iterator>
-#include <regex>
 #include <optional>
 #include <ostream>
+#include <string_view>
 #include <unordered_map>
 
 #include "SDL.h"
@@ -86,33 +86,203 @@ static std::string font_map_path_from_img_path(const std::string& img_path)
     return img_path.substr(0, suffix_pos) + ".json";
 }
 
-static std::optional<int> parse_json_int(const std::string& line, const std::string& key)
+static std::string_view trim_json_line(std::string_view line)
 {
-    const std::regex regex("^\\s*\"" + key + "\"\\s*:\\s*(-?[0-9]+),?\\s*$");
-    std::smatch match;
+    const auto first = line.find_first_not_of(" \t\r\n");
 
-    if (!std::regex_match(line, match, regex)) {
+    if (first == std::string_view::npos) {
+        return {};
+    }
+
+    const auto last = line.find_last_not_of(" \t\r\n");
+
+    return line.substr(first, last - first + 1);
+}
+
+static int leading_space_count(const std::string& line)
+{
+    const auto first = line.find_first_not_of(' ');
+
+    if (first == std::string::npos) {
+        return static_cast<int>(line.size());
+    }
+
+    return static_cast<int>(first);
+}
+
+static bool consume_json_string(std::string_view& text, std::string& out)
+{
+    if (text.empty() || (text.front() != '"')) {
+        return false;
+    }
+
+    out.clear();
+    text.remove_prefix(1);
+
+    while (!text.empty()) {
+        const char c = text.front();
+        text.remove_prefix(1);
+
+        if (c == '"') {
+            return true;
+        }
+
+        if (c != '\\') {
+            out.push_back(c);
+
+            continue;
+        }
+
+        if (text.empty()) {
+            return false;
+        }
+
+        const char escaped = text.front();
+        text.remove_prefix(1);
+
+        switch (escaped) {
+        case '"':
+        case '\\':
+        case '/':
+            out.push_back(escaped);
+
+            break;
+
+        case 'b':
+            out.push_back('\b');
+
+            break;
+
+        case 'f':
+            out.push_back('\f');
+
+            break;
+
+        case 'n':
+            out.push_back('\n');
+
+            break;
+
+        case 'r':
+            out.push_back('\r');
+
+            break;
+
+        case 't':
+            out.push_back('\t');
+
+            break;
+
+        case 'u':
+            if (text.size() < 4) {
+                return false;
+            }
+
+            // Generated font maps also store a codepoint field, so the key only
+            // needs to mark that a glyph object started.
+            out.push_back('?');
+            text.remove_prefix(4);
+
+            break;
+
+        default:
+            return false;
+        }
+    }
+
+    return false;
+}
+
+static std::optional<int> parse_json_int(const std::string& line, const std::string_view key)
+{
+    std::string_view text = trim_json_line(line);
+    std::string parsed_key;
+
+    if (!consume_json_string(text, parsed_key) ||
+        (std::string_view(parsed_key.data(), parsed_key.size()) != key)) {
         return std::nullopt;
     }
 
-    return std::stoi(match[1].str());
+    text = trim_json_line(text);
+
+    if (text.empty() || (text.front() != ':')) {
+        return std::nullopt;
+    }
+
+    text.remove_prefix(1);
+    text = trim_json_line(text);
+
+    int value = 0;
+    const auto* begin = text.data();
+    const auto* end = text.data() + text.size();
+    const auto result = std::from_chars(begin, end, value);
+
+    if (result.ec != std::errc()) {
+        return std::nullopt;
+    }
+
+    std::string_view rest(result.ptr, end - result.ptr);
+    rest = trim_json_line(rest);
+
+    if (!rest.empty() && (rest != ",")) {
+        return std::nullopt;
+    }
+
+    return value;
+}
+
+static std::optional<std::string> parse_json_string_value(
+    const std::string& line,
+    const std::string_view key)
+{
+    std::string_view text = trim_json_line(line);
+    std::string parsed_key;
+
+    if (!consume_json_string(text, parsed_key) ||
+        (std::string_view(parsed_key.data(), parsed_key.size()) != key)) {
+        return std::nullopt;
+    }
+
+    text = trim_json_line(text);
+
+    if (text.empty() || (text.front() != ':')) {
+        return std::nullopt;
+    }
+
+    text.remove_prefix(1);
+    text = trim_json_line(text);
+
+    std::string value;
+
+    if (!consume_json_string(text, value)) {
+        return std::nullopt;
+    }
+
+    text = trim_json_line(text);
+
+    if (!text.empty() && (text != ",")) {
+        return std::nullopt;
+    }
+
+    return value;
 }
 
 static std::optional<int> parse_json_codepoint(const std::string& line)
 {
-    const std::regex regex(
-        R"REGEX(^\s*"codepoint"\s*:\s*"U\+([0-9A-Fa-f]+)",?\s*$)REGEX");
-    std::smatch match;
+    const auto codepoint_value = parse_json_string_value(line, "codepoint");
 
-    if (!std::regex_match(line, match, regex)) {
+    if (!codepoint_value ||
+        (codepoint_value->size() < 3) ||
+        (codepoint_value->compare(0, 2, "U+") != 0)) {
         return std::nullopt;
     }
 
     int codepoint = 0;
-    const std::string codepoint_str = match[1].str();
+    const std::string_view codepoint_str(*codepoint_value);
+    const std::string_view hex_digits = codepoint_str.substr(2);
     const auto result = std::from_chars(
-        codepoint_str.data(),
-        codepoint_str.data() + codepoint_str.size(),
+        hex_digits.data(),
+        hex_digits.data() + hex_digits.size(),
         codepoint,
         16);
 
@@ -121,6 +291,35 @@ static std::optional<int> parse_json_codepoint(const std::string& line)
     }
 
     return codepoint;
+}
+
+static bool is_json_object_end(const std::string& line)
+{
+    const std::string_view text = trim_json_line(line);
+
+    return (text == "}") || (text == "},");
+}
+
+static bool parse_json_named_object_begin(
+    const std::string& line,
+    std::string& key)
+{
+    std::string_view text = trim_json_line(line);
+
+    if (!consume_json_string(text, key)) {
+        return false;
+    }
+
+    text = trim_json_line(text);
+
+    if (text.empty() || (text.front() != ':')) {
+        return false;
+    }
+
+    text.remove_prefix(1);
+    text = trim_json_line(text);
+
+    return text == "{";
 }
 
 static std::string codepoint_to_utf8(const int codepoint)
@@ -166,14 +365,8 @@ static void load_font_map(const std::string& img_path)
     }
 
     TRACE << "Loading font map: " << map_path << "\n";
-
-    const std::regex columns_regex(R"(^\s*"columns"\s*:\s*([0-9]+),?\s*$)");
-    const std::regex cell_begin_regex(R"(^\s{2}"cell"\s*:\s*\{\s*$)");
-    const std::regex atlas_cell_begin_regex(R"(^\s{2}"atlas_cell"\s*:\s*\{\s*$)");
-    const std::regex top_level_object_end_regex(R"(^\s{2}\},?\s*$)");
-    const std::regex glyph_regex(R"REGEX(^\s{4}"((?:[^"\\]|\\.)+)"\s*:\s*\{\s*$)REGEX");
-    const std::regex index_regex(R"(^\s*"index"\s*:\s*([0-9]+),?\s*$)");
-    const std::regex glyph_end_regex(R"(^\s{4}\},?\s*$)");
+    s_font_glyph_indices.reserve(1024);
+    s_font_glyphs.reserve(1024);
 
     enum class FontMapSection
     {
@@ -295,34 +488,36 @@ static void load_font_map(const std::string& img_path)
     };
 
     while (std::getline(file, line)) {
-        std::smatch match;
-
-        if (std::regex_match(line, match, columns_regex)) {
-            s_font_glyph_columns = std::stoi(match[1].str());
+        if (const auto columns_value = parse_json_int(line, "columns")) {
+            s_font_glyph_columns = *columns_value;
 
             continue;
         }
 
-        if (std::regex_match(line, cell_begin_regex)) {
-            current_section = FontMapSection::cell;
+        std::string object_key;
 
-            continue;
-        }
+        if (parse_json_named_object_begin(line, object_key)) {
+            const int indent = leading_space_count(line);
 
-        if (std::regex_match(line, atlas_cell_begin_regex)) {
-            current_section = FontMapSection::atlas_cell;
-
-            continue;
-        }
-
-        if (std::regex_match(line, top_level_object_end_regex)) {
-            current_section = FontMapSection::none;
+            if ((indent == 2) && (object_key == "cell")) {
+                current_section = FontMapSection::cell;
+            }
+            else if ((indent == 2) && (object_key == "atlas_cell")) {
+                current_section = FontMapSection::atlas_cell;
+            }
+            else if (indent == 4) {
+                finish_glyph();
+                current_glyph = object_key;
+            }
 
             continue;
         }
 
         if (current_section != FontMapSection::none) {
-            if (const auto width_value = parse_json_int(line, "width")) {
+            if (is_json_object_end(line)) {
+                current_section = FontMapSection::none;
+            }
+            else if (const auto width_value = parse_json_int(line, "width")) {
                 if (current_section == FontMapSection::cell) {
                     cell_w = *width_value;
                 }
@@ -342,19 +537,12 @@ static void load_font_map(const std::string& img_path)
             continue;
         }
 
-        if (std::regex_match(line, match, glyph_regex)) {
-            finish_glyph();
-            current_glyph = match[1].str();
-
-            continue;
-        }
-
         if (current_glyph.empty()) {
             continue;
         }
 
-        if (std::regex_match(line, match, index_regex)) {
-            current_index = std::stoi(match[1].str());
+        if (const auto index_value = parse_json_int(line, "index")) {
+            current_index = *index_value;
 
             continue;
         }
@@ -395,7 +583,7 @@ static void load_font_map(const std::string& img_path)
         else if (const auto render_offset_y_value = parse_json_int(line, "render_offset_y")) {
             current_render_offset_y = *render_offset_y_value;
         }
-        else if (std::regex_match(line, glyph_end_regex)) {
+        else if (is_json_object_end(line)) {
             finish_glyph();
         }
     }
