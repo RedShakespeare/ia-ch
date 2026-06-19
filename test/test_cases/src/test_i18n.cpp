@@ -69,6 +69,36 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("knockback.player_knocked_back", "I am knocked back!") == "我被击退了！");
     REQUIRE(i18n::get("game_commands.press_help", "Press [?] for help.") == "按 [?] 查看帮助。");
     REQUIRE(i18n::get("msg_log.no_message_history", "No message history") == "没有消息历史");
+    REQUIRE(
+        i18n::get("map_controller.mid_game_warning", "") ==
+        "没想到这个地方会延伸得这么深，这不可能！而且这里有明显的古代文明迹象，完全违背逻辑和理性！\n\n"
+        "回去的路似乎不知为何已经迷失了，就算我想回去，我还能回去吗？");
+    REQUIRE(
+        i18n::get("map_controller.mid_game_horror", "") ==
+        "它无穷无尽！这不可能是真的！我感觉自己像是在梦中行走；恐怖感压得人喘不过气。");
+    REQUIRE(
+        i18n::get("map_controller.long_sound_warning", "") ==
+        "我听到远处传来微弱的回声。这里的每个声音似乎都传得更远 - 我需要小心行走。");
+    REQUIRE(
+        i18n::get("map_controller.presence_known", "I feel like my presence here is known!") ==
+        "我感觉这里知道了我的存在！");
+    REQUIRE(
+        i18n::get("map_controller.ground_rumbles", "The ground rumbles...") ==
+        "地面隆隆作响……");
+    REQUIRE(
+        i18n::get("map_controller.egypt_intro", "") ==
+        "当我深入地下时，周围环境突然变化令我吃了一惊。这个房间里的古老建筑和我见过的一切都不同，"
+        "石墙上刻满了复杂的象形文字。\n\n"
+        "空气中弥漫着沙土和陌生熏香的气味，让人感觉仿佛被带到了另一个时代和地点。"
+        "沉默令人窒息，只有我的脚步声在石地板上回荡。\n\n"
+        "当我更仔细地看着这些雕刻时，我忍不住想知道创造它们的文明。"
+        "他们是谁，又是如何在这么深的地下建造出这样的东西？");
+    REQUIRE(
+        i18n::get("map_controller.deep_one_lair_intro", "") ==
+        "这里的墙壁因潮湿而滑腻，空气中充满盐水和明显的腐烂气味。"
+        "我能感觉湿气贴在皮肤上，呼吸也变得短促。\n\n"
+        "有隧道通向更深的地下水道，但我只能猜测它们会通往哪里。"
+        "整个洞穴系统仿佛彼此相连，通道可能通向海洋深处，或地下湖泊与河流。");
     REQUIRE(i18n::get("actor_player.monster_here_prefix", "There is ") == "这里有");
     REQUIRE(i18n::get("actor_player.monster_here_suffix", " here!") == "！");
     REQUIRE(i18n::get("actor_player.more_fervent", "I feel more fervent!") == "我感到更加虔诚！");

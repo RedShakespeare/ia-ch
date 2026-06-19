@@ -16,6 +16,7 @@
 #include "colors.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "map.hpp"
 #include "misc.hpp"
 #include "msg_log.hpp"
@@ -43,33 +44,36 @@ void MapControllerStd::on_enter()
     }
 
     if (map::g_dlvl == (g_dlvl_first_mid_game / 2)) {
-        const std::string msg =
+        const std::string msg = i18n::get(
+            "map_controller.mid_game_warning",
             "I did not expect this place to run this deep, "
             "it is not possible! "
             "Also there are unmistakable signs of an ancient civilization, "
             "defying all logic and reason!\n\n"
             "The way back seems lost somehow, "
-            "could I ever return even if I wanted to?";
+            "could I ever return even if I wanted to?");
 
         popup::Popup(popup::AddToMsgHistory::yes)
             .set_msg(msg)
             .run();
     }
     else if (map::g_dlvl == g_dlvl_first_mid_game) {
-        const std::string msg =
+        const std::string msg = i18n::get(
+            "map_controller.mid_game_horror",
             "It goes on forever! This cannot be real! "
             "I feel like I am walking in a dream; "
-            "The horror is utterly crushing.";
+            "The horror is utterly crushing.");
 
         popup::Popup(popup::AddToMsgHistory::yes)
             .set_msg(msg)
             .run();
     }
     else if (map::g_dlvl == g_dlvl_longer_snd_dist) {
-        const std::string msg =
+        const std::string msg = i18n::get(
+            "map_controller.long_sound_warning",
             "I hear faint echoes in the distance. "
             "Every sound here seems to carry further - "
-            "I'll need to tread carefully.";
+            "I'll need to tread carefully.");
 
         popup::Popup(popup::AddToMsgHistory::yes)
             .set_msg(msg)
@@ -102,7 +106,11 @@ void MapControllerBoss::on_enter()
 
     msg_log::more_prompt();
 
-    msg_log::add("I feel like my presence here is known!", colors::msg_note());
+    msg_log::add(
+        i18n::get(
+            "map_controller.presence_known",
+            "I feel like my presence here is known!"),
+        colors::msg_note());
 
     for (auto* const actor : game_time::g_actors) {
         if (actor::is_player(actor)) {
@@ -134,7 +142,10 @@ void MapControllerBoss::on_std_turn()
 
     // The boss is dead, and stairs have not yet been created
 
-    msg_log::add("The ground rumbles...");
+    msg_log::add(
+        i18n::get(
+            "map_controller.ground_rumbles",
+            "The ground rumbles..."));
 
     map::update_terrain(
         terrain::make(
@@ -174,7 +185,9 @@ void MapControllerEgypt::on_std_turn()
             msg_log::more_prompt();
 
             msg_log::add(
-                "I feel like my presence here is known!",
+                i18n::get(
+                    "map_controller.presence_known",
+                    "I feel like my presence here is known!"),
                 colors::msg_note());
 
             for (auto* const actor : game_time::g_actors) {
@@ -194,7 +207,8 @@ void MapControllerEgypt::on_std_turn()
 
 void MapControllerEgypt::on_enter()
 {
-    const std::string msg =
+    const std::string msg = i18n::get(
+        "map_controller.egypt_intro",
         "As I make my way into the depths, "
         "I'm taken aback by the sudden change in surroundings. "
         "The ancient architecture of this chamber is unlike anything I've seen before, "
@@ -209,7 +223,7 @@ void MapControllerEgypt::on_enter()
         "As I look closer at the carvings, "
         "I can't help but wonder about the civilization that created them. "
         "Who were they, and how did they manage to build something like "
-        "this deep underground?";
+        "this deep underground?");
 
     popup::Popup(popup::AddToMsgHistory::yes)
         .set_msg(msg)
@@ -218,7 +232,8 @@ void MapControllerEgypt::on_enter()
 
 void MapControllerDeepOneLair::on_enter()
 {
-    const std::string msg =
+    const std::string msg = i18n::get(
+        "map_controller.deep_one_lair_intro",
         "The walls here are slick with dampness, "
         "and the air is heavy with the stench of saltwater "
         "and the unmistakable odor of decay. "
@@ -229,7 +244,7 @@ void MapControllerDeepOneLair::on_enter()
         "but I can only guess where they might lead. "
         "It's as if the entire cave system is interconnected, "
         "with passages that could possibly lead to the depths of the ocean or "
-        "subterranean lakes and rivers.";
+        "subterranean lakes and rivers.");
 
     popup::Popup(popup::AddToMsgHistory::yes)
         .set_msg(msg)
