@@ -190,7 +190,9 @@ void InsPhobiaRat::on_new_player_turn(
 
     for (auto* const actor : seen_actors) {
         if (actor->m_data->is_rat) {
-            msg_log::add("I am plagued by my phobia of rats!");
+            msg_log::add(insanity_i18n::get(
+                "phobia_rat.trigger",
+                "I am plagued by my phobia of rats!"));
 
             map::g_player->m_properties.apply(
                 prop::make(prop::Id::terrified));
@@ -222,7 +224,9 @@ void InsPhobiaSpider::on_new_player_turn(
 
     for (auto* const actor : seen_actors) {
         if (actor->m_data->is_spider) {
-            msg_log::add("I am plagued by my phobia of spiders!");
+            msg_log::add(insanity_i18n::get(
+                "phobia_spider.trigger",
+                "I am plagued by my phobia of spiders!"));
 
             map::g_player->m_properties.apply(
                 prop::make(prop::Id::terrified));
@@ -254,11 +258,13 @@ void InsPhobiaReptileAndAmph::on_new_player_turn(
 
     bool is_triggered = false;
 
-    std::string animal_str;
+    std::string phobia_msg;
 
     for (auto* const actor : seen_actors) {
         if (actor->m_data->is_reptile) {
-            animal_str = "reptiles";
+            phobia_msg = insanity_i18n::get(
+                "phobia_reptile_and_amph.reptiles_trigger",
+                "I am plagued by my phobia of reptiles!");
 
             is_triggered = true;
 
@@ -266,7 +272,9 @@ void InsPhobiaReptileAndAmph::on_new_player_turn(
         }
 
         if (actor->m_data->is_amphibian) {
-            animal_str = "amphibians";
+            phobia_msg = insanity_i18n::get(
+                "phobia_reptile_and_amph.amphibians_trigger",
+                "I am plagued by my phobia of amphibians!");
 
             is_triggered = true;
 
@@ -275,7 +283,7 @@ void InsPhobiaReptileAndAmph::on_new_player_turn(
     }
 
     if (is_triggered) {
-        msg_log::add("I am plagued by my phobia of " + animal_str + "!");
+        msg_log::add(phobia_msg);
 
         map::g_player->m_properties.apply(
             prop::make(prop::Id::terrified));
@@ -304,7 +312,9 @@ void InsPhobiaCanine::on_new_player_turn(
 
     for (auto* const actor : seen_actors) {
         if (actor->m_data->is_canine) {
-            msg_log::add("I am plagued by my phobia of canines!");
+            msg_log::add(insanity_i18n::get(
+                "phobia_canine.trigger",
+                "I am plagued by my phobia of canines!"));
 
             map::g_player->m_properties.apply(
                 prop::make(prop::Id::terrified));
@@ -336,7 +346,9 @@ void InsPhobiaDead::on_new_player_turn(
 
     for (const actor::Actor* const actor : seen_actors) {
         if (actor->m_properties.has(prop::Id::undead)) {
-            msg_log::add("I am plagued by my phobia of the dead!");
+            msg_log::add(insanity_i18n::get(
+                "phobia_dead.trigger",
+                "I am plagued by my phobia of the dead!"));
 
             map::g_player->m_properties.apply(prop::make(prop::Id::terrified));
 
@@ -376,7 +388,9 @@ void InsPhobiaDeep::on_new_player_turn(
             deep_terrains);
 
     if (parser.run(map::g_player->m_pos)) {
-        msg_log::add("I am plagued by my phobia of deep places!");
+        msg_log::add(insanity_i18n::get(
+            "phobia_deep.trigger",
+            "I am plagued by my phobia of deep places!"));
 
         map::g_player->m_properties.apply(
             prop::make(prop::Id::terrified));
@@ -410,7 +424,9 @@ void InsPhobiaDark::on_new_player_turn(
 
         if ((props.allow_act() && !props.allow_see()) ||
             (map::g_dark.at(p) && !map::g_light.at(p))) {
-            msg_log::add("I am plagued by my phobia of the dark!");
+            msg_log::add(insanity_i18n::get(
+                "phobia_dark.trigger",
+                "I am plagued by my phobia of the dark!"));
 
             map::g_player->m_properties.apply(
                 prop::make(prop::Id::terrified));

@@ -62,6 +62,38 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "insanity.phobia_rat.history",
             "Gained a phobia of rats") == "患上鼠类恐惧症");
+    REQUIRE(
+        i18n::get(
+            "insanity.phobia_rat.trigger",
+            "I am plagued by my phobia of rats!") == "我被对鼠类的恐惧所折磨！");
+    REQUIRE(
+        i18n::get(
+            "insanity.phobia_spider.trigger",
+            "I am plagued by my phobia of spiders!") == "我被对蜘蛛的恐惧所折磨！");
+    REQUIRE(
+        i18n::get(
+            "insanity.phobia_reptile_and_amph.reptiles_trigger",
+            "I am plagued by my phobia of reptiles!") == "我被对爬行动物的恐惧所折磨！");
+    REQUIRE(
+        i18n::get(
+            "insanity.phobia_reptile_and_amph.amphibians_trigger",
+            "I am plagued by my phobia of amphibians!") == "我被对两栖动物的恐惧所折磨！");
+    REQUIRE(
+        i18n::get(
+            "insanity.phobia_canine.trigger",
+            "I am plagued by my phobia of canines!") == "我被对犬类的恐惧所折磨！");
+    REQUIRE(
+        i18n::get(
+            "insanity.phobia_dead.trigger",
+            "I am plagued by my phobia of the dead!") == "我被对死者的恐惧所折磨！");
+    REQUIRE(
+        i18n::get(
+            "insanity.phobia_deep.trigger",
+            "I am plagued by my phobia of deep places!") == "我被对深处的恐惧所折磨！");
+    REQUIRE(
+        i18n::get(
+            "insanity.phobia_dark.trigger",
+            "I am plagued by my phobia of the dark!") == "我被对黑暗的恐惧所折磨！");
     REQUIRE(i18n::get("option.skip_intro_level.name", "Skip intro level") == "跳过开场关卡");
     REQUIRE(i18n::get("option.display_hints.once", "Once") == "一次");
     REQUIRE(i18n::get("option.auto_reload_weapons.descr", "Automatically perform a reload action instead if attempting to fire a ranged weapon with no ammo loaded.") == "如果试图在没有装填弹药的情况下开火，则自动执行装填动作。");
