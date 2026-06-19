@@ -492,7 +492,13 @@ def render_font_png(
             )
             glyph_image = glyph_image.resize(resized_size, Image.Resampling.LANCZOS)
             draw_x = x0 + ((layout.atlas_w - resized_size[0]) // 2)
-            draw_y = y0 + ((layout.atlas_h - resized_size[1]) // 2)
+            if (glyph_w > layout.atlas_w) and (glyph_h <= layout.atlas_h):
+                original_bottom = bbox[3] - y0
+                draw_y = y0 + min(
+                    layout.atlas_h - resized_size[1],
+                    max(0, original_bottom - resized_size[1]))
+            else:
+                draw_y = y0 + ((layout.atlas_h - resized_size[1]) // 2)
             image.alpha_composite(glyph_image, (draw_x, draw_y))
         else:
             if (glyph_w > layout.atlas_w) or (glyph_h > layout.atlas_h):
