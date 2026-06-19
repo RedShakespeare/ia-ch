@@ -15,6 +15,7 @@
 #include "actor_see.hpp"
 #include "audio_data.hpp"
 #include "game_time.hpp"
+#include "i18n.hpp"
 #include "msg_log.hpp"
 #include "pos.hpp"
 #include "property.hpp"
@@ -76,7 +77,9 @@ static bool roll_corpse_destroyed(const actor::Actor& corpse)
 static void run_feed_snd(actor::Actor& actor)
 {
     Snd snd(
-        "I hear ripping and chewing.",
+        i18n::get(
+            "actor_eat.ripping_and_chewing",
+            "I hear ripping and chewing."),
         audio::SfxId::bite,
         IgnoreMsgIfOriginSeen::yes,
         actor.m_pos,
@@ -94,7 +97,10 @@ static void print_feed_msg(
     const std::string corpse_name_the = corpse.m_data->corpse_name_the;
 
     if (actor::is_player(&actor)) {
-        msg_log::add("I feed on " + corpse_name_the + ".");
+        msg_log::add(
+            i18n::get("actor_eat.feed_player_prefix", "I feed on ") +
+            corpse_name_the +
+            i18n::get("actor_eat.period", "."));
     }
     else {
         if (can_player_see_actor(actor)) {
@@ -104,9 +110,9 @@ static void print_feed_msg(
 
             msg_log::add(
                 actor_name_the +
-                " feeds on " +
+                i18n::get("actor_eat.feeds_on", " feeds on ") +
                 corpse_name_the +
-                ".");
+                i18n::get("actor_eat.period", "."));
         }
     }
 }
@@ -117,7 +123,11 @@ static void print_corpse_destroyed_msg(const actor::Actor& corpse)
         text_format::first_to_upper(
             corpse.m_data->corpse_name_the);
 
-    msg_log::add(name + " is completely devoured.");
+    msg_log::add(
+        name +
+        i18n::get(
+            "actor_eat.completely_devoured_suffix",
+            " is completely devoured."));
 }
 
 static void print_corpses_remaining(const P& p)
@@ -143,7 +153,7 @@ static void print_corpses_remaining(const P& p)
                 other_corpse->m_data
                     ->corpse_name_a);
 
-        msg_log::add(name + ".");
+        msg_log::add(name + i18n::get("actor_eat.period", "."));
     }
 }
 

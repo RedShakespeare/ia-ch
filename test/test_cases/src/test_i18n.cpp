@@ -71,6 +71,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("msg_log.no_message_history", "No message history") == "没有消息历史");
     REQUIRE(i18n::get("actor_death.agonized_screaming", "I hear agonized screaming.") == "我听到痛苦的尖叫。");
     REQUIRE(i18n::get("actor_death.resurrect_history", "Was brought back from the dead") == "死而复生");
+    REQUIRE(i18n::get("actor_eat.ripping_and_chewing", "I hear ripping and chewing.") == "我听到撕咬和咀嚼声。");
+    REQUIRE(i18n::get("actor_eat.feed_player_prefix", "I feed on ") == "我啃食");
+    REQUIRE(i18n::get("actor_eat.period", ".") == "。");
+    REQUIRE(i18n::get("actor_eat.feeds_on", " feeds on ") == "啃食");
+    REQUIRE(i18n::get("actor_eat.completely_devoured_suffix", " is completely devoured.") == "被完全吞噬了。");
     REQUIRE(i18n::get("explosion.player_hit", "I am hit by an explosion!") == "我被爆炸击中了！");
     REQUIRE(i18n::get("explosion.survived_history", "Survived an explosion") == "从爆炸中幸存");
     REQUIRE(i18n::get("explosion.hear", "I hear an explosion!") == "我听到一声爆炸！");
