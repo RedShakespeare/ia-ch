@@ -7,6 +7,7 @@
 #include "item_head.hpp"
 
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "msg_log.hpp"
 #include "saving.hpp"
@@ -28,7 +29,8 @@ void GasMask::decr_turns_left(Inventory& carrier_inv)
         const std::string item_name = name(ItemNameType::plain, ItemNameInfo::none);
 
         msg_log::add(
-            "My " + item_name + " expires.",
+            i18n::get("item_head.expires_prefix", "My ") + item_name +
+                i18n::get("item_head.expires_suffix", " expires."),
             colors::msg_note(),
             MsgInterruptPlayer::yes,
             MorePromptOnMsg::yes);
@@ -41,7 +43,9 @@ std::string GasMask::name_info_str(const ItemNameIdentified id_type) const
 {
     (void)id_type;
 
-    return "(" + std::to_string(m_nr_turns_left) + " turns)";
+    return i18n::get("item_head.turns_left_prefix", "(") +
+           std::to_string(m_nr_turns_left) +
+           i18n::get("item_head.turns_left_suffix", " turns)");
 }
 
 void GasMask::save_hook() const

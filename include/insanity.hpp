@@ -7,6 +7,8 @@
 #ifndef INSANITY_HPP
 #define INSANITY_HPP
 
+#include "i18n.hpp"
+
 #include <string>
 #include <vector>
 
@@ -14,6 +16,14 @@ namespace actor
 {
 class Actor;
 }  // namespace actor
+
+namespace insanity_i18n
+{
+inline std::string get(const std::string& key, const std::string& fallback)
+{
+    return i18n::get("insanity." + key, fallback);
+}
+}  // namespace insanity_i18n
 
 enum class InsSymptId
 {
@@ -136,12 +146,16 @@ protected:
 
     std::string start_heading() const override
     {
-        return "Experiences erased!";
+        return insanity_i18n::get(
+            "reduce_xp.start_heading",
+            "Experiences erased!");
     }
 
     std::string history_msg() const override
     {
-        return "Experiences were erased from memory";
+        return insanity_i18n::get(
+            "reduce_xp.history",
+            "Experiences were erased from memory");
     }
 };
 
@@ -174,12 +188,12 @@ protected:
 
     std::string start_heading() const override
     {
-        return "Screaming!";
+        return insanity_i18n::get("scream.start_heading", "Screaming!");
     }
 
     std::string history_msg() const override
     {
-        return "Screamed in terror";
+        return insanity_i18n::get("scream.history", "Screamed in terror");
     }
 };
 
@@ -208,12 +222,14 @@ public:
 
     std::string char_descr_msg() const override
     {
-        return "Babbling";
+        return insanity_i18n::get("babbling.char_descr", "Babbling");
     }
 
     std::string game_over_summary_msg() const override
     {
-        return "Had a tendency to babble";
+        return insanity_i18n::get(
+            "babbling.summary",
+            "Had a tendency to babble");
     }
 
     void babble() const;
@@ -223,27 +239,35 @@ protected:
 
     std::string start_msg() const override
     {
-        return "I find myself babbling incoherently.";
+        return insanity_i18n::get(
+            "babbling.start",
+            "I find myself babbling incoherently.");
     }
 
     std::string start_heading() const override
     {
-        return "Babbling!";
+        return insanity_i18n::get("babbling.start_heading", "Babbling!");
     }
 
     std::string end_msg() const override
     {
-        return "I feel in control of my speech.";
+        return insanity_i18n::get(
+            "babbling.end",
+            "I feel in control of my speech.");
     }
 
     std::string history_msg() const override
     {
-        return "Started babbling incoherently";
+        return insanity_i18n::get(
+            "babbling.history",
+            "Started babbling incoherently");
     }
 
     std::string history_msg_end() const override
     {
-        return "My strange babbling was cured";
+        return insanity_i18n::get(
+            "babbling.history_end",
+            "My strange babbling was cured");
     }
 };
 
@@ -274,17 +298,17 @@ protected:
 
     std::string start_msg() const override
     {
-        return "Everything is blacking out.";
+        return insanity_i18n::get("faint.start", "Everything is blacking out.");
     }
 
     std::string start_heading() const override
     {
-        return "Fainting!";
+        return insanity_i18n::get("faint.start_heading", "Fainting!");
     }
 
     std::string history_msg() const override
     {
-        return "Fainted";
+        return insanity_i18n::get("faint.history", "Fainted");
     }
 };
 
@@ -313,17 +337,17 @@ protected:
 
     std::string start_msg() const override
     {
-        return "I laugh maniacally.";
+        return insanity_i18n::get("laugh.start", "I laugh maniacally.");
     }
 
     std::string start_heading() const override
     {
-        return "HAHAHA!";
+        return insanity_i18n::get("laugh.start_heading", "HAHAHA!");
     }
 
     std::string history_msg() const override
     {
-        return "Laughed maniacally";
+        return insanity_i18n::get("laugh.history", "Laughed maniacally");
     }
 };
 
@@ -356,38 +380,48 @@ public:
 
     std::string char_descr_msg() const override
     {
-        return "Phobia of rats";
+        return insanity_i18n::get("phobia_rat.char_descr", "Phobia of rats");
     }
 
     std::string game_over_summary_msg() const override
     {
-        return "Had a phobia of rats";
+        return insanity_i18n::get(
+            "phobia_rat.summary",
+            "Had a phobia of rats");
     }
 
 protected:
     std::string start_msg() const override
     {
-        return "Rats suddenly seem terrifying.";
+        return insanity_i18n::get(
+            "phobia_rat.start",
+            "Rats suddenly seem terrifying.");
     }
 
     std::string start_heading() const override
     {
-        return "Murophobia!";
+        return insanity_i18n::get("phobia_rat.start_heading", "Murophobia!");
     }
 
     std::string end_msg() const override
     {
-        return "I am no longer terrified of rats.";
+        return insanity_i18n::get(
+            "phobia_rat.end",
+            "I am no longer terrified of rats.");
     }
 
     std::string history_msg() const override
     {
-        return "Gained a phobia of rats";
+        return insanity_i18n::get(
+            "phobia_rat.history",
+            "Gained a phobia of rats");
     }
 
     std::string history_msg_end() const override
     {
-        return "My phobia of rats was cured";
+        return insanity_i18n::get(
+            "phobia_rat.history_end",
+            "My phobia of rats was cured");
     }
 };
 
@@ -420,38 +454,52 @@ public:
 
     std::string char_descr_msg() const override
     {
-        return "Phobia of spiders";
+        return insanity_i18n::get(
+            "phobia_spider.char_descr",
+            "Phobia of spiders");
     }
 
     std::string game_over_summary_msg() const override
     {
-        return "Had a phobia of spiders";
+        return insanity_i18n::get(
+            "phobia_spider.summary",
+            "Had a phobia of spiders");
     }
 
 protected:
     std::string start_msg() const override
     {
-        return "Spiders suddenly seem terrifying.";
+        return insanity_i18n::get(
+            "phobia_spider.start",
+            "Spiders suddenly seem terrifying.");
     }
 
     std::string start_heading() const override
     {
-        return "Arachnophobia!";
+        return insanity_i18n::get(
+            "phobia_spider.start_heading",
+            "Arachnophobia!");
     }
 
     std::string end_msg() const override
     {
-        return "I am no longer terrified of spiders.";
+        return insanity_i18n::get(
+            "phobia_spider.end",
+            "I am no longer terrified of spiders.");
     }
 
     std::string history_msg() const override
     {
-        return "Gained a phobia of spiders";
+        return insanity_i18n::get(
+            "phobia_spider.history",
+            "Gained a phobia of spiders");
     }
 
     std::string history_msg_end() const override
     {
-        return "My phobia of spiders was cured";
+        return insanity_i18n::get(
+            "phobia_spider.history_end",
+            "My phobia of spiders was cured");
     }
 };
 
@@ -484,38 +532,52 @@ public:
 
     std::string char_descr_msg() const override
     {
-        return "Phobia of reptiles and amphibians";
+        return insanity_i18n::get(
+            "phobia_reptile_and_amph.char_descr",
+            "Phobia of reptiles and amphibians");
     }
 
     std::string game_over_summary_msg() const override
     {
-        return "Had a phobia of reptiles and amphibians";
+        return insanity_i18n::get(
+            "phobia_reptile_and_amph.summary",
+            "Had a phobia of reptiles and amphibians");
     }
 
 protected:
     std::string start_msg() const override
     {
-        return "Reptiles and amphibians suddenly seem terrifying.";
+        return insanity_i18n::get(
+            "phobia_reptile_and_amph.start",
+            "Reptiles and amphibians suddenly seem terrifying.");
     }
 
     std::string start_heading() const override
     {
-        return "Herpetophobia!";
+        return insanity_i18n::get(
+            "phobia_reptile_and_amph.start_heading",
+            "Herpetophobia!");
     }
 
     std::string end_msg() const override
     {
-        return "I am no longer terrified of reptiles and amphibians.";
+        return insanity_i18n::get(
+            "phobia_reptile_and_amph.end",
+            "I am no longer terrified of reptiles and amphibians.");
     }
 
     std::string history_msg() const override
     {
-        return "Gained a phobia of reptiles and amphibians";
+        return insanity_i18n::get(
+            "phobia_reptile_and_amph.history",
+            "Gained a phobia of reptiles and amphibians");
     }
 
     std::string history_msg_end() const override
     {
-        return "My phobia of reptiles and amphibians was cured";
+        return insanity_i18n::get(
+            "phobia_reptile_and_amph.history_end",
+            "My phobia of reptiles and amphibians was cured");
     }
 };
 
@@ -548,38 +610,52 @@ public:
 
     std::string char_descr_msg() const override
     {
-        return "Phobia of canines";
+        return insanity_i18n::get(
+            "phobia_canine.char_descr",
+            "Phobia of canines");
     }
 
     std::string game_over_summary_msg() const override
     {
-        return "Had a phobia of canines";
+        return insanity_i18n::get(
+            "phobia_canine.summary",
+            "Had a phobia of canines");
     }
 
 protected:
     std::string start_msg() const override
     {
-        return "Canines suddenly seem terrifying.";
+        return insanity_i18n::get(
+            "phobia_canine.start",
+            "Canines suddenly seem terrifying.");
     }
 
     std::string start_heading() const override
     {
-        return "Cynophobia!";
+        return insanity_i18n::get(
+            "phobia_canine.start_heading",
+            "Cynophobia!");
     }
 
     std::string end_msg() const override
     {
-        return "I am no longer terrified of canines.";
+        return insanity_i18n::get(
+            "phobia_canine.end",
+            "I am no longer terrified of canines.");
     }
 
     std::string history_msg() const override
     {
-        return "Gained a phobia of canines";
+        return insanity_i18n::get(
+            "phobia_canine.history",
+            "Gained a phobia of canines");
     }
 
     std::string history_msg_end() const override
     {
-        return "My phobia of canines was cured";
+        return insanity_i18n::get(
+            "phobia_canine.history_end",
+            "My phobia of canines was cured");
     }
 };
 
@@ -612,38 +688,50 @@ public:
 
     std::string char_descr_msg() const override
     {
-        return "Phobia of the dead";
+        return insanity_i18n::get(
+            "phobia_dead.char_descr",
+            "Phobia of the dead");
     }
 
     std::string game_over_summary_msg() const override
     {
-        return "Had a phobia of the dead";
+        return insanity_i18n::get(
+            "phobia_dead.summary",
+            "Had a phobia of the dead");
     }
 
 protected:
     std::string start_msg() const override
     {
-        return "The dead suddenly seem far more terrifying.";
+        return insanity_i18n::get(
+            "phobia_dead.start",
+            "The dead suddenly seem far more terrifying.");
     }
 
     std::string start_heading() const override
     {
-        return "Necrophobia!";
+        return insanity_i18n::get("phobia_dead.start_heading", "Necrophobia!");
     }
 
     std::string end_msg() const override
     {
-        return "I am no longer terrified of the dead.";
+        return insanity_i18n::get(
+            "phobia_dead.end",
+            "I am no longer terrified of the dead.");
     }
 
     std::string history_msg() const override
     {
-        return "Gained a phobia of the dead";
+        return insanity_i18n::get(
+            "phobia_dead.history",
+            "Gained a phobia of the dead");
     }
 
     std::string history_msg_end() const override
     {
-        return "My phobia of the dead was cured";
+        return insanity_i18n::get(
+            "phobia_dead.history_end",
+            "My phobia of the dead was cured");
     }
 };
 
@@ -676,38 +764,50 @@ public:
 
     std::string char_descr_msg() const override
     {
-        return "Phobia of deep places";
+        return insanity_i18n::get(
+            "phobia_deep.char_descr",
+            "Phobia of deep places");
     }
 
     std::string game_over_summary_msg() const override
     {
-        return "Had a phobia of deep places";
+        return insanity_i18n::get(
+            "phobia_deep.summary",
+            "Had a phobia of deep places");
     }
 
 protected:
     std::string start_msg() const override
     {
-        return "It suddenly seems far more terrifying to delve deeper.";
+        return insanity_i18n::get(
+            "phobia_deep.start",
+            "It suddenly seems far more terrifying to delve deeper.");
     }
 
     std::string start_heading() const override
     {
-        return "Bathophobia!";
+        return insanity_i18n::get("phobia_deep.start_heading", "Bathophobia!");
     }
 
     std::string end_msg() const override
     {
-        return "I am no longer terrified of deep places.";
+        return insanity_i18n::get(
+            "phobia_deep.end",
+            "I am no longer terrified of deep places.");
     }
 
     std::string history_msg() const override
     {
-        return "Gained a phobia of deep places";
+        return insanity_i18n::get(
+            "phobia_deep.history",
+            "Gained a phobia of deep places");
     }
 
     std::string history_msg_end() const override
     {
-        return "My phobia of deep places was cured";
+        return insanity_i18n::get(
+            "phobia_deep.history_end",
+            "My phobia of deep places was cured");
     }
 };
 
@@ -740,38 +840,50 @@ public:
 
     std::string char_descr_msg() const override
     {
-        return "Phobia of darkness";
+        return insanity_i18n::get(
+            "phobia_dark.char_descr",
+            "Phobia of darkness");
     }
 
     std::string game_over_summary_msg() const override
     {
-        return "Had a phobia of darkness";
+        return insanity_i18n::get(
+            "phobia_dark.summary",
+            "Had a phobia of darkness");
     }
 
 protected:
     std::string start_msg() const override
     {
-        return "Darkness suddenly seems far more terrifying.";
+        return insanity_i18n::get(
+            "phobia_dark.start",
+            "Darkness suddenly seems far more terrifying.");
     }
 
     std::string start_heading() const override
     {
-        return "Nyctophobia!";
+        return insanity_i18n::get("phobia_dark.start_heading", "Nyctophobia!");
     }
 
     std::string end_msg() const override
     {
-        return "I am no longer terrified of darkness.";
+        return insanity_i18n::get(
+            "phobia_dark.end",
+            "I am no longer terrified of darkness.");
     }
 
     std::string history_msg() const override
     {
-        return "Gained a phobia of darkness";
+        return insanity_i18n::get(
+            "phobia_dark.history",
+            "Gained a phobia of darkness");
     }
 
     std::string history_msg_end() const override
     {
-        return "My phobia of darkness was cured";
+        return insanity_i18n::get(
+            "phobia_dark.history_end",
+            "My phobia of darkness was cured");
     }
 };
 
@@ -799,41 +911,53 @@ public:
 
     std::string char_descr_msg() const override
     {
-        return "Sadistic obsession";
+        return insanity_i18n::get("sadism.char_descr", "Sadistic obsession");
     }
 
     std::string game_over_summary_msg() const override
     {
-        return "Had a sadistic obsession";
+        return insanity_i18n::get(
+            "sadism.summary",
+            "Had a sadistic obsession");
     }
 
 protected:
     std::string start_msg() const override
     {
-        return "To my alarm, I find myself encouraged by the pain I "
-               "cause in others. For every significant life I take, I "
-               "find a little relief. However, my depraved mind will "
-               "never find complete peace.";
+        return insanity_i18n::get(
+            "sadism.start",
+            "To my alarm, I find myself encouraged by the pain I "
+            "cause in others. For every significant life I take, I "
+            "find a little relief. However, my depraved mind will "
+            "never find complete peace.");
     }
 
     std::string start_heading() const override
     {
-        return "Sadistic obsession!";
+        return insanity_i18n::get(
+            "sadism.start_heading",
+            "Sadistic obsession!");
     }
 
     std::string end_msg() const override
     {
-        return "I am cured of my sadistic obsession.";
+        return insanity_i18n::get(
+            "sadism.end",
+            "I am cured of my sadistic obsession.");
     }
 
     std::string history_msg() const override
     {
-        return "Gained a sadistic obsession";
+        return insanity_i18n::get(
+            "sadism.history",
+            "Gained a sadistic obsession");
     }
 
     std::string history_msg_end() const override
     {
-        return "My sadistic obsession was cured";
+        return insanity_i18n::get(
+            "sadism.history_end",
+            "My sadistic obsession was cured");
     }
 };
 
@@ -862,17 +986,23 @@ protected:
 
     std::string start_msg() const override
     {
-        return "The shadows are closing in on me!";
+        return insanity_i18n::get(
+            "shadows.start",
+            "The shadows are closing in on me!");
     }
 
     std::string start_heading() const override
     {
-        return "Haunted by shadows!";
+        return insanity_i18n::get(
+            "shadows.start_heading",
+            "Haunted by shadows!");
     }
 
     std::string history_msg() const override
     {
-        return "Was haunted by shadows";
+        return insanity_i18n::get(
+            "shadows.history",
+            "Was haunted by shadows");
     }
 };
 
@@ -901,18 +1031,22 @@ protected:
 
     std::string start_msg() const override
     {
-        return "Is there someone following me? Or is it panic taking "
-               "over?";
+        return insanity_i18n::get(
+            "paranoia.start",
+            "Is there someone following me? Or is it panic taking "
+            "over?");
     }
 
     std::string start_heading() const override
     {
-        return "Paranoia!";
+        return insanity_i18n::get("paranoia.start_heading", "Paranoia!");
     }
 
     std::string history_msg() const override
     {
-        return "Had a strong sensation of being followed";
+        return insanity_i18n::get(
+            "paranoia.history",
+            "Had a strong sensation of being followed");
     }
 };
 
@@ -943,18 +1077,22 @@ protected:
 
     std::string start_msg() const override
     {
-        return "I find myself in a peculiar trance. I struggle to "
-               "recall where I am, and what is happening.";
+        return insanity_i18n::get(
+            "confusion.start",
+            "I find myself in a peculiar trance. I struggle to "
+            "recall where I am, and what is happening.");
     }
 
     std::string start_heading() const override
     {
-        return "Confusion!";
+        return insanity_i18n::get("confusion.start_heading", "Confusion!");
     }
 
     std::string history_msg() const override
     {
-        return "Suddenly felt deeply confused for no reason";
+        return insanity_i18n::get(
+            "confusion.history",
+            "Suddenly felt deeply confused for no reason");
     }
 };
 
@@ -985,17 +1123,21 @@ protected:
 
     std::string start_msg() const override
     {
-        return "I fall into an uncontrollable rage!";
+        return insanity_i18n::get(
+            "frenzy.start",
+            "I fall into an uncontrollable rage!");
     }
 
     std::string start_heading() const override
     {
-        return "Frenzy!";
+        return insanity_i18n::get("frenzy.start_heading", "Frenzy!");
     }
 
     std::string history_msg() const override
     {
-        return "Fell into an uncontrollable rage";
+        return insanity_i18n::get(
+            "frenzy.history",
+            "Fell into an uncontrollable rage");
     }
 };
 
@@ -1022,18 +1164,24 @@ public:
 protected:
     std::string start_msg() const override
     {
-        return "There is a strange itch, as if something is crawling "
-               "on the back of my neck.";
+        return insanity_i18n::get(
+            "strange_sensation.start",
+            "There is a strange itch, as if something is crawling "
+            "on the back of my neck.");
     }
 
     std::string start_heading() const override
     {
-        return "Strange sensation!";
+        return insanity_i18n::get(
+            "strange_sensation.start_heading",
+            "Strange sensation!");
     }
 
     std::string history_msg() const override
     {
-        return "Had a sensation of something crawling on my neck";
+        return insanity_i18n::get(
+            "strange_sensation.history",
+            "Had a sensation of something crawling on my neck");
     }
 };
 

@@ -20,6 +20,7 @@
 #include "game_time.hpp"
 #include "gfx.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "init.hpp"
 #include "io.hpp"
 #include "item.hpp"
@@ -410,7 +411,8 @@ void memorize_item_at(const P& p)
     memory.appearance.color = item->color();
 
     memory.appearance.minimap.color = colors::light_magenta();
-    memory.appearance.minimap.legend_text = "Item";
+    memory.appearance.minimap.legend_text =
+        i18n::get("map.item_legend", "Item");
     memory.appearance.minimap.symbol = MinimapSymbol::rectangle_filled;
 
     if ((item->data().type == ItemType::ranged_wpn) &&

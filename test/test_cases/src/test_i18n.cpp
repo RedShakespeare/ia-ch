@@ -47,6 +47,21 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("inventory.not_while_burning", "Not while burning.") == "燃烧时不能这么做。");
     REQUIRE(i18n::get("player_spells.known_title", "Known spells") == "已知法术");
     REQUIRE(i18n::get("player_spells.skill_label", "Skill: ") == "技能：");
+    REQUIRE(
+        i18n::get(
+            "terrain_event.wall_collapse_visible",
+            "Suddenly, the walls collapse!") == "突然，墙壁崩塌了！");
+    REQUIRE(
+        i18n::get(
+            "terrain_event.rats_discovery_title",
+            "A gruesome discovery...") == "可怖的发现……");
+    REQUIRE(i18n::get("map.item_legend", "Item") == "物品");
+    REQUIRE(i18n::get("item_head.turns_left_suffix", " turns)") == "回合）");
+    REQUIRE(i18n::get("insanity.babbling.char_descr", "Babbling") == "胡言乱语");
+    REQUIRE(
+        i18n::get(
+            "insanity.phobia_rat.history",
+            "Gained a phobia of rats") == "患上鼠类恐惧症");
     REQUIRE(i18n::get("option.skip_intro_level.name", "Skip intro level") == "跳过开场关卡");
     REQUIRE(i18n::get("option.display_hints.once", "Once") == "一次");
     REQUIRE(i18n::get("option.auto_reload_weapons.descr", "Automatically perform a reload action instead if attempting to fire a ranged weapon with no ammo loaded.") == "如果试图在没有装填弹药的情况下开火，则自动执行装填动作。");

@@ -20,6 +20,7 @@
 #include "draw_blast.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
+#include "i18n.hpp"
 #include "insanity.hpp"
 #include "io.hpp"
 #include "map.hpp"
@@ -112,13 +113,17 @@ void EventWallCrumble::on_new_turn()
 
     if (map::g_player->m_properties.allow_see()) {
         msg_log::add(
-            "Suddenly, the walls collapse!",
+            i18n::get(
+                "terrain_event.wall_collapse_visible",
+                "Suddenly, the walls collapse!"),
             colors::msg_note(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::yes);
     }
     else {
-        sound_message = "I hear walls collapsing!";
+        sound_message = i18n::get(
+            "terrain_event.wall_collapse_heard",
+            "I hear walls collapsing!");
     }
 
     Snd snd(
@@ -400,7 +405,10 @@ void EventSnakeEmerge::on_new_turn()
 
     if (!seen_tgt_positions.empty()) {
         msg_log::add(
-            {"Suddenly, vicious snakes slither up from cracks in the floor!"},
+            {i18n::get(
+                "terrain_event.snakes_emerge",
+                "Suddenly, vicious snakes slither up from cracks in the "
+                "floor!")},
             colors::msg_note(),
             MsgInterruptPlayer::yes,
             MorePromptOnMsg::yes);
@@ -474,15 +482,18 @@ void EventRatsInTheWallsDiscovery::on_new_turn()
         (map::g_player->m_pos.x > m_pos.x)) {
         map::update_vision();
 
-        const auto* const msg =
+        const auto msg = i18n::get(
+            "terrain_event.rats_discovery_msg",
             "Before me lies a twilit grotto of enormous height. "
             "An insane tangle of human bones extends for yards "
             "like a foamy sea - invariably in postures of demoniac "
             "frenzy, either fighting off some menace or clutching "
-            "other forms with cannibal intent.";
+            "other forms with cannibal intent.");
 
         popup::Popup(popup::AddToMsgHistory::yes)
-            .set_title("A gruesome discovery...")
+            .set_title(i18n::get(
+                "terrain_event.rats_discovery_title",
+                "A gruesome discovery..."))
             .set_msg(msg)
             .run();
 
