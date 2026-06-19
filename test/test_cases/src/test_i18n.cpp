@@ -187,6 +187,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(
         i18n::get("attack_melee.stopped_at_boundary_suffix", " is stopped at the boundary.") ==
         "被挡在边界处。");
+    REQUIRE(i18n::get("property.stopped_at_boundary_suffix", " is stopped at the boundary.") == "被挡在边界处。");
+    REQUIRE(i18n::get("property.possessed_by_middle", " was possessed by ") == "被");
+    REQUIRE(i18n::get("property.possessed_by_suffix", "!") == "附身了！");
+    REQUIRE(i18n::get("property.changes_shape", "It changes shape!") == "它改变了形态！");
+    REQUIRE(i18n::get("property.stops_and_gropes_suffix", " stops and gropes about.") == "停下来摸索着。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");

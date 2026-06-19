@@ -137,7 +137,11 @@ static void affect_move_dir_affected_by_boundary_sigils(const actor::Actor& acto
     if (actor::can_player_see_actor(actor)) {
         const std::string name = text_format::first_to_upper(actor::name_the(actor));
 
-        msg_log::add(name + " is stopped at the boundary.");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.stopped_at_boundary_suffix",
+                " is stopped at the boundary."));
     }
 
     trap->strain();
@@ -818,7 +822,13 @@ void PossessedByZuul::on_death()
 
         const std::string& name2 = actor::g_data["MON_ZUUL"].name_the;
 
-        msg_log::add(name1 + " was possessed by " + name2 + "!");
+        msg_log::add(
+            name1 +
+            i18n::get(
+                "property.possessed_by_middle",
+                " was possessed by ") +
+            name2 +
+            i18n::get("property.possessed_by_suffix", "!"));
     }
 
     m_owner->m_state = ActorState::destroyed;
@@ -984,7 +994,9 @@ void Shapeshifts::shapeshift(const Verbose verbose) const
     const bool can_player_see_mon = actor::can_player_see_actor(*m_owner);
 
     if ((verbose == Verbose::yes) && can_player_see_mon) {
-        msg_log::add("It changes shape!");
+        msg_log::add(i18n::get(
+            "property.changes_shape",
+            "It changes shape!"));
 
         draw_blast_at_cells({m_owner->m_pos}, colors::yellow());
     }
@@ -1068,7 +1080,11 @@ PropEnded ZealotStop::affect_move_dir(Dir& dir)
     if (actor::can_player_see_actor(*m_owner)) {
         const auto name = text_format::first_to_upper(actor::name_the(*m_owner));
 
-        msg_log::add(name + " stops and gropes about.");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.stops_and_gropes_suffix",
+                " stops and gropes about."));
     }
 
     dir = Dir::center;
