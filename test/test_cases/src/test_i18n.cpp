@@ -164,6 +164,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("item.exclamation_mark", "!") == "！");
     REQUIRE(i18n::get("item.discovered_history_prefix", "Discovered ") == "发现了");
     REQUIRE(i18n::get("item.hit_suffix", " hit") == "命中");
+    REQUIRE(
+        i18n::get("throwing.unseen_creature", "An unseen creature") ==
+        "有个看不见的生物");
+    REQUIRE(i18n::get("throwing.is_hit_suffix", " is hit.") == "被击中了。");
+    REQUIRE(i18n::get("throwing.player_throw_prefix", "I throw ") == "我投掷了");
+    REQUIRE(i18n::get("throwing.monster_throws", " throws ") == "投掷了");
+    REQUIRE(i18n::get("throwing.period", ".") == "。");
+    REQUIRE(i18n::get("throwing.creature_hit", "A creature is hit.") == "有生物被击中了。");
     REQUIRE(i18n::get("item_misc.trapezohedron.beheld_history", "Beheld The Shining Trapezohedron") == "目睹闪耀的偏方三八面体");
     REQUIRE(i18n::get("item_misc.info.open_paren", "(") == "（");
     REQUIRE(i18n::get("item_misc.info.close_paren", ")") == "）");
