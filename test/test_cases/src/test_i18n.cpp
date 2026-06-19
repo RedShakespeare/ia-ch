@@ -230,6 +230,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.momentary_void", "A momentary void opens and closes.") == "一个瞬间的虚空开启又闭合。");
     REQUIRE(i18n::get("spells.force_pushes_prefix", "A force pushes ") == "一股力量推着");
     REQUIRE(i18n::get("spells.force_pushes_suffix", "!") == "！");
+    REQUIRE(i18n::get("spells.bugs_move_feebly", "The bugs on the ground suddenly move very feebly.") == "地上的虫子突然动得非常无力。");
+    REQUIRE(i18n::get("spells.faint_stutter_in_time", "There is a faint stutter in time.") == "时间出现了一阵微弱的停顿。");
+    REQUIRE(i18n::get("spells.bugs_move_slowly", "The bugs on the ground suddenly move very slowly.") == "地上的虫子突然动得非常缓慢。");
+    REQUIRE(i18n::get("spells.bugs_scatter_away", "The bugs on the ground suddenly scatter away.") == "地上的虫子突然四散逃开。");
+    REQUIRE(i18n::get("spells.bugs_attack_each_other", "The bugs on the ground all start to attack each other.") == "地上的虫子突然全都开始互相攻击。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");

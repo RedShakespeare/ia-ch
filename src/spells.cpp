@@ -6125,7 +6125,9 @@ void SpellEnfeeble::run_effect(
 
     if (seen_targets.empty()) {
         if (actor::is_player(caster)) {
-            msg_log::add("The bugs on the ground suddenly move very feebly.");
+            msg_log::add(i18n::get(
+                "spells.bugs_move_feebly",
+                "The bugs on the ground suddenly move very feebly."));
         }
 
         return;
@@ -6271,7 +6273,9 @@ void SpellTemporalEcho::run_effect(
 {
     if (seen_targets.empty()) {
         if (actor::is_player(caster)) {
-            msg_log::add("There is a faint stutter in time.");
+            msg_log::add(i18n::get(
+                "spells.faint_stutter_in_time",
+                "There is a faint stutter in time."));
         }
 
         return;
@@ -6413,7 +6417,9 @@ void SpellSlow::run_effect(
 
     if (seen_targets.empty()) {
         if (actor::is_player(caster)) {
-            msg_log::add("The bugs on the ground suddenly move very slowly.");
+            msg_log::add(i18n::get(
+                "spells.bugs_move_slowly",
+                "The bugs on the ground suddenly move very slowly."));
         }
 
         return;
@@ -6573,7 +6579,9 @@ void SpellTerrify::run_effect(
 {
     if (seen_targets.empty()) {
         if (actor::is_player(caster)) {
-            msg_log::add("The bugs on the ground suddenly scatter away.");
+            msg_log::add(i18n::get(
+                "spells.bugs_scatter_away",
+                "The bugs on the ground suddenly scatter away."));
         }
 
         return;
@@ -6747,7 +6755,9 @@ void SpellThreatProjection::run_effect(
 {
     if (seen_targets.empty()) {
         if (actor::is_player(caster)) {
-            msg_log::add("The bugs on the ground all start to attack each other.");
+            msg_log::add(i18n::get(
+                "spells.bugs_attack_each_other",
+                "The bugs on the ground all start to attack each other."));
         }
 
         return;
