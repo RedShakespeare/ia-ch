@@ -93,6 +93,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_hit.spirit_drained", "My spirit is drained!") == "我的精神被抽干了！");
     REQUIRE(i18n::get("actor_hit.spirit_depleted", "All my spirit is depleted, I am devoid of life!") == "我的精神已耗尽，我失去了生命！");
     REQUIRE(i18n::get("actor_hit.no_spirit_left_suffix", " has no spirit left!") == "没有精神力了！");
+    REQUIRE(i18n::get("ai.looks_desperate_suffix", " looks desperate.") == "看起来绝望了。");
+    REQUIRE(i18n::get("actor_move.through", "through") == "穿过");
+    REQUIRE(i18n::get("actor_move.under", "under") == "从下方");
+    REQUIRE(i18n::get("actor_move.seeps_prefix", " seeps ") == "渗");
+    REQUIRE(i18n::get("actor_move.squirms_through", " squirms through ") == "钻过");
     REQUIRE(i18n::get("explosion.player_hit", "I am hit by an explosion!") == "我被爆炸击中了！");
     REQUIRE(i18n::get("explosion.survived_history", "Survived an explosion") == "从爆炸中幸存");
     REQUIRE(i18n::get("explosion.hear", "I hear an explosion!") == "我听到一声爆炸！");
