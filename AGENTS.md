@@ -7,6 +7,7 @@
 - Tests use bundled Catch2 and live under `test/`, with test support in `test/include/` and `test/src/`.
 - Third-party vendored code is under `third_party/`; avoid modifying it unless the task explicitly requires it.
 - Runtime data and installed assets are under `installed_files/`.
+- For a deeper codebase map, common change locations, and pitfalls, read `AGENT_CODEBASE_GUIDE.md`.
 
 ## Build And Test Commands
 
