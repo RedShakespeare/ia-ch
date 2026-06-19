@@ -20,6 +20,7 @@
 #include "debug.hpp"
 #include "game.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
 #include "player_spells.hpp"
@@ -1676,7 +1677,9 @@ void on_player_gained_lvl(const int new_lvl)
         if (is_exorcist_extra_trait) {
             states::push(
                 std::make_unique<PickTraitState>(
-                    "You gain an extra trait!",
+                    i18n::get(
+                        "player_bon.extra_trait_title",
+                        "You gain an extra trait!"),
                     IsCharacterCreationTraitPick::no));
         }
     } break;
