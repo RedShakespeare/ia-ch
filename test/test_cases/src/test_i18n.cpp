@@ -97,7 +97,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_move.through", "through") == "穿过");
     REQUIRE(i18n::get("actor_move.under", "under") == "从下方");
     REQUIRE(i18n::get("actor_move.seeps_prefix", " seeps ") == "渗");
+    REQUIRE(i18n::get("actor_move.space", " ") == "");
     REQUIRE(i18n::get("actor_move.squirms_through", " squirms through ") == "钻过");
+    REQUIRE(i18n::get("bash.attack_middle", " ") == "");
+    REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
+    REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");
     REQUIRE(i18n::get("explosion.player_hit", "I am hit by an explosion!") == "我被爆炸击中了！");
     REQUIRE(i18n::get("explosion.survived_history", "Survived an explosion") == "从爆炸中幸存");
     REQUIRE(i18n::get("explosion.hear", "I hear an explosion!") == "我听到一声爆炸！");
