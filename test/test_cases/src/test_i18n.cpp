@@ -192,6 +192,13 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("property.possessed_by_suffix", "!") == "附身了！");
     REQUIRE(i18n::get("property.changes_shape", "It changes shape!") == "它改变了形态！");
     REQUIRE(i18n::get("property.stops_and_gropes_suffix", " stops and gropes about.") == "停下来摸索着。");
+    REQUIRE(i18n::get("property.poison_player", "I am suffering from the poison!") == "我正遭受毒素折磨！");
+    REQUIRE(i18n::get("property.suffers_from_poisoning_suffix", " suffers from poisoning!") == "中毒受苦！");
+    REQUIRE(i18n::get("property.tears_out_spike_suffix", " tears out a spike!") == "扯出了一根钉子！");
+    REQUIRE(i18n::get("property.pulls_me_suffix", " pulls me!") == "拉扯着我！");
+    REQUIRE(i18n::get("property.splits_suffix", " splits.") == "分裂了。");
+    REQUIRE(i18n::get("property.is_spawned_suffix", " is spawned.") == "出现了。");
+    REQUIRE(i18n::get("property.spews_ooze_suffix", " spews ooze.") == "喷出了软泥。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");

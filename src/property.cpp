@@ -1151,7 +1151,9 @@ void Poisoned::handle_damage() const
 
     if (actor::is_player(m_owner)) {
         msg_log::add(
-            "I am suffering from the poison!",
+            i18n::get(
+                "property.poison_player",
+                "I am suffering from the poison!"),
             colors::msg_bad(),
             MsgInterruptPlayer::yes);
     }
@@ -1161,7 +1163,11 @@ void Poisoned::handle_damage() const
             text_format::first_to_upper(
                 actor::name_the(*m_owner));
 
-        msg_log::add(actor_name_the + " suffers from poisoning!");
+        msg_log::add(
+            actor_name_the +
+            i18n::get(
+                "property.suffers_from_poisoning_suffix",
+                " suffers from poisoning!"));
     }
 
     actor::hit(*m_owner, dmg, DmgType::pure, nullptr);
@@ -1325,7 +1331,11 @@ PropEnded Nailed::affect_move_dir(Dir& dir)
                 text_format::first_to_upper(
                     actor::name_the(*m_owner));
 
-            msg_log::add(actor_name_the + " tears out a spike!");
+            msg_log::add(
+                actor_name_the +
+                i18n::get(
+                    "property.tears_out_spike_suffix",
+                    " tears out a spike!"));
         }
     }
 
@@ -2564,7 +2574,9 @@ PropActResult Vortex::on_act()
         const auto name_the = text_format::first_to_upper(
             actor::name_the(*m_owner));
 
-        msg_log::add(name_the + " pulls me!");
+        msg_log::add(
+            name_the +
+            i18n::get("property.pulls_me_suffix", " pulls me!"));
     }
     else {
         msg_log::add(i18n::get("property.powerful_wind_pulling", "A powerful wind is pulling me!"));
@@ -2647,7 +2659,9 @@ void SplitsOnDeath::on_death()
             text_format::first_to_upper(
                 actor::name_the(*m_owner));
 
-        msg_log::add(name + " splits.");
+        msg_log::add(
+            name +
+            i18n::get("property.splits_suffix", " splits."));
     }
 
     actor::Actor* const leader = m_owner->m_leader;
@@ -3118,7 +3132,9 @@ void BreedsBase::on_std_turn()
                     text_format::first_to_upper(
                         actor::name_a(*spawned_mon));
 
-                msg_log::add(name + " is spawned.");
+                msg_log::add(
+                    name +
+                    i18n::get("property.is_spawned_suffix", " is spawned."));
             }
         });
 
@@ -3200,7 +3216,9 @@ void VomitsOoze::on_std_turn()
             text_format::first_to_upper(
                 actor::name_the(*m_owner));
 
-        msg_log::add(parent_name + " spews ooze.");
+        msg_log::add(
+            parent_name +
+            i18n::get("property.spews_ooze_suffix", " spews ooze."));
     }
 
     std::string id_to_spawn = rnd::element(id_bucket);
