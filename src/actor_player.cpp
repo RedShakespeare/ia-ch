@@ -308,7 +308,9 @@ void print_player_aware_invis_mon_msg(const Actor& mon)
     }
 
     msg_log::add(
-        "There is " + mon_ref + " here!",
+        i18n::get("actor_player.monster_here_prefix", "There is ") +
+            mon_ref +
+            i18n::get("actor_player.monster_here_suffix", " here!"),
         colors::msg_note(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -336,7 +338,11 @@ bool restore_exorcist_fervor(int fervor_restored, Verbose verbose)
     const bool is_fervor_gained = player_state::g_exorcist_fervor > fervor_before;
 
     if ((verbose == Verbose::yes) && is_fervor_gained) {
-        msg_log::add("I feel more fervent!", colors::msg_good());
+        msg_log::add(
+            i18n::get(
+                "actor_player.more_fervent",
+                "I feel more fervent!"),
+            colors::msg_good());
     }
 
     return is_fervor_gained;
@@ -551,12 +557,14 @@ void Actor::incr_insanity()
 
     if (insanity() >= 100) {
         const std::string msg =
-            "My mind can no longer withstand what it has grasped. "
-            "I am hopelessly lost.";
+            i18n::get(
+                "actor_player.insane_message",
+                "My mind can no longer withstand what it has grasped. "
+                "I am hopelessly lost.");
 
         popup::Popup(popup::AddToMsgHistory::yes)
             .set_msg(msg)
-            .set_title("Insane!")
+            .set_title(i18n::get("actor_player.insane_title", "Insane!"))
             .run();
 
         kill(

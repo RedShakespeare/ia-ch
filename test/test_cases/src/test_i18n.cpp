@@ -69,6 +69,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("knockback.player_knocked_back", "I am knocked back!") == "我被击退了！");
     REQUIRE(i18n::get("game_commands.press_help", "Press [?] for help.") == "按 [?] 查看帮助。");
     REQUIRE(i18n::get("msg_log.no_message_history", "No message history") == "没有消息历史");
+    REQUIRE(i18n::get("actor_player.monster_here_prefix", "There is ") == "这里有");
+    REQUIRE(i18n::get("actor_player.monster_here_suffix", " here!") == "！");
+    REQUIRE(i18n::get("actor_player.more_fervent", "I feel more fervent!") == "我感到更加虔诚！");
+    REQUIRE(i18n::get("actor_player.insane_message", "My mind can no longer withstand what it has grasped. I am hopelessly lost.") == "我的心智再也无法承受它所领悟的东西。我已经彻底迷失了。");
+    REQUIRE(i18n::get("actor_player.insane_title", "Insane!") == "疯狂！");
     REQUIRE(i18n::get("actor_death.agonized_screaming", "I hear agonized screaming.") == "我听到痛苦的尖叫。");
     REQUIRE(i18n::get("actor_death.resurrect_history", "Was brought back from the dead") == "死而复生");
     REQUIRE(i18n::get("actor_eat.ripping_and_chewing", "I hear ripping and chewing.") == "我听到撕咬和咀嚼声。");
