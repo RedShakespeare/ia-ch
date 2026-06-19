@@ -1,6 +1,6 @@
 ---
 name: extract-i18n
-description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract them into locale text.ini via i18n::get lookups, then build and run the test suite. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
+description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract them into locale text.ini via i18n::get lookups, build and run the test suite, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
 ---
 
 # Extract raw text into the i18n layer
@@ -142,8 +142,25 @@ If SDL/system dependencies are missing and block the build, report the exact
 command attempted and the missing dependency rather than silently skipping the
 run.
 
-## 5. Commit
+## 5. Commit before finishing
+
+If this workflow changes source, locale, or test files, commit those changes
+before giving the final response unless the user explicitly says not to commit.
+
+Before committing:
+
+```sh
+git status --short
+git diff --check
+git diff --stat
+```
+
+Stage only the files that belong to the extraction. Do not stage generated build
+output (`build/`, `build-linux-tests/`) or release artifacts.
 
 Follow the repo convention: extraction commits are `[i18n]`; a wrapping/render
-bug fix uncovered along the way is `[fix]`. Don't commit generated build output
-(`build/`, `build-linux-tests/`) or release artifacts.
+bug fix uncovered along the way is `[fix]`. Use a commit body that names the
+source area and mentions locale/test coverage when applicable.
+
+After committing, check `git status --short` again and report the commit hash in
+the final response.
