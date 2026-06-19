@@ -15,6 +15,7 @@
 #include <ostream>
 #include <string_view>
 #include <unordered_map>
+#include <vector>
 
 #include "SDL.h"
 #include "SDL_blendmode.h"
@@ -322,6 +323,85 @@ static bool parse_json_named_object_begin(
     return text == "{";
 }
 
+static bool parse_json_named_array_begin(
+    const std::string& line,
+    std::string& key)
+{
+    std::string_view text = trim_json_line(line);
+
+    if (!consume_json_string(text, key)) {
+        return false;
+    }
+
+    text = trim_json_line(text);
+
+    if (text.empty() || (text.front() != ':')) {
+        return false;
+    }
+
+    text.remove_prefix(1);
+    text = trim_json_line(text);
+
+    return text == "[";
+}
+
+static bool is_json_array_end(const std::string& line)
+{
+    const std::string_view text = trim_json_line(line);
+
+    return text == "]";
+}
+
+static std::optional<std::vector<int>> parse_json_int_array(
+    const std::string& line)
+{
+    std::string_view text = trim_json_line(line);
+
+    if (text.empty() || (text.front() != '[')) {
+        return std::nullopt;
+    }
+
+    text.remove_prefix(1);
+
+    std::vector<int> values;
+
+    while (true) {
+        text = trim_json_line(text);
+
+        if (text.empty()) {
+            return std::nullopt;
+        }
+
+        if (text.front() == ']') {
+            text.remove_prefix(1);
+            text = trim_json_line(text);
+
+            if (!text.empty() && (text != ",")) {
+                return std::nullopt;
+            }
+
+            return values;
+        }
+
+        int value = 0;
+        const auto* begin = text.data();
+        const auto* end = text.data() + text.size();
+        const auto result = std::from_chars(begin, end, value);
+
+        if (result.ec != std::errc()) {
+            return std::nullopt;
+        }
+
+        values.push_back(value);
+        text = std::string_view(result.ptr, end - result.ptr);
+        text = trim_json_line(text);
+
+        if (!text.empty() && (text.front() == ',')) {
+            text.remove_prefix(1);
+        }
+    }
+}
+
 static std::string codepoint_to_utf8(const int codepoint)
 {
     std::string result;
@@ -372,7 +452,8 @@ static void load_font_map(const std::string& img_path)
     {
         none,
         cell,
-        atlas_cell
+        atlas_cell,
+        compact_glyphs
     };
 
     FontMapSection current_section = FontMapSection::none;
@@ -395,6 +476,36 @@ static void load_font_map(const std::string& img_path)
     std::optional<int> current_advance;
     std::optional<int> current_render_offset_x;
     std::optional<int> current_render_offset_y;
+
+    const auto add_glyph = [&](
+        const int codepoint,
+        const int index,
+        const int source_x,
+        const int source_y,
+        const int source_w,
+        const int source_h,
+        const int logical_w,
+        const int logical_h,
+        const int advance,
+        const int render_offset_x,
+        const int render_offset_y) {
+        const std::string glyph = codepoint_to_utf8(codepoint);
+
+        s_font_glyphs[glyph] = FontGlyph {
+            {source_x, source_y, source_w, source_h},
+            logical_w,
+            logical_h,
+            advance,
+            render_offset_x,
+            render_offset_y};
+
+        const bool is_non_ascii =
+            static_cast<unsigned char>(glyph[0]) >= 0x80;
+
+        if (is_non_ascii) {
+            s_font_glyph_indices[glyph] = index;
+        }
+    };
 
     const auto finish_glyph = [&]() {
         if (current_glyph.empty()) {
@@ -453,22 +564,19 @@ static void load_font_map(const std::string& img_path)
             const int logical_w = current_logical_w.value_or(config::gui_cell_px_w());
             const int logical_h = current_logical_h.value_or(config::gui_cell_px_h());
 
-            s_font_glyphs[glyph] = FontGlyph {
-                {source_x, source_y, source_w, source_h},
+            add_glyph(
+                current_codepoint.value_or(
+                    static_cast<unsigned char>(glyph[0])),
+                current_index.value_or(0),
+                source_x,
+                source_y,
+                source_w,
+                source_h,
                 logical_w,
                 logical_h,
                 current_advance.value_or(logical_w),
                 current_render_offset_x.value_or(0),
-                current_render_offset_y.value_or(0)};
-        }
-
-        if (current_index) {
-            const bool is_non_ascii =
-                static_cast<unsigned char>(glyph[0]) >= 0x80;
-
-            if (is_non_ascii) {
-                s_font_glyph_indices[glyph] = *current_index;
-            }
+                current_render_offset_y.value_or(0));
         }
 
         current_glyph.clear();
@@ -513,9 +621,43 @@ static void load_font_map(const std::string& img_path)
             continue;
         }
 
+        if (parse_json_named_array_begin(line, object_key)) {
+            const int indent = leading_space_count(line);
+
+            if ((indent == 2) && (object_key == "glyphs")) {
+                finish_glyph();
+                current_section = FontMapSection::compact_glyphs;
+            }
+
+            continue;
+        }
+
         if (current_section != FontMapSection::none) {
             if (is_json_object_end(line)) {
                 current_section = FontMapSection::none;
+            }
+            else if (
+                current_section == FontMapSection::compact_glyphs &&
+                is_json_array_end(line)) {
+                current_section = FontMapSection::none;
+            }
+            else if (current_section == FontMapSection::compact_glyphs) {
+                const auto values = parse_json_int_array(line);
+
+                if (values && (values->size() >= 11)) {
+                    add_glyph(
+                        values->at(0),
+                        values->at(1),
+                        values->at(2),
+                        values->at(3),
+                        values->at(4),
+                        values->at(5),
+                        values->at(6),
+                        values->at(7),
+                        values->at(8),
+                        values->at(9),
+                        values->at(10));
+                }
             }
             else if (const auto width_value = parse_json_int(line, "width")) {
                 if (current_section == FontMapSection::cell) {

@@ -544,15 +544,40 @@ def write_map(
 ) -> None:
     atlas_w = max((glyph.width for glyph in glyphs), default=default_layout.atlas_w)
     atlas_h = max((glyph.height for glyph in glyphs), default=default_layout.atlas_h)
+    glyph_rows = [
+        [
+            ord(char),
+            glyph.index,
+            glyph.x_px,
+            glyph.y_px,
+            glyph.width,
+            glyph.height,
+            glyph.logical_width,
+            glyph.logical_height,
+            glyph.advance,
+            glyph.render_offset_x,
+            glyph.render_offset_y,
+        ]
+        for char, glyph in zip(chars, glyphs)
+    ]
     data = {
+        "format": "ia-font-map-v2",
         "cell": {"width": default_layout.logical_w, "height": default_layout.logical_h},
         "atlas_cell": {"width": atlas_w, "height": atlas_h},
         "columns": columns,
-        "glyphs": {
-            char: glyph.__dict__
-            for char, glyph in zip(chars, glyphs)
-        },
-        "cjk_words": cjk_words,
+        "glyph_fields": [
+            "codepoint",
+            "index",
+            "x_px",
+            "y_px",
+            "width",
+            "height",
+            "logical_width",
+            "logical_height",
+            "advance",
+            "render_offset_x",
+            "render_offset_y",
+        ],
         "fonts": [
             {
                 "path": str(loaded_font.spec.path),
@@ -564,7 +589,29 @@ def write_map(
     }
 
     output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(json.dumps(data, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+    lines = [
+        "{",
+        f'  "format": {json.dumps(data["format"])},',
+        f'  "cell": {json.dumps(data["cell"], separators=(",", ":"))},',
+        f'  "atlas_cell": {json.dumps(data["atlas_cell"], separators=(",", ":"))},',
+        f'  "columns": {columns},',
+        f'  "glyph_fields": {json.dumps(data["glyph_fields"], separators=(",", ":"))},',
+        '  "glyphs": [',
+    ]
+
+    for index, glyph_row in enumerate(glyph_rows):
+        suffix = "," if index < (len(glyph_rows) - 1) else ""
+        lines.append(
+            "    " +
+            json.dumps(glyph_row, separators=(",", ":")) +
+            suffix)
+
+    lines.extend([
+        "  ],",
+        f'  "fonts": {json.dumps(data["fonts"], ensure_ascii=True, separators=(",", ":"))}',
+        "}",
+    ])
+    output.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:

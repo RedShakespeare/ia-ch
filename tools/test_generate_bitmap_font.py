@@ -78,24 +78,29 @@ class BitmapFontGeneratorTest(unittest.TestCase):
                 self.assertEqual(image.size, (29, 32))
 
             raw_map = map_output.read_text(encoding="utf-8")
-            self.assertIn('"\\u65b0": {', raw_map)
+            self.assertIn('"format": "ia-font-map-v2"', raw_map)
 
             data = json.loads(raw_map)
             self.assertEqual(data["cell"], {"width": 12, "height": 24})
             self.assertEqual(data["atlas_cell"], {"width": 16, "height": 32})
-            self.assertEqual(data["glyphs"]["A"]["width"], 12)
-            self.assertEqual(data["glyphs"]["A"]["height"], 32)
-            self.assertEqual(data["glyphs"]["A"]["logical_width"], 12)
-            self.assertEqual(data["glyphs"]["A"]["logical_height"], 24)
-            self.assertEqual(data["glyphs"]["A"]["advance"], 12)
-            self.assertEqual(data["glyphs"]["A"]["render_offset_y"], -4)
-            self.assertEqual(data["glyphs"]["新"]["x_px"], 13)
-            self.assertEqual(data["glyphs"]["新"]["width"], 16)
-            self.assertEqual(data["glyphs"]["新"]["height"], 24)
-            self.assertEqual(data["glyphs"]["新"]["logical_width"], 16)
-            self.assertEqual(data["glyphs"]["新"]["logical_height"], 24)
-            self.assertEqual(data["glyphs"]["新"]["advance"], 16)
-            self.assertEqual(data["glyphs"]["新"]["render_offset_y"], 0)
+            fields = data["glyph_fields"]
+            glyphs = {
+                chr(row[fields.index("codepoint")]): dict(zip(fields, row))
+                for row in data["glyphs"]
+            }
+            self.assertEqual(glyphs["A"]["width"], 12)
+            self.assertEqual(glyphs["A"]["height"], 32)
+            self.assertEqual(glyphs["A"]["logical_width"], 12)
+            self.assertEqual(glyphs["A"]["logical_height"], 24)
+            self.assertEqual(glyphs["A"]["advance"], 12)
+            self.assertEqual(glyphs["A"]["render_offset_y"], -4)
+            self.assertEqual(glyphs["新"]["x_px"], 13)
+            self.assertEqual(glyphs["新"]["width"], 16)
+            self.assertEqual(glyphs["新"]["height"], 24)
+            self.assertEqual(glyphs["新"]["logical_width"], 16)
+            self.assertEqual(glyphs["新"]["logical_height"], 24)
+            self.assertEqual(glyphs["新"]["advance"], 16)
+            self.assertEqual(glyphs["新"]["render_offset_y"], 0)
 
     def test_mixed_atlas_wraps_to_multiple_rows(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -139,15 +144,20 @@ class BitmapFontGeneratorTest(unittest.TestCase):
                 self.assertEqual(image.size, (33, 56))
 
             data = json.loads(map_output.read_text(encoding="utf-8"))
+            fields = data["glyph_fields"]
+            glyphs = {
+                chr(row[fields.index("codepoint")]): dict(zip(fields, row))
+                for row in data["glyphs"]
+            }
             self.assertEqual(columns, 2)
-            self.assertEqual(data["glyphs"]["A"]["x_px"], 0)
-            self.assertEqual(data["glyphs"]["A"]["y_px"], 0)
-            self.assertEqual(data["glyphs"]["B"]["x_px"], 13)
-            self.assertEqual(data["glyphs"]["B"]["y_px"], 0)
-            self.assertEqual(data["glyphs"]["新"]["x_px"], 0)
-            self.assertEqual(data["glyphs"]["新"]["y_px"], 32)
-            self.assertEqual(data["glyphs"]["旧"]["x_px"], 17)
-            self.assertEqual(data["glyphs"]["旧"]["y_px"], 32)
+            self.assertEqual(glyphs["A"]["x_px"], 0)
+            self.assertEqual(glyphs["A"]["y_px"], 0)
+            self.assertEqual(glyphs["B"]["x_px"], 13)
+            self.assertEqual(glyphs["B"]["y_px"], 0)
+            self.assertEqual(glyphs["新"]["x_px"], 0)
+            self.assertEqual(glyphs["新"]["y_px"], 32)
+            self.assertEqual(glyphs["旧"]["x_px"], 17)
+            self.assertEqual(glyphs["旧"]["y_px"], 32)
 
     def test_single_row_preserves_legacy_horizontal_layout(self):
         with tempfile.TemporaryDirectory() as temp_dir:
