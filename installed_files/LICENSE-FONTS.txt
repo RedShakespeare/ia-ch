@@ -48,3 +48,10 @@ File(s):             13x24_typewriter.png
 Source:              https://www.1001fonts.com/special-elite-font.html
 Original name:       Special Elite Font
 License:             Apache License 2.0 (Apache-2.0)
+
+File(s):             14x24_zhaohua.png
+Source:              /usr/share/fonts/truetype/zhaohuatypewriter.ttf
+Original name:       ZhaohuaTypeWriter / 朝华打字机
+License:             Not stated in local font metadata
+Changes made:        Converted to a PNG atlas with 14x24 ASCII glyphs and
+                     fitted 22x24 CJK glyphs.

@@ -35,5 +35,7 @@ Current CJK atlas composition:
 
 * 12x24_cjk.png uses 12x24 DejaVu Sans Mono for ASCII glyphs and
   16x24 Dengkuanheiti for CJK glyphs.
+* 14x24_zhaohua.png uses 14x24 ZhaohuaTypeWriter for ASCII glyphs and
+  fitted 22x24 ZhaohuaTypeWriter for CJK glyphs.
 * 16x24_cjk.png uses 16x24 DejaVu Sans for ASCII glyphs and
   24x24 Dengkuanheiti for CJK glyphs.
