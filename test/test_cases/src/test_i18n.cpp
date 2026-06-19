@@ -215,6 +215,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
     REQUIRE(i18n::get("spells.impact_sound", "I hear an impact.") == "我听到一声撞击。");
+    REQUIRE(i18n::get("spells.aza_gaze_sound", "An insane cacophony resounds through the air!") == "疯狂的刺耳巨响在空中回荡！");
+    REQUIRE(i18n::get("spells.me", "me") == "我");
+    REQUIRE(i18n::get("spells.destruction_rages_prefix", "Destruction rages around ") == "毁灭在");
+    REQUIRE(i18n::get("spells.destruction_rages_suffix", "!") == "周围肆虐！");
+    REQUIRE(i18n::get("spells.explosion_sound", "I hear an explosion!") == "我听到一声爆炸！");
+    REQUIRE(i18n::get("spells.rats_appear", "Rats appear!") == "鼠群出现了！");
+    REQUIRE(i18n::get("spells.images_appear", "Images appear!") == "影像出现了！");
+    REQUIRE(i18n::get("spells.weapon_visions", "Visions of hacking, crushing and stabbing fill my mind.") == "劈砍、碾碎与穿刺的景象充满了我的脑海。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");

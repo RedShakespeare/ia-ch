@@ -2284,7 +2284,9 @@ void SpellAzaGaze::run_effect(
 {
     // TODO: Test with deaf player reading manuscript and no seen targets.
     Snd snd(
-        "An insane cacophony resounds through the air!",
+        i18n::get(
+            "spells.aza_gaze_sound",
+            "An insane cacophony resounds through the air!"),
         audio::SfxId::aza_gaze,
         IgnoreMsgIfOriginSeen::no,
         caster->m_pos,
@@ -2497,9 +2499,17 @@ void SpellCataclysm::run_effect(
     const bool is_player = actor::is_player(caster);
 
     if (actor::can_player_see_actor(*caster)) {
-        std::string caster_name = is_player ? "me" : actor::name_the(*caster);
+        std::string caster_name =
+            is_player
+            ? i18n::get("spells.me", "me")
+            : actor::name_the(*caster);
 
-        msg_log::add("Destruction rages around " + caster_name + "!");
+        msg_log::add(
+            i18n::get(
+                "spells.destruction_rages_prefix",
+                "Destruction rages around ") +
+            caster_name +
+            i18n::get("spells.destruction_rages_suffix", "!"));
     }
 
     const auto& caster_pos = caster->m_pos;
@@ -2557,7 +2567,9 @@ void SpellCataclysm::run_effect(
 
         if (terrain_id == terrain::Id::brazier) {
             Snd snd(
-                "I hear an explosion!",
+                i18n::get(
+                    "spells.explosion_sound",
+                    "I hear an explosion!"),
                 audio::SfxId::explosion_molotov,
                 IgnoreMsgIfOriginSeen::yes,
                 p,
@@ -2839,7 +2851,7 @@ void SpellPestilence::run_effect(
     }
 
     if (actor::is_player(caster) || is_any_seen_by_player) {
-        msg_log::add("Rats appear!");
+        msg_log::add(i18n::get("spells.rats_appear", "Rats appear!"));
     }
 }
 
@@ -3017,7 +3029,7 @@ void SpellMirrorImages::run_effect(
 
     draw_blast_at_seen_actors(mon_summoned.monsters, colors::magenta());
 
-    msg_log::add("Images appear!");
+    msg_log::add(i18n::get("spells.images_appear", "Images appear!"));
 }
 
 std::vector<std::string> SpellMirrorImages::descr_specific(
@@ -3158,7 +3170,9 @@ void SpellProjectedStrike::run_effect(
     std::vector<const item::Item*> weapons = get_weapons(skill);
 
     if (seen_targets.empty() || weapons.empty()) {
-        msg_log::add("Visions of hacking, crushing and stabbing fill my mind.");
+        msg_log::add(i18n::get(
+            "spells.weapon_visions",
+            "Visions of hacking, crushing and stabbing fill my mind."));
 
         return;
     }
