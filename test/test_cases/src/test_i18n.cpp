@@ -155,6 +155,15 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("explosion.player_hit", "I am hit by an explosion!") == "我被爆炸击中了！");
     REQUIRE(i18n::get("explosion.survived_history", "Survived an explosion") == "从爆炸中幸存");
     REQUIRE(i18n::get("explosion.hear", "I hear an explosion!") == "我听到一声爆炸！");
+    REQUIRE(i18n::get("item.weight_very_light", "very light") == "很轻");
+    REQUIRE(i18n::get("item.weight_light", "light") == "轻");
+    REQUIRE(i18n::get("item.weight_a_bit_heavy", "a bit heavy") == "有点重");
+    REQUIRE(i18n::get("item.weight_heavy", "heavy") == "重");
+    REQUIRE(i18n::get("item.cannot_apply", "I cannot apply that.") == "我不能使用那个。");
+    REQUIRE(i18n::get("item.discovered_prefix", "I have discovered ") == "我发现了");
+    REQUIRE(i18n::get("item.exclamation_mark", "!") == "！");
+    REQUIRE(i18n::get("item.discovered_history_prefix", "Discovered ") == "发现了");
+    REQUIRE(i18n::get("item.hit_suffix", " hit") == "命中");
     REQUIRE(i18n::get("item_misc.trapezohedron.beheld_history", "Beheld The Shining Trapezohedron") == "目睹闪耀的偏方三八面体");
     REQUIRE(i18n::get("item_misc.info.open_paren", "(") == "（");
     REQUIRE(i18n::get("item_misc.info.close_paren", ")") == "）");

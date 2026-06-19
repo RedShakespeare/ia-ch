@@ -15,6 +15,7 @@
 #include "debug.hpp"
 #include "game.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "item.hpp"
 #include "item_curse.hpp"
 #include "item_data.hpp"
@@ -352,25 +353,25 @@ std::string Item::weight_str() const
     const int wgt = weight();
 
     if (wgt <= ((int)Weight::extra_light + (int)Weight::light) / 2) {
-        return "very light";
+        return i18n::get("item.weight_very_light", "very light");
     }
 
     if (wgt <= ((int)Weight::light + (int)Weight::medium) / 2) {
-        return "light";
+        return i18n::get("item.weight_light", "light");
     }
 
     if (wgt <= ((int)Weight::medium + (int)Weight::heavy) / 2) {
-        return "a bit heavy";
+        return i18n::get("item.weight_a_bit_heavy", "a bit heavy");
     }
 
-    return "heavy";
+    return i18n::get("item.weight_heavy", "heavy");
 }
 
 ConsumeItem Item::activate(actor::Actor* const actor)
 {
     (void)actor;
 
-    msg_log::add("I cannot apply that.");
+    msg_log::add(i18n::get("item.cannot_apply", "I cannot apply that."));
 
     return ConsumeItem::no;
 }
@@ -436,11 +437,16 @@ void Item::discover()
     if ((m_data->xp_on_found > 0) && !m_data->is_found) {
         const std::string item_name = name(ItemNameType::a, ItemNameInfo::yes);
 
-        msg_log::add("I have discovered " + item_name + "!");
+        msg_log::add(
+            i18n::get("item.discovered_prefix", "I have discovered ") +
+            item_name +
+            i18n::get("item.exclamation_mark", "!"));
 
         game::incr_player_xp(m_data->xp_on_found, Verbose::yes);
 
-        game::add_history_event("Discovered " + item_name);
+        game::add_history_event(
+            i18n::get("item.discovered_history_prefix", "Discovered ") +
+            item_name);
     }
 
     m_data->is_found = true;
@@ -531,7 +537,7 @@ std::string Item::hit_mod_str(
         str += std::to_string(hit_mod) + "%";
 
         if (abbrev == AbbrevItemAttackInfo::no) {
-            str += " hit";
+            str += i18n::get("item.hit_suffix", " hit");
         }
 
         return str;
