@@ -24,6 +24,7 @@
 #include "debug.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "io.hpp"
 #include "item.hpp"
 #include "item_att_property.hpp"
@@ -50,7 +51,7 @@
 // -----------------------------------------------------------------------------
 static void print_player_melee_miss_actor_msg()
 {
-    msg_log::add("I miss.");
+    msg_log::add(i18n::get("attack_melee.player_miss", "I miss."));
 }
 
 static void print_mon_melee_miss_actor_msg(const MeleeAttData& att_data)
@@ -263,7 +264,9 @@ static void print_no_attacker_hit_player_melee_msg(const int dmg)
 
     // NOTE: Interruption is not needed here since the player will be
     // interrupted by getting hit.
-    msg_log::add("I am hit" + dmg_punct, colors::msg_bad());
+    msg_log::add(
+        i18n::get("attack_melee.i_am_hit", "I am hit") + dmg_punct,
+        colors::msg_bad());
 }
 
 static void print_no_attacker_hit_mon_melee_msg(
@@ -387,7 +390,7 @@ static std::string melee_snd_msg(const MeleeAttData& att_data)
 
     // Only print a message if player is not involved
     if (!actor::is_player(att_data.defender) && !actor::is_player(att_data.attacker)) {
-        snd_msg = "I hear fighting.";
+        snd_msg = i18n::get("attack_melee.hear_fighting", "I hear fighting.");
     }
 
     return snd_msg;
@@ -641,11 +644,11 @@ static void print_attack_terrain_not_allowed_msg(
             ItemNameAttackInfo::none);
 
     msg_log::add(
-        "Attacking " +
+        i18n::get("attack_melee.attack_terrain_prefix", "Attacking ") +
         terrain_name +
-        " with " +
+        i18n::get("attack_melee.attack_terrain_with", " with ") +
         wpn_name +
-        " would be useless.");
+        i18n::get("attack_melee.attack_terrain_suffix", " would be useless."));
 }
 
 static void attack_actor(
@@ -839,7 +842,11 @@ static bool handle_boundary_sigil_stops_attack(
             ? text_format::first_to_upper(actor::name_the(*attacker))
             : "It";
 
-        msg_log::add(name + " is stopped at the boundary.");
+        msg_log::add(
+            name +
+            i18n::get(
+                "attack_melee.stopped_at_boundary_suffix",
+                " is stopped at the boundary."));
     }
 
     // Attacking ends cloaking and sanctuary.

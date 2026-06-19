@@ -99,6 +99,17 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_move.seeps_prefix", " seeps ") == "渗");
     REQUIRE(i18n::get("actor_move.space", " ") == "");
     REQUIRE(i18n::get("actor_move.squirms_through", " squirms through ") == "钻过");
+    REQUIRE(i18n::get("attack_melee.player_miss", "I miss.") == "我没打中。");
+    REQUIRE(i18n::get("attack_melee.i_am_hit", "I am hit") == "我被击中了");
+    REQUIRE(i18n::get("attack_melee.hear_fighting", "I hear fighting.") == "我听到打斗声。");
+    REQUIRE(i18n::get("attack_melee.attack_terrain_prefix", "Attacking ") == "攻击");
+    REQUIRE(i18n::get("attack_melee.attack_terrain_with", " with ") == "，使用");
+    REQUIRE(
+        i18n::get("attack_melee.attack_terrain_suffix", " would be useless.") ==
+        "会毫无用处。");
+    REQUIRE(
+        i18n::get("attack_melee.stopped_at_boundary_suffix", " is stopped at the boundary.") ==
+        "被挡在边界处。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");
