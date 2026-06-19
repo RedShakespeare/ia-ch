@@ -25,6 +25,7 @@
 #include "explosion.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
@@ -317,7 +318,11 @@ void MindLeechSting::on_melee_hit(actor::Actor& actor_hit, const int dmg)
             const std::string mon_name_the =
                 text_format::first_to_upper(actor::name_the(*mon));
 
-            msg_log::add(mon_name_the + " looks shocked!");
+            msg_log::add(
+                mon_name_the +
+                i18n::get(
+                    "item_weapon.looks_shocked_suffix",
+                    " looks shocked!"));
         }
 
         actor::hit(*mon, rnd::range(3, 15), DmgType::pure, &actor_hit);
@@ -504,7 +509,11 @@ void PharaohStaff::on_mon_see_player_carrying(actor::Actor& mon) const
         if (actor::can_player_see_actor(mon)) {
             const auto name_the = text_format::first_to_upper(actor::name_the(mon));
 
-            msg_log::add(name_the + " bows before me.");
+            msg_log::add(
+                name_the +
+                i18n::get(
+                    "item_weapon.bows_before_me_suffix",
+                    " bows before me."));
         }
     }
 }
@@ -615,7 +624,11 @@ void ShadowDagger::hit_radiant_creature(actor::Actor& actor) const
             ? text_format::first_to_upper(actor::name_the(actor))
             : "It";
 
-        msg_log::add(target_name + " is assailed by dark energy.");
+        msg_log::add(
+            target_name +
+            i18n::get(
+                "item_weapon.assailed_by_dark_energy_suffix",
+                " is assailed by dark energy."));
 
         draw_blast_at_seen_actors({&actor}, colors::gray());
     }
