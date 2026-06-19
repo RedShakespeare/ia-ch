@@ -20,6 +20,7 @@
 #include "game.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
 #include "item_data.hpp"
@@ -34,7 +35,6 @@
 #include "teleport.hpp"
 #include "terrain.hpp"
 #include "terrain_data.hpp"
-#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -97,7 +97,9 @@ static bool try_use_talisman_of_resurrection(actor::Actor& actor)
 
     msg_log::add(i18n::get("actor_death.live_again", "I LIVE AGAIN!"));
 
-    game::add_history_event("Was brought back from the dead");
+    game::add_history_event(i18n::get(
+        "actor_death.resurrect_history",
+        "Was brought back from the dead"));
 
     map::g_player->incr_shock(50.0, ShockSrc::misc);
 
@@ -155,7 +157,9 @@ void kill(
 
     if (!actor::is_player(&actor) && actor.m_data->is_humanoid) {
         Snd snd(
-            "I hear agonized screaming.",
+            i18n::get(
+                "actor_death.agonized_screaming",
+                "I hear agonized screaming."),
             audio::SfxId::END,
             IgnoreMsgIfOriginSeen::yes,
             actor.m_pos,

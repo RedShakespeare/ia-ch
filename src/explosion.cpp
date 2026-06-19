@@ -22,6 +22,7 @@
 #include "game_time.hpp"
 #include "gfx.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
 #include "item.hpp"
@@ -216,7 +217,9 @@ static void apply_explosion_on_pos(
     if (living_actor) {
         if (actor::is_player(living_actor)) {
             msg_log::add(
-                "I am hit by an explosion!",
+                i18n::get(
+                    "explosion.player_hit",
+                    "I am hit by an explosion!"),
                 colors::msg_bad());
         }
 
@@ -230,7 +233,9 @@ static void apply_explosion_on_pos(
             actor::is_player(living_actor)) {
             // Player survived being hit by an explosion, that's
             // pretty cool!
-            game::add_history_event("Survived an explosion");
+            game::add_history_event(i18n::get(
+                "explosion.survived_history",
+                "Survived an explosion"));
         }
     }
 
@@ -391,7 +396,14 @@ void run(
             blocked);
 
     if (emit_expl_snd == EmitExplSnd::yes) {
-        Snd snd("I hear an explosion!", audio::SfxId::explosion, IgnoreMsgIfOriginSeen::yes, origin, nullptr, SndVol::high, AlertsMon::yes);
+        Snd snd(
+            i18n::get("explosion.hear", "I hear an explosion!"),
+            audio::SfxId::explosion,
+            IgnoreMsgIfOriginSeen::yes,
+            origin,
+            nullptr,
+            SndVol::high,
+            AlertsMon::yes);
 
         snd_emit::run(snd);
     }
