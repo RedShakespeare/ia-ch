@@ -3265,7 +3265,9 @@ void ConfusesAdjacent::on_std_turn()
     if (!map::g_player->m_properties.has(prop::Id::confused)) {
         const std::string msg =
             text_format::first_to_upper(actor::name_the(*m_owner)) +
-            " bewilders me.";
+            i18n::get(
+                "property.bewilders_me_suffix",
+                " bewilders me.");
 
         msg_log::add(msg);
     }
@@ -3287,7 +3289,11 @@ void FrenzyPlayerOnSeen::on_player_see()
         rnd::one_in(taunt_on_in_n)) {
         const std::string name = text_format::first_to_upper(actor::name_the(*m_owner));
 
-        msg_log::add(name + " is taunting me!");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.is_taunting_me_suffix",
+                " is taunting me!"));
 
         Prop* const frenzy = prop::make(prop::Id::frenzied);
 
@@ -3406,7 +3412,9 @@ void AuraOfDecay::run_effect_on_env_at(const P& p) const
                     text_format::first_to_upper(
                         terrain->name(Article::the));
 
-                msg_log::add(name + " collapses!");
+                msg_log::add(
+                    name +
+                    i18n::get("property.collapses_suffix", " collapses!"));
 
                 msg_log::more_prompt();
             }
@@ -3437,7 +3445,9 @@ PropActResult MajorClaphamSummon::on_act()
     }
 
     Snd snd(
-        "A voice is calling forth Tomb-Legions!",
+        i18n::get(
+            "property.tomb_legions_sound",
+            "A voice is calling forth Tomb-Legions!"),
         audio::SfxId::END,
         IgnoreMsgIfOriginSeen::yes,
         m_owner->m_pos,
@@ -3544,10 +3554,16 @@ PropActResult AlliesPlayerGhoul::on_act()
 
             const std::string pronoun =
                 actor->m_data->is_unique
-                ? "their"
-                : "its";
+                ? i18n::get("property.their", "their")
+                : i18n::get("property.its", "its");
 
-            msg_log::add(actor_name + " recognizes me as " + pronoun + " leader.");
+            msg_log::add(
+                actor_name +
+                i18n::get(
+                    "property.recognizes_me_as_middle",
+                    " recognizes me as ") +
+                pronoun +
+                i18n::get("property.leader_suffix", " leader."));
         }
 
         actor::unset_actor_as_leader_and_target_for_all_mon(actor);
@@ -3765,7 +3781,9 @@ PropActResult FrenziesFollowers::on_act()
     actors_to_frenzy.push_back(m_owner);
 
     Snd snd(
-        "A voice is stirring up a great frenzy!",
+        i18n::get(
+            "property.great_frenzy_sound",
+            "A voice is stirring up a great frenzy!"),
         audio::SfxId::END,
         IgnoreMsgIfOriginSeen::yes,
         m_owner->m_pos,
@@ -3778,7 +3796,11 @@ PropActResult FrenziesFollowers::on_act()
     if (actor::can_player_see_actor(*m_owner)) {
         const std::string name = text_format::first_to_upper(actor::name_the(*m_owner));
 
-        msg_log::add(name + " stirs up a great frenzy!");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.stirs_up_great_frenzy_suffix",
+                " stirs up a great frenzy!"));
     }
 
     const int duration = rnd::range(10, 30);
@@ -3823,7 +3845,11 @@ PropActResult SummonsLocusts::on_act()
     if (actor::can_player_see_actor(*m_owner)) {
         const std::string name = text_format::first_to_upper(actor::name_the(*m_owner));
 
-        msg_log::add(name + " calls a plague of Locusts!");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.calls_plague_of_locusts_suffix",
+                " calls a plague of Locusts!"));
 
         map::g_player->incr_shock(12.0, ShockSrc::misc);
     }
