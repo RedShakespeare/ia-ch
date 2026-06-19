@@ -76,6 +76,18 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_eat.period", ".") == "。");
     REQUIRE(i18n::get("actor_eat.feeds_on", " feeds on ") == "啃食");
     REQUIRE(i18n::get("actor_eat.completely_devoured_suffix", " is completely devoured.") == "被完全吞噬了。");
+    REQUIRE(i18n::get("actor_hit.armor_torn_apart_prefix", "My ") == "我的");
+    REQUIRE(i18n::get("actor_hit.armor_torn_apart_suffix", " is torn apart!") == "被撕裂了！");
+    REQUIRE(i18n::get("actor_hit.crack", "*Crack!*") == "*咔嚓！*");
+    REQUIRE(i18n::get("actor_hit.destroyed_suffix", " is destroyed.") == "被摧毁了。");
+    REQUIRE(i18n::get("actor_hit.thud", "*Thud!*") == "*砰！*");
+    REQUIRE(i18n::get("actor_hit.chop", "*Chop!*") == "*劈砍！*");
+    REQUIRE(i18n::get("actor_hit.low_hp_warning", "-LOW HP WARNING!-") == "-低生命值警告！-");
+    REQUIRE(i18n::get("actor_hit.wracked_by_light", "I am wracked by light!") == "我被光芒折磨！");
+    REQUIRE(i18n::get("actor_hit.sustained_severe_wound_history", "Sustained a severe wound") == "遭受重伤");
+    REQUIRE(i18n::get("actor_hit.spirit_drained", "My spirit is drained!") == "我的精神被抽干了！");
+    REQUIRE(i18n::get("actor_hit.spirit_depleted", "All my spirit is depleted, I am devoid of life!") == "我的精神已耗尽，我失去了生命！");
+    REQUIRE(i18n::get("actor_hit.no_spirit_left_suffix", " has no spirit left!") == "没有精神力了！");
     REQUIRE(i18n::get("explosion.player_hit", "I am hit by an explosion!") == "我被爆炸击中了！");
     REQUIRE(i18n::get("explosion.survived_history", "Survived an explosion") == "从爆炸中幸存");
     REQUIRE(i18n::get("explosion.hear", "I hear an explosion!") == "我听到一声爆炸！");

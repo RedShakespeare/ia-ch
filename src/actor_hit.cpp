@@ -21,6 +21,7 @@
 #include "config.hpp"
 #include "debug.hpp"
 #include "game.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
 #include "item_armor.hpp"
@@ -48,7 +49,12 @@ static void destroy_armor(actor::Actor& actor, const item::Armor* const armor)
         const std::string armor_name =
             armor->name(ItemNameType::plain, ItemNameInfo::none);
 
-        const std::string msg = "My " + armor_name + " is torn apart!";
+        const std::string msg =
+            i18n::get("actor_hit.armor_torn_apart_prefix", "My ") +
+            armor_name +
+            i18n::get(
+                "actor_hit.armor_torn_apart_suffix",
+                " is torn apart!");
 
         msg_log::add(msg, colors::msg_note());
     }
@@ -111,7 +117,7 @@ static void hit_corpse_destroy_success(
         (dmg_type == DmgType::slashing) ||
         (dmg_type == DmgType::piercing)) {
         Snd snd(
-            "*Crack!*",
+            i18n::get("actor_hit.crack", "*Crack!*"),
             audio::SfxId::hit_corpse_break,
             IgnoreMsgIfOriginSeen::yes,
             actor.m_pos,
@@ -136,7 +142,11 @@ static void hit_corpse_destroy_success(
             text_format::first_to_upper(
                 actor.m_data->corpse_name_the);
 
-        msg_log::add(name + " is destroyed.");
+        msg_log::add(
+            name +
+            i18n::get(
+                "actor_hit.destroyed_suffix",
+                " is destroyed."));
     }
 }
 
@@ -152,10 +162,10 @@ static void hit_corpse_destroy_fail(
 
         if ((dmg_type == DmgType::blunt) ||
             (dmg_type == DmgType::kicking)) {
-            msg = "*Thud!*";
+            msg = i18n::get("actor_hit.thud", "*Thud!*");
         }
         else {
-            msg = "*Chop!*";
+            msg = i18n::get("actor_hit.chop", "*Chop!*");
         }
 
         Snd snd(
@@ -255,7 +265,7 @@ static void on_actor_not_killed_by_hit(
         msg_log::more_prompt();
 
         msg_log::add(
-            "-LOW HP WARNING!-",
+            i18n::get("actor_hit.low_hp_warning", "-LOW HP WARNING!-"),
             colors::msg_bad(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::yes);
@@ -291,7 +301,11 @@ static void on_light_sensitive_player_hit_by_light()
 {
     map::g_player->interrupt_all_actions(ForceInterruptActions::no);
 
-    msg_log::add("I am wracked by light!", colors::msg_bad());
+    msg_log::add(
+        i18n::get(
+            "actor_hit.wracked_by_light",
+            "I am wracked by light!"),
+        colors::msg_bad());
 }
 
 static int absorb_dmg_for_prolonged_life_exorcist(int dmg)
@@ -375,7 +389,9 @@ static void on_player_hit(
         const int nr_wounds_after = nr_wounds(map::g_player->m_properties);
 
         if (nr_wounds_after > nr_wounds_before) {
-            game::add_history_event("Sustained a severe wound");
+            game::add_history_event(i18n::get(
+                "actor_hit.sustained_severe_wound_history",
+                "Sustained a severe wound"));
         }
     }
 }
@@ -487,7 +503,9 @@ void hit_sp(
     if (verbose == Verbose::yes) {
         if (actor::is_player(&actor)) {
             msg_log::add(
-                "My spirit is drained!",
+                i18n::get(
+                    "actor_hit.spirit_drained",
+                    "My spirit is drained!"),
                 colors::msg_bad());
         }
     }
@@ -510,7 +528,9 @@ void hit_sp(
 
     if (actor::is_player(&actor)) {
         msg_log::add(
-            "All my spirit is depleted, I am devoid of life!",
+            i18n::get(
+                "actor_hit.spirit_depleted",
+                "All my spirit is depleted, I am devoid of life!"),
             colors::msg_bad());
     }
     else if (can_player_see_actor(actor)) {
@@ -518,7 +538,11 @@ void hit_sp(
             text_format::first_to_upper(
                 actor::name_the(actor));
 
-        msg_log::add(actor_name_the + " has no spirit left!");
+        msg_log::add(
+            actor_name_the +
+            i18n::get(
+                "actor_hit.no_spirit_left_suffix",
+                " has no spirit left!"));
     }
 
     const auto terrain_id = map::g_terrain.at(actor.m_pos)->id();
