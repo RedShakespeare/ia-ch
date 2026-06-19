@@ -113,6 +113,9 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");
+    REQUIRE(i18n::get("drop.player_prefix", "I drop ") == "我丢下了");
+    REQUIRE(i18n::get("drop.monster_drops", " drops ") == "丢下了");
+    REQUIRE(i18n::get("drop.period", ".") == "。");
     REQUIRE(i18n::get("explosion.player_hit", "I am hit by an explosion!") == "我被爆炸击中了！");
     REQUIRE(i18n::get("explosion.survived_history", "Survived an explosion") == "从爆炸中幸存");
     REQUIRE(i18n::get("explosion.hear", "I hear an explosion!") == "我听到一声爆炸！");
