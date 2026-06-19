@@ -707,7 +707,9 @@ void Fortitude::quaff_impl(actor::Actor& actor)
 
         map::g_player->restore_shock(999, false);
 
-        msg_log::add("I feel more at ease.");
+        msg_log::add(i18n::get(
+            "item_potion.feel_more_at_ease",
+            "I feel more at ease."));
     }
 
     if (actor::can_player_see_actor(actor)) {
@@ -787,7 +789,9 @@ void Insight::quaff_impl(actor::Actor& actor)
 
     // Insight gives some extra XP, to avoid making the potion worthless if
     // the player identifies all items)
-    msg_log::add("I feel insightful.");
+    msg_log::add(i18n::get(
+        "item_potion.feel_insightful",
+        "I feel insightful."));
 
     game::incr_player_xp(g_xp_on_drink_insight_potion);
 
@@ -847,7 +851,7 @@ void Curing::quaff_impl(actor::Actor& actor)
     }
 
     if (!is_noticable && actor::is_player(&actor)) {
-        msg_log::add("I feel fine.");
+        msg_log::add(i18n::get("item_potion.feel_fine", "I feel fine."));
 
         is_noticable = true;
     }
@@ -935,7 +939,9 @@ void Descent::quaff_impl(actor::Actor& actor)
     }
     else {
         // Cannot bypass the boss level.
-        msg_log::add("I feel a faint sinking sensation, but it soon disappears...");
+        msg_log::add(i18n::get(
+            "item_potion.sinking_sensation_disappears",
+            "I feel a faint sinking sensation, but it soon disappears..."));
     }
 
     identify(Verbose::yes);
@@ -1041,7 +1047,9 @@ PotionAlignment Blinking::alignment() const
 void Blinking::quaff_impl(actor::Actor& actor)
 {
     if (actor::is_player(&actor)) {
-        msg_log::add("I fade out of existence and reappear.");
+        msg_log::add(i18n::get(
+            "item_potion.fade_out_and_reappear",
+            "I fade out of existence and reappear."));
     }
 
     const int max_dist = 4;

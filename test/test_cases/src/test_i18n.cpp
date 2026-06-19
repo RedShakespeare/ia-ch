@@ -192,6 +192,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("item.weight_a_bit_heavy", "a bit heavy") == "有点重");
     REQUIRE(i18n::get("item.weight_heavy", "heavy") == "重");
     REQUIRE(i18n::get("item.cannot_apply", "I cannot apply that.") == "我不能使用那个。");
+    REQUIRE(i18n::get("item_potion.feel_more_at_ease", "I feel more at ease.") == "我感到安心多了。");
+    REQUIRE(i18n::get("item_potion.feel_insightful", "I feel insightful.") == "我感到洞察力涌现。");
+    REQUIRE(i18n::get("item_potion.feel_fine", "I feel fine.") == "我感觉很好。");
+    REQUIRE(i18n::get("item_potion.sinking_sensation_disappears", "I feel a faint sinking sensation, but it soon disappears...") == "我感到一阵微弱的下沉感，但很快就消失了……");
+    REQUIRE(i18n::get("item_potion.fade_out_and_reappear", "I fade out of existence and reappear.") == "我从现实中淡出，然后又重新出现。");
     REQUIRE(i18n::get("item.discovered_prefix", "I have discovered ") == "我发现了");
     REQUIRE(i18n::get("item.exclamation_mark", "!") == "！");
     REQUIRE(i18n::get("item.discovered_history_prefix", "Discovered ") == "发现了");
