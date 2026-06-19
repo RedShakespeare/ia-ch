@@ -11,6 +11,8 @@
 #include <iterator>
 #include <memory>
 
+#include "config.hpp"
+#include "io_internal.hpp"
 #include "utf8.hpp"
 
 // -----------------------------------------------------------------------------
@@ -42,7 +44,133 @@ static bool is_word_fit(
     const std::string& word_to_fit,
     const size_t max_w)
 {
-    return (utf8::display_width(current_string) + utf8::display_width(word_to_fit) + 1) <= max_w;
+    const size_t separator_w = current_string.empty()
+        ? 0
+        : io::text_advance_px(" ");
+
+    return (
+        io::text_advance_px(current_string) +
+        io::text_advance_px(word_to_fit) +
+        separator_w) <= max_w;
+}
+
+static size_t max_text_w_px(const size_t max_w)
+{
+    const int cell_px_w = config::gui_cell_px_w();
+
+    if (cell_px_w <= 0) {
+        return max_w;
+    }
+
+    return max_w * cell_px_w;
+}
+
+static bool has_multibyte_codepoint(const std::string& str)
+{
+    return std::any_of(
+        std::begin(str),
+        std::end(str),
+        [](const char c) {
+            return static_cast<unsigned char>(c) >= 0x80;
+        });
+}
+
+static std::vector<std::string> split_utf8_word(
+    const std::string& word,
+    const size_t max_w)
+{
+    std::vector<std::string> result {""};
+    size_t current_w = 0;
+
+    for (size_t pos = 0; pos < word.size();) {
+        const size_t cp_size = utf8::codepoint_size(word, pos);
+
+        if ((cp_size == 0) || ((pos + cp_size) > word.size())) {
+            break;
+        }
+
+        const std::string glyph = word.substr(pos, cp_size);
+        const size_t glyph_w = io::text_advance_px(glyph);
+
+        if (((current_w + glyph_w) > max_w) && !result.back().empty()) {
+            result.emplace_back("");
+            current_w = 0;
+        }
+
+        result.back() += glyph;
+        current_w += glyph_w;
+        pos += cp_size;
+    }
+
+    if (result.back().empty()) {
+        result.pop_back();
+    }
+
+    return result;
+}
+
+static std::vector<std::string> split_paragraph(
+    std::string line,
+    const size_t max_w)
+{
+    std::string current_word = read_and_remove_word(line);
+
+    if (line.empty()) {
+        if (((size_t)io::text_advance_px(current_word) > max_w) &&
+            has_multibyte_codepoint(current_word)) {
+            return split_utf8_word(current_word, max_w);
+        }
+
+        return {current_word};
+    }
+
+    std::vector<std::string> result = {""};
+
+    size_t current_row_idx = 0;
+
+    while (!current_word.empty()) {
+        const bool should_split_word =
+            ((size_t)io::text_advance_px(current_word) > max_w) &&
+            has_multibyte_codepoint(current_word);
+
+        if (should_split_word) {
+            if (!result[current_row_idx].empty()) {
+                ++current_row_idx;
+                result.emplace_back("");
+            }
+
+            const auto split_words = split_utf8_word(current_word, max_w);
+
+            for (size_t i = 0; i < split_words.size(); ++i) {
+                if (i > 0) {
+                    ++current_row_idx;
+                    result.emplace_back("");
+                }
+
+                result[current_row_idx] += split_words[i];
+            }
+        }
+        else {
+            if (!is_word_fit(result[current_row_idx], current_word, max_w)) {
+                // Word did not fit on current line, make a new line
+                ++current_row_idx;
+
+                result.emplace_back("");
+            }
+
+            // If this is not the first word on the current line, add a
+            // space before the word
+            if (!result[current_row_idx].empty()) {
+                result[current_row_idx] += " ";
+            }
+
+            result[current_row_idx] += current_word;
+        }
+
+        current_word = read_and_remove_word(line);
+    }
+
+    return result;
 }
 
 // -----------------------------------------------------------------------------
@@ -56,33 +184,42 @@ std::vector<std::string> split(std::string line, const int max_w)
         return {};
     }
 
-    std::string current_word = read_and_remove_word(line);
+    const size_t max_width = std::max(1, max_w);
+    const size_t max_width_px = max_text_w_px(max_width);
+    const auto paragraphs = split_by_newline(line);
+    std::vector<std::string> result;
 
-    if (line.empty()) {
-        return {current_word};
-    }
-
-    std::vector<std::string> result = {""};
-
-    size_t current_row_idx = 0;
-
-    while (!current_word.empty()) {
-        if (!is_word_fit(result[current_row_idx], current_word, max_w)) {
-            // Word did not fit on current line, make a new line
-            ++current_row_idx;
-
+    for (size_t i = 0; i < paragraphs.size(); ++i) {
+        if (i > 0) {
             result.emplace_back("");
         }
 
-        // If this is not the first word on the current line, add a
-        // space before the word
-        if (!result[current_row_idx].empty()) {
-            result[current_row_idx] += " ";
+        if (paragraphs[i].empty()) {
+            if (result.empty()) {
+                result.emplace_back("");
+            }
+
+            continue;
         }
 
-        result[current_row_idx] += current_word;
+        const auto paragraph_lines = split_paragraph(paragraphs[i], max_width_px);
 
-        current_word = read_and_remove_word(line);
+        if (result.empty()) {
+            result = paragraph_lines;
+        }
+        else if (result.back().empty()) {
+            result.back() = paragraph_lines[0];
+            result.insert(
+                std::end(result),
+                std::begin(paragraph_lines) + 1,
+                std::end(paragraph_lines));
+        }
+        else {
+            result.insert(
+                std::end(result),
+                std::begin(paragraph_lines),
+                std::end(paragraph_lines));
+        }
     }
 
     return result;

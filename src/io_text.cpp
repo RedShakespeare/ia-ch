@@ -158,15 +158,13 @@ void draw_text_center(
     const Color& bg_color,
     const bool is_pixel_pos_adj_allowed)
 {
-    const int len = (int)utf8::display_width(str);
-    const int len_half = len / 2;
-    const int x_pos_left = pos.x - len_half;
-
-    P px_pos = gui_to_px_coords(panel, {x_pos_left, pos.y});
+    const int text_px_w = text_advance_px(str);
+    P px_pos = gui_to_px_coords(panel, pos);
+    px_pos.x -= text_px_w / 2;
 
     if (is_pixel_pos_adj_allowed) {
         const int pixel_x_adj =
-            ((len_half * 2) == len)
+            (text_px_w % 2) == 0
             ? (config::gui_cell_px_w() / 2)
             : 0;
 
@@ -184,9 +182,8 @@ void draw_text_right(
     const DrawBg draw_bg,
     const Color& bg_color)
 {
-    const int x_pos_left = pos.x - (int)utf8::display_width(str) + 1;
-
-    P px_pos = gui_to_px_coords(panel, {x_pos_left, pos.y});
+    P px_pos = gui_to_px_coords(panel, pos);
+    px_pos.x += config::gui_cell_px_w() - text_advance_px(str);
 
     draw_text_at_px(str, px_pos, color, draw_bg, bg_color);
 }

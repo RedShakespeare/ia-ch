@@ -14,9 +14,9 @@
 namespace text_format
 {
 // Reads a line of space separated words, and splits them into several lines
-// with the given maximum width. If any single word in the "line" parameter is
-// longer than the maximum width, this word will NOT be split (the entire word
-// is simply added to the output vector, breaking the maximum width).
+// with the given maximum width. Explicit newlines are preserved. If an ASCII
+// word is longer than the maximum width, it will not be split. Long UTF-8 words
+// may be split at codepoint boundaries so CJK text can wrap without spaces.
 std::vector<std::string> split(std::string line, int max_w);
 
 std::vector<std::string> split_by_delim(std::string line, char delim);

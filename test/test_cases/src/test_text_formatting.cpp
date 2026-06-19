@@ -50,6 +50,14 @@ TEST_CASE("Text formatting")
     REQUIRE("345678" == lines[1]);
     REQUIRE(2 == (int)lines.size());
 
+    str = "one\ntwo\n\nthree four";
+    lines = text_format::split(str, 10);
+    REQUIRE(lines.size() == 4);
+    REQUIRE(lines[0] == "one");
+    REQUIRE(lines[1] == "two");
+    REQUIRE(lines[2] == "");
+    REQUIRE(lines[3] == "three four");
+
     str = "";
     lines = text_format::split(str, 4);
     REQUIRE(lines.empty());
@@ -65,4 +73,13 @@ TEST_CASE("Text formatting counts Chinese UTF-8 characters as display cells")
     REQUIRE(lines[0] == "one");
     REQUIRE(lines[1] == "玩家");
     REQUIRE(lines[2] == "two");
+}
+
+TEST_CASE("Text formatting wraps Chinese UTF-8 text without spaces")
+{
+    const auto lines = text_format::split("玩家角色探索", 3);
+
+    REQUIRE(lines.size() == 2);
+    REQUIRE(lines[0] == "玩家角");
+    REQUIRE(lines[1] == "色探索");
 }

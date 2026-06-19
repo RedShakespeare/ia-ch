@@ -12,7 +12,9 @@
 #include <memory>
 #include <optional>
 
+#include "config.hpp"
 #include "io.hpp"
+#include "io_internal.hpp"
 #include "misc.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
@@ -21,6 +23,21 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static size_t max_text_w_px(const size_t max_w)
+{
+    const int cell_px_w = config::gui_cell_px_w();
+
+    if (cell_px_w <= 0) {
+        return max_w;
+    }
+
+    return max_w * cell_px_w;
+}
+
+static size_t token_w_px(const std::string& str)
+{
+    return io::text_advance_px(str);
+}
 
 // -----------------------------------------------------------------------------
 // Text
@@ -118,7 +135,7 @@ std::vector<TextAction> TextCompiler::compile()
         actions.push_back(action);
 
         if (action.id == TextActionId::write_str) {
-            m_line_w += utf8::display_width(action.str);
+            m_line_w += token_w_px(action.str);
         }
         else if (action.id == TextActionId::done) {
             break;
@@ -133,7 +150,7 @@ bool TextCompiler::should_add_newline_before_write_action(
 {
     size_t new_line_w =
         m_line_w +
-        utf8::display_width(current_action.str);
+        token_w_px(current_action.str);
 
     const bool is_utf8_codepoint =
         (current_action.str.size() > 1) &&
@@ -163,12 +180,12 @@ bool TextCompiler::should_add_newline_before_write_action(
             }
 
             if (fwd_action.id == TextActionId::write_str) {
-                new_line_w += utf8::display_width(fwd_action.str);
+                new_line_w += token_w_px(fwd_action.str);
             }
         }
     }
 
-    return new_line_w > m_max_w;
+    return new_line_w > max_text_w_px(m_max_w);
 }
 
 TextAction TextCompiler::token_to_action(const std::string& token) const

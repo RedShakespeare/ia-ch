@@ -4,6 +4,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 // =============================================================================
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -12,12 +13,15 @@
 #include "audio.hpp"
 #include "audio_data.hpp"
 #include "colors.hpp"
+#include "config.hpp"
 #include "direction.hpp"
 #include "gfx.hpp"
 #include "io.hpp"
+#include "io_internal.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
 #include "rect.hpp"
+#include "utf8.hpp"
 
 namespace actor
 {
@@ -169,6 +173,12 @@ void draw_text_right(
     const Color&,
     const DrawBg,
     const Color&) {}
+
+int text_advance_px(const std::string& str)
+{
+    return (int)utf8::display_width(str) *
+           std::max(1, config::gui_cell_px_w());
+}
 
 void cover_cell(const Panel, const P&) {}
 

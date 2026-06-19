@@ -1520,7 +1520,7 @@ int glyph_advance_px(const std::string& glyph)
         return metadata->advance;
     }
 
-    return config::gui_cell_px_w();
+    return std::max(1, config::gui_cell_px_w());
 }
 
 void draw_character(const CharacterDrawObj& obj)
