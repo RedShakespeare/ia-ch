@@ -1778,7 +1778,9 @@ std::string WarnThrowValuableOption::descr() const
 
 std::string WarnThrowValuableOption::value_str() const
 {
-    return s_warn_on_throw_valuable ? "Yes" : "No";
+    return s_warn_on_throw_valuable
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType WarnThrowValuableOption::submenu_type() const
@@ -1805,7 +1807,9 @@ std::string WarnLightExplosivesOption::descr() const
 
 std::string WarnLightExplosivesOption::value_str() const
 {
-    return s_warn_on_light_explosive ? "Yes" : "No";
+    return s_warn_on_light_explosive
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType WarnLightExplosivesOption::submenu_type() const
@@ -1834,7 +1838,9 @@ std::string WanDrinkMalignPotionOption::descr() const
 
 std::string WanDrinkMalignPotionOption::value_str() const
 {
-    return s_warn_on_drink_malign_potion ? "Yes" : "No";
+    return s_warn_on_drink_malign_potion
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType WanDrinkMalignPotionOption::submenu_type() const
@@ -1863,7 +1869,9 @@ std::string WarnRangedWeaponMeleeOption::descr() const
 
 std::string WarnRangedWeaponMeleeOption::value_str() const
 {
-    return s_warn_on_ranged_wpn_melee ? "Yes" : "No";
+    return s_warn_on_ranged_wpn_melee
+        ? i18n::get("common.yes", "Yes")
+        : i18n::get("common.no", "No");
 }
 
 OptionSubmenuType WarnRangedWeaponMeleeOption::submenu_type() const
