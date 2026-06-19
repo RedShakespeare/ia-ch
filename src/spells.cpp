@@ -41,6 +41,7 @@
 #include "game_time.hpp"
 #include "gfx.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "inventory_handling.hpp"
 #include "io.hpp"
@@ -169,7 +170,9 @@ struct Context
 
 static void print_side_effect_trigger_message()
 {
-    msg_log::add("An unexpected effect was induced by the spell.");
+    msg_log::add(i18n::get(
+        "spells.unexpected_effect",
+        "An unexpected effect was induced by the spell."));
 }
 
 static void side_effect_spawn_monsters(const Context& context)
@@ -419,7 +422,11 @@ static void side_effect_flay_human(const Context& context)
             text_format::first_to_upper(
                 actor::name_the(*target_actor));
 
-        msg_log::add(name + " is suddenly flayed alive!");
+        msg_log::add(
+            name +
+            i18n::get(
+                "spells.suddenly_flayed_alive_suffix",
+                " is suddenly flayed alive!"));
     }
 
     actor::kill(*target_actor, IsDestroyed::yes, AllowGore::yes, AllowDropItems::yes);
@@ -1687,7 +1694,9 @@ void SpellBolt::run_effect(
 
         if (current_seen_targets.empty()) {
             if (actor::is_player(caster)) {
-                msg_log::add("A dark sphere materializes, but quickly fizzles out.");
+                msg_log::add(i18n::get(
+                    "spells.dark_sphere_fizzles",
+                    "A dark sphere materializes, but quickly fizzles out."));
             }
 
             break;
@@ -1713,7 +1722,9 @@ void SpellBolt::run_bolt_on_target(
     PlayerAwareOfCast player_aware) const
 {
     Snd release_snd(
-        "I hear something rushing through the air.",
+        i18n::get(
+            "spells.darkbolt_release_sound",
+            "I hear something rushing through the air."),
         audio::SfxId::darkbolt_release,
         IgnoreMsgIfOriginSeen::yes,
         caster.m_pos,
@@ -1749,7 +1760,9 @@ void SpellBolt::run_bolt_on_target(
     }
 
     Snd impact_snd(
-        "I hear an impact.",
+        i18n::get(
+            "spells.impact_sound",
+            "I hear an impact."),
         m_impl->impact_sfx(),
         IgnoreMsgIfOriginSeen::yes,
         target.m_pos,
