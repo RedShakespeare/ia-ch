@@ -1,0 +1,4 @@
+interface:
+  display_name: "Export i18n Source Strings"
+  short_description: "Export i18n keys and English fallbacks"
+  default_prompt: "Use $export-i18n-source-strings to export i18n::get keys and English source text for a translation platform."
