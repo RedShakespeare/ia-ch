@@ -7027,12 +7027,19 @@ void SpellBlind::run_effect(
     }
 
     if (actor::is_player(target)) {
-        msg_log::add("Scales grow over my eyes!");
+        msg_log::add(i18n::get(
+            "spells.scales_grow_over_my_eyes",
+            "Scales grow over my eyes!"));
     }
     else if (actor::can_player_see_actor(*target)) {
         const std::string actor_name = actor::name_the(*target);
 
-        msg_log::add("Scales grow over the eyes of " + actor_name + ".");
+        msg_log::add(
+            i18n::get(
+                "spells.scales_grow_over_eyes_prefix",
+                "Scales grow over the eyes of ") +
+            actor_name +
+            i18n::get("spells.period", "."));
     }
 
     prop::Prop* prop = prop::make(prop::Id::blind);
@@ -7591,7 +7598,9 @@ void SpellMiGoHypno::run_effect(
     }
 
     if (actor::is_player(target)) {
-        msg_log::add("There is a sharp droning in my head!");
+        msg_log::add(i18n::get(
+            "spells.sharp_droning",
+            "There is a sharp droning in my head!"));
     }
 
     if (rnd::coin_toss()) {
@@ -7599,7 +7608,7 @@ void SpellMiGoHypno::run_effect(
     }
     else {
         if (actor::is_player(target)) {
-            msg_log::add("I feel dizzy.");
+            msg_log::add(i18n::get("spells.feel_dizzy", "I feel dizzy."));
         }
     }
 }
@@ -7701,10 +7710,15 @@ void SpellBurn::run_effect(
     if (actor::can_player_see_actor(*target)) {
         const std::string actor_name =
             actor::is_player(target)
-            ? "me"
+            ? i18n::get("spells.me", "me")
             : actor::name_the(*target);
 
-        msg_log::add("Flames are rising around " + actor_name + "!");
+        msg_log::add(
+            i18n::get(
+                "spells.flames_rising_prefix",
+                "Flames are rising around ") +
+            actor_name +
+            i18n::get("spells.flames_rising_suffix", "!"));
     }
 
     prop::Prop* prop = prop::make(prop::Id::burning);
@@ -7910,7 +7924,9 @@ void SpellTransmut::run_effect(
     auto* item_before = map::g_items.at(p);
 
     if (!item_before) {
-        msg_log::add("There is a vague change in the air.");
+        msg_log::add(i18n::get(
+            "spells.vague_change_in_air",
+            "There is a vague change in the air."));
 
         return;
     }
@@ -8043,7 +8059,9 @@ void SpellTransmut::run_effect(
     }
 
     if ((id_new == item::Id::END) || (nr_items_new < 1)) {
-        msg_log::add("Nothing appears.");
+        msg_log::add(i18n::get(
+            "spells.nothing_appears",
+            "Nothing appears."));
 
         return;
     }
@@ -8587,7 +8605,9 @@ void SpellSacrificeLife::run_effect(
 
     if (hp <= 2) {
         // Not enough HP.
-        msg_log::add("I feel like I have very little to offer.");
+        msg_log::add(i18n::get(
+            "spells.little_to_offer",
+            "I feel like I have very little to offer."));
 
         return;
     }
@@ -8698,7 +8718,9 @@ void SpellShedImpurity::run_effect(
 
     if (hp_removed <= 0) {
         // Not enough HP.
-        msg_log::add("There is nothing more to shed.");
+        msg_log::add(i18n::get(
+            "spells.nothing_more_to_shed",
+            "There is nothing more to shed."));
 
         return;
     }

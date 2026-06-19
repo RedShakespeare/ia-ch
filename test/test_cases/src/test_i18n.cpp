@@ -235,6 +235,17 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.bugs_move_slowly", "The bugs on the ground suddenly move very slowly.") == "地上的虫子突然动得非常缓慢。");
     REQUIRE(i18n::get("spells.bugs_scatter_away", "The bugs on the ground suddenly scatter away.") == "地上的虫子突然四散逃开。");
     REQUIRE(i18n::get("spells.bugs_attack_each_other", "The bugs on the ground all start to attack each other.") == "地上的虫子突然全都开始互相攻击。");
+    REQUIRE(i18n::get("spells.scales_grow_over_my_eyes", "Scales grow over my eyes!") == "鳞片长满了我的眼睛！");
+    REQUIRE(i18n::get("spells.scales_grow_over_eyes_prefix", "Scales grow over the eyes of ") == "鳞片长满了");
+    REQUIRE(i18n::get("spells.period", ".") == "。");
+    REQUIRE(i18n::get("spells.sharp_droning", "There is a sharp droning in my head!") == "我的脑中响起尖锐的嗡鸣！");
+    REQUIRE(i18n::get("spells.feel_dizzy", "I feel dizzy.") == "我感到头晕。");
+    REQUIRE(i18n::get("spells.flames_rising_prefix", "Flames are rising around ") == "火焰在");
+    REQUIRE(i18n::get("spells.flames_rising_suffix", "!") == "周围升起！");
+    REQUIRE(i18n::get("spells.vague_change_in_air", "There is a vague change in the air.") == "空气中有一阵模糊的变化。");
+    REQUIRE(i18n::get("spells.nothing_appears", "Nothing appears.") == "什么也没有出现。");
+    REQUIRE(i18n::get("spells.little_to_offer", "I feel like I have very little to offer.") == "我觉得自己几乎无物可献。");
+    REQUIRE(i18n::get("spells.nothing_more_to_shed", "There is nothing more to shed.") == "已经没有更多可以舍弃的了。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");
