@@ -58,6 +58,7 @@ CPP_STRING_RE = re.compile(r'"(?:\\.|[^"\\])*"')
 class FontSpec:
     path: Path
     size: int
+    index: int = 0
 
 
 @dataclass(frozen=True)
@@ -73,6 +74,7 @@ class GlyphLayout:
     logical_h: int
     atlas_w: int
     atlas_h: int
+    render_offset_y: int = 0
 
 
 @dataclass(frozen=True)
@@ -94,6 +96,7 @@ class GlyphMetadata:
     render_offset_y: int
     font: str
     font_size: int
+    font_index: int
 
 
 @dataclass(frozen=True)
@@ -187,15 +190,24 @@ def is_cjk(char: str) -> bool:
     return bool(CJK_RE.fullmatch(char))
 
 
-def resolve_font(font: str) -> Path:
-    path = Path(font)
+def parse_font_ref(font: str) -> tuple[str, int]:
+    match = re.fullmatch(r"(.+\.(?:ttc|otc)):(\d+)", font)
+    if match:
+        return match.group(1), int(match.group(2))
+
+    return font, 0
+
+
+def resolve_font(font: str) -> FontSpec:
+    font_ref, index = parse_font_ref(font)
+    path = Path(font_ref)
 
     if path.exists():
-        return path
+        return FontSpec(path, 0, index)
 
     try:
         resolved = subprocess.check_output(
-            ["fc-match", "-f", "%{file}", font],
+            ["fc-match", "-f", "%{file}", font_ref],
             text=True,
             stderr=subprocess.DEVNULL,
         ).strip()
@@ -205,9 +217,9 @@ def resolve_font(font: str) -> Path:
     if resolved:
         resolved_path = Path(resolved)
         if resolved_path.exists():
-            return resolved_path
+            return FontSpec(resolved_path, 0, index)
 
-    raise SystemExit(f"Could not resolve font: {font}")
+    raise SystemExit(f"Could not resolve font: {font_ref}")
 
 
 def load_fonts(fonts: list[str], font_size: int):
@@ -221,8 +233,12 @@ def load_fonts(fonts: list[str], font_size: int):
     result: list[LoadedFont] = []
 
     for font in fonts:
-        spec = FontSpec(resolve_font(font), font_size)
-        loaded_font = ImageFont.truetype(str(spec.path), spec.size)
+        resolved = resolve_font(font)
+        spec = FontSpec(resolved.path, font_size, resolved.index)
+        loaded_font = ImageFont.truetype(
+            str(spec.path),
+            spec.size,
+            index=spec.index)
         missing_glyph_signatures = frozenset(
             glyph_signature(loaded_font, char)
             for char in ["\uffff", "\ufffd"]
@@ -448,7 +464,11 @@ def render_font_png(
         font = loaded_font.font
         ascent, descent = font.getmetrics()
         line_h = ascent + descent
-        baseline = y0 + ((layout.atlas_h - line_h) // 2) + ascent
+        baseline = (
+            y0 +
+            ((layout.atlas_h - line_h) // 2) +
+            ascent +
+            layout.render_offset_y)
         bbox = draw.textbbox((x0, baseline), char, font=font, anchor="ls")
         glyph_w = bbox[2] - bbox[0]
         glyph_h = bbox[3] - bbox[1]
@@ -503,6 +523,7 @@ def render_font_png(
                 render_offset_y=(layout.logical_h - layout.atlas_h) // 2,
                 font=str(loaded_font.spec.path),
                 font_size=loaded_font.spec.size,
+                font_index=loaded_font.spec.index,
             )
         )
 
@@ -533,7 +554,11 @@ def write_map(
         },
         "cjk_words": cjk_words,
         "fonts": [
-            {"path": str(loaded_font.spec.path), "size": loaded_font.spec.size}
+            {
+                "path": str(loaded_font.spec.path),
+                "size": loaded_font.spec.size,
+                "index": loaded_font.spec.index,
+            }
             for loaded_font in fonts_used
         ],
     }
@@ -555,6 +580,7 @@ def parse_args() -> argparse.Namespace:
         required=True,
         help=(
             "Fallback font path or fontconfig family. May be repeated. "
+            "Append :INDEX to a .ttc or .otc path to select a collection face. "
             "Used for glyphs not covered by the ASCII or CJK font groups."
         ),
     )
@@ -581,7 +607,8 @@ def parse_args() -> argparse.Namespace:
         default=[],
         help=(
             "Font path or fontconfig family preferred for printable ASCII glyphs. "
-            "May be repeated for fallbacks within the ASCII group."
+            "May be repeated for fallbacks within the ASCII group. "
+            "Append :INDEX to a .ttc or .otc path to select a collection face."
         ),
     )
     parser.add_argument(
@@ -600,12 +627,19 @@ def parse_args() -> argparse.Namespace:
         help="ASCII source atlas slot size. Defaults to --atlas-cell.",
     )
     parser.add_argument(
+        "--ascii-render-offset-y",
+        type=int,
+        default=0,
+        help="Vertical pixel offset for drawing ASCII glyphs inside their atlas cells.",
+    )
+    parser.add_argument(
         "--cjk-font",
         action="append",
         default=[],
         help=(
             "Font path or fontconfig family preferred for CJK glyphs. "
-            "May be repeated for fallbacks within the CJK group."
+            "May be repeated for fallbacks within the CJK group. "
+            "Append :INDEX to a .ttc or .otc path to select a collection face."
         ),
     )
     parser.add_argument(
@@ -622,6 +656,12 @@ def parse_args() -> argparse.Namespace:
         "--cjk-atlas-cell",
         type=parse_cell,
         help="CJK source atlas slot size. Defaults to --atlas-cell.",
+    )
+    parser.add_argument(
+        "--cjk-render-offset-y",
+        type=int,
+        default=0,
+        help="Vertical pixel offset for drawing CJK glyphs inside their atlas cells.",
     )
     parser.add_argument(
         "--columns",
@@ -704,10 +744,20 @@ def main() -> int:
     default_layout = GlyphLayout(cell_w, cell_h, atlas_cell_w, atlas_cell_h)
     ascii_cell_w, ascii_cell_h = args.ascii_cell or args.cell
     ascii_atlas_w, ascii_atlas_h = args.ascii_atlas_cell or args.atlas_cell or args.ascii_cell or args.cell
-    ascii_layout = GlyphLayout(ascii_cell_w, ascii_cell_h, ascii_atlas_w, ascii_atlas_h)
+    ascii_layout = GlyphLayout(
+        ascii_cell_w,
+        ascii_cell_h,
+        ascii_atlas_w,
+        ascii_atlas_h,
+        args.ascii_render_offset_y)
     cjk_cell_w, cjk_cell_h = args.cjk_cell or args.cell
     cjk_atlas_w, cjk_atlas_h = args.cjk_atlas_cell or args.atlas_cell or args.cjk_cell or args.cell
-    cjk_layout = GlyphLayout(cjk_cell_w, cjk_cell_h, cjk_atlas_w, cjk_atlas_h)
+    cjk_layout = GlyphLayout(
+        cjk_cell_w,
+        cjk_cell_h,
+        cjk_atlas_w,
+        cjk_atlas_h,
+        args.cjk_render_offset_y)
     map_output = args.map_output or args.output.with_suffix(".json")
 
     print(f"Collected {len(chars)} unique glyphs from {len(list(iter_text_files(roots)))} files")
