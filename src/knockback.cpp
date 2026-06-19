@@ -20,6 +20,7 @@
 #include "debug.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
+#include "i18n.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
 #include "msg_log.hpp"
@@ -112,12 +113,12 @@ static void print_msg_actor_knocked_back(const actor::Actor& actor)
 {
     if (is_mon_noticed_by_player(actor)) {
         if (actor::is_player(&actor)) {
-            msg_log::add("I am knocked back!");
+            msg_log::add(i18n::get("knockback.player_knocked_back", "I am knocked back!"));
         }
         else {
             const std::string name = mon_shown_name(actor);
 
-            msg_log::add(name + " is knocked back!");
+            msg_log::add(name + i18n::get("knockback.mon_knocked_back_suffix", " is knocked back!"));
         }
     }
 }
@@ -126,12 +127,16 @@ static void print_msg_fall_into_chasm(const actor::Actor& actor)
 {
     if (is_mon_noticed_by_player(actor)) {
         if (actor::is_player(&actor)) {
-            msg_log::add("I perish in the depths!", colors::msg_bad());
+            msg_log::add(
+                i18n::get("knockback.player_perish_depths", "I perish in the depths!"),
+                colors::msg_bad());
         }
         else {
             const std::string name = mon_shown_name(actor);
 
-            msg_log::add(name + " perishes in the depths.", colors::msg_good());
+            msg_log::add(
+                name + i18n::get("knockback.mon_perish_depths_suffix", " perishes in the depths."),
+                colors::msg_good());
         }
     }
 }

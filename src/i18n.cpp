@@ -67,6 +67,39 @@ static std::string locale_text_path(const std::string& language)
     return path;
 }
 
+static std::string decode_locale_escapes(const std::string& value)
+{
+    std::string result;
+
+    for (size_t i = 0; i < value.size(); ++i) {
+        if ((value[i] != '\\') || ((i + 1) >= value.size())) {
+            result += value[i];
+
+            continue;
+        }
+
+        const char escaped = value[i + 1];
+
+        if (escaped == 'n') {
+            result += '\n';
+            ++i;
+        }
+        else if (escaped == 't') {
+            result += '\t';
+            ++i;
+        }
+        else if (escaped == '\\') {
+            result += '\\';
+            ++i;
+        }
+        else {
+            result += value[i];
+        }
+    }
+
+    return result;
+}
+
 // -----------------------------------------------------------------------------
 // i18n
 // -----------------------------------------------------------------------------
@@ -131,7 +164,7 @@ std::string get(const std::string& key, const std::string& fallback)
         return fallback;
     }
 
-    return value;
+    return decode_locale_escapes(value);
 }
 
 std::string current_language()

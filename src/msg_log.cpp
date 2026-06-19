@@ -16,6 +16,7 @@
 #include "debug.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "panel.hpp"
@@ -732,7 +733,7 @@ std::string MsgHistoryState::title() const
     std::string title;
 
     if (m_history.empty()) {
-        title = "No message history";
+        title = i18n::get("msg_log.no_message_history", "No message history");
     }
     else {
         // History has content
@@ -740,10 +741,11 @@ std::string MsgHistoryState::title() const
         const std::string msg_nr_str_last = std::to_string(m_btm_idx + 1);
 
         title =
-            "Messages " +
+            i18n::get("msg_log.messages_prefix", "Messages ") +
             msg_nr_str_first + "-" +
             msg_nr_str_last +
-            " of " + std::to_string(m_history.size());
+            i18n::get("msg_log.messages_of", " of ") +
+            std::to_string(m_history.size());
     }
 
     return title;

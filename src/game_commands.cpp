@@ -45,6 +45,7 @@
 #include "init.hpp"
 #include "inventory.hpp"
 #include "inventory_handling.hpp"
+#include "i18n.hpp"
 #include "io.hpp"
 #include "item.hpp"
 #include "item_data.hpp"
@@ -91,14 +92,17 @@ static void query_quit()
     int choice = 0;
 
     const std::string msg =
-        "Save and highscore will not be kept "
-        "(use stairs to save the game).";
+        i18n::get(
+            "game_commands.quit_warning",
+            "Save and highscore will not be kept "
+            "(use stairs to save the game).");
 
     popup::Popup(popup::AddToMsgHistory::no)
-        .set_title("Quit the current game?")
+        .set_title(i18n::get("game_commands.quit_title", "Quit the current game?"))
         .set_msg(msg)
         .setup_menu_mode(
-            {"(N)o", "(Y)es"},
+            {i18n::get("game_commands.quit_no", "(N)o"),
+             i18n::get("game_commands.quit_yes", "(Y)es")},
             {'n', 'y'},
             popup::MenuModeShowCancelHint::no,
             &choice)
@@ -153,7 +157,9 @@ static void handle_fire_command_firearm(item::Wpn& wpn)
             reload::try_reload(*map::g_player, &wpn);
         }
         else {
-            msg_log::add("There is no ammo loaded.");
+            msg_log::add(i18n::get(
+                "game_commands.no_ammo_loaded",
+                "There is no ammo loaded."));
         }
 
         return;
@@ -178,7 +184,9 @@ static void handle_fire_command_firearm(item::Wpn& wpn)
     }
 
     if (is_mi_go_wpn && !allow_player_fire_mi_go_weapon(mi_go_wpn_hp_drain)) {
-        msg_log::add("Firing the gun now would destroy me.");
+        msg_log::add(i18n::get(
+            "game_commands.firing_would_destroy_me",
+            "Firing the gun now would destroy me."));
 
         return;
     }
@@ -241,16 +249,19 @@ static void handle_activate_item_shortcut_command(const item::Id item_id)
                 ItemNameInfo::none,
                 ItemNameAttackInfo::none);
 
-        msg_log::add("I am not carrying " + name + ".");
+        msg_log::add(
+            i18n::get("game_commands.not_carrying_prefix", "I am not carrying ") +
+            name +
+            i18n::get("game_commands.not_carrying_suffix", "."));
     }
 }
 
 static void handle_game_menu_command()
 {
     const auto choices = std::vector<std::string> {
-        "(T)ome of Wisdom",
-        "(O)ptions",
-        "(Q)uit",
+        i18n::get("game_commands.menu_tome", "(T)ome of Wisdom"),
+        i18n::get("game_commands.menu_options", "(O)ptions"),
+        i18n::get("game_commands.menu_quit", "(Q)uit"),
     };
 
     int choice = 0;
@@ -284,7 +295,9 @@ static void handle_swap_weapon_command()
 
     if (!wielded && !alt) {
         // No wielded weapon and no alt weapon
-        msg_log::add("I have neither a wielded nor a prepared weapon.");
+        msg_log::add(i18n::get(
+            "game_commands.no_weapon_to_swap",
+            "I have neither a wielded nor a prepared weapon."));
 
         return;
     }
@@ -304,13 +317,15 @@ static void handle_swap_weapon_command()
     // War veteran swaps instantly
     const bool is_instant = player_bon::bg() == Bg::war_vet;
 
-    const std::string swift_str = is_instant ? "swiftly " : "";
+    const std::string swift_str = is_instant
+        ? i18n::get("game_commands.swiftly_adverb", "swiftly ")
+        : "";
 
     if (wielded && alt) {
         msg_log::add(
-            "I " +
+            i18n::get("game_commands.swap_weapon_prefix", "I ") +
             swift_str +
-            "swap to " +
+            i18n::get("game_commands.swap_to", "swap to ") +
             alt_name +
             ".");
     }
@@ -318,18 +333,18 @@ static void handle_swap_weapon_command()
         const std::string name = wielded->name(ItemNameType::plain);
 
         msg_log::add(
-            "I " +
+            i18n::get("game_commands.swap_weapon_prefix", "I ") +
             swift_str +
-            "put away my " +
+            i18n::get("game_commands.put_away_my", "put away my ") +
             name +
             ".");
     }
     else {
         // No weapon wielded.
         msg_log::add(
-            "I " +
+            i18n::get("game_commands.swap_weapon_prefix", "I ") +
             swift_str +
-            "wield " +
+            i18n::get("game_commands.wield", "wield ") +
             alt_name +
             ".");
     }
@@ -357,19 +372,19 @@ static void handle_auto_move_command(const Dir dir)
     }
     else if (!map::g_player->m_properties.allow_see()) {
         is_allowed = false;
-        prevent_msg = "Not while blind.";
+        prevent_msg = common_text::g_not_while_blind;
     }
     else if (map::g_player->m_properties.has(prop::Id::poisoned)) {
         is_allowed = false;
-        prevent_msg = "Not while poisoned.";
+        prevent_msg = i18n::get("game_commands.not_while_poisoned", "Not while poisoned.");
     }
     else if (map::g_player->m_properties.has(prop::Id::confused)) {
         is_allowed = false;
-        prevent_msg = "Not while confused.";
+        prevent_msg = i18n::get("game_commands.not_while_confused", "Not while confused.");
     }
     else if (map::g_player->m_properties.has(prop::Id::infected)) {
         is_allowed = false;
-        prevent_msg = "Not while infected.";
+        prevent_msg = i18n::get("game_commands.not_while_infected", "Not while infected.");
     }
 
     if (!is_allowed) {
@@ -816,7 +831,7 @@ void handle(const GameCmd cmd)
     switch (cmd) {
     case GameCmd::undefined: {
         msg_log::add(
-            "Press [?] for help.",
+            i18n::get("game_commands.press_help", "Press [?] for help."),
             colors::light_white(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::no,
@@ -888,7 +903,7 @@ void handle(const GameCmd cmd)
         }
         else if (map::g_player->m_properties.has(prop::Id::infected)) {
             is_allowed = false;
-            prevent_msg = "Not while infected.";
+            prevent_msg = i18n::get("game_commands.not_while_infected", "Not while infected.");
         }
 
         if (is_allowed) {

@@ -65,6 +65,15 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("option.skip_intro_level.name", "Skip intro level") == "跳过开场关卡");
     REQUIRE(i18n::get("option.display_hints.once", "Once") == "一次");
     REQUIRE(i18n::get("option.auto_reload_weapons.descr", "Automatically perform a reload action instead if attempting to fire a ranged weapon with no ammo loaded.") == "如果试图在没有装填弹药的情况下开火，则自动执行装填动作。");
+    REQUIRE(i18n::get("terrain_mob.cough", "I cough.") == "我咳嗽起来。");
+    REQUIRE(i18n::get("knockback.player_knocked_back", "I am knocked back!") == "我被击退了！");
+    REQUIRE(i18n::get("game_commands.press_help", "Press [?] for help.") == "按 [?] 查看帮助。");
+    REQUIRE(i18n::get("msg_log.no_message_history", "No message history") == "没有消息历史");
+
+    const auto input_mode_descr =
+        i18n::get("option.input_mode.descr", "");
+    REQUIRE(input_mode_descr.find("\\n") == std::string::npos);
+    REQUIRE(input_mode_descr.find("\n\n{COLOR_LIGHT_WHITE}默认：") != std::string::npos);
 
     const auto path = messages::resolved_path("menu_quotes.txt");
 

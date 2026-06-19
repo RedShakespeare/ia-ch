@@ -15,6 +15,7 @@
 #include "explosion.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
 #include "item_data.hpp"
@@ -129,7 +130,9 @@ void Smoke::on_new_turn()
         // Blinded?
         if (allow_blind && rnd::one_in(4)) {
             if (is_player) {
-                msg_log::add("I am getting smoke in my eyes.");
+                msg_log::add(i18n::get(
+                    "terrain_mob.smoke_in_eyes",
+                    "I am getting smoke in my eyes."));
             }
 
             auto* const prop = prop::make(prop::Id::blind);
@@ -144,12 +147,14 @@ void Smoke::on_new_turn()
             std::string snd_msg;
 
             if (is_player) {
-                msg_log::add("I cough.");
+                msg_log::add(i18n::get("terrain_mob.cough", "I cough."));
             }
             else {
                 // Is monster
                 if (actor->m_data->is_humanoid) {
-                    snd_msg = "I hear coughing.";
+                    snd_msg = i18n::get(
+                        "terrain_mob.hear_coughing",
+                        "I hear coughing.");
                 }
             }
 
