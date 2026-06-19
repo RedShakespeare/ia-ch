@@ -223,6 +223,13 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.rats_appear", "Rats appear!") == "鼠群出现了！");
     REQUIRE(i18n::get("spells.images_appear", "Images appear!") == "影像出现了！");
     REQUIRE(i18n::get("spells.weapon_visions", "Visions of hacking, crushing and stabbing fill my mind.") == "劈砍、碾碎与穿刺的景象充满了我的脑海。");
+    REQUIRE(i18n::get("spells.is_struck_suffix", " is struck.") == "被击中了。");
+    REQUIRE(i18n::get("spells.unravels_suffix", " unravels.") == "解体了。");
+    REQUIRE(i18n::get("spells.symbol_fails_to_bind", "A symbol flickers briefly, but fails to bind here.") == "一个符号短暂闪烁，但未能在此处绑定。");
+    REQUIRE(i18n::get("spells.sense_sigil_failed_to_bind", "I sense that the sigil failed to bind here.") == "我感觉印记未能在此处绑定。");
+    REQUIRE(i18n::get("spells.momentary_void", "A momentary void opens and closes.") == "一个瞬间的虚空开启又闭合。");
+    REQUIRE(i18n::get("spells.force_pushes_prefix", "A force pushes ") == "一股力量推着");
+    REQUIRE(i18n::get("spells.force_pushes_suffix", "!") == "！");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");

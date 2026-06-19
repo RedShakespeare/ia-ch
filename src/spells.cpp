@@ -3683,7 +3683,10 @@ void SpellPurge::run_effect(
         if (actor::can_player_see_actor(*actor)) {
             const auto name = text_format::first_to_upper(actor::name_the(*actor));
 
-            msg_log::add(name + " is struck.", colors::msg_good());
+            msg_log::add(
+                name +
+                    i18n::get("spells.is_struck_suffix", " is struck."),
+                colors::msg_good());
 
             draw_blast_at_cells({actor->m_pos}, colors::light_white());
         }
@@ -4120,7 +4123,9 @@ void SpellCancellation::do_damage_vulnerable_creature(
     if (actor::can_player_see_actor(actor)) {
         const std::string name = text_format::first_to_lower(actor::name_the(actor));
 
-        msg_log::add(name + " unravels.");
+        msg_log::add(
+            name +
+            i18n::get("spells.unravels_suffix", " unravels."));
     }
 
     const int dmg = damage_for_vulnerable_creatures().roll();
@@ -4253,12 +4258,16 @@ void SpellInscribeBoundarySigil::run_effect(
 
     if (terrain_id_here != terrain::Id::floor && terrain_id_here != terrain::Id::trap) {
         if (map::g_player->m_properties.allow_see()) {
-            msg_log::add("A symbol flickers briefly, but fails to bind here.");
+            msg_log::add(i18n::get(
+                "spells.symbol_fails_to_bind",
+                "A symbol flickers briefly, but fails to bind here."));
         }
         else {
             // NOTE: Assuming that the player is casting an already known spell (not
             // possible to cast from Manuscripts while blind).
-            msg_log::add("I sense that the sigil failed to bind here.");
+            msg_log::add(i18n::get(
+                "spells.sense_sigil_failed_to_bind",
+                "I sense that the sigil failed to bind here."));
         }
 
         return;
@@ -5376,7 +5385,9 @@ void SpellExpulsion::run_effect(
 {
     if (seen_targets.empty()) {
         if (actor::is_player(caster)) {
-            msg_log::add("A momentary void opens and closes.");
+            msg_log::add(i18n::get(
+                "spells.momentary_void",
+                "A momentary void opens and closes."));
         }
 
         return;
@@ -5543,7 +5554,7 @@ void SpellKnockBack::run_effect(
     Color msg_clr;
 
     if (actor::is_player(target)) {
-        target_str = "me";
+        target_str = i18n::get("spells.me", "me");
 
         msg_clr = colors::msg_bad();
     }
@@ -5555,7 +5566,11 @@ void SpellKnockBack::run_effect(
     }
 
     if (actor::can_player_see_actor(*target)) {
-        msg_log::add("A force pushes " + target_str + "!", msg_clr);
+        msg_log::add(
+            i18n::get("spells.force_pushes_prefix", "A force pushes ") +
+                target_str +
+                i18n::get("spells.force_pushes_suffix", "!"),
+            msg_clr);
     }
 
     knockback::run(
