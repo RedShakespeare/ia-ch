@@ -62,7 +62,9 @@ Trapezohedron::Trapezohedron(ItemData* item_data) :
 
 ItemPrePickResult Trapezohedron::pre_pickup_hook()
 {
-    game::add_history_event("Beheld The Shining Trapezohedron");
+    game::add_history_event(i18n::get(
+        "item_misc.trapezohedron.beheld_history",
+        "Beheld The Shining Trapezohedron"));
 
     saving::erase_save();
 
@@ -526,7 +528,10 @@ std::string MedicalBag::name_info_str(const ItemNameIdentified id_type) const
 {
     (void)id_type;
 
-    return "(" + std::to_string(m_nr_supplies) + " supplies)";
+    return (
+        i18n::get("item_misc.info.open_paren", "(") +
+        std::to_string(m_nr_supplies) +
+        i18n::get("item_misc.medical_bag.info_supplies_suffix", " supplies)"));
 }
 
 void MedicalBag::stop_action()
@@ -552,13 +557,16 @@ std::string Lantern::name_info_str(const ItemNameIdentified id_type) const
 {
     (void)id_type;
 
-    std::string inf = "(" + std::to_string(m_nr_turns_left) + " turns";
+    std::string inf =
+        i18n::get("item_misc.info.open_paren", "(") +
+        std::to_string(m_nr_turns_left) +
+        i18n::get("item_misc.info.turns_suffix", " turns");
 
     if (m_is_activated) {
-        inf += ", Lit";
+        inf += i18n::get("item_misc.lantern.lit_suffix", ", Lit");
     }
 
-    return inf + ")";
+    return inf + i18n::get("item_misc.info.close_paren", ")");
 }
 
 ConsumeItem Lantern::activate(actor::Actor* const actor)
@@ -609,12 +617,16 @@ void Lantern::on_pickup_hook()
 
 void Lantern::toggle()
 {
-    const std::string toggle_str =
+    const std::string msg =
         m_is_activated
-        ? "I turn off"
-        : "I turn on";
+        ? i18n::get(
+              "item_misc.lantern.turn_off",
+              "I turn off an Electric Lantern.")
+        : i18n::get(
+              "item_misc.lantern.turn_on",
+              "I turn on an Electric Lantern.");
 
-    msg_log::add(toggle_str + " an Electric Lantern.");
+    msg_log::add(msg);
 
     m_is_activated = !m_is_activated;
 
@@ -641,12 +653,16 @@ void Lantern::on_std_turn_in_inv_hook(const InvType inv_type)
 
     if (m_nr_turns_left <= 0) {
         msg_log::add(
-            "My Electric Lantern has expired.",
+            i18n::get(
+                "item_misc.lantern.expired",
+                "My Electric Lantern has expired."),
             colors::msg_note(),
             MsgInterruptPlayer::yes,
             MorePromptOnMsg::yes);
 
-        game::add_history_event("My Electric Lantern expired");
+        game::add_history_event(i18n::get(
+            "item_misc.lantern.expired_history",
+            "My Electric Lantern expired"));
 
         // NOTE: The this deletes the object
         map::g_player->m_inv.remove_item_in_backpack_with_ptr(
@@ -726,7 +742,10 @@ std::string HornOfMalice::name_info_str(const ItemNameIdentified id_type) const
 {
     (void)id_type;
 
-    return "(" + std::to_string(m_charges) + " uses)";
+    return (
+        i18n::get("item_misc.info.open_paren", "(") +
+        std::to_string(m_charges) +
+        i18n::get("item_misc.info.uses_suffix", " uses)"));
 }
 
 void HornOfMalice::save_hook() const
@@ -744,7 +763,7 @@ ConsumeItem HornOfMalice::activate(actor::Actor* const actor)
     (void)actor;
 
     if (m_charges <= 0) {
-        msg_log::add("It makes no sound.");
+        msg_log::add(i18n::get("item_misc.horn.no_sound", "It makes no sound."));
 
         return ConsumeItem::no;
     }
@@ -754,7 +773,9 @@ ConsumeItem HornOfMalice::activate(actor::Actor* const actor)
             new HornOfMaliceHeard);
 
     Snd snd(
-        "The Horn of Malice resounds!",
+        i18n::get(
+            "item_misc.horn.malice_resounds",
+            "The Horn of Malice resounds!"),
         audio::SfxId::horn,
         IgnoreMsgIfOriginSeen::no,
         map::g_player->m_pos,
@@ -800,7 +821,10 @@ std::string HornOfBanishment::name_info_str(const ItemNameIdentified id_type) co
 {
     (void)id_type;
 
-    return "(" + std::to_string(m_charges) + " uses)";
+    return (
+        i18n::get("item_misc.info.open_paren", "(") +
+        std::to_string(m_charges) +
+        i18n::get("item_misc.info.uses_suffix", " uses)"));
 }
 
 void HornOfBanishment::save_hook() const
@@ -818,7 +842,7 @@ ConsumeItem HornOfBanishment::activate(actor::Actor* const actor)
     (void)actor;
 
     if (m_charges <= 0) {
-        msg_log::add("It makes no sound.");
+        msg_log::add(i18n::get("item_misc.horn.no_sound", "It makes no sound."));
 
         return ConsumeItem::no;
     }
@@ -827,7 +851,9 @@ ConsumeItem HornOfBanishment::activate(actor::Actor* const actor)
         new HornOfBanishmentHeard);
 
     Snd snd(
-        "The Horn of Banishment resounds!",
+        i18n::get(
+            "item_misc.horn.banishment_resounds",
+            "The Horn of Banishment resounds!"),
         audio::SfxId::horn,
         IgnoreMsgIfOriginSeen::no,
         map::g_player->m_pos,
@@ -859,7 +885,7 @@ ConsumeItem HolySymbol::activate(actor::Actor* actor)
     }
 
     if (m_has_failed_attempt) {
-        msg_log::add("I have no faith that this would help me at the moment.");
+        msg_log::add(i18n::get("item_misc.holy_symbol.no_faith", "I have no faith that this would help me at the moment."));
 
         return ConsumeItem::no;
     }
@@ -871,10 +897,10 @@ ConsumeItem HolySymbol::activate(actor::Actor* actor)
     std::string pray_msg;
 
     if (map::g_player->m_properties.has(prop::Id::terrified)) {
-        pray_msg = "With trembling hands ";
+        pray_msg = i18n::get("item_misc.holy_symbol.trembling_hands", "With trembling hands ");
     }
 
-    pray_msg += "I make a prayer over the " + my_name + "...";
+    pray_msg += i18n::get("item_misc.holy_symbol.prayer_prefix", "I make a prayer over the ") + my_name + i18n::get("item_misc.holy_symbol.prayer_suffix", "...");
 
     msg_log::add(pray_msg);
 
@@ -891,7 +917,7 @@ ConsumeItem HolySymbol::activate(actor::Actor* actor)
         m_nr_charge_turns_left = (m_nr_charge_turns_left * duration_pct) / 100;
 
         msg_log::more_prompt();
-        msg_log::add("This feels useless!");
+        msg_log::add(i18n::get("item_misc.holy_symbol.feels_useless", "This feels useless!"));
 
         map::g_player->incr_shock(4.0, ShockSrc::misc);
 
@@ -933,9 +959,13 @@ void HolySymbol::on_std_turn_in_inv_hook(InvType inv_type)
                 ItemNameInfo::none);
 
         msg_log::add(
-            "I feel like praying over the " +
+            i18n::get(
+                "item_misc.holy_symbol.recharged_prefix",
+                "I feel like praying over the ") +
             my_name +
-            " would be beneficent again.");
+            i18n::get(
+                "item_misc.holy_symbol.recharged_suffix",
+                " would be beneficent again."));
     }
 }
 
@@ -949,13 +979,16 @@ std::string HolySymbol::name_info_str(const ItemNameIdentified id_type) const
 
     const auto turns_left_str = std::to_string(m_nr_charge_turns_left);
 
-    std::string str = "(" + turns_left_str + " turns";
+    std::string str =
+        i18n::get("item_misc.info.open_paren", "(") +
+        turns_left_str +
+        i18n::get("item_misc.info.turns_suffix", " turns");
 
     if (m_has_failed_attempt) {
-        str += ", failed";
+        str += i18n::get("item_misc.holy_symbol.failed_suffix", ", failed");
     }
 
-    str += ")";
+    str += i18n::get("item_misc.info.close_paren", ")");
 
     return str;
 }
@@ -1006,7 +1039,10 @@ std::string Clockwork::name_info_str(const ItemNameIdentified id_type) const
 {
     (void)id_type;
 
-    return "(" + std::to_string(m_charges) + " uses)";
+    return (
+        i18n::get("item_misc.info.open_paren", "(") +
+        std::to_string(m_charges) +
+        i18n::get("item_misc.info.uses_suffix", " uses)"));
 }
 
 void Clockwork::save_hook() const
@@ -1024,18 +1060,18 @@ ConsumeItem Clockwork::activate(actor::Actor* const actor)
     (void)actor;
 
     if (m_charges <= 0) {
-        msg_log::add("Nothing happens.");
+        msg_log::add(i18n::get("item_misc.clockwork.nothing_happens", "Nothing happens."));
 
         return ConsumeItem::no;
     }
 
     if (map::g_player->m_properties.has(prop::Id::extra_hasted)) {
-        msg_log::add("It will not move.");
+        msg_log::add(i18n::get("item_misc.clockwork.will_not_move", "It will not move."));
 
         return ConsumeItem::no;
     }
 
-    msg_log::add("I wind up the clockwork.");
+    msg_log::add(i18n::get("item_misc.clockwork.wind_up", "I wind up the clockwork."));
 
     map::g_player->incr_shock(12.0, ShockSrc::use_strange_item);
 
@@ -1105,7 +1141,7 @@ void Necronomicon::on_std_turn_in_inv_hook(const InvType inv_type)
 ItemPrePickResult Necronomicon::pre_pickup_hook()
 {
     if (player_bon::is_bg(Bg::exorcist)) {
-        msg_log::add("I destroy the profane text!");
+        msg_log::add(i18n::get("item_misc.necronomicon.destroy", "I destroy the profane text!"));
 
         game::incr_player_xp(g_xp_on_exorcist_destroy_necronomicon);
 
@@ -1145,7 +1181,7 @@ ConsumeItem WitchEye::activate(actor::Actor* actor)
          prop::PropEndAllowMsg::no,
          prop::PropEndAllowHistoricMsg::no});
 
-    msg_log::add("I clutch the " + item_name + "...");
+    msg_log::add(i18n::get("item_misc.witch_eye.clutch_prefix", "I clutch the ") + item_name + i18n::get("item_misc.witch_eye.clutch_suffix", "..."));
 
     auto* const clairvoyance =
         static_cast<prop::Clairvoyance*>(
@@ -1161,7 +1197,7 @@ ConsumeItem WitchEye::activate(actor::Actor* actor)
     map::g_player->incr_shock(12.0, ShockSrc::use_strange_item);
 
     if (rnd::one_in(3)) {
-        msg_log::add("The eye decomposes.");
+        msg_log::add(i18n::get("item_misc.witch_eye.decomposes", "The eye decomposes."));
 
         return ConsumeItem::yes;
     }
@@ -1235,9 +1271,13 @@ ConsumeItem FluctuatingMaterial::activate(actor::Actor* actor)
     const auto item_name = name(ItemNameType::plain);
 
     msg_log::add(
-        ("I stare into the " +
+        (i18n::get(
+             "item_misc.fluctuating_material.stare_prefix",
+             "I stare into the ") +
          item_name +
-         ", and feel myself changing..."),
+         i18n::get(
+             "item_misc.fluctuating_material.stare_suffix",
+             ", and feel myself changing...")),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -1246,7 +1286,9 @@ ConsumeItem FluctuatingMaterial::activate(actor::Actor* actor)
 
     states::push(
         std::make_unique<PickTraitState>(
-            "Which trait do you gain?",
+            i18n::get(
+                "item_misc.fluctuating_material.gain_trait_title",
+                "Which trait do you gain?"),
             IsCharacterCreationTraitPick::no));
 
     states::push(std::make_unique<RemoveTraitState>());
@@ -1273,7 +1315,7 @@ ConsumeItem AstralOpium::activate(actor::Actor* actor)
 
     const auto item_name = name(ItemNameType::plain);
 
-    msg_log::add("I use the " + item_name + "...");
+    msg_log::add(i18n::get("item_misc.astral_opium.use_prefix", "I use the ") + item_name + i18n::get("item_misc.astral_opium.use_suffix", "..."));
 
     map::g_player->m_properties.end_prop(prop::Id::frenzied);
     map::g_player->m_properties.apply(prop::make(prop::Id::r_shock));
