@@ -2968,7 +2968,9 @@ void Brazier::hit(
 
         if ((dmg_type == DmgType::kicking) &&
             actor->m_properties.has(prop::Id::weakened)) {
-            msg_log::add("It wiggles a bit.");
+            msg_log::add(i18n::get(
+                "terrain.wiggles",
+                "It wiggles a bit."));
 
             return;
         }
@@ -2999,7 +3001,9 @@ void Brazier::topple(const Dir direction, actor::Actor& actor)
     std::string snd_msg = "I hear a crash.";
 
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("It topples over.");
+            msg_log::add(i18n::get(
+                "terrain.topples_over",
+                "It topples over."));
 
         snd_msg = "";
     }
@@ -3200,7 +3204,9 @@ void ItemContainer::open(
         on_item_found(item, terrain_pos);
     }
 
-    msg_log::add("There are no more items of interest.");
+        msg_log::add(i18n::get(
+            "terrain.no_more_items_of_interest",
+            "There are no more items of interest."));
 
     m_items.clear();
 }
@@ -3243,7 +3249,9 @@ void ItemContainer::on_item_found(
         !data.ranged.has_infinite_ammo;
 
     if (is_unloadable_wpn) {
-        msg_log::add("Unload? [u]", colors::light_white());
+        msg_log::add(
+            i18n::get("terrain.unload_prompt", "Unload? [u]"),
+            colors::light_white());
     }
 
     auto answer = BinaryAnswer::no;
@@ -3320,7 +3328,9 @@ void ItemContainer::destroy_single_fragile()
             (d.id == item::Id::molotov)) {
             delete item;
             m_items.erase(it);
-            msg_log::add("I hear a muffled shatter.");
+        msg_log::add(i18n::get(
+            "terrain.muffled_shatter",
+            "I hear a muffled shatter."));
             break;
         }
     }
@@ -3407,7 +3417,9 @@ void Tomb::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The tomb is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.tomb_destroyed",
+                "The tomb is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -3519,13 +3531,17 @@ void Tomb::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (m_item_container.is_empty() && m_is_open) {
-        msg_log::add("The tomb is empty.");
+        msg_log::add(i18n::get(
+            "terrain.tomb_empty",
+            "The tomb is empty."));
 
         return;
     }
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a stone box here.");
+        msg_log::add(i18n::get(
+            "terrain.stone_box_here",
+            "There is a stone box here."));
 
         return;
     }
@@ -3541,10 +3557,14 @@ void Tomb::bump(actor::Actor& actor_bumping)
         return;
     }
 
-    msg_log::add("I attempt to push the lid.");
+    msg_log::add(i18n::get(
+        "terrain.attempt_push_lid",
+        "I attempt to push the lid."));
 
     if (actor_bumping.m_properties.has(prop::Id::weakened)) {
-        msg_log::add("It seems futile.");
+        msg_log::add(i18n::get(
+            "terrain.seems_futile",
+            "It seems futile."));
 
         game_time::tick();
 
@@ -3578,13 +3598,19 @@ void Tomb::bump(actor::Actor& actor_bumping)
     bool is_success = false;
 
     if (roll_tot < (m_push_lid_one_in_n - 9)) {
-        msg_log::add("It does not yield at all.");
+            msg_log::add(i18n::get(
+                "terrain.does_not_yield",
+                "It does not yield at all."));
     }
     else if (roll_tot < (m_push_lid_one_in_n - 2)) {
-        msg_log::add("It resists.");
+            msg_log::add(i18n::get(
+                "terrain.resists",
+                "It resists."));
     }
     else if (roll_tot == (m_push_lid_one_in_n - 2)) {
-        msg_log::add("It moves a little!");
+            msg_log::add(i18n::get(
+                "terrain.moves_little",
+                "It moves a little!"));
         --m_push_lid_one_in_n;
     }
     else {
@@ -3606,10 +3632,14 @@ void Tomb::bump(actor::Actor& actor_bumping)
 
 void Tomb::player_loot()
 {
-    msg_log::add("I peer inside the tomb.");
+    msg_log::add(i18n::get(
+        "terrain.peer_inside_tomb",
+        "I peer inside the tomb."));
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of value inside.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_value_inside",
+            "There is nothing of value inside."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -3628,7 +3658,9 @@ DidOpen Tomb::open(actor::Actor* const actor_opening)
         m_is_open = true;
 
         Snd snd(
-            "I hear heavy stone sliding.",
+        i18n::get(
+            "terrain.heavy_stone_sliding",
+            "I hear heavy stone sliding."),
             audio::SfxId::tomb_open,
             IgnoreMsgIfOriginSeen::yes,
             m_pos,
@@ -3639,10 +3671,14 @@ DidOpen Tomb::open(actor::Actor* const actor_opening)
         snd.run();
 
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The lid comes off.");
+    msg_log::add(i18n::get(
+        "terrain.lid_comes_off",
+        "The lid comes off."));
 
             if (!m_item_container.is_empty()) {
-                msg_log::add("There is something inside.");
+        msg_log::add(i18n::get(
+            "terrain.something_inside",
+            "There is something inside."));
             }
         }
 
@@ -3896,7 +3932,7 @@ void Tomb::trigger_trap_fumes() const
     }
 
     Snd snd(
-        "I hear a burst of gas.",
+        i18n::get("terrain.gas_burst", "I hear a burst of gas."),
         audio::SfxId::gas,
         IgnoreMsgIfOriginSeen::yes,
         m_pos,
@@ -3992,25 +4028,33 @@ void Chest::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a chest here.");
+        msg_log::add(i18n::get(
+            "terrain.chest_here",
+            "There is a chest here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The chest is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.chest_on_fire",
+            "The chest is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_open) {
-        msg_log::add("The chest is empty.");
+        msg_log::add(i18n::get(
+            "terrain.chest_empty",
+            "The chest is empty."));
 
         return;
     }
 
     if (m_is_locked) {
-        msg_log::add("The chest is locked.");
+        msg_log::add(i18n::get(
+            "terrain.chest_locked",
+            "The chest is locked."));
 
         return;
     }
@@ -4031,10 +4075,14 @@ void Chest::bump(actor::Actor& actor_bumping)
 
 void Chest::player_loot()
 {
-    msg_log::add("I search the chest.");
+    msg_log::add(i18n::get(
+        "terrain.search_chest",
+        "I search the chest."));
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of value inside.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_value_inside",
+            "There is nothing of value inside."));
     }
     else {
         // Not empty
@@ -4055,7 +4103,9 @@ DidOpen Chest::open(actor::Actor* const actor_opening)
         m_is_open = true;
 
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The chest opens.");
+    msg_log::add(i18n::get(
+        "terrain.chest_opens",
+        "The chest opens."));
         }
 
         return DidOpen::yes;
@@ -4111,7 +4161,9 @@ void Chest::on_player_kick()
     }
 
     if (m_is_open) {
-        msg_log::add("It is already open.");
+        msg_log::add(i18n::get(
+            "terrain.already_open",
+            "It is already open."));
 
         return;
     }
@@ -4128,7 +4180,9 @@ void Chest::on_player_kick()
     // Is seen and closed
 
     if (!m_is_locked) {
-        msg_log::add("The lid slams open, then falls shut.");
+        msg_log::add(i18n::get(
+            "terrain.lid_slams_open_falls_shut",
+            "The lid slams open, then falls shut."));
 
         snd.run();
 
@@ -4139,7 +4193,9 @@ void Chest::on_player_kick()
 
     if (map::g_player->m_properties.has(prop::Id::weakened) ||
         (m_material == ChestMaterial::iron)) {
-        msg_log::add("It seems futile.");
+        msg_log::add(i18n::get(
+            "terrain.seems_futile",
+            "It seems futile."));
 
         snd.run();
 
@@ -4164,13 +4220,17 @@ void Chest::on_player_kick()
     }
 
     if (rnd::one_in(open_one_in_n)) {
-        msg_log::add("The lock breaks and the lid flies open!");
+            msg_log::add(i18n::get(
+                "terrain.lock_breaks_lid_flies_open",
+                "The lock breaks and the lid flies open!"));
 
         m_is_locked = false;
         m_is_open = true;
     }
     else {
-        msg_log::add("The lock resists.");
+            msg_log::add(i18n::get(
+                "terrain.lock_resists",
+                "The lock resists."));
     }
 
     snd.run();
@@ -4276,7 +4336,9 @@ void Fountain::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The fountain is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.fountain_destroyed",
+                "The fountain is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -4367,7 +4429,9 @@ void Fountain::bump(actor::Actor& actor_bumping)
 
     if (!m_has_drinks_left) {
         if (is_seen) {
-            msg_log::add("The fountain is dried-up.");
+        msg_log::add(i18n::get(
+            "terrain.fountain_dried_up",
+            "The fountain is dried-up."));
         }
         else {
             msg_log::add(
@@ -4427,13 +4491,17 @@ void Fountain::bump(actor::Actor& actor_bumping)
     }
 
     msg_log::clear();
-    msg_log::add("I drink from the fountain...");
+    msg_log::add(i18n::get(
+        "terrain.drink_from_fountain",
+        "I drink from the fountain..."));
 
     audio::play(audio::SfxId::fountain_drink);
 
     switch (m_fountain_effect) {
     case FountainEffect::refreshing: {
-        msg_log::add("It's very refreshing.");
+        msg_log::add(i18n::get(
+            "terrain.very_refreshing",
+            "It's very refreshing."));
 
         actor::restore_hp(
             *map::g_player,
@@ -4451,7 +4519,9 @@ void Fountain::bump(actor::Actor& actor_bumping)
     } break;
 
     case FountainEffect::xp: {
-        msg_log::add("I feel more powerful!");
+        msg_log::add(i18n::get(
+            "terrain.feel_more_powerful",
+            "I feel more powerful!"));
         game::incr_player_xp(g_xp_on_drink_from_xp_fountain);
     } break;
 
@@ -4499,7 +4569,9 @@ void Fountain::bump(actor::Actor& actor_bumping)
     if (rnd::one_in(dry_one_in_n)) {
         m_has_drinks_left = false;
 
-        msg_log::add("The fountain dries up.");
+        msg_log::add(i18n::get(
+            "terrain.fountain_dries_up",
+            "The fountain dries up."));
     }
 
     map::memorize_terrain_at(m_pos);
