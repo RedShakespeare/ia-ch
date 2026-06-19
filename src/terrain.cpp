@@ -34,6 +34,7 @@
 #include "game_time.hpp"
 #include "gfx.hpp"
 #include "hints.hpp"
+#include "i18n.hpp"
 #include "insanity.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -231,10 +232,15 @@ static void topple_object(
         ? AlertsMon::yes
         : AlertsMon::no;
 
-    std::string snd_msg = "I hear a crash.";
+    std::string snd_msg = i18n::get(
+        "terrain.hear_crash",
+        "I hear a crash.");
 
     if (map::g_seen.at(terrain.pos())) {
-        msg_log::add("The " + name + " topples over.");
+        msg_log::add(
+            i18n::get("terrain.topples_prefix", "The ") +
+            name +
+            i18n::get("terrain.topples_suffix", " topples over."));
 
         snd_msg = "";
     }
@@ -262,7 +268,9 @@ static void topple_object(
         actor::is_alive(*actor_behind) &&
         !actor_behind->m_properties.has(prop::Id::ethereal)) {
         if (actor::is_player(actor_behind)) {
-            msg_log::add("It falls on me!");
+            msg_log::add(i18n::get(
+                "terrain.falls_on_me",
+                "It falls on me!"));
         }
         else {
             // Monster is hit
@@ -271,7 +279,10 @@ static void topple_object(
                     *actor_behind);
 
             if (is_player_seeing_actor) {
-                msg_log::add("It falls on " + actor::name_a(*actor_behind) + ".");
+                msg_log::add(
+                    i18n::get("terrain.falls_on_prefix", "It falls on ") +
+                    actor::name_a(*actor_behind) +
+                    i18n::get("terrain.period", "."));
             }
         }
 
@@ -1331,7 +1342,9 @@ void ChurchBench::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The church bench is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.church_bench_destroyed",
+                "The church bench is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -1423,7 +1436,9 @@ void Statue::hit(
 
         if ((dmg_type == DmgType::kicking) &&
             actor->m_properties.has(prop::Id::weakened)) {
-            msg_log::add("It wiggles a bit.");
+            msg_log::add(i18n::get(
+                "terrain.wiggles",
+                "It wiggles a bit."));
 
             return;
         }
@@ -1587,7 +1602,9 @@ void Urn::hit(
 
         if ((dmg_type == DmgType::kicking) &&
             actor->m_properties.has(prop::Id::weakened)) {
-            msg_log::add("It wiggles a bit.");
+            msg_log::add(i18n::get(
+                "terrain.wiggles",
+                "It wiggles a bit."));
 
             return;
         }
@@ -1748,9 +1765,12 @@ void Stairs::bump(actor::Actor& actor_bumping)
     int choice = 0;
 
     popup::Popup(popup::AddToMsgHistory::no)
-        .set_title("A staircase leading downwards")
+        .set_title(i18n::get(
+            "terrain.stairs_down_title",
+            "A staircase leading downwards"))
         .setup_menu_mode(
-            {"(D)escend", "(S)ave and quit"},
+            {i18n::get("terrain.descend_option", "(D)escend"),
+             i18n::get("terrain.save_and_quit_option", "(S)ave and quit")},
             {'d', 's'},
             popup::MenuModeShowCancelHint::yes,
             &choice)
@@ -1769,7 +1789,9 @@ void Stairs::bump(actor::Actor& actor_bumping)
 
         msg_log::clear();
 
-        msg_log::add("I descend the stairs.");
+        msg_log::add(i18n::get(
+            "terrain.descend_stairs",
+            "I descend the stairs."));
 
         // Always auto-save the game when descending
         //
@@ -2027,7 +2049,10 @@ void Liquid::run_magic_pool_effects_on_player()
                 ItemNameType::plain,
                 ItemNameInfo::none);
 
-        msg_log::add("The " + name + " seems cleansed!");
+        msg_log::add(
+            i18n::get("terrain.seems_cleansed_prefix", "The ") +
+            name +
+            i18n::get("terrain.seems_cleansed_suffix", " seems cleansed!"));
 
         item->current_curse().on_curse_end();
 
@@ -2192,24 +2217,33 @@ void CrystalKey::bump(actor::Actor& actor_bumping)
     const std::string terrain_name = text_format::first_to_lower(name(Article::the));
 
     if (is_seen) {
-        msg_log::add("I touch " + terrain_name + ".");
+        msg_log::add(
+            i18n::get("terrain.touch_prefix", "I touch ") +
+            terrain_name +
+            i18n::get("terrain.period", "."));
     }
     else {
         msg_log::clear();
 
-        msg_log::add("I touch some crystal object.");
+        msg_log::add(i18n::get(
+            "terrain.touch_crystal_object",
+            "I touch some crystal object."));
     }
 
     if (!m_is_active) {
         if (is_seen) {
-            msg_log::add("Nothing happens.");
+            msg_log::add(i18n::get(
+                "terrain.nothing_happens",
+                "Nothing happens."));
         }
 
         return;
     }
 
     if (is_seen) {
-        msg_log::add("The light inside fades.");
+        msg_log::add(i18n::get(
+            "terrain.light_inside_fades",
+            "The light inside fades."));
     }
 
     player_deactivate();
@@ -2223,7 +2257,9 @@ void CrystalKey::player_deactivate()
 {
     audio::play(audio::SfxId::crystal_key_disable);
 
-    msg_log::add("I sense that a path has opened somewhere.");
+    msg_log::add(i18n::get(
+        "terrain.path_opened",
+        "I sense that a path has opened somewhere."));
 
     game::incr_player_xp(g_xp_on_deactivate_crystal_key, Verbose::yes);
 
@@ -2275,7 +2311,9 @@ void Altar::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The altar is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.altar_destroyed",
+                "The altar is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));

@@ -56,6 +56,26 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "terrain_event.rats_discovery_title",
             "A gruesome discovery...") == "可怖的发现……");
+    REQUIRE(i18n::get("terrain.hear_crash", "I hear a crash.") == "我听到一声撞击。");
+    REQUIRE(i18n::get("terrain.topples_prefix", "The ") == "");
+    REQUIRE(i18n::get("terrain.topples_suffix", " topples over.") == "倒下了。");
+    REQUIRE(i18n::get("terrain.falls_on_me", "It falls on me!") == "它砸到了我！");
+    REQUIRE(i18n::get("terrain.falls_on_prefix", "It falls on ") == "它砸到了");
+    REQUIRE(i18n::get("terrain.period", ".") == "。");
+    REQUIRE(i18n::get("terrain.church_bench_destroyed", "The church bench is destroyed.") == "教堂长椅被摧毁了。");
+    REQUIRE(i18n::get("terrain.wiggles", "It wiggles a bit.") == "它摇晃了一下。");
+    REQUIRE(i18n::get("terrain.stairs_down_title", "A staircase leading downwards") == "向下的楼梯");
+    REQUIRE(i18n::get("terrain.descend_option", "(D)escend") == "(D)下楼");
+    REQUIRE(i18n::get("terrain.save_and_quit_option", "(S)ave and quit") == "(S)保存并退出");
+    REQUIRE(i18n::get("terrain.descend_stairs", "I descend the stairs.") == "我走下楼梯。");
+    REQUIRE(i18n::get("terrain.seems_cleansed_prefix", "The ") == "");
+    REQUIRE(i18n::get("terrain.seems_cleansed_suffix", " seems cleansed!") == "看起来被净化了！");
+    REQUIRE(i18n::get("terrain.touch_prefix", "I touch ") == "我触摸了");
+    REQUIRE(i18n::get("terrain.touch_crystal_object", "I touch some crystal object.") == "我触摸了某个水晶物体。");
+    REQUIRE(i18n::get("terrain.nothing_happens", "Nothing happens.") == "什么也没发生。");
+    REQUIRE(i18n::get("terrain.light_inside_fades", "The light inside fades.") == "里面的光芒消退了。");
+    REQUIRE(i18n::get("terrain.path_opened", "I sense that a path has opened somewhere.") == "我感到某处有一条道路打开了。");
+    REQUIRE(i18n::get("terrain.altar_destroyed", "The altar is destroyed.") == "祭坛被摧毁了。");
     REQUIRE(i18n::get("map.item_legend", "Item") == "物品");
     REQUIRE(i18n::get("marker.control_object.jammed_suffix", " is jammed.") == "被堵住了。");
     REQUIRE(i18n::get("marker.control_object.jam_prefix", "(c) Jam ") == "(c)堵住");
