@@ -28,6 +28,7 @@
 #include "explosion.hpp"
 #include "game_commands.hpp"
 #include "gfx.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
 #include "item.hpp"
@@ -1199,7 +1200,11 @@ DidAction CtrlObjJamDoor::run(
         text_format::first_to_upper(
             door.name(Article::the));
 
-    msg_log::add(name_the + " is jammed.");
+    msg_log::add(
+        name_the +
+        i18n::get(
+            "marker.control_object.jammed_suffix",
+            " is jammed."));
 
     door.jam(map::g_player);
 
@@ -1210,7 +1215,10 @@ std::string CtrlObjJamDoor::menu_label(const terrain::Terrain& terrain) const
 {
     const std::string name = terrain.name(Article::the);
 
-    return "(c) Jam " + name;
+    return i18n::get(
+               "marker.control_object.jam_prefix",
+               "(c) Jam ") +
+           name;
 }
 
 char CtrlObjJamDoor::menu_key() const
@@ -1245,7 +1253,11 @@ DidAction CtrlObjDeactivateCrystal::run(
         text_format::first_to_upper(
             lever.name(Article::the));
 
-    msg_log::add(name_the + " is deactivated.");
+    msg_log::add(
+        name_the +
+        i18n::get(
+            "marker.control_object.deactivated_suffix",
+            " is deactivated."));
 
     lever.player_deactivate();
 
@@ -1257,7 +1269,9 @@ std::string CtrlObjDeactivateCrystal::menu_label(
 {
     (void)terrain;
 
-    return "(d) Deactivate crystal";
+    return i18n::get(
+        "marker.control_object.deactivate_crystal",
+        "(d) Deactivate crystal");
 }
 
 char CtrlObjDeactivateCrystal::menu_key() const
@@ -1363,7 +1377,10 @@ std::string CtrlObjStrike::menu_label(const terrain::Terrain& terrain) const
 {
     const std::string name = terrain.name(Article::the);
 
-    return "(w) Strike " + name;
+    return i18n::get(
+               "marker.control_object.strike_prefix",
+               "(w) Strike ") +
+           name;
 }
 
 char CtrlObjStrike::menu_key() const
@@ -1399,7 +1416,9 @@ DidAction CtrlObjDestrWall::run(
     (void)skill;
 
     if (!map::is_pos_inside_outer_walls(terrain.pos())) {
-        msg_log::add("Nothing happens.");
+        msg_log::add(i18n::get(
+            "marker.control_object.nothing_happens",
+            "Nothing happens."));
 
         return DidAction::yes;
     }
@@ -1407,7 +1426,9 @@ DidAction CtrlObjDestrWall::run(
     switch (terrain.id()) {
     case terrain::Id::door: {
         // NOTE: The door is hidden.
-        msg_log::add("Nothing happens.");
+        msg_log::add(i18n::get(
+            "marker.control_object.nothing_happens",
+            "Nothing happens."));
 
         return DidAction::yes;
     } break;
@@ -1643,7 +1664,9 @@ CtrlObjActionPtr CtrlObj::query_control() const
     }
 
     menu_keys.push_back(0);
-    menu_labels.emplace_back("(space, esc) Choose another position");
+    menu_labels.emplace_back(i18n::get(
+        "marker.control_object.choose_another_position",
+        "(space, esc) Choose another position"));
 
     int choice = 0;
 
@@ -1653,7 +1676,9 @@ CtrlObjActionPtr CtrlObj::query_control() const
         popup::MenuModeShowCancelHint::no,
         &choice);
 
-    popup.set_title("Control object");
+    popup.set_title(i18n::get(
+        "marker.control_object.title",
+        "Control object"));
 
     popup.run();
 

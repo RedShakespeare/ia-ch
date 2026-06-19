@@ -56,6 +56,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "terrain_event.rats_discovery_title",
             "A gruesome discovery...") == "可怖的发现……");
     REQUIRE(i18n::get("map.item_legend", "Item") == "物品");
+    REQUIRE(i18n::get("marker.control_object.jammed_suffix", " is jammed.") == "被堵住了。");
+    REQUIRE(i18n::get("marker.control_object.jam_prefix", "(c) Jam ") == "(c)堵住");
+    REQUIRE(i18n::get("marker.control_object.deactivated_suffix", " is deactivated.") == "被停用了。");
+    REQUIRE(i18n::get("marker.control_object.deactivate_crystal", "(d) Deactivate crystal") == "(d)停用水晶");
+    REQUIRE(i18n::get("marker.control_object.strike_prefix", "(w) Strike ") == "(w)攻击");
+    REQUIRE(i18n::get("marker.control_object.nothing_happens", "Nothing happens.") == "什么也没发生。");
+    REQUIRE(i18n::get("marker.control_object.choose_another_position", "(space, esc) Choose another position") == "(space, esc) 选择另一个位置");
+    REQUIRE(i18n::get("marker.control_object.title", "Control object") == "控制物体");
     REQUIRE(i18n::get("item_head.turns_left_suffix", " turns)") == "回合）");
     REQUIRE(i18n::get("insanity.babbling.char_descr", "Babbling") == "胡言乱语");
     REQUIRE(
