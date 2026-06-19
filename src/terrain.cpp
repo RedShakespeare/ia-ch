@@ -4792,7 +4792,9 @@ void Cabinet::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The cabinet is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.cabinet_destroyed",
+                "The cabinet is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -4812,7 +4814,9 @@ void Cabinet::hit(
 WasDestroyed Cabinet::on_finished_burning()
 {
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("The cabinet burns down.");
+            msg_log::add(i18n::get(
+                "terrain.cabinet_burns_down",
+                "The cabinet burns down."));
     }
 
     auto* const rubble = make(Id::rubble_low, m_pos);
@@ -4835,19 +4839,25 @@ void Cabinet::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a cabinet here.");
+        msg_log::add(i18n::get(
+            "terrain.cabinet_here",
+            "There is a cabinet here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The cabinet is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.cabinet_on_fire",
+            "The cabinet is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_open) {
-        msg_log::add("The cabinet is empty.");
+        msg_log::add(i18n::get(
+            "terrain.cabinet_empty",
+            "The cabinet is empty."));
 
         return;
     }
@@ -4877,10 +4887,14 @@ void Cabinet::bump(actor::Actor& actor_bumping)
 
 void Cabinet::player_loot()
 {
-    msg_log::add("I search the cabinet.");
+    msg_log::add(i18n::get(
+        "terrain.search_cabinet",
+        "I search the cabinet."));
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of value inside.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_value_inside",
+            "There is nothing of value inside."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -4909,7 +4923,9 @@ DidOpen Cabinet::open(actor::Actor* const actor_opening)
         m_is_open = true;
 
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The cabinet opens.");
+    msg_log::add(i18n::get(
+        "terrain.cabinet_opens",
+        "The cabinet opens."));
         }
 
         return DidOpen::yes;
@@ -4986,7 +5002,9 @@ void Bookshelf::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The bookshelf is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.bookshelf_destroyed",
+                "The bookshelf is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -5007,7 +5025,9 @@ void Bookshelf::hit(
 WasDestroyed Bookshelf::on_finished_burning()
 {
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("The bookshelf burns down.");
+            msg_log::add(i18n::get(
+                "terrain.bookshelf_burns_down",
+                "The bookshelf burns down."));
     }
 
     auto* const rubble = make(Id::rubble_low, m_pos);
@@ -5031,19 +5051,25 @@ void Bookshelf::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a bookshelf here.");
+        msg_log::add(i18n::get(
+            "terrain.bookshelf_here",
+            "There is a bookshelf here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The bookshelf is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.bookshelf_on_fire",
+            "The bookshelf is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_looted) {
-        msg_log::add("The bookshelf is empty.");
+        msg_log::add(i18n::get(
+            "terrain.bookshelf_empty",
+            "The bookshelf is empty."));
 
         return;
     }
@@ -5079,7 +5105,9 @@ void Bookshelf::player_loot()
     m_is_looted = true;
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of interest.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_interest",
+            "There is nothing of interest."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -5154,7 +5182,9 @@ void AlchemistBench::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The alchemist's workbench is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.alchemist_workbench_destroyed",
+                "The alchemist's workbench is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -5175,7 +5205,9 @@ void AlchemistBench::hit(
 WasDestroyed AlchemistBench::on_finished_burning()
 {
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("The alchemist's workbench burns down.");
+            msg_log::add(i18n::get(
+                "terrain.alchemist_workbench_burns_down",
+                "The alchemist's workbench burns down."));
     }
 
     auto* const rubble = make(Id::rubble_low, m_pos);
@@ -5199,19 +5231,25 @@ void AlchemistBench::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is an alchemist's workbench here.");
+        msg_log::add(i18n::get(
+            "terrain.alchemist_workbench_here",
+            "There is an alchemist's workbench here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The alchemist's workbench is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.alchemist_workbench_on_fire",
+            "The alchemist's workbench is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_looted) {
-        msg_log::add("The alchemist's workbench is empty.");
+        msg_log::add(i18n::get(
+            "terrain.alchemist_workbench_empty",
+            "The alchemist's workbench is empty."));
 
         return;
     }
@@ -5247,7 +5285,9 @@ void AlchemistBench::player_loot()
     m_is_looted = true;
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of interest.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_interest",
+            "There is nothing of interest."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -5332,7 +5372,9 @@ void Cocoon::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The cocoon is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.cocoon_destroyed",
+                "The cocoon is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -5352,7 +5394,9 @@ void Cocoon::hit(
 WasDestroyed Cocoon::on_finished_burning()
 {
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("The cocoon burns down.");
+            msg_log::add(i18n::get(
+                "terrain.cocoon_burns_down",
+                "The cocoon burns down."));
     }
 
     auto* const rubble = make(Id::rubble_low, m_pos);
@@ -5376,19 +5420,25 @@ void Cocoon::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a cocoon here.");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_here",
+            "There is a cocoon here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The cocoon is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_on_fire",
+            "The cocoon is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_open) {
-        msg_log::add("The cocoon is empty.");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_empty",
+            "The cocoon is empty."));
 
         return;
     }
@@ -5427,7 +5477,9 @@ void Cocoon::trigger_trap()
             return;
         }
 
-        msg_log::add("There is a half-dissolved human body inside!");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_half_dissolved_body",
+            "There is a half-dissolved human body inside!"));
 
         map::g_player->incr_shock(12.0, ShockSrc::misc);
 
@@ -5457,7 +5509,9 @@ void Cocoon::trigger_trap()
             TRACE << "Spawn candidates found, attempting to place"
                   << "\n";
 
-            msg_log::add("There are spiders inside!");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_spiders_inside",
+            "There are spiders inside!"));
 
             const auto nr_spiders = (size_t)rnd::range(2, 5);
 
@@ -5475,10 +5529,12 @@ void Cocoon::trigger_trap()
 
 void Cocoon::player_loot()
 {
-    msg_log::add("I search the Cocoon.");
+    msg_log::add(i18n::get(
+        "terrain.search_cocoon",
+        "I search the Cocoon."));
 
     if (m_item_container.is_empty()) {
-        msg_log::add("It is empty.");
+        msg_log::add(i18n::get("terrain.it_is_empty", "It is empty."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -5497,7 +5553,9 @@ DidOpen Cocoon::open(actor::Actor* const actor_opening)
         m_is_open = true;
 
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The cocoon opens.");
+    msg_log::add(i18n::get(
+        "terrain.cocoon_opens",
+        "The cocoon opens."));
         }
 
         trigger_trap();
