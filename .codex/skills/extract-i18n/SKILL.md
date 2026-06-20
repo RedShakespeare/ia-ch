@@ -1,6 +1,6 @@
 ---
 name: extract-i18n
-description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract them into locale text.ini via i18n::get lookups, build and run the test suite, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
+description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract a complete coherent class of related text into locale text.ini via i18n::get lookups, build and run the test suite, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
 ---
 
 # Extract raw text into the i18n layer
@@ -60,15 +60,18 @@ Many strings are built by concatenating fragments with `+` (e.g.
 the existing `reload.*` and `game_commands.*` keys for the prefix/suffix
 convention (e.g. `*.period` for a trailing `"."`).
 
-## 2. Choose a topic-sized workflow batch
+## 2. Choose a class-sized workflow batch
 
-Each workflow pass should extract a coherent topic containing several related
-strings, not just the first 1-3 scanner hits found. Before editing, inspect the
-surrounding source and choose a batch that a reviewer can understand as one
-unit. Good batches usually include one of these:
+Each workflow pass should extract a complete coherent class of related text,
+not just one enum case, one menu entry, or the first few scanner hits. Before
+editing, inspect the surrounding source and choose the largest natural unit that
+a reviewer can still understand as one change. Good batches usually include one
+of these:
 
 - all `name()` fragments for a related set of terrain classes, item classes, or
   effect types
+- all descriptions/titles for one UI category or enum family, such as every
+  player background description in `bg_descr(Bg)`
 - one UI/menu/popup flow, including title, body text, options, and prompt
   suffixes
 - one gameplay subsystem's related log messages, sound messages, and history
@@ -76,16 +79,25 @@ unit. Good batches usually include one of these:
 - one item/effect family, such as potion metadata, curse messages, or weapon
   proc text
 
-Aim to extract roughly 8-30 related keys in a normal pass when the local topic
-has that many strings. It is acceptable to extract fewer only when the selected
-topic is genuinely small, at the end of a file/module, or when a behavior risk
-requires a narrow commit. Do not stop after localizing one isolated string if
-adjacent code contains related player-facing literals that can be safely handled
-in the same topic.
+Prefer complete sibling sets over per-sibling commits. For example, extract all
+player background descriptions (Exorcist, Flagellant, Ghoul, Occultist, Rogue,
+and War Veteran) in one pass rather than committing one background at a time.
+Similarly, extract all potion metadata, all terrain container names, or all
+closely related trait descriptions together when they live in one local data
+block.
 
-Keep each workflow commit focused on one logical topic. If the scanner reveals
+Aim to extract roughly 20-80 related keys in a normal pass when the local class
+has that many strings. It is acceptable to extract fewer only when the complete
+class is genuinely small, at the end of a file/module, or when a behavior risk
+requires a narrow commit. Do not stop after localizing one isolated string if
+adjacent code contains sibling player-facing literals that can be safely handled
+in the same class.
+
+Keep each workflow commit focused on one logical class. If the scanner reveals
 unrelated strings while working, leave them for a later workflow pass instead of
-mixing domains in one commit.
+mixing domains in one commit. Split a large class only when the diff becomes too
+risky to review, the source requires separate behavior changes, or the tests
+would be hard to diagnose as one change.
 
 Example terrain batches:
 
