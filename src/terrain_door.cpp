@@ -329,7 +329,7 @@ static void communicate_mon_bash_failed(
     actor::Actor& mon)
 {
     Snd snd(
-        "I hear a loud banging.",
+        i18n::get("terrain_door.hear_loud_banging", "I hear a loud banging."),
         sfx,
         IgnoreMsgIfOriginSeen::yes,
         pos,
@@ -358,7 +358,10 @@ static void communicate_player_open(
         snd.run();
     }
 
-    msg_log::add("I open the " + door_name + ".");
+    msg_log::add(
+        i18n::get("terrain_door.open_prefix", "I open the ") +
+        door_name +
+        i18n::get("terrain_door.period", "."));
 }
 
 static void communicate_mon_open(
@@ -373,7 +376,7 @@ static void communicate_mon_open(
     const std::string snd_msg =
         (is_actor_seen || is_door_seen)
         ? ""
-        : "I hear a door open.";
+        : i18n::get("terrain_door.hear_door_open", "I hear a door open.");
 
     Snd snd(
         snd_msg,
@@ -391,10 +394,17 @@ static void communicate_mon_open(
             text_format::first_to_upper(
                 actor::name_the(mon));
 
-        msg_log::add(actor_name_the + " opens a " + door_name + ".");
+        msg_log::add(
+            actor_name_the +
+            i18n::get("terrain_door.opens_a", " opens a ") +
+            door_name +
+            i18n::get("terrain_door.period", "."));
     }
     else if (is_door_seen) {
-        msg_log::add("I see a " + door_name + " opening.");
+        msg_log::add(
+            i18n::get("terrain_door.see_a", "I see a ") +
+            door_name +
+            i18n::get("terrain_door.opening_suffix", " opening."));
 
         mon.make_player_aware_of_me();
     }
@@ -416,7 +426,12 @@ static void communicate_player_open_blind(
 
     snd.run();
 
-    msg_log::add("I fumble with a " + door_name + ", but manage to open it.");
+    msg_log::add(
+        i18n::get("terrain_door.fumble_with_a", "I fumble with a ") +
+        door_name +
+        i18n::get(
+            "terrain_door.manage_open_suffix",
+            ", but manage to open it."));
 }
 
 static void communicate_mon_open_blind(
@@ -431,7 +446,9 @@ static void communicate_mon_open_blind(
     const std::string snd_msg =
         (is_actor_seen || is_door_seen)
         ? ""
-        : "I hear something open a door awkwardly.";
+        : i18n::get(
+            "terrain_door.hear_door_open_awkwardly",
+            "I hear something open a door awkwardly.");
 
     Snd snd(
         snd_msg,
@@ -451,12 +468,19 @@ static void communicate_mon_open_blind(
 
         msg_log::add(
             actor_name_the +
-            "fumbles, but manages to open a " +
+            i18n::get(
+                "terrain_door.fumbles_manages_open_a",
+                "fumbles, but manages to open a ") +
             door_name +
-            ".");
+            i18n::get("terrain_door.period", "."));
     }
     else if (is_door_seen) {
-        msg_log::add("I see a " + door_name + " open awkwardly.");
+        msg_log::add(
+            i18n::get("terrain_door.see_a", "I see a ") +
+            door_name +
+            i18n::get(
+                "terrain_door.open_awkwardly_suffix",
+                " open awkwardly."));
 
         mon.make_player_aware_of_me();
     }
@@ -478,9 +502,13 @@ static void communicate_player_fail_open_blind(
     snd.run();
 
     msg_log::add(
-        "I fumble blindly with a " +
+        i18n::get(
+            "terrain_door.fumble_blindly_open_prefix",
+            "I fumble blindly with a ") +
         door_name +
-        ", and fail to open it.");
+        i18n::get(
+            "terrain_door.fail_open_suffix",
+            ", and fail to open it."));
 }
 
 static void communicate_mon_fail_open_blind(
@@ -489,7 +517,9 @@ static void communicate_mon_fail_open_blind(
     actor::Actor& mon)
 {
     Snd snd(
-        "I hear something attempting to open a door.",
+        i18n::get(
+            "terrain_door.hear_attempt_open_door",
+            "I hear something attempting to open a door."),
         audio::SfxId::END,
         IgnoreMsgIfOriginSeen::yes,
         pos,

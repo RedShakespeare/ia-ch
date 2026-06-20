@@ -85,6 +85,33 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.stone_box_here", "There is a stone box here.") == "这里有一个石盒。");
     REQUIRE(i18n::get("terrain.attempt_push_lid", "I attempt to push the lid.") == "我试着推开盖子。");
     REQUIRE(i18n::get("terrain.seems_futile", "It seems futile.") == "这似乎徒劳无功。");
+    REQUIRE(i18n::get("terrain_door.hear_loud_banging", "I hear a loud banging.") == "我听到响亮的撞击声。");
+    REQUIRE(i18n::get("terrain_door.open_prefix", "I open the ") == "我打开了");
+    REQUIRE(i18n::get("terrain_door.period", ".") == "。");
+    REQUIRE(i18n::get("terrain_door.hear_door_open", "I hear a door open.") == "我听到一扇门打开。");
+    REQUIRE(i18n::get("terrain_door.opens_a", " opens a ") == "打开了一扇");
+    REQUIRE(i18n::get("terrain_door.see_a", "I see a ") == "我看见一扇");
+    REQUIRE(i18n::get("terrain_door.opening_suffix", " opening.") == "正在打开。");
+    REQUIRE(i18n::get("terrain_door.fumble_with_a", "I fumble with a ") == "我摸索着一扇");
+    REQUIRE(i18n::get("terrain_door.manage_open_suffix", ", but manage to open it.") == "，但设法打开了。");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.hear_door_open_awkwardly",
+            "I hear something open a door awkwardly.") == "我听到有什么东西笨拙地打开一扇门。");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.fumbles_manages_open_a",
+            "fumbles, but manages to open a ") == "摸索着，但设法打开了一扇");
+    REQUIRE(i18n::get("terrain_door.open_awkwardly_suffix", " open awkwardly.") == "笨拙地打开。");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.fumble_blindly_open_prefix",
+            "I fumble blindly with a ") == "我盲目地摸索着一扇");
+    REQUIRE(i18n::get("terrain_door.fail_open_suffix", ", and fail to open it.") == "，但没能打开。");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.hear_attempt_open_door",
+            "I hear something attempting to open a door.") == "我听到有什么东西试图打开一扇门。");
     REQUIRE(i18n::get("terrain.does_not_yield", "It does not yield at all.") == "它完全没有松动。");
     REQUIRE(i18n::get("terrain.resists", "It resists.") == "它抵住了。");
     REQUIRE(i18n::get("terrain.moves_little", "It moves a little!") == "它移动了一点！");
