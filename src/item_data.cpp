@@ -11,6 +11,7 @@
 
 #include "colors.hpp"
 #include "debug.hpp"
+#include "i18n.hpp"
 #include "item_att_property.hpp"
 #include "property.hpp"
 #include "property_data.hpp"
@@ -124,7 +125,9 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
         d.ranged.throw_hit_chance_mod = -25;
         d.ranged.effective_range = {0, 3};
         d.ranged.max_range = d.ranged.effective_range.max + 3;
-        d.land_on_hard_snd_msg = "I hear a clanking sound.";
+        d.land_on_hard_snd_msg = i18n::get(
+            "item_data.item_type.melee_wpn.land_on_hard_snd_msg",
+            "I hear a clanking sound.");
         d.land_on_hard_sfx = audio::SfxId::metal_clank;
         break;
 
@@ -211,11 +214,15 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
         d.type = ItemType::scroll;
         d.has_std_activate = true;
         d.base_descr = {
-            "A short transcription of an eldritch incantation. "
-            "There is a strange aura about it, as if some power "
-            "was imbued in the paper itself.",
-            "It should be possible to pronounce it correctly, but "
-            "the purpose is unclear."};
+            i18n::get(
+                "item_data.item_type.scroll.base_descr_1",
+                "A short transcription of an eldritch incantation. "
+                "There is a strange aura about it, as if some power "
+                "was imbued in the paper itself."),
+            i18n::get(
+                "item_data.item_type.scroll.base_descr_2",
+                "It should be possible to pronounce it correctly, but "
+                "the purpose is unclear.")};
         d.value = item::Value::minor_treasure;
         d.weight = item::Weight::none;
         d.is_identified = false;
@@ -238,8 +245,10 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
         d.type = ItemType::potion;
         d.has_std_activate = true;
         d.base_descr = {
-            "A small glass bottle containing a mysterious "
-            "concoction."};
+            i18n::get(
+                "item_data.item_type.potion.base_descr",
+                "A small glass bottle containing a mysterious "
+                "concoction.")};
         d.value = item::Value::minor_treasure;
         d.chance_to_incl_in_spawn_list = 60;
         d.weight = item::Weight::light;
@@ -268,21 +277,31 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
         d.value = item::Value::major_treasure;
         d.has_std_activate = true;
         d.base_name_un_id = {
-            "Strange Device",
-            "Strange Devices",
-            "a Strange Device"};
+            i18n::get(
+                "item_data.item_type.device.unidentified_name",
+                "Strange Device"),
+            i18n::get(
+                "item_data.item_type.device.unidentified_name_plural",
+                "Strange Devices"),
+            i18n::get(
+                "item_data.item_type.device.unidentified_name_a",
+                "a Strange Device")};
         d.base_descr = {
-            "A small piece of machinery. It could not possibly "
-            "have been designed by a human mind. Even for its "
-            "small size, it seems incredibly complex. There is no "
-            "hope of understanding the purpose or function of it "
-            "through normal means."};
+            i18n::get(
+                "item_data.item_type.device.base_descr",
+                "A small piece of machinery. It could not possibly "
+                "have been designed by a human mind. Even for its "
+                "small size, it seems incredibly complex. There is no "
+                "hope of understanding the purpose or function of it "
+                "through normal means.")};
         d.weight = item::Weight::light;
         d.is_identified = false;
         d.character = '%';
         d.tile = gfx::TileId::device1;
         d.is_stackable = false;
-        d.land_on_hard_snd_msg = "I hear a clanking sound.";
+        d.land_on_hard_snd_msg = i18n::get(
+            "item_data.item_type.device.land_on_hard_snd_msg",
+            "I hear a clanking sound.");
         d.land_on_hard_sfx = audio::SfxId::metal_clank;
         d.chance_to_incl_in_spawn_list = 7;
         d.native_containers.push_back(terrain::Id::chest);
@@ -295,16 +314,20 @@ static void reset_data(item::ItemData& d, ItemType const item_type)
         d.value = item::Value::major_treasure;
         d.has_std_activate = true;
         d.base_descr = {
-            "A metallic device of cylindrical shape. "
-            "It seems to be designed for human hands, "
-            "for whatever nefarious purpose."};
+            i18n::get(
+                "item_data.item_type.rod.base_descr",
+                "A metallic device of cylindrical shape. "
+                "It seems to be designed for human hands, "
+                "for whatever nefarious purpose.")};
         d.weight = item::Weight::light;
         d.is_identified = false;
         d.xp_on_found = 15;
         d.character = '%';
         d.tile = gfx::TileId::rod;
         d.is_stackable = false;
-        d.land_on_hard_snd_msg = "I hear a clanking sound.";
+        d.land_on_hard_snd_msg = i18n::get(
+            "item_data.item_type.rod.land_on_hard_snd_msg",
+            "I hear a clanking sound.");
         d.land_on_hard_sfx = audio::SfxId::metal_clank;
         d.chance_to_incl_in_spawn_list = 7;
         d.native_containers.push_back(terrain::Id::chest);

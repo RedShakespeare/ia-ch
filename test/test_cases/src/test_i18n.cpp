@@ -1416,6 +1416,23 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("property_data.increased_shock_curse.msg_end_player", "我没那么焦虑了。");
     require_translation("property_data.cannot_read_curse.msg_start_player", "我觉得自己无法阅读了！");
     require_translation("property_data.cannot_read_curse.msg_end_player", "我又能阅读了。");
+    require_translation("item_data.item_type.melee_wpn.land_on_hard_snd_msg", "我听到一阵金属叮当声。");
+    require_translation(
+        "item_data.item_type.scroll.base_descr_1",
+        "一份奥秘咒文的简短抄本。纸张上有一种奇异灵光，仿佛某种力量被灌注在纸张本身之中。");
+    require_translation("item_data.item_type.scroll.base_descr_2", "它应该可以被正确念出，但用途并不明朗。");
+    require_translation("item_data.item_type.potion.base_descr", "一个小玻璃瓶，里面装着神秘调合物。");
+    require_translation("item_data.item_type.device.unidentified_name", "奇异装置");
+    require_translation("item_data.item_type.device.unidentified_name_plural", "奇异装置");
+    require_translation("item_data.item_type.device.unidentified_name_a", "一个奇异装置");
+    require_translation(
+        "item_data.item_type.device.base_descr",
+        "一小块机器。它不可能是人类心智设计出来的。即使体积很小，也显得极其复杂。通过普通手段没有希望理解它的目的或功能。");
+    require_translation("item_data.item_type.device.land_on_hard_snd_msg", "我听到一阵金属叮当声。");
+    require_translation(
+        "item_data.item_type.rod.base_descr",
+        "一个圆柱形金属装置。它似乎是为人类双手设计的，不知有何邪恶用途。");
+    require_translation("item_data.item_type.rod.land_on_hard_snd_msg", "我听到一阵金属叮当声。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");
