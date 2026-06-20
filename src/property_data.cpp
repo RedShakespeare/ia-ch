@@ -1164,11 +1164,13 @@ static void init_data_list()
 
     d.id = prop::Id::tele_ctrl;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Teleport control";
-    d.name_short = "Tele Ctrl";
-    d.descr = "Can control teleport destination.";
-    d.msg_start_player = "I feel in control.";
-    d.msg_end_player = "I feel less in control.";
+    d.name = i18n::get("property_data.tele_ctrl.name", "Teleport control");
+    d.name_short = i18n::get("property_data.tele_ctrl.name_short", "Tele Ctrl");
+    d.descr = i18n::get("property_data.tele_ctrl.descr", "Can control teleport destination.");
+    d.msg_start_player =
+        i18n::get("property_data.tele_ctrl.msg_start_player", "I feel in control.");
+    d.msg_end_player =
+        i18n::get("property_data.tele_ctrl.msg_end_player", "I feel less in control.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::good;
@@ -1183,33 +1185,42 @@ static void init_data_list()
 
     d.id = prop::Id::aiming;
     d.std_rnd_turns = Range(1, 1);
-    d.name = "Aiming";
-    d.name_short = "Aiming";
-    d.descr = "Increased range attack effectiveness.";
+    d.name = i18n::get("property_data.aiming.name", "Aiming");
+    d.name_short = i18n::get("property_data.aiming.name_short", "Aiming");
+    d.descr = i18n::get("property_data.aiming.descr", "Increased range attack effectiveness.");
     d.allow_display_turns = false;
     d.alignment = prop::PropAlignment::good;
     add(d);
 
     d.id = prop::Id::conflict;
-    d.name = "Conflicted";
-    d.name_short = "Conflicted";
-    d.descr = "Considers every creature as an enemy.";
+    d.name = i18n::get("property_data.conflict.name", "Conflicted");
+    d.name_short = i18n::get("property_data.conflict.name_short", "Conflicted");
+    d.descr =
+        i18n::get("property_data.conflict.descr", "Considers every creature as an enemy.");
     d.std_rnd_turns = Range(10, 20);
-    d.msg_start_mon = "{} Looks conflicted.";
-    d.msg_end_mon = "{} Looks more determined.";
+    d.msg_start_mon = i18n::get("property_data.conflict.msg_start_mon", "{} Looks conflicted.");
+    d.msg_end_mon =
+        i18n::get("property_data.conflict.msg_end_mon", "{} Looks more determined.");
     d.allow_display_turns = false;
     d.alignment = prop::PropAlignment::bad;
     add(d);
 
     d.id = prop::Id::aura_of_decay;
     d.std_rnd_turns = Range(6, 12);
-    d.name = "Aura of Decay";
-    d.name_short = "Decay Aura";
-    d.descr = "Creatures within a distance of two moves take damage each standard turn.";
-    d.msg_start_player = "Withering surrounds me.";
-    d.msg_start_mon = "{} appears to exude death and decay.";
-    d.msg_end_player = "The decay subsides.";
-    d.msg_end_mon = "{} no longer exudes decay.";
+    d.name = i18n::get("property_data.aura_of_decay.name", "Aura of Decay");
+    d.name_short = i18n::get("property_data.aura_of_decay.name_short", "Decay Aura");
+    d.descr = i18n::get(
+        "property_data.aura_of_decay.descr",
+        "Creatures within a distance of two moves take damage each standard turn.");
+    d.msg_start_player =
+        i18n::get("property_data.aura_of_decay.msg_start_player", "Withering surrounds me.");
+    d.msg_start_mon = i18n::get(
+        "property_data.aura_of_decay.msg_start_mon",
+        "{} appears to exude death and decay.");
+    d.msg_end_player =
+        i18n::get("property_data.aura_of_decay.msg_end_player", "The decay subsides.");
+    d.msg_end_mon =
+        i18n::get("property_data.aura_of_decay.msg_end_mon", "{} no longer exudes decay.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -1250,13 +1261,22 @@ static void init_data_list()
 
     d.id = prop::Id::regenerating;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Regenerating";
-    d.name_short = "Regenerating";
-    d.descr = "+1 extra hit point regenerated per turn.";
-    d.msg_start_player = "My body starts healing itself much faster.";
-    d.msg_start_mon = "{} starts regenerating damage very quickly.";
-    d.msg_end_player = "My body heals itself slower now.";
-    d.msg_end_mon = "{} stops regenerating damage quickly.";
+    d.name = i18n::get("property_data.regenerating.name", "Regenerating");
+    d.name_short = i18n::get("property_data.regenerating.name_short", "Regenerating");
+    d.descr =
+        i18n::get("property_data.regenerating.descr", "+1 extra hit point regenerated per turn.");
+    d.msg_start_player = i18n::get(
+        "property_data.regenerating.msg_start_player",
+        "My body starts healing itself much faster.");
+    d.msg_start_mon = i18n::get(
+        "property_data.regenerating.msg_start_mon",
+        "{} starts regenerating damage very quickly.");
+    d.msg_end_player = i18n::get(
+        "property_data.regenerating.msg_end_player",
+        "My body heals itself slower now.");
+    d.msg_end_mon = i18n::get(
+        "property_data.regenerating.msg_end_mon",
+        "{} stops regenerating damage quickly.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -1329,9 +1349,11 @@ static void init_data_list()
     add(d);
 
     d.id = prop::Id::ethereal;
-    d.name = "Ethereal";
-    d.name_short = "Ethereal";
-    d.descr = "Can pass through solid objects, +50% chance to evade attacks.";
+    d.name = i18n::get("property_data.ethereal.name", "Ethereal");
+    d.name_short = i18n::get("property_data.ethereal.name_short", "Ethereal");
+    d.descr = i18n::get(
+        "property_data.ethereal.descr",
+        "Can pass through solid objects, +50% chance to evade attacks.");
     d.allow_display_turns = false;
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::neutral;
@@ -1349,13 +1371,18 @@ static void init_data_list()
 
     d.id = prop::Id::burrowing;
     d.std_rnd_turns = Range(4, 8);
-    d.name = "Burrowing";
-    d.name_short = "Burrowing";
-    d.descr = "Can burrow through walls and rubble.";
-    d.msg_start_player = "Earth and stone crumble away before me.";
-    d.msg_start_mon = "{} can move through earth.";
-    d.msg_end_player = "The earth is solid once more.";
-    d.msg_end_mon = "{} can no longer move through earth.";
+    d.name = i18n::get("property_data.burrowing.name", "Burrowing");
+    d.name_short = i18n::get("property_data.burrowing.name_short", "Burrowing");
+    d.descr = i18n::get("property_data.burrowing.descr", "Can burrow through walls and rubble.");
+    d.msg_start_player = i18n::get(
+        "property_data.burrowing.msg_start_player",
+        "Earth and stone crumble away before me.");
+    d.msg_start_mon =
+        i18n::get("property_data.burrowing.msg_start_mon", "{} can move through earth.");
+    d.msg_end_player =
+        i18n::get("property_data.burrowing.msg_end_player", "The earth is solid once more.");
+    d.msg_end_mon =
+        i18n::get("property_data.burrowing.msg_end_mon", "{} can no longer move through earth.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::good;
@@ -1408,8 +1435,12 @@ static void init_data_list()
     d.name = "";
     d.name_short = "";
     d.descr = "";
-    d.msg_start_player = "My aiming feels worse.";
-    d.msg_end_player = "My aiming feels better.";
+    d.msg_start_player = i18n::get(
+        "property_data.hit_chance_penalty_curse.msg_start_player",
+        "My aiming feels worse.");
+    d.msg_end_player = i18n::get(
+        "property_data.hit_chance_penalty_curse.msg_end_player",
+        "My aiming feels better.");
     d.allow_display_turns = false;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -1420,8 +1451,12 @@ static void init_data_list()
     d.name = "";
     d.name_short = "";
     d.descr = "";
-    d.msg_start_player = "I feel more anxious!";
-    d.msg_end_player = "I feel less anxious.";
+    d.msg_start_player = i18n::get(
+        "property_data.increased_shock_curse.msg_start_player",
+        "I feel more anxious!");
+    d.msg_end_player = i18n::get(
+        "property_data.increased_shock_curse.msg_end_player",
+        "I feel less anxious.");
     d.allow_display_turns = false;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -1432,8 +1467,10 @@ static void init_data_list()
     d.name = "";
     d.name_short = "";
     d.descr = "";
-    d.msg_start_player = "I feel illiterate!";
-    d.msg_end_player = "I can read again.";
+    d.msg_start_player =
+        i18n::get("property_data.cannot_read_curse.msg_start_player", "I feel illiterate!");
+    d.msg_end_player =
+        i18n::get("property_data.cannot_read_curse.msg_end_player", "I can read again.");
     d.allow_display_turns = false;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
