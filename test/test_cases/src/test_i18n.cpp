@@ -1433,6 +1433,99 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         "item_data.item_type.rod.base_descr",
         "一个圆柱形金属装置。它似乎是为人类双手设计的，不知有何邪恶用途。");
     require_translation("item_data.item_type.rod.land_on_hard_snd_msg", "我听到一阵金属叮当声。");
+    require_translation("item_data.attack.strike.player", "打击");
+    require_translation("item_data.attack.strike.other", "打击");
+    require_translation("item_data.attack.fire.player", "射击");
+    require_translation("item_data.attack.fire.other", "射击");
+    require_translation("item_data.sawed_off.name", "短管霰弹枪");
+    require_translation("item_data.sawed_off.name_plural", "短管霰弹枪");
+    require_translation("item_data.sawed_off.name_a", "一把短管霰弹枪");
+    require_translation(
+        "item_data.sawed_off.base_descr",
+        "与标准霰弹枪相比，短管霰弹枪有效射程更短；不过在近距离更具毁灭性。它有两根枪管，两发都射出后需要重新装填。");
+    require_translation("item_data.sawed_off.ranged_snd_msg", "我听到一声霰弹枪轰鸣。");
+    require_translation("item_data.pump_shotgun.name", "泵动霰弹枪");
+    require_translation("item_data.pump_shotgun.name_plural", "泵动霰弹枪");
+    require_translation("item_data.pump_shotgun.name_a", "一把泵动霰弹枪");
+    require_translation(
+        "item_data.pump_shotgun.base_descr",
+        "泵动霰弹枪有一个可前后拉动的护木，用于退出已击发的弹壳并将新弹上膛。它有一根枪管，下面是装入霰弹的管状弹仓。弹仓容量为8发。");
+    require_translation("item_data.pump_shotgun.ranged_snd_msg", "我听到一声霰弹枪轰鸣。");
+    require_translation("item_data.shotgun_shell.name", "霰弹枪弹");
+    require_translation("item_data.shotgun_shell.name_plural", "霰弹枪弹");
+    require_translation("item_data.shotgun_shell.name_a", "一枚霰弹枪弹");
+    require_translation("item_data.shotgun_shell.base_descr", "为霰弹枪发射而设计的弹药。");
+    require_translation("item_data.morphic_blaster.name", "变形爆能枪");
+    require_translation("item_data.morphic_blaster.name_plural", "变形爆能枪");
+    require_translation("item_data.morphic_blaster.name_a", "一把变形爆能枪");
+    require_translation(
+        "item_data.morphic_blaster.base_descr_1",
+        "米-戈制造的武器。它发射的弹体会在命中时释放爆炸性能量。武器会自我调适，与持用者的生理结合。一个导引系统会与大脑整合，确保弹体命中预定目标而不受瞄准技巧影响（不过它仍有小概率在路径上撞上非预期目标）。");
+    require_translation(
+        "item_data.morphic_blaster.base_descr_2_prefix",
+        "当缺乏米-戈所用奇特能源的生物持用时，这件武器会改为从持用者的生命力中抽取能量（");
+    require_translation("item_data.morphic_blaster.base_descr_2_hp_drained_infix", "点生命值/每次攻击，");
+    require_translation("item_data.morphic_blaster.base_descr_2_regen_disabled_prefix", "被动生命恢复会被禁用");
+    require_translation("item_data.morphic_blaster.base_descr_2_turns_suffix", "回合，且下一回合无法行动）。");
+    require_translation("item_data.morphic_blaster.ranged_snd_msg", "我听到发射出的弹体爆响。");
+    require_translation("item_data.tommy_gun.name", "汤米枪");
+    require_translation("item_data.tommy_gun.name_plural", "汤米枪");
+    require_translation("item_data.tommy_gun.name_a", "一把汤米枪");
+    require_translation(
+        "item_data.tommy_gun.base_descr",
+        "“汤米枪”是汤普森冲锋枪的昵称，是一种配有弹鼓和垂直前握把的自动枪械。它发射.45 ACP弹药，弹鼓容量为50发。");
+    require_translation("item_data.tommy_gun.ranged_snd_msg", "我听到机枪连射声。");
+    require_translation("item_data.drum_of_bullets.name", ".45 ACP弹鼓");
+    require_translation("item_data.drum_of_bullets.name_plural", ".45 ACP弹鼓");
+    require_translation("item_data.drum_of_bullets.name_a", "一个.45 ACP弹鼓");
+    require_translation("item_data.drum_of_bullets.base_descr", "汤米枪使用的弹药。");
+    require_translation("item_data.revolver.name", "S&W左轮手枪");
+    require_translation("item_data.revolver.name_plural", "S&W左轮手枪");
+    require_translation("item_data.revolver.name_a", "一把S&W左轮手枪");
+    require_translation("item_data.revolver.base_descr", "一把六发双动左轮手枪。");
+    require_translation("item_data.revolver.ranged_snd_msg", "我听到左轮手枪开火声。");
+    require_translation("item_data.revolver_bullet.name", "左轮.38子弹");
+    require_translation("item_data.revolver_bullet.name_plural", "左轮.38子弹");
+    require_translation("item_data.revolver_bullet.name_a", "一枚左轮.38子弹");
+    require_translation("item_data.revolver_bullet.base_descr", "S&W Model 10左轮手枪使用的弹药。");
+    require_translation("item_data.pistol.name", "M1911柯尔特手枪");
+    require_translation("item_data.pistol.name_plural", "M1911柯尔特手枪");
+    require_translation("item_data.pistol.name_a", "一把M1911柯尔特手枪");
+    require_translation("item_data.pistol.base_descr", "一把使用弹匣供弹、发射.45 ACP弹药的半自动手枪。");
+    require_translation("item_data.pistol.ranged_snd_msg", "我听到手枪开火声。");
+    require_translation("item_data.pistol_mag.name", "柯尔特.45 ACP弹匣");
+    require_translation("item_data.pistol_mag.name_plural", "柯尔特.45 ACP弹匣");
+    require_translation("item_data.pistol_mag.name_a", "一个柯尔特.45 ACP弹匣");
+    require_translation("item_data.pistol_mag.base_descr", "柯尔特手枪使用的弹药。");
+    require_translation("item_data.rifle.name", "温彻斯特步枪");
+    require_translation("item_data.rifle.name_plural", "温彻斯特步枪");
+    require_translation("item_data.rifle.name_a", "一把温彻斯特步枪");
+    require_translation("item_data.rifle.base_descr_1", "杠杆式连发步枪。");
+    require_translation("item_data.rifle.base_descr_2", "这件武器在近距离有命中率惩罚。");
+    require_translation("item_data.rifle.ranged_snd_msg", "我听到步枪开火声。");
+    require_translation("item_data.rifle_bullet.name", "温彻斯特.30子弹");
+    require_translation("item_data.rifle_bullet.name_plural", "温彻斯特.30子弹");
+    require_translation("item_data.rifle_bullet.name_a", "一枚温彻斯特.30子弹");
+    require_translation("item_data.rifle_bullet.base_descr", "温彻斯特步枪使用的弹药。");
+    require_translation("item_data.spike_gun.name", "尖刺枪");
+    require_translation("item_data.spike_gun.name_plural", "尖刺枪");
+    require_translation("item_data.spike_gun.name_a", "一把尖刺枪");
+    require_translation(
+        "item_data.spike_gun.base_descr",
+        "一件非常奇异而粗陋的武器，能够以足够穿透血肉（甚至岩石）的力量发射铁尖刺。它几乎像是被刻意设计用来施加残酷，而不是单纯为了制止目标。");
+    require_translation("item_data.spike_gun.ranged_snd_msg", "我听到一件非常粗陋的武器开火。");
+    require_translation("item_data.electric_gun.name", "电击枪");
+    require_translation("item_data.electric_gun.name_plural", "电击枪");
+    require_translation("item_data.electric_gun.name_a", "一把电击枪");
+    require_translation("item_data.electric_gun.base_descr_1", "米-戈制造的武器。它会发射毁灭性的电流束。");
+    require_translation(
+        "item_data.electric_gun.base_descr_2_prefix",
+        "当缺乏米-戈所用奇特能源的生物持用时，这件武器会改为从持用者的生命力中抽取能量（");
+    require_translation("item_data.electric_gun.base_descr_2_hp_drained_infix", "点生命值/每次攻击，");
+    require_translation("item_data.electric_gun.base_descr_2_regen_disabled_prefix", "被动生命恢复会被禁用");
+    require_translation("item_data.electric_gun.base_descr_2_turns_suffix", "回合）。");
+    require_translation("item_data.electric_gun.ranged_snd_msg", "我听到一道电流爆响。");
+    require_translation("item_data.trap_dart.ranged_snd_msg", "我听到弹体发射声。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");

@@ -99,6 +99,33 @@ static void mod_spawn_chance(item::ItemData& data, const double factor)
         (int)((double)data.chance_to_incl_in_spawn_list * factor);
 }
 
+static std::string tr(const std::string& key, const std::string& fallback)
+{
+    return i18n::get("item_data." + key, fallback);
+}
+
+static item::ItemName item_name(
+    const std::string& key,
+    const std::string& name,
+    const std::string& name_plural,
+    const std::string& name_a)
+{
+    return item::ItemName(
+        tr(key + ".name", name),
+        tr(key + ".name_plural", name_plural),
+        tr(key + ".name_a", name_a));
+}
+
+static item::ItemAttackMsgs attack_msgs(
+    const std::string& key,
+    const std::string& player,
+    const std::string& other)
+{
+    return item::ItemAttackMsgs(
+        tr(key + ".player", player),
+        tr(key + ".other", other));
+}
+
 // Item archetypes (defaults)
 static void reset_data(item::ItemData& d, ItemType const item_type)
 {
@@ -394,27 +421,30 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn);
     d.id = Id::sawed_off;
-    d.base_name = {
+    d.base_name = item_name(
+        "sawed_off",
         "Sawed-off Shotgun",
         "Sawed-off shotguns",
-        "a Sawed-off Shotgun"};
+        "a Sawed-off Shotgun");
     d.base_descr = {
-        "Compared to a standard shotgun, the sawed-off has a shorter "
-        "effective range - however, at close range it is more "
-        "devastating. It holds two barrels, and needs to be reloaded "
-        "after both are discharged."};
+        tr(
+            "sawed_off.base_descr",
+            "Compared to a standard shotgun, the sawed-off has a shorter "
+            "effective range - however, at close range it is more "
+            "devastating. It holds two barrels, and needs to be reloaded "
+            "after both are discharged.")};
     d.weight = Weight::medium;
     d.tile = gfx::TileId::shotgun;
     d.ranged.is_shotgun = true;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.ranged.max_ammo = 2;
     d.ranged.dmg = WpnDmg(8, 24);
     d.ranged.hit_chance_mod = 0;
     d.ranged.effective_range = {0, 3};
     d.ranged.dmg_type = DmgType::shotgun;
     d.ranged.ammo_item_id = Id::shotgun_shell;
-    d.ranged.attack_msgs = {"fire", "fires"};
-    d.ranged.snd_msg = "I hear a shotgun blast.";
+    d.ranged.attack_msgs = attack_msgs("attack.fire", "fire", "fires");
+    d.ranged.snd_msg = tr("sawed_off.ranged_snd_msg", "I hear a shotgun blast.");
     d.ranged.attack_sfx = audio::SfxId::shotgun_sawed_off_fire;
     d.ranged.makes_ricochet_snd = true;
     d.ranged.reload_sfx = audio::SfxId::shotgun_reload;
@@ -426,25 +456,31 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn);
     d.id = Id::pump_shotgun;
-    d.base_name = {"Pump Shotgun", "Pump shotguns", "a Pump Shotgun"};
+    d.base_name = item_name(
+        "pump_shotgun",
+        "Pump Shotgun",
+        "Pump shotguns",
+        "a Pump Shotgun");
     d.base_descr = {
-        "A pump-action shotgun has a handgrip that can be pumped back "
-        "and forth in order to eject a spent round of ammunition and "
-        "to chamber a fresh one. It has a single barrel above a tube "
-        "magazine into which shells are inserted. The magazine has a "
-        "capacity of 8 shells."};
+        tr(
+            "pump_shotgun.base_descr",
+            "A pump-action shotgun has a handgrip that can be pumped back "
+            "and forth in order to eject a spent round of ammunition and "
+            "to chamber a fresh one. It has a single barrel above a tube "
+            "magazine into which shells are inserted. The magazine has a "
+            "capacity of 8 shells.")};
     d.weight = Weight::medium;
     d.tile = gfx::TileId::shotgun;
     d.ranged.is_shotgun = true;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.ranged.max_ammo = 8;
     d.ranged.dmg = WpnDmg(6, 18);
     d.ranged.hit_chance_mod = 0;
     d.ranged.effective_range = {0, 5};
     d.ranged.dmg_type = DmgType::shotgun;
     d.ranged.ammo_item_id = Id::shotgun_shell;
-    d.ranged.attack_msgs = {"fire", "fires"};
-    d.ranged.snd_msg = "I hear a shotgun blast.";
+    d.ranged.attack_msgs = attack_msgs("attack.fire", "fire", "fires");
+    d.ranged.snd_msg = tr("pump_shotgun.ranged_snd_msg", "I hear a shotgun blast.");
     d.ranged.attack_sfx = audio::SfxId::shotgun_pump_fire;
     d.ranged.makes_ricochet_snd = true;
     d.ranged.reload_sfx = audio::SfxId::shotgun_reload;
@@ -456,9 +492,15 @@ void init()
 
     reset_data(d, ItemType::ammo);
     d.id = Id::shotgun_shell;
-    d.base_name = {"Shotgun shell", "Shotgun shells", "a shotgun shell"};
+    d.base_name = item_name(
+        "shotgun_shell",
+        "Shotgun shell",
+        "Shotgun shells",
+        "a shotgun shell");
     d.base_descr = {
-        "A cartridge designed to be fired from a shotgun."};
+        tr(
+            "shotgun_shell.base_descr",
+            "A cartridge designed to be fired from a shotgun.")};
     d.color = colors::light_red();
     d.max_stack_at_spawn = 10;
     d.native_containers.push_back(terrain::Id::chest);
@@ -468,36 +510,52 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn);
     d.id = Id::morphic_blaster;
-    d.base_name = {"Morphic Blaster", "Morphic Blasters", "a Morphic Blaster"};
+    d.base_name = item_name(
+        "morphic_blaster",
+        "Morphic Blaster",
+        "Morphic Blasters",
+        "a Morphic Blaster");
     d.base_descr = {
-        "A weapon created by the Mi-Go. "
-        "It launches projectiles that unleash explosive energy upon impact. "
-        "The weapon adapts itself to merge with the biology of its wielder. "
-        "A guidance system integrates with the brain to "
-        "ensure that the projectile hits its intended mark independent of aiming skill "
-        "(although there is a small chance that it collides with unintended "
-        "targets along the path).",
+        tr(
+            "morphic_blaster.base_descr_1",
+            "A weapon created by the Mi-Go. "
+            "It launches projectiles that unleash explosive energy upon impact. "
+            "The weapon adapts itself to merge with the biology of its wielder. "
+            "A guidance system integrates with the brain to "
+            "ensure that the projectile hits its intended mark independent of aiming skill "
+            "(although there is a small chance that it collides with unintended "
+            "targets along the path)."),
 
-        "When wielded by creatures lacking the peculiar power sources "
-        "employed by the Mi-Go, "
-        "this weapon instead draws power from the life force of the wielder (" +
+        tr(
+            "morphic_blaster.base_descr_2_prefix",
+            "When wielded by creatures lacking the peculiar power sources "
+            "employed by the Mi-Go, "
+            "this weapon instead draws power from the life force of the wielder (") +
             s_morphic_blaster_hp_drained_str +
-            " hit points drained per attack, "
-            "passive hit point regeneration is disabled for " +
+            tr(
+                "morphic_blaster.base_descr_2_hp_drained_infix",
+                " hit points drained per attack, ") +
+            tr(
+                "morphic_blaster.base_descr_2_regen_disabled_prefix",
+                "passive hit point regeneration is disabled for ") +
             s_morphic_blaster_hp_disable_range_str +
-            " turns, unable to act for the next turn)."};
+            tr(
+                "morphic_blaster.base_descr_2_turns_suffix",
+                " turns, unable to act for the next turn).")};
     d.weight = Weight::moderately_heavy;
     d.tile = gfx::TileId::morphic_blaster;
     d.is_unique = true;
     d.allow_spawn = false;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.ranged.max_ammo = 5;
     d.ranged.dmg = WpnDmg(1, 3);
     d.ranged.effective_range = {0, 999};
     d.allow_display_dmg = false;
     d.ranged.has_infinite_ammo = true;
-    d.ranged.attack_msgs = {"fire", "fires"};
-    d.ranged.snd_msg = "I hear the blast of a launched projectile.";
+    d.ranged.attack_msgs = attack_msgs("attack.fire", "fire", "fires");
+    d.ranged.snd_msg = tr(
+        "morphic_blaster.ranged_snd_msg",
+        "I hear the blast of a launched projectile.");
     d.ranged.attack_sfx = audio::SfxId::morphic_blaster;
     d.ranged.projectile_character = '*';
     d.ranged.projectile_color = colors::light_blue();
@@ -512,23 +570,25 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn);
     d.id = Id::tommy_gun;
-    d.base_name = {"Tommy Gun", "Tommy Guns", "a Tommy Gun"};
+    d.base_name = item_name("tommy_gun", "Tommy Gun", "Tommy Guns", "a Tommy Gun");
     d.base_descr = {
-        "\"Tommy Gun\" is a nickname for the Thompson submachine gun - "
-        "an automatic firearm with a drum magazine and vertical "
-        "foregrip. It fires .45 ACP ammunition. The drum magazine has "
-        "a capacity of 50 rounds."};
+        tr(
+            "tommy_gun.base_descr",
+            "\"Tommy Gun\" is a nickname for the Thompson submachine gun - "
+            "an automatic firearm with a drum magazine and vertical "
+            "foregrip. It fires .45 ACP ammunition. The drum magazine has "
+            "a capacity of 50 rounds.")};
     d.weight = Weight::medium;
     d.tile = gfx::TileId::tommy_gun;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.ranged.is_machine_gun = true;
     d.ranged.max_ammo = 50;
     d.ranged.dmg = WpnDmg(4, 6);
     d.ranged.hit_chance_mod = -10;
     d.ranged.effective_range = {0, 5};
     d.ranged.ammo_item_id = Id::drum_of_bullets;
-    d.ranged.attack_msgs = {"fire", "fires"};
-    d.ranged.snd_msg = "I hear the burst of a machine gun.";
+    d.ranged.attack_msgs = attack_msgs("attack.fire", "fire", "fires");
+    d.ranged.snd_msg = tr("tommy_gun.ranged_snd_msg", "I hear the burst of a machine gun.");
     d.ranged.attack_sfx = audio::SfxId::machine_gun_fire;
     d.ranged.makes_ricochet_snd = true;
     d.ranged.reload_sfx = audio::SfxId::machine_gun_reload;
@@ -541,12 +601,13 @@ void init()
 
     reset_data(d, ItemType::ammo_mag);
     d.id = Id::drum_of_bullets;
-    d.base_name = {
+    d.base_name = item_name(
+        "drum_of_bullets",
         "Drum of .45 ACP",
         "Drums of .45 ACP",
-        "a Drum of .45 ACP"};
+        "a Drum of .45 ACP");
     d.base_descr = {
-        "Ammunition used by Tommy Guns."};
+        tr("drum_of_bullets.base_descr", "Ammunition used by Tommy Guns.")};
     d.ranged.max_ammo = g_data[(size_t)Id::tommy_gun].ranged.max_ammo;
     d.chance_to_incl_in_spawn_list = 50;
     d.native_containers.push_back(terrain::Id::chest);
@@ -556,12 +617,13 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn);
     d.id = Id::revolver;
-    d.base_name = {
+    d.base_name = item_name(
+        "revolver",
         "S&W Revolver",
         "S&W Revolvers",
-        "a S&W Revolver"};
+        "a S&W Revolver");
     d.base_descr = {
-        "A six-shot double-action revolver."};
+        tr("revolver.base_descr", "A six-shot double-action revolver.")};
     d.weight = Weight::moderately_light;
     d.tile = gfx::TileId::revolver;
     d.ranged.max_ammo = 6;
@@ -569,9 +631,9 @@ void init()
     d.ranged.hit_chance_mod = 5;
     d.ranged.effective_range = {0, 5};
     d.ranged.ammo_item_id = Id::revolver_bullet;
-    d.melee.attack_msgs = {"strike", "strikes"};
-    d.ranged.attack_msgs = {"fire", "fires"};
-    d.ranged.snd_msg = "I hear a revolver being fired.";
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
+    d.ranged.attack_msgs = attack_msgs("attack.fire", "fire", "fires");
+    d.ranged.snd_msg = tr("revolver.ranged_snd_msg", "I hear a revolver being fired.");
     d.ranged.attack_sfx = audio::SfxId::revolver_fire;
     d.ranged.makes_ricochet_snd = true;
     d.ranged.reload_sfx = audio::SfxId::rifle_revolver_reload;
@@ -582,12 +644,15 @@ void init()
 
     reset_data(d, ItemType::ammo);
     d.id = Id::revolver_bullet;
-    d.base_name = {
+    d.base_name = item_name(
+        "revolver_bullet",
         "Revolver .38 Bullet",
         "Revolver .38 Bullets",
-        "a Revolver .38 Bullet"};
+        "a Revolver .38 Bullet");
     d.base_descr = {
-        "Ammunition used by S&W Model 10 Revolvers."};
+        tr(
+            "revolver_bullet.base_descr",
+            "Ammunition used by S&W Model 10 Revolvers.")};
     d.color = colors::dark_yellow();
     d.max_stack_at_spawn = 10;
     d.native_containers.push_back(terrain::Id::chest);
@@ -597,13 +662,16 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn);
     d.id = Id::pistol;
-    d.base_name = {
+    d.base_name = item_name(
+        "pistol",
         "M1911 Colt",
         "M1911 Colts",
-        "an M1911 Colt"};
+        "an M1911 Colt");
     d.base_descr = {
-        "A semi-automatic, magazine-fed pistol chambered for the .45 "
-        "ACP cartridge."};
+        tr(
+            "pistol.base_descr",
+            "A semi-automatic, magazine-fed pistol chambered for the .45 "
+            "ACP cartridge.")};
     d.weight = Weight::moderately_light;
     d.tile = gfx::TileId::pistol;
     d.ranged.max_ammo = 7;
@@ -611,9 +679,9 @@ void init()
     d.ranged.hit_chance_mod = 0;
     d.ranged.effective_range = {0, 5};
     d.ranged.ammo_item_id = Id::pistol_mag;
-    d.melee.attack_msgs = {"strike", "strikes"};
-    d.ranged.attack_msgs = {"fire", "fires"};
-    d.ranged.snd_msg = "I hear a pistol being fired.";
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
+    d.ranged.attack_msgs = attack_msgs("attack.fire", "fire", "fires");
+    d.ranged.snd_msg = tr("pistol.ranged_snd_msg", "I hear a pistol being fired.");
     d.ranged.attack_sfx = audio::SfxId::pistol_fire;
     d.ranged.makes_ricochet_snd = true;
     d.ranged.reload_sfx = audio::SfxId::pistol_reload;
@@ -624,12 +692,13 @@ void init()
 
     reset_data(d, ItemType::ammo_mag);
     d.id = Id::pistol_mag;
-    d.base_name = {
+    d.base_name = item_name(
+        "pistol_mag",
         "Colt .45ACP Magazine",
         "Colt .45ACP Magazines",
-        "a Colt .45ACP Magazine"};
+        "a Colt .45ACP Magazine");
     d.base_descr = {
-        "Ammunition used by Colt pistols."};
+        tr("pistol_mag.base_descr", "Ammunition used by Colt pistols.")};
     d.ranged.max_ammo = g_data[(size_t)Id::pistol].ranged.max_ammo;
     d.native_containers.push_back(terrain::Id::chest);
     d.native_containers.push_back(terrain::Id::cabinet);
@@ -638,12 +707,17 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn);
     d.id = Id::rifle;
-    d.base_name = {
-        "Winchester Rifle", "Winchester Rifles", "a Winchester Rifle"};
+    d.base_name = item_name(
+        "rifle",
+        "Winchester Rifle",
+        "Winchester Rifles",
+        "a Winchester Rifle");
     d.base_descr = {
-        "A lever-action repeating rifle.",
+        tr("rifle.base_descr_1", "A lever-action repeating rifle."),
 
-        "This weapon has an accuracy penalty at close ranges."};
+        tr(
+            "rifle.base_descr_2",
+            "This weapon has an accuracy penalty at close ranges.")};
     d.weight = Weight::medium;
     d.tile = gfx::TileId::rifle;
     // d.color = colors::dark_brown();
@@ -652,9 +726,9 @@ void init()
     d.ranged.hit_chance_mod = 15;
     d.ranged.effective_range = {4, 8};
     d.ranged.ammo_item_id = Id::rifle_bullet;
-    d.melee.attack_msgs = {"strike", "strikes"};
-    d.ranged.attack_msgs = {"fire", "fires"};
-    d.ranged.snd_msg = "I hear a rifle being fired.";
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
+    d.ranged.attack_msgs = attack_msgs("attack.fire", "fire", "fires");
+    d.ranged.snd_msg = tr("rifle.ranged_snd_msg", "I hear a rifle being fired.");
     d.ranged.attack_sfx = audio::SfxId::rifle_fire;
     d.ranged.makes_ricochet_snd = true;
     d.ranged.reload_sfx = audio::SfxId::rifle_revolver_reload;
@@ -663,12 +737,13 @@ void init()
 
     reset_data(d, ItemType::ammo);
     d.id = Id::rifle_bullet;
-    d.base_name = {
+    d.base_name = item_name(
+        "rifle_bullet",
         "Winchester .30 Bullet",
         "Winchester .30 Bullets",
-        "a Winchester .30 Bullet"};
+        "a Winchester .30 Bullet");
     d.base_descr = {
-        "Ammunition used by Winchester Rifles."};
+        tr("rifle_bullet.base_descr", "Ammunition used by Winchester Rifles.")};
     d.color = colors::dark_yellow();
     d.max_stack_at_spawn = 10;
     d.native_containers.push_back(terrain::Id::chest);
@@ -678,16 +753,18 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn);
     d.id = Id::spike_gun;
-    d.base_name = {"Spike Gun", "Spike Guns", "a Spike Gun"};
+    d.base_name = item_name("spike_gun", "Spike Gun", "Spike Guns", "a Spike Gun");
     d.base_descr = {
-        "A very strange and crude weapon capable of launching iron "
-        "spikes with enough force to pierce flesh (or even rock). It "
-        "seems almost to be deliberately designed for cruelty, rather "
-        "than pure stopping power."};
+        tr(
+            "spike_gun.base_descr",
+            "A very strange and crude weapon capable of launching iron "
+            "spikes with enough force to pierce flesh (or even rock). It "
+            "seems almost to be deliberately designed for cruelty, rather "
+            "than pure stopping power.")};
     d.weight = (Weight::medium * 3) / 4;
     d.tile = gfx::TileId::tommy_gun;
     d.color = colors::dark_brown();
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.ranged.max_ammo = 12;
     d.ranged.dmg = WpnDmg(1, 7);
     d.ranged.hit_chance_mod = 0;
@@ -695,8 +772,10 @@ void init()
     d.ranged.dmg_type = DmgType::piercing;
     d.ranged.knocks_back = true;
     d.ranged.ammo_item_id = Id::iron_spike;
-    d.ranged.attack_msgs = {"fire", "fires"};
-    d.ranged.snd_msg = "I hear a very crude weapon being fired.";
+    d.ranged.attack_msgs = attack_msgs("attack.fire", "fire", "fires");
+    d.ranged.snd_msg = tr(
+        "spike_gun.ranged_snd_msg",
+        "I hear a very crude weapon being fired.");
     d.ranged.makes_ricochet_snd = true;
     d.ranged.projectile_color = colors::gray();
     d.spawn_std_range.min = 4;
@@ -709,20 +788,31 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn);
     d.id = Id::electric_gun;
-    d.base_name = {
-        "Electric Gun", "Electric Gun", "an Electric Gun"};
+    d.base_name = item_name(
+        "electric_gun",
+        "Electric Gun",
+        "Electric Gun",
+        "an Electric Gun");
     d.base_descr = {
-        "A weapon created by the Mi-Go. "
-        "It fires devastating bolts of electricity.",
+        tr(
+            "electric_gun.base_descr_1",
+            "A weapon created by the Mi-Go. "
+            "It fires devastating bolts of electricity."),
 
-        "When wielded by creatures lacking the peculiar power sources "
-        "employed by the Mi-Go, "
-        "this weapon instead draws power from the life force of the wielder (" +
+        tr(
+            "electric_gun.base_descr_2_prefix",
+            "When wielded by creatures lacking the peculiar power sources "
+            "employed by the Mi-Go, "
+            "this weapon instead draws power from the life force of the wielder (") +
             s_electric_gun_hp_drained_str +
-            " hit points drained per attack, "
-            "passive hit point regeneration is disabled for " +
+            tr(
+                "electric_gun.base_descr_2_hp_drained_infix",
+                " hit points drained per attack, ") +
+            tr(
+                "electric_gun.base_descr_2_regen_disabled_prefix",
+                "passive hit point regeneration is disabled for ") +
             s_electric_gun_hp_disable_range_str +
-            " turns)."};
+            tr("electric_gun.base_descr_2_turns_suffix", " turns).")};
     d.spawn_std_range = Range(-1, -1);
     d.weight = Weight::medium;
     d.tile = gfx::TileId::electric_gun;
@@ -741,9 +831,9 @@ void init()
     d.ranged.has_infinite_ammo = true;
     d.ranged.projectile_leaves_trail = true;
     d.ranged.projectile_color = colors::yellow();
-    d.melee.attack_msgs = {"strike", "strikes"};
-    d.ranged.attack_msgs = {"fire", "fires"};
-    d.ranged.snd_msg = "I hear a bolt of electricity.";
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
+    d.ranged.attack_msgs = attack_msgs("attack.fire", "fire", "fires");
+    d.ranged.snd_msg = tr("electric_gun.ranged_snd_msg", "I hear a bolt of electricity.");
     d.ranged.attack_sfx = audio::SfxId::electric_gun;
     d.ranged.makes_ricochet_snd = false;
     g_data[(size_t)d.id] = d;
@@ -755,7 +845,9 @@ void init()
     d.ranged.dmg = WpnDmg(1, 8);
     d.ranged.hit_chance_mod = 70;
     d.ranged.effective_range = {0, 6};
-    d.ranged.snd_msg = "I hear the launching of a projectile.";
+    d.ranged.snd_msg = tr(
+        "trap_dart.ranged_snd_msg",
+        "I hear the launching of a projectile.");
     // TODO: Make a sound effect for this
     d.ranged.attack_sfx = audio::SfxId::END;
     d.ranged.makes_ricochet_snd = true;
