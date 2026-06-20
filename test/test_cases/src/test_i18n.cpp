@@ -1248,6 +1248,50 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "hit chance or damage apply "
             "(e.g. bonus damage from melee traits, or damage penalty from being weakened).") ==
         "施法者被视为攻击者 - 所有影响命中率或伤害的常规条件都会生效（例如近战特质的额外伤害，或虚弱造成的伤害惩罚）。");
+    REQUIRE(i18n::get("spells.control_object.name", "Control Object") == "控制物体");
+    REQUIRE(
+        i18n::get(
+            "spells.control_object.descr",
+            "Opens doors, chests, tombs, or cabinets. "
+            "Closes or jams doors. "
+            "Strikes doors, braziers, or statues.") == "打开门、箱子、坟墓或柜子。关闭或堵住门。攻击门、火盆或雕像。");
+    REQUIRE(i18n::get("spells.control_object.walls_destroyed", " Walls can be destroyed.") == "墙壁可以被摧毁。");
+    REQUIRE(i18n::get("spells.control_object.max_distance_prefix", "Maximum control distance is ") == "最大控制距离为");
+    REQUIRE(i18n::get("spells.control_object.max_distance_suffix", ".") == "。");
+    REQUIRE(
+        i18n::get(
+            "spells.control_object.select_descr",
+            "When casting the spell, select a seen object to control "
+            "within the maximum distance.") == "施放法术时，在最大距离内选择一个已看见的物体来控制。");
+    REQUIRE(i18n::get("spells.cleansing_fire.name", "Cleansing Fire") == "净化之火");
+    REQUIRE(i18n::get("spells.cleansing_fire.burn_prefix", "Causes the spell's victims to burn for ") == "使法术受害者燃烧");
+    REQUIRE(
+        i18n::get(
+            "spells.cleansing_fire.burn_suffix",
+            " turns, and scorches the ground around them with fire "
+            "(be careful with hitting adjacent creatures).") == "回合，并用火焰灼烧它们周围的地面（小心击中相邻生物）。");
+    REQUIRE(i18n::get("spells.target.one_visible_hostile", "Affects one random visible hostile creature.") == "影响一个随机可见敌对生物。");
+    REQUIRE(i18n::get("spells.target.all_visible_hostile", "Affects all visible hostile creatures.") == "影响所有可见敌对生物。");
+    REQUIRE(i18n::get("spells.sanctuary.name", "Sanctuary") == "圣域");
+    REQUIRE(
+        i18n::get(
+            "spells.sanctuary.descr",
+            "The caster is ignored by all hostile creatures for the "
+            "duration of the spell. The effect is interrupted if the "
+            "caster moves or performs a melee or ranged attack.") == "在法术持续期间，所有敌对生物都会忽视施法者。如果施法者移动或进行近战或远程攻击，效果会被中断。");
+    REQUIRE(i18n::get("spells.purge.name", "Purge") == "肃清");
+    REQUIRE(
+        i18n::get(
+            "spells.purge.destroy_adjacent_descr",
+            "Destroys any altars, monoliths, gongs, or mirrors adjacent to the caster.") ==
+        "摧毁施法者相邻的任何祭坛、巨石、铜锣或镜子。");
+    REQUIRE(
+        i18n::get(
+            "spells.purge.undead_struck_prefix",
+            "All Undead creatures adjacent to the caster (seen or not) are "
+            "struck with ") == "施法者相邻的所有亡灵生物（无论是否可见）都会被击中，受到");
+    REQUIRE(i18n::get("spells.purge.undead_struck_middle", " damage, and become terrified for ") == "点伤害，并恐惧");
+    REQUIRE(i18n::get("spells.purge.undead_struck_suffix", " turns (unless they resist fear).") == "回合（除非它们抵抗恐惧）。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

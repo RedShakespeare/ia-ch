@@ -3416,7 +3416,7 @@ std::vector<std::string> SpellProjectedStrike::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellControlObject::name() const
 {
-    return "Control Object";
+    return i18n::get("spells.control_object.name", "Control Object");
 }
 
 SpellId SpellControlObject::id() const
@@ -3480,22 +3480,32 @@ std::vector<std::string> SpellControlObject::descr_specific(
 {
     std::vector<std::string> descr;
 
-    std::string control_descr =
+    std::string control_descr = i18n::get(
+        "spells.control_object.descr",
         "Opens doors, chests, tombs, or cabinets. "
         "Closes or jams doors. "
-        "Strikes doors, braziers, or statues.";
+        "Strikes doors, braziers, or statues.");
 
     if (skill == SpellSkill::transcendent) {
-        control_descr += " Walls can be destroyed.";
+        control_descr += i18n::get(
+            "spells.control_object.walls_destroyed",
+            " Walls can be destroyed.");
     }
 
     descr.emplace_back(control_descr);
 
-    descr.emplace_back("Maximum control distance is " + std::to_string(max_dist(skill)) + ".");
+    descr.emplace_back(
+        i18n::get(
+            "spells.control_object.max_distance_prefix",
+            "Maximum control distance is ") +
+        std::to_string(max_dist(skill)) +
+        i18n::get("spells.control_object.max_distance_suffix", "."));
 
     descr.emplace_back(
-        "When casting the spell, select a seen object to control "
-        "within the maximum distance.");
+        i18n::get(
+            "spells.control_object.select_descr",
+            "When casting the spell, select a seen object to control "
+            "within the maximum distance."));
 
     return descr;
 }
@@ -3510,7 +3520,7 @@ bool SpellControlObject::is_noisy(const SpellSkill skill) const
 // -----------------------------------------------------------------------------
 std::string SpellCleansingFire::name() const
 {
-    return "Cleansing Fire";
+    return i18n::get("spells.cleansing_fire.name", "Cleansing Fire");
 }
 
 SpellId SpellCleansingFire::id() const
@@ -3608,15 +3618,23 @@ std::vector<std::string> SpellCleansingFire::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Causes the spell's victims to burn for " +
+        i18n::get(
+            "spells.cleansing_fire.burn_prefix",
+            "Causes the spell's victims to burn for ") +
         burn_duration_range().str() +
-        " turns, and scorches the ground around them with fire "
-        "(be careful with hitting adjacent creatures).");
+        i18n::get(
+            "spells.cleansing_fire.burn_suffix",
+            " turns, and scorches the ground around them with fire "
+            "(be careful with hitting adjacent creatures)."));
 
     descr.emplace_back(
         skill == SpellSkill::basic
-            ? "Affects one random visible hostile creature."
-            : "Affects all visible hostile creatures.");
+            ? i18n::get(
+                  "spells.target.one_visible_hostile",
+                  "Affects one random visible hostile creature.")
+            : i18n::get(
+                  "spells.target.all_visible_hostile",
+                  "Affects all visible hostile creatures."));
 
     return descr;
 }
@@ -3626,7 +3644,7 @@ std::vector<std::string> SpellCleansingFire::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellSanctuary::name() const
 {
-    return "Sanctuary";
+    return i18n::get("spells.sanctuary.name", "Sanctuary");
 }
 
 SpellId SpellSanctuary::id() const
@@ -3699,9 +3717,11 @@ std::vector<std::string> SpellSanctuary::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "The caster is ignored by all hostile creatures for the "
-        "duration of the spell. The effect is interrupted if the "
-        "caster moves or performs a melee or ranged attack.");
+        i18n::get(
+            "spells.sanctuary.descr",
+            "The caster is ignored by all hostile creatures for the "
+            "duration of the spell. The effect is interrupted if the "
+            "caster moves or performs a melee or ranged attack."));
 
     descr.emplace_back(spell_duration_descr(duration(skill).str()));
 
@@ -3713,7 +3733,7 @@ std::vector<std::string> SpellSanctuary::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellPurge::name() const
 {
-    return "Purge";
+    return i18n::get("spells.purge.name", "Purge");
 }
 
 SpellId SpellPurge::id() const
@@ -3843,15 +3863,23 @@ std::vector<std::string> SpellPurge::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Destroys any altars, monoliths, gongs, or mirrors adjacent to the caster.");
+        i18n::get(
+            "spells.purge.destroy_adjacent_descr",
+            "Destroys any altars, monoliths, gongs, or mirrors adjacent to the caster."));
 
     descr.emplace_back(
-        "All Undead creatures adjacent to the caster (seen or not) are "
-        "struck with " +
+        i18n::get(
+            "spells.purge.undead_struck_prefix",
+            "All Undead creatures adjacent to the caster (seen or not) are "
+            "struck with ") +
         dmg_range().str() +
-        " damage, and become terrified for " +
+        i18n::get(
+            "spells.purge.undead_struck_middle",
+            " damage, and become terrified for ") +
         fear_duration_range().str() +
-        " turns (unless they resist fear).");
+        i18n::get(
+            "spells.purge.undead_struck_suffix",
+            " turns (unless they resist fear)."));
 
     return descr;
 }
