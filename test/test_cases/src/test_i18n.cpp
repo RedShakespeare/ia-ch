@@ -1597,6 +1597,22 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "A horrible disease is starting to afflict ") ==
         "一种可怕的疾病开始折磨");
     REQUIRE(i18n::get("spells.blind.name", "Blind") == "致盲");
+    REQUIRE(i18n::get("spells.healing.name", "Healing") == "治疗");
+    REQUIRE(i18n::get("spells.healing.restore_prefix", "Restores ") == "恢复");
+    REQUIRE(i18n::get("spells.healing.restore_suffix", " hit points.") == "点生命值。");
+    REQUIRE(i18n::get("spells.healing.cures_basic", "Cures weakening and poisoning.") == "治愈虚弱和中毒。");
+    REQUIRE(
+        i18n::get(
+            "spells.healing.cures_master",
+            "Cures weakening, poisoning, infections, disease, blindness and deafness.") ==
+        "治愈虚弱、中毒、感染、疾病、失明和失聪。");
+    REQUIRE(i18n::get("spells.healing.heals_wound", "Heals one wound.") == "治疗一个伤口。");
+    REQUIRE(
+        i18n::get(
+            "spells.healing.regen_prefix",
+            "+1 hit point regenerated per turn, for ") ==
+        "每回合恢复+1生命值，持续");
+    REQUIRE(i18n::get("spells.healing.regen_suffix", " turns.") == "回合。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

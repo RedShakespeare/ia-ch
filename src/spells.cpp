@@ -7719,7 +7719,7 @@ int SpellHeal::mon_cooldown() const
 
 std::string SpellHeal::name() const
 {
-    return "Healing";
+    return i18n::get("spells.healing.name", "Healing");
 }
 
 SpellId SpellHeal::id() const
@@ -7822,23 +7822,42 @@ std::vector<std::string> SpellHeal::descr_specific(
 {
     std::vector<std::string> descr;
 
-    descr.push_back("Restores " + std::to_string(nr_hp_restored(skill)) + " hit points.");
+    descr.push_back(
+        i18n::get(
+            "spells.healing.restore_prefix",
+            "Restores ") +
+        std::to_string(nr_hp_restored(skill)) +
+        i18n::get(
+            "spells.healing.restore_suffix",
+            " hit points."));
 
     if (skill == SpellSkill::expert) {
-        descr.emplace_back("Cures weakening and poisoning.");
+        descr.emplace_back(
+            i18n::get(
+                "spells.healing.cures_basic",
+                "Cures weakening and poisoning."));
     }
     else if (skill >= SpellSkill::master) {
         descr.emplace_back(
-            "Cures weakening, poisoning, infections, disease, blindness and deafness.");
+            i18n::get(
+                "spells.healing.cures_master",
+                "Cures weakening, poisoning, infections, disease, blindness and deafness."));
     }
 
     if (skill == SpellSkill::transcendent) {
-        descr.emplace_back("Heals one wound.");
+        descr.emplace_back(
+            i18n::get(
+                "spells.healing.heals_wound",
+                "Heals one wound."));
 
         descr.emplace_back(
-            "+1 hit point regenerated per turn, for " +
+            i18n::get(
+                "spells.healing.regen_prefix",
+                "+1 hit point regenerated per turn, for ") +
             regen_duration().str() +
-            " turns.");
+            i18n::get(
+                "spells.healing.regen_suffix",
+                " turns."));
     }
 
     return descr;
