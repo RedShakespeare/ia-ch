@@ -23,6 +23,7 @@
 #include "draw_blast.hpp"
 #include "game.hpp"
 #include "game_time.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
@@ -42,7 +43,6 @@
 #include "terrain_factory.hpp"
 #include "terrain_mob.hpp"
 #include "text_format.hpp"
-#include "i18n.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -120,19 +120,26 @@ std::vector<std::string> Device::descr_hook() const
 
         std::vector<std::string> out = {descr};
 
-        std::string cond_str = "It seems ";
+        std::string cond_str =
+            i18n::get("item_device.condition_prefix", "It seems ");
 
         switch (m_condition) {
         case Condition::fine:
-            cond_str += "to be in fine condition.";
+            cond_str += i18n::get(
+                "item_device.condition_fine",
+                "to be in fine condition.");
             break;
 
         case Condition::shoddy:
-            cond_str += "to be in shoddy condition.";
+            cond_str += i18n::get(
+                "item_device.condition_shoddy",
+                "to be in shoddy condition.");
             break;
 
         case Condition::breaking:
-            cond_str += "almost broken.";
+            cond_str += i18n::get(
+                "item_device.condition_breaking",
+                "almost broken.");
             break;
         }
 
@@ -286,13 +293,13 @@ std::string Device::name_info_str(const ItemNameIdentified id_type) const
     if (m_data->is_identified || (id_type == ItemNameIdentified::force_identified)) {
         switch (m_condition) {
         case Condition::breaking:
-            return "(breaking)";
+            return i18n::get("item_device.name_info_breaking", "(breaking)");
 
         case Condition::shoddy:
-            return "(shoddy)";
+            return i18n::get("item_device.name_info_shoddy", "(shoddy)");
 
         case Condition::fine:
-            return "(fine)";
+            return i18n::get("item_device.name_info_fine", "(fine)");
         }
     }
 
@@ -328,7 +335,8 @@ ConsumeItem Blaster::run_effect()
 
 std::string Blaster::descr_identified() const
 {
-    return (
+    return i18n::get(
+        "item_device.descr_blaster",
         "When activated, this device blasts one visible hostile "
         "creature with infernal power.");
 }
@@ -363,7 +371,8 @@ ConsumeItem Rejuvenator::run_effect()
 
 std::string Rejuvenator::descr_identified() const
 {
-    return (
+    return i18n::get(
+        "item_device.descr_rejuvenator",
         "When activated, this device heals all wounds and physical "
         "maladies. The procedure is very painful and invasive "
         "however, and causes great shock to the user.");
@@ -384,7 +393,7 @@ ConsumeItem Translocator::run_effect()
         for (auto* actor : seen_foes) {
             msg_log::add(
                 text_format::first_to_upper(actor::name_the(*actor)) +
-                " is teleported.");
+                i18n::get("item_device.teleported_suffix", " is teleported."));
 
             draw_blast_at_cells(
                 std::vector<P> {actor->m_pos},
@@ -399,7 +408,8 @@ ConsumeItem Translocator::run_effect()
 
 std::string Translocator::descr_identified() const
 {
-    return (
+    return i18n::get(
+        "item_device.descr_translocator",
         "When activated, this device teleports all visible enemies "
         "to different locations.");
 }
@@ -416,6 +426,14 @@ ConsumeItem SentryDrone::run_effect()
         .set_leader(map::g_player);
 
     return ConsumeItem::yes;
+}
+
+std::string SentryDrone::descr_identified() const
+{
+    return i18n::get(
+        "item_device.descr_sentry_drone",
+        "When activated, this device will \"come alive\" and "
+        "guard the user.");
 }
 
 // -----------------------------------------------------------------------------
@@ -475,7 +493,8 @@ ConsumeItem ForceField::run_effect()
 
 std::string ForceField::descr_identified() const
 {
-    return (
+    return i18n::get(
+        "item_device.descr_force_field",
         "When activated, this device constructs a temporary opaque "
         "barrier around the user, blocking all physical matter. "
         "The barrier can only be created in empty spaces "

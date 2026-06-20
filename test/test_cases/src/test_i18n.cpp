@@ -260,6 +260,44 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "item_explosive.throw_smoke_grenade",
             "I throw a smoke grenade.") == "我投掷了一枚烟雾手雷。");
+    REQUIRE(i18n::get("item_device.condition_prefix", "It seems ") == "它似乎");
+    REQUIRE(i18n::get("item_device.condition_fine", "to be in fine condition.") == "状况良好。");
+    REQUIRE(i18n::get("item_device.condition_shoddy", "to be in shoddy condition.") == "状况粗劣。");
+    REQUIRE(i18n::get("item_device.condition_breaking", "almost broken.") == "几乎坏掉了。");
+    REQUIRE(i18n::get("item_device.name_info_breaking", "(breaking)") == "（将坏）");
+    REQUIRE(i18n::get("item_device.name_info_shoddy", "(shoddy)") == "（粗劣）");
+    REQUIRE(i18n::get("item_device.name_info_fine", "(fine)") == "（良好）");
+    REQUIRE(
+        i18n::get(
+            "item_device.descr_blaster",
+            "When activated, this device blasts one visible hostile "
+            "creature with infernal power.") == "启动后，这个装置会用地狱之力轰击一个可见的敌对生物。");
+    REQUIRE(
+        i18n::get(
+            "item_device.descr_rejuvenator",
+            "When activated, this device heals all wounds and physical "
+            "maladies. The procedure is very painful and invasive "
+            "however, and causes great shock to the user.") ==
+        "启动后，这个装置会治愈所有伤口和身体疾病。然而，这个过程非常痛苦且侵入性很强，并会给使用者带来巨大的精神震惊。");
+    REQUIRE(i18n::get("item_device.teleported_suffix", " is teleported.") == "被传送了。");
+    REQUIRE(
+        i18n::get(
+            "item_device.descr_translocator",
+            "When activated, this device teleports all visible enemies "
+            "to different locations.") == "启动后，这个装置会将所有可见敌人传送到不同位置。");
+    REQUIRE(
+        i18n::get(
+            "item_device.descr_sentry_drone",
+            "When activated, this device will \"come alive\" and "
+            "guard the user.") == "启动后，这个装置会“活过来”并守卫使用者。");
+    REQUIRE(
+        i18n::get(
+            "item_device.descr_force_field",
+            "When activated, this device constructs a temporary opaque "
+            "barrier around the user, blocking all physical matter. "
+            "The barrier can only be created in empty spaces "
+            "(i.e. not in spaces occupied by creatures, walls, etc).") ==
+        "启动后，这个装置会在使用者周围构建一道临时的不透明屏障，阻挡所有物质。屏障只能在空地中生成（即没有生物、墙壁等占据的空间）。");
     REQUIRE(i18n::get("player_bon.extra_trait_title", "You gain an extra trait!") == "你获得了额外特质！");
     REQUIRE(i18n::get("player_spells.known_title", "Known spells") == "已知法术");
     REQUIRE(i18n::get("player_spells.skill_label", "Skill: ") == "技能：");
