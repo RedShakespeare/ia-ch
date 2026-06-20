@@ -239,6 +239,52 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "They are at full health.") == "它们生命值全满。");
     REQUIRE(i18n::get("view_actor_descr.health_prefix", "They are at ") == "它们生命值为");
     REQUIRE(i18n::get("view_actor_descr.health_suffix", "% health.") == "%。");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_physical_damage",
+            "{COLOR_GRAY}physical damage{reset_color}") ==
+        "{COLOR_GRAY}物理伤害{reset_color}");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_fire",
+            "{COLOR_LIGHT_RED}fire{reset_color}") ==
+        "{COLOR_LIGHT_RED}火焰{reset_color}");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_confusion",
+            "confusion") == "混乱");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_see_in_darkness",
+            "see in darkness") == "在黑暗中视物");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_reduced_pierce_damage",
+            "Piercing attacks such as pistol shots or dagger strikes are very "
+            "ineffective against them") ==
+        "手枪射击或匕首刺击等穿刺攻击对它们非常无效");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_flammable",
+            "They are very flammable, and will quickly ignite other nearby "
+            "flammable creatures") ==
+        "它们非常易燃，并会迅速点燃附近其他易燃生物");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_cannot_be_harmed_by",
+            "They cannot be harmed by") == "它们不会受到");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_can",
+            "They can") == "它们能");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_item_separator",
+            " ") == "");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.natural_property_or",
+            "or ") == "或");
     REQUIRE(i18n::get("game_over_summary.title", "Game summary") == "游戏总结");
     REQUIRE(i18n::get("inventory.slot.weapon", "Weapon") == "武器");
     REQUIRE(i18n::get("inventory.browsing_title", "Browsing inventory") == "浏览物品栏");

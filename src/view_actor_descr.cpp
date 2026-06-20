@@ -54,7 +54,14 @@ struct PropTextData
     PropTextCategory category;
 
     // Property ID and sentence fragment (or a full sentence if "custom" category).
-    std::initializer_list<std::pair<prop::Id, std::string>> entries;
+    struct Entry
+    {
+        prop::Id id;
+        const char* key;
+        const char* fallback;
+    };
+
+    std::initializer_list<Entry> entries;
 };
 
 // This is used for showing descriptions of a monster's "natural properties" (e.g. for a monster
@@ -75,12 +82,36 @@ static const PropTextData s_prop_text_data[] = {
     {
         PropTextCategory::cannot_be_harmed_by,
         {
-            {prop::Id::r_phys, "{COLOR_GRAY}physical damage{reset_color}"},
-            {prop::Id::r_fire, "{COLOR_LIGHT_RED}fire{reset_color}"},
-            {prop::Id::r_elec, "{COLOR_YELLOW}electricity{reset_color}"},
-            {prop::Id::r_poison, "{COLOR_LIGHT_GREEN}poison{reset_color}"},
-            {prop::Id::r_disease, "{COLOR_GREEN}disease{reset_color}"},
-            {prop::Id::r_spell, "{COLOR_MAGENTA}magic{reset_color}"},
+            {
+                prop::Id::r_phys,
+                "view_actor_descr.natural_property_physical_damage",
+                "{COLOR_GRAY}physical damage{reset_color}",
+            },
+            {
+                prop::Id::r_fire,
+                "view_actor_descr.natural_property_fire",
+                "{COLOR_LIGHT_RED}fire{reset_color}",
+            },
+            {
+                prop::Id::r_elec,
+                "view_actor_descr.natural_property_electricity",
+                "{COLOR_YELLOW}electricity{reset_color}",
+            },
+            {
+                prop::Id::r_poison,
+                "view_actor_descr.natural_property_poison",
+                "{COLOR_LIGHT_GREEN}poison{reset_color}",
+            },
+            {
+                prop::Id::r_disease,
+                "view_actor_descr.natural_property_disease",
+                "{COLOR_GREEN}disease{reset_color}",
+            },
+            {
+                prop::Id::r_spell,
+                "view_actor_descr.natural_property_magic",
+                "{COLOR_MAGENTA}magic{reset_color}",
+            },
         },
     },
 
@@ -88,8 +119,16 @@ static const PropTextData s_prop_text_data[] = {
     {
         PropTextCategory::unaffected_by,
         {
-            {prop::Id::r_fear, "fear"},
-            {prop::Id::r_conf, "confusion"},
+            {
+                prop::Id::r_fear,
+                "view_actor_descr.natural_property_fear",
+                "fear",
+            },
+            {
+                prop::Id::r_conf,
+                "view_actor_descr.natural_property_confusion",
+                "confusion",
+            },
         },
     },
 
@@ -97,8 +136,16 @@ static const PropTextData s_prop_text_data[] = {
     {
         PropTextCategory::cannot_be,
         {
-            {prop::Id::r_slow, "slowed"},
-            {prop::Id::r_para, "paralyzed"},
+            {
+                prop::Id::r_slow,
+                "view_actor_descr.natural_property_slowed",
+                "slowed",
+            },
+            {
+                prop::Id::r_para,
+                "view_actor_descr.natural_property_paralyzed",
+                "paralyzed",
+            },
         },
     },
 
@@ -106,7 +153,11 @@ static const PropTextData s_prop_text_data[] = {
     {
         PropTextCategory::cannot,
         {
-            {prop::Id::r_sleep, "faint"},
+            {
+                prop::Id::r_sleep,
+                "view_actor_descr.natural_property_faint",
+                "faint",
+            },
         },
     },
 
@@ -114,7 +165,11 @@ static const PropTextData s_prop_text_data[] = {
     {
         PropTextCategory::can,
         {
-            {prop::Id::darkvision, "see in darkness"},
+            {
+                prop::Id::darkvision,
+                "view_actor_descr.natural_property_see_in_darkness",
+                "see in darkness",
+            },
         },
     },
 
@@ -122,35 +177,62 @@ static const PropTextData s_prop_text_data[] = {
     {
         PropTextCategory::custom,
         {
-            {prop::Id::reduced_pierce_dmg,
-             "Piercing attacks such as pistol shots or dagger strikes are very "
-             "ineffective against them"},
+            {
+                prop::Id::reduced_pierce_dmg,
+                "view_actor_descr.natural_property_reduced_pierce_damage",
+                "Piercing attacks such as pistol shots or dagger strikes are very "
+                "ineffective against them",
+            },
 
-            {prop::Id::radiant_self,
-             "They emit light and can be seen in darkness"},
+            {
+                prop::Id::radiant_self,
+                "view_actor_descr.natural_property_emits_light",
+                "They emit light and can be seen in darkness",
+            },
 
-            {prop::Id::radiant_adjacent,
-             "They emit light and can be seen in darkness"},
+            {
+                prop::Id::radiant_adjacent,
+                "view_actor_descr.natural_property_emits_light",
+                "They emit light and can be seen in darkness",
+            },
 
-            {prop::Id::radiant_fov,
-             "They emit light and can be seen in darkness"},
+            {
+                prop::Id::radiant_fov,
+                "view_actor_descr.natural_property_emits_light",
+                "They emit light and can be seen in darkness",
+            },
 
-            {prop::Id::regenerating,
-             "They regenerate health over time"},
+            {
+                prop::Id::regenerating,
+                "view_actor_descr.natural_property_regenerating",
+                "They regenerate health over time",
+            },
 
-            {prop::Id::explodes_on_death,
-             "They explode on death"},
+            {
+                prop::Id::explodes_on_death,
+                "view_actor_descr.natural_property_explodes_on_death",
+                "They explode on death",
+            },
 
-            {prop::Id::flammable,
-             "They are very flammable, and will quickly ignite other nearby "
-             "flammable creatures"},
+            {
+                prop::Id::flammable,
+                "view_actor_descr.natural_property_flammable",
+                "They are very flammable, and will quickly ignite other nearby "
+                "flammable creatures",
+            },
 
-            {prop::Id::undead,
-             "{COLOR_MAGENTA}This creature is undead{reset_color}"},
+            {
+                prop::Id::undead,
+                "view_actor_descr.natural_property_undead",
+                "{COLOR_MAGENTA}This creature is undead{reset_color}",
+            },
 
-            {prop::Id::outer_being,
-             "{COLOR_VIOLET}They are an Outer Being, not anchored to "
-             "this reality{reset_color}"},
+            {
+                prop::Id::outer_being,
+                "view_actor_descr.natural_property_outer_being",
+                "{COLOR_VIOLET}They are an Outer Being, not anchored to "
+                "this reality{reset_color}",
+            },
         },
     },
 };
@@ -159,15 +241,25 @@ static std::string prop_text_category_prefix_str(PropTextCategory category)
 {
     switch (category) {
     case PropTextCategory::cannot_be_harmed_by:
-        return "They cannot be harmed by";
+        return i18n::get(
+            "view_actor_descr.natural_property_cannot_be_harmed_by",
+            "They cannot be harmed by");
     case PropTextCategory::unaffected_by:
-        return "They are unaffected by";
+        return i18n::get(
+            "view_actor_descr.natural_property_unaffected_by",
+            "They are unaffected by");
     case PropTextCategory::cannot_be:
-        return "They cannot be";
+        return i18n::get(
+            "view_actor_descr.natural_property_cannot_be",
+            "They cannot be");
     case PropTextCategory::cannot:
-        return "They cannot";
+        return i18n::get(
+            "view_actor_descr.natural_property_cannot",
+            "They cannot");
     case PropTextCategory::can:
-        return "They can";
+        return i18n::get(
+            "view_actor_descr.natural_property_can",
+            "They can");
     case PropTextCategory::custom:
         return "";
     }
@@ -486,13 +578,19 @@ static void append_list_joined_with_or(
 
     for (size_t i = 0; i < nr_strings; ++i) {
         if ((nr_strings > 2) && (i > 0)) {
-            base_str += ",";
+            base_str += i18n::get(
+                "view_actor_descr.natural_property_comma",
+                ",");
         }
 
-        base_str += " ";
+        base_str += i18n::get(
+            "view_actor_descr.natural_property_item_separator",
+            " ");
 
         if ((nr_strings >= 2) && (i == (nr_strings - 1))) {
-            base_str += "or ";
+            base_str += i18n::get(
+                "view_actor_descr.natural_property_or",
+                "or ");
         }
 
         base_str += strings[i];
@@ -507,8 +605,9 @@ static std::string get_mon_natural_properties_descr(const actor::ActorData& acto
         std::vector<std::string> applicable_strings;
 
         for (const auto& entry : prop_text_data.entries) {
-            if (has_natural_property(actor_data, entry.first)) {
-                applicable_strings.push_back(entry.second);
+            if (has_natural_property(actor_data, entry.id)) {
+                applicable_strings.push_back(
+                    i18n::get(entry.key, entry.fallback));
             }
         }
 
@@ -516,7 +615,7 @@ static std::string get_mon_natural_properties_descr(const actor::ActorData& acto
             if (prop_text_data.category == PropTextCategory::custom) {
                 for (const std::string& str : applicable_strings) {
                     text_format::append_with_space(descr, str);
-                    descr += ".";
+                    descr += i18n::get("view_actor_descr.period", ".");
                 }
             }
             else {
@@ -528,7 +627,7 @@ static std::string get_mon_natural_properties_descr(const actor::ActorData& acto
 
                 append_list_joined_with_or(descr, applicable_strings);
 
-                descr += ".";
+                descr += i18n::get("view_actor_descr.period", ".");
             }
         }
     }
