@@ -1143,15 +1143,15 @@ std::string Door::base_name_short() const
 
     switch (m_type) {
     case DoorType::wood:
-        ret = "door";
+        ret = i18n::get("terrain_door.name_short_door", "door");
         break;
 
     case DoorType::metal:
-        ret = "door";
+        ret = i18n::get("terrain_door.name_short_door", "door");
         break;
 
     case DoorType::gate:
-        ret = "barred gate";
+        ret = i18n::get("terrain_door.name_barred_gate", "barred gate");
         break;
     }
 
