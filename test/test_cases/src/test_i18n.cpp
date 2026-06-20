@@ -267,6 +267,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("property.one_wound_healed", "A wound is healed.") == "一道伤口愈合了。");
     REQUIRE(i18n::get("property.all_wounds_healed", "All my wounds are healed!") == "我所有的伤口都愈合了！");
     REQUIRE(i18n::get("property.crave_astral_opium", "I crave Astral Opium!!") == "我渴望星界鸦片！！");
+    REQUIRE(i18n::get("property.resist_electric_player", "I feel a faint tingle.") == "我感到一阵微弱的刺痛。");
+    REQUIRE(i18n::get("property.resist_seems_unaffected", "{} seems unaffected.") == "{}似乎不受影响。");
+    REQUIRE(i18n::get("property.resist_physical_player", "I resist harm.") == "我抵抗了伤害。");
+    REQUIRE(i18n::get("property.resist_seems_unharmed", "{} seems unharmed.") == "{}似乎没有受伤。");
+    REQUIRE(i18n::get("property.resist_fire_player", "I feel warm.") == "我感到温暖。");
     REQUIRE(i18n::get("highscore.browsing_title", "Browsing high scores") == "浏览高分记录");
     REQUIRE(i18n::get("manual.browsing_title", "Browsing manual") == "浏览手册");
     REQUIRE(i18n::get("character_descr.title", "Character description") == "角色描述");

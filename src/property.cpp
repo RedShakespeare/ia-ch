@@ -2282,9 +2282,13 @@ DmgResistData RElec::is_resisting_dmg(const DmgType dmg_type) const
 
     d.is_resisted = (dmg_type == DmgType::electric);
 
-    d.msg_resist_player = "I feel a faint tingle.";
+    d.msg_resist_player = i18n::get(
+        "property.resist_electric_player",
+        "I feel a faint tingle.");
 
-    d.msg_resist_mon = "{} seems unaffected.";
+    d.msg_resist_mon = i18n::get(
+        "property.resist_seems_unaffected",
+        "{} seems unaffected.");
 
     return d;
 }
@@ -2345,9 +2349,13 @@ DmgResistData RPhys::is_resisting_dmg(const DmgType dmg_type) const
 
     d.is_resisted = is_physical_dmg_type(dmg_type);
 
-    d.msg_resist_player = "I resist harm.";
+    d.msg_resist_player = i18n::get(
+        "property.resist_physical_player",
+        "I resist harm.");
 
-    d.msg_resist_mon = "{} seems unharmed.";
+    d.msg_resist_mon = i18n::get(
+        "property.resist_seems_unharmed",
+        "{} seems unharmed.");
 
     return d;
 }
@@ -2373,9 +2381,13 @@ DmgResistData RFire::is_resisting_dmg(const DmgType dmg_type) const
 
     d.is_resisted = (dmg_type == DmgType::fire);
 
-    d.msg_resist_player = "I feel warm.";
+    d.msg_resist_player = i18n::get(
+        "property.resist_fire_player",
+        "I feel warm.");
 
-    d.msg_resist_mon = "{} seems unaffected.";
+    d.msg_resist_mon = i18n::get(
+        "property.resist_seems_unaffected",
+        "{} seems unaffected.");
 
     return d;
 }
