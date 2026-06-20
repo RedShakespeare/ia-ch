@@ -276,6 +276,19 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.legend_brazier", "Brazier") == "火盆");
     REQUIRE(i18n::get("terrain.legend_tomb", "Tomb") == "坟墓");
     REQUIRE(i18n::get("terrain.legend_fountain", "Fountain") == "喷泉");
+    REQUIRE(i18n::get("terrain.article_a_space", "a ") == "");
+    REQUIRE(i18n::get("terrain.article_an_space", "an ") == "");
+    REQUIRE(i18n::get("terrain.article_the_space", "the ") == "");
+    REQUIRE(i18n::get("terrain.downward_staircase", "downward staircase") == "向下的楼梯");
+    REQUIRE(i18n::get("terrain.bridge", "bridge") == "桥");
+    REQUIRE(i18n::get("terrain.water", "water") == "水");
+    REQUIRE(i18n::get("terrain.shallow_mud", "shallow mud") == "浅泥");
+    REQUIRE(i18n::get("terrain.gleaming_pool", "gleaming pool") == "闪光水池");
+    REQUIRE(i18n::get("terrain.chasm", "chasm") == "深渊");
+    REQUIRE(i18n::get("terrain.crystal_gleaming", "gleaming") == "闪光");
+    REQUIRE(i18n::get("terrain.crystal_dead", "dead") == "失活");
+    REQUIRE(i18n::get("terrain.crystal_suffix", " crystal") == "水晶");
+    REQUIRE(i18n::get("terrain.altar", "altar") == "祭坛");
     REQUIRE(i18n::get("terrain.chains_article_a", "") == "");
     REQUIRE(i18n::get("terrain.chains_article_the", "the ") == "");
     REQUIRE(i18n::get("terrain.chains_name", "rusty chains") == "生锈的锁链");
@@ -310,6 +323,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.light_inside_fades", "The light inside fades.") == "里面的光芒消退了。");
     REQUIRE(i18n::get("terrain.path_opened", "I sense that a path has opened somewhere.") == "我感到某处有一条道路打开了。");
     REQUIRE(i18n::get("terrain.altar_destroyed", "The altar is destroyed.") == "祭坛被摧毁了。");
+    REQUIRE(
+        i18n::get(
+            "terrain.diabolic_altar_warning",
+            "A diabolic altar has been raised here, it must be "
+            "destroyed!") == "这里升起了一座邪恶祭坛，必须将它摧毁！");
     REQUIRE(i18n::get("terrain.topples_over", "It topples over.") == "它倒下了。");
     REQUIRE(i18n::get("terrain.no_more_items_of_interest", "There are no more items of interest.") == "没有更多值得关注的物品。");
     REQUIRE(i18n::get("terrain.unload_prompt", "Unload? [u]") == "卸下？[u]");

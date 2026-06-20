@@ -1858,9 +1858,12 @@ void Stairs::player_use_fake_stairs()
 
 std::string Stairs::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    std::string a =
+        (article == Article::a)
+        ? i18n::get("terrain.article_a_space", "a ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "downward staircase";
+    return a + i18n::get("terrain.downward_staircase", "downward staircase");
 }
 
 Color Stairs::color_default() const
@@ -1916,9 +1919,12 @@ char Bridge::character() const
 
 std::string Bridge::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    std::string a =
+        (article == Article::a)
+        ? i18n::get("terrain.article_a_space", "a ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "bridge";
+    return a + i18n::get("terrain.bridge", "bridge");
 }
 
 Color Bridge::color_default() const
@@ -2071,20 +2077,20 @@ std::string Liquid::name(const Article article) const
     std::string str;
 
     if (article == Article::the) {
-        str += "the ";
+        str += i18n::get("terrain.article_the_space", "the ");
     }
 
     switch (m_type) {
     case LiquidType::water:
-        str += "water";
+        str += i18n::get("terrain.water", "water");
         break;
 
     case LiquidType::mud:
-        str += "shallow mud";
+        str += i18n::get("terrain.shallow_mud", "shallow mud");
         break;
 
     case LiquidType::magic_water:
-        str += "gleaming pool";
+        str += i18n::get("terrain.gleaming_pool", "gleaming pool");
         break;
     }
 
@@ -2141,9 +2147,12 @@ void Chasm::hit(
 
 std::string Chasm::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    std::string a =
+        (article == Article::a)
+        ? i18n::get("terrain.article_a_space", "a ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "chasm";
+    return a + i18n::get("terrain.chasm", "chasm");
 }
 
 Color Chasm::color_default() const
@@ -2171,13 +2180,17 @@ void CrystalKey::hit(
 
 std::string CrystalKey::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a" : "the";
+    std::string str =
+        (article == Article::a)
+        ? i18n::get("terrain.article_a_space", "a ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    str += " ";
+    str +=
+        m_is_active
+        ? i18n::get("terrain.crystal_gleaming", "gleaming")
+        : i18n::get("terrain.crystal_dead", "dead");
 
-    str += m_is_active ? "gleaming" : "dead";
-
-    str += " crystal";
+    str += i18n::get("terrain.crystal_suffix", " crystal");
 
     return str;
 }
@@ -2371,9 +2384,10 @@ void Altar::bump(actor::Actor& actor_bumping)
     if (player_bon::is_bg(Bg::exorcist) &&
         map::g_seen.at(m_pos)) {
         // Exorcist player is bumping a seen altar
-        msg_log::add(
+        msg_log::add(i18n::get(
+            "terrain.diabolic_altar_warning",
             "A diabolic altar has been raised here, it must be "
-            "destroyed!");
+            "destroyed!"));
 
         return;
     }
@@ -2384,9 +2398,12 @@ void Altar::bump(actor::Actor& actor_bumping)
 
 std::string Altar::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "an " : "the ";
+    std::string str =
+        (article == Article::a)
+        ? i18n::get("terrain.article_an_space", "an ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    return str + "altar";
+    return str + i18n::get("terrain.altar", "altar");
 }
 
 Color Altar::color_default() const
