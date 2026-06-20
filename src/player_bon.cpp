@@ -410,11 +410,12 @@ static void update_trait_data()
 
     // --- Stout Spirit ---
     d.id = TraitId::stout_spirit;
-    d.title = "Stout Spirit";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.stout_spirit.title", "Stout Spirit");
+    d.descr = i18n::get(
+        "player_bon.trait.stout_spirit.descr",
         "+2 spirit points, increased spirit regeneration rate, you "
         "can defy harmful spells (it takes 125-150 turns to regain "
-        "spell resistance after a spell is blocked)";
+        "spell resistance after a spell is blocked)");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_spell);
 
@@ -436,33 +437,36 @@ static void update_trait_data()
     // --- Strong Spirit ---
     d = trait_data(TraitId::stout_spirit);
     d.id = TraitId::strong_spirit;
-    d.title = "Strong Spirit";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.strong_spirit.title", "Strong Spirit");
+    d.descr = i18n::get(
+        "player_bon.trait.strong_spirit.descr",
         "+2 spirit points, increased spirit regeneration rate, it "
         "takes 75-100 turns to regain spell resistance after a spell "
-        "is blocked";
+        "is blocked");
     d.trait_prereqs = {TraitId::stout_spirit};
     set_trait_data(d);
 
     // --- Mighty Spirit ---
     d = trait_data(TraitId::stout_spirit);
     d.id = TraitId::mighty_spirit;
-    d.title = "Mighty Spirit";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.mighty_spirit.title", "Mighty Spirit");
+    d.descr = i18n::get(
+        "player_bon.trait.mighty_spirit.descr",
         "+2 spirit points, increased spirit regeneration rate, it "
         "takes 25-50 turns to regain spell resistance after a spell "
-        "is blocked";
+        "is blocked");
     d.trait_prereqs = {TraitId::strong_spirit};
     set_trait_data(d);
 
     // --- Meditative ---
     d.id = TraitId::meditative;
-    d.title = "Meditative";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.meditative.title", "Meditative");
+    d.descr = i18n::get(
+        "player_bon.trait.meditative.descr",
         "Applies a focused state which allows the next spell to be "
         "cast without spending a turn, and with the casting cost "
         "reduced by 1 point - it takes 125-150 turns to regain this "
-        "state after a spell is cast";
+        "state after a spell is cast");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::meditative_focused);
 
@@ -480,11 +484,12 @@ static void update_trait_data()
 
     // --- Sage ---
     d.id = TraitId::sage;
-    d.title = "Sage";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.sage.title", "Sage");
+    d.descr = i18n::get(
+        "player_bon.trait.sage.descr",
         "When focused, spells are cast without spending spirit points, "
         "and the duration to regain the focused state is reduced to "
-        "75-100 turns";
+        "75-100 turns");
     d.trait_prereqs = {TraitId::meditative};
     d.blocked_for_bgs = trait_data(TraitId::meditative).blocked_for_bgs;
     d.blocked_for_bgs.push_back(Bg::flagellant);
@@ -492,11 +497,12 @@ static void update_trait_data()
 
     // --- Absorption ---
     d.id = TraitId::absorption;
-    d.title = "Absorption";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.absorption.title", "Absorption");
+    d.descr = i18n::get(
+        "player_bon.trait.absorption.descr",
         "1-6 spirit points are restored each time Spell Shield is ended "
         "by a hostile spell "
-        "(Spell Shield is granted by spirit traits or the Spell Shield spell)";
+        "(Spell Shield is granted by spirit traits or the Spell Shield spell)");
     d.trait_prereqs = {TraitId::strong_spirit};
     set_trait_data(d);
 

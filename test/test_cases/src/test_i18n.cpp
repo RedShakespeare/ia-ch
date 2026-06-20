@@ -283,6 +283,49 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "slower walking speed happens at 6 wounds instead of 3, "
             "and you die from 10 wounds instead of 5)") ==
         "你不会患病，并且只有一半伤口数计入惩罚（向下取整；也就是计算战斗、生命值和再生惩罚时伤口数减半，行走变慢从6处伤口而不是3处开始，死亡从10处伤口而不是5处开始）");
+    REQUIRE(i18n::get("player_bon.trait.stout_spirit.title", "Stout Spirit") == "坚定精神");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.stout_spirit.descr",
+            "+2 spirit points, increased spirit regeneration rate, you "
+            "can defy harmful spells (it takes 125-150 turns to regain "
+            "spell resistance after a spell is blocked)") == "+2点精神，精神再生速度提高，你可以抵抗有害法术（阻挡一个法术后需要125-150回合恢复法术抗性）");
+    REQUIRE(i18n::get("player_bon.trait.strong_spirit.title", "Strong Spirit") == "强韧精神");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.strong_spirit.descr",
+            "+2 spirit points, increased spirit regeneration rate, it "
+            "takes 75-100 turns to regain spell resistance after a spell "
+            "is blocked") == "+2点精神，精神再生速度提高，阻挡一个法术后需要75-100回合恢复法术抗性");
+    REQUIRE(i18n::get("player_bon.trait.mighty_spirit.title", "Mighty Spirit") == "强大精神");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.mighty_spirit.descr",
+            "+2 spirit points, increased spirit regeneration rate, it "
+            "takes 25-50 turns to regain spell resistance after a spell "
+            "is blocked") == "+2点精神，精神再生速度提高，阻挡一个法术后需要25-50回合恢复法术抗性");
+    REQUIRE(i18n::get("player_bon.trait.meditative.title", "Meditative") == "冥想者");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.meditative.descr",
+            "Applies a focused state which allows the next spell to be "
+            "cast without spending a turn, and with the casting cost "
+            "reduced by 1 point - it takes 125-150 turns to regain this "
+            "state after a spell is cast") == "施加专注状态，使下一个法术无需花费回合即可施放，且施法消耗减少1点；施放一个法术后需要125-150回合恢复此状态");
+    REQUIRE(i18n::get("player_bon.trait.sage.title", "Sage") == "贤者");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.sage.descr",
+            "When focused, spells are cast without spending spirit points, "
+            "and the duration to regain the focused state is reduced to "
+            "75-100 turns") == "专注时，施放法术不消耗精神点，且恢复专注状态的时间缩短为75-100回合");
+    REQUIRE(i18n::get("player_bon.trait.absorption.title", "Absorption") == "吸收");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.absorption.descr",
+            "1-6 spirit points are restored each time Spell Shield is ended "
+            "by a hostile spell "
+            "(Spell Shield is granted by spirit traits or the Spell Shield spell)") == "每当法术护盾被敌对法术终止时，恢复1-6点精神（法术护盾由精神特质或法术护盾法术赋予）");
     REQUIRE(
         i18n::get(
             "property.mon_struggles_tear_free_suffix",
