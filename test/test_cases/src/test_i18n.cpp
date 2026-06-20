@@ -59,6 +59,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.hear_crash", "I hear a crash.") == "我听到一声撞击。");
     REQUIRE(i18n::get("terrain.topples_prefix", "The ") == "");
     REQUIRE(i18n::get("terrain.topples_suffix", " topples over.") == "倒下了。");
+    REQUIRE(i18n::get("text_format.and_separator", " and ") == "和");
     REQUIRE(i18n::get("terrain.falls_on_me", "It falls on me!") == "它砸到了我！");
     REQUIRE(i18n::get("terrain.falls_on_prefix", "It falls on ") == "它砸到了");
     REQUIRE(i18n::get("terrain.period", ".") == "。");

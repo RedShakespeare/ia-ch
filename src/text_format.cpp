@@ -12,6 +12,7 @@
 #include <memory>
 
 #include "config.hpp"
+#include "i18n.hpp"
 #include "io_internal.hpp"
 #include "utf8.hpp"
 
@@ -388,7 +389,7 @@ std::string make_comma_and_str(const std::vector<std::string>& strings)
         }
         else {
             // Hm, Oxford comma or not? ;-)
-            result += " and " + strings[i];
+            result += i18n::get("text_format.and_separator", " and ") + strings[i];
         }
     }
 
