@@ -1134,6 +1134,56 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             " If the target is sufficiently far away from "
             "the caster, the bolt explodes on impact.") == "如果目标距离施法者足够远，能量箭会在命中时爆炸。");
     REQUIRE(i18n::get("spells.darkbolt.paralyze", " The target is paralyzed.") == "目标被麻痹。");
+    REQUIRE(i18n::get("spells.gnawing_torrent.hit_msg_ending", "fed upon!") == "被吞噬生命！");
+    REQUIRE(i18n::get("spells.gnawing_torrent.name", "Gnawing Torrent") == "啃噬洪流");
+    REQUIRE(
+        i18n::get(
+            "spells.gnawing_torrent.descr",
+            "Unleashes a stream of devouring energy upon the caster's victims.") ==
+        "向施法者的受害者释放一股吞噬能量流。");
+    REQUIRE(
+        i18n::get(
+            "spells.gnawing_torrent.projectiles_prefix",
+            " projectiles are conjured, each dealing ") == "枚投射物被召唤，每枚造成");
+    REQUIRE(i18n::get("spells.gnawing_torrent.projectiles_suffix", " damage.") == "点伤害。");
+    REQUIRE(
+        i18n::get(
+            "spells.gnawing_torrent.life_feed_descr",
+            "Each impact feeds life force back to the caster, providing 1 hit point "
+            "(only against creatures of flesh and blood; "
+            "ethereal creatures cannot be fed upon for example).") ==
+        "每次命中都会把生命力反馈给施法者，提供 1 点生命值（仅对血肉生物有效；例如无法从以太生物身上吞噬生命）。");
+    REQUIRE(
+        i18n::get(
+            "spells.gnawing_torrent.above_max_hp_descr",
+            "Hit points can be raised above the normal maximum level.") == "生命值可以被提升到正常上限以上。");
+    REQUIRE(i18n::get("spells.aza_gaze.name", "Azathoth's Gaze") == "阿撒托斯凝视");
+    REQUIRE(i18n::get("spells.aza_gaze.player_hit_prefix", "I am") == "我");
+    REQUIRE(i18n::get("spells.aza_gaze.mon_hit_middle", " is") == "");
+    REQUIRE(i18n::get("spells.aza_gaze.wracked_by_chaos_suffix", " wracked by chaos.") == "被混沌折磨。");
+    REQUIRE(
+        i18n::get(
+            "spells.aza_gaze.descr",
+            "Channels the chaos of Azathoth unto all visible enemies. "
+            "The channel can only be opened for a fraction of a second, "
+            "but even this is enough to cause great physical and mental "
+            "devastation.") == "将阿撒托斯的混沌引向所有可见敌人。通道只能开启一瞬，但即便如此也足以造成巨大的肉体与精神毁灭。");
+    REQUIRE(i18n::get("spells.aza_gaze.dmg_prefix", "The spell deals ") == "法术造成");
+    REQUIRE(i18n::get("spells.aza_gaze.dmg_suffix", " damage to each creature.") == "点伤害给每个生物。");
+    REQUIRE(i18n::get("spells.aza_gaze.faint_prefix", "Causes the victims to faint for ") == "使受害者昏厥");
+    REQUIRE(i18n::get("spells.aza_gaze.faint_suffix", " turns, if they are susceptible.") == "回合，如果它们会受此影响。");
+    REQUIRE(i18n::get("spells.aza_gaze.conflict_prefix", "The victims become conflicted for ") == "受害者陷入冲突");
+    REQUIRE(
+        i18n::get(
+            "spells.aza_gaze.conflict_suffix",
+            " turns, causing them to view any creature as "
+            "their enemy.") == "回合，使它们把任何生物都视为敌人。");
+    REQUIRE(i18n::get("spells.cataclysm.name", "Cataclysm") == "大灾变");
+    REQUIRE(i18n::get("spells.cataclysm.descr", "Blasts the surrounding area with terrible force.") == "以可怕的力量轰击周围区域。");
+    REQUIRE(
+        i18n::get(
+            "spells.cataclysm.skill_descr",
+            "Higher skill levels increases the magnitude of the destruction.") == "更高的技能等级会增强毁灭的规模。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

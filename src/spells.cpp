@@ -2186,7 +2186,7 @@ void GnawingTorrent::on_hit(
 
 std::string GnawingTorrent::hit_msg_ending() const
 {
-    return "fed upon!";
+    return i18n::get("spells.gnawing_torrent.hit_msg_ending", "fed upon!");
 }
 
 audio::SfxId GnawingTorrent::impact_sfx() const
@@ -2196,7 +2196,7 @@ audio::SfxId GnawingTorrent::impact_sfx() const
 
 std::string GnawingTorrent::name() const
 {
-    return "Gnawing Torrent";
+    return i18n::get("spells.gnawing_torrent.name", "Gnawing Torrent");
 }
 
 SpellId GnawingTorrent::id() const
@@ -2208,20 +2208,28 @@ std::vector<std::string> GnawingTorrent::descr_specific(const SpellSkill skill) 
 {
     std::vector<std::string> descr;
 
-    descr.emplace_back("Unleashes a stream of devouring energy upon the caster's victims.");
+    descr.emplace_back(i18n::get(
+        "spells.gnawing_torrent.descr",
+        "Unleashes a stream of devouring energy upon the caster's victims."));
 
     descr.emplace_back(
         std::to_string(nr_projectiles(skill)) +
-        " projectiles are conjured, each dealing " +
+        i18n::get(
+            "spells.gnawing_torrent.projectiles_prefix",
+            " projectiles are conjured, each dealing ") +
         damage(skill).str() +
-        " damage.");
+        i18n::get("spells.gnawing_torrent.projectiles_suffix", " damage."));
 
     descr.emplace_back(
-        "Each impact feeds life force back to the caster, providing 1 hit point "
-        "(only against creatures of flesh and blood; "
-        "ethereal creatures cannot be fed upon for example).");
+        i18n::get(
+            "spells.gnawing_torrent.life_feed_descr",
+            "Each impact feeds life force back to the caster, providing 1 hit point "
+            "(only against creatures of flesh and blood; "
+            "ethereal creatures cannot be fed upon for example)."));
 
-    descr.emplace_back("Hit points can be raised above the normal maximum level.");
+    descr.emplace_back(i18n::get(
+        "spells.gnawing_torrent.above_max_hp_descr",
+        "Hit points can be raised above the normal maximum level."));
 
     return descr;
 }
@@ -2236,7 +2244,7 @@ int SpellAzaGaze::mon_cooldown() const
 
 std::string SpellAzaGaze::name() const
 {
-    return "Azathoth's Gaze";
+    return i18n::get("spells.aza_gaze.name", "Azathoth's Gaze");
 }
 
 SpellId SpellAzaGaze::id() const
@@ -2403,19 +2411,23 @@ void SpellAzaGaze::run_effect_on_target(
         std::string hit_msg;
 
         if (actor::is_player(&target)) {
-            hit_msg = "I am";
+            hit_msg = i18n::get("spells.aza_gaze.player_hit_prefix", "I am");
 
             msg_clr = colors::msg_bad();
         }
         else {
-            hit_msg = text_format::first_to_upper(actor::name_the(target)) + " is";
+            hit_msg =
+                text_format::first_to_upper(actor::name_the(target)) +
+                i18n::get("spells.aza_gaze.mon_hit_middle", " is");
 
             if (map::g_player->is_leader_of(&target)) {
                 msg_clr = colors::white();
             }
         }
 
-        hit_msg += " wracked by chaos.";
+        hit_msg += i18n::get(
+            "spells.aza_gaze.wracked_by_chaos_suffix",
+            " wracked by chaos.");
 
         msg_log::add(hit_msg, msg_clr);
 
@@ -2448,27 +2460,37 @@ std::vector<std::string> SpellAzaGaze::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Channels the chaos of Azathoth unto all visible enemies. "
-        "The channel can only be opened for a fraction of a second, "
-        "but even this is enough to cause great physical and mental "
-        "devastation.");
+        i18n::get(
+            "spells.aza_gaze.descr",
+            "Channels the chaos of Azathoth unto all visible enemies. "
+            "The channel can only be opened for a fraction of a second, "
+            "but even this is enough to cause great physical and mental "
+            "devastation."));
 
     descr.push_back(
-        "The spell deals " +
+        i18n::get("spells.aza_gaze.dmg_prefix", "The spell deals ") +
         dmg_range(skill).str() +
-        " damage to each creature.");
+        i18n::get("spells.aza_gaze.dmg_suffix", " damage to each creature."));
 
     descr.push_back(
-        "Causes the victims to faint for " +
+        i18n::get(
+            "spells.aza_gaze.faint_prefix",
+            "Causes the victims to faint for ") +
         faint_duration_range(skill).str() +
-        " turns, if they are susceptible.");
+        i18n::get(
+            "spells.aza_gaze.faint_suffix",
+            " turns, if they are susceptible."));
 
     if (skill == SpellSkill::transcendent) {
         descr.push_back(
-            "The victims become conflicted for " +
+            i18n::get(
+                "spells.aza_gaze.conflict_prefix",
+                "The victims become conflicted for ") +
             conflict_duration_range(skill).str() +
-            " turns, causing them to view any creature as " +
-            "their enemy.");
+            i18n::get(
+                "spells.aza_gaze.conflict_suffix",
+                " turns, causing them to view any creature as "
+                "their enemy."));
     }
 
     return descr;
@@ -2488,7 +2510,7 @@ bool SpellAzaGaze::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellCataclysm::name() const
 {
-    return "Cataclysm";
+    return i18n::get("spells.cataclysm.name", "Cataclysm");
 }
 
 SpellId SpellCataclysm::id() const
@@ -2723,9 +2745,13 @@ std::vector<std::string> SpellCataclysm::descr_specific(
 
     std::vector<std::string> descr;
 
-    descr.emplace_back("Blasts the surrounding area with terrible force.");
+    descr.emplace_back(i18n::get(
+        "spells.cataclysm.descr",
+        "Blasts the surrounding area with terrible force."));
 
-    descr.emplace_back("Higher skill levels increases the magnitude of the destruction.");
+    descr.emplace_back(i18n::get(
+        "spells.cataclysm.skill_descr",
+        "Higher skill levels increases the magnitude of the destruction."));
 
     return descr;
 }
