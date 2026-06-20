@@ -2703,9 +2703,12 @@ Chains::Chains(const P& p, const TerrainData* const data) :
 
 std::string Chains::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "" : "the ";
+    std::string a =
+        (article == Article::a)
+        ? i18n::get("terrain.chains_article_a", "")
+        : i18n::get("terrain.chains_article_the", "the ");
 
-    return a + "rusty chains";
+    return a + i18n::get("terrain.chains_name", "rusty chains");
 }
 
 Color Chains::color_default() const
@@ -2721,10 +2724,12 @@ void Chains::bump(actor::Actor& actor_bumping)
         std::string msg;
 
         if (map::g_seen.at(m_pos)) {
-            msg = "The chains rattle.";
+            msg = i18n::get("terrain.chains_rattle", "The chains rattle.");
         }
         else {
-            msg = "I hear chains rattling.";
+            msg = i18n::get(
+                "terrain.hear_chains_rattling",
+                "I hear chains rattling.");
         }
 
         const auto alerts_mon =
