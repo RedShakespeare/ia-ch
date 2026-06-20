@@ -82,7 +82,7 @@ static void communicate_sigil_trigger(const terrain::Trap& trap, const actor::Ac
             std::string msg = i18n::get("terrain_trap.beam_from", "A beam of light shoots out from ");
 
             if (trap.is_hidden()) {
-                msg += "the floor";
+                msg += i18n::get("terrain_trap.the_floor", "the floor");
             }
             else {
                 const std::string name = trap.name(Article::the);
@@ -90,7 +90,7 @@ static void communicate_sigil_trigger(const terrain::Trap& trap, const actor::Ac
                 msg += name;
             }
 
-            msg += "!";
+            msg += i18n::get("terrain_trap.exclaim", "!");
 
             msg_log::add(msg);
         }
@@ -109,7 +109,7 @@ static void communicate_sigil_trigger(const terrain::Trap& trap, const actor::Ac
             const std::string actor_name =
                 can_player_see_actor
                 ? actor::name_the(actor)
-                : "it";
+                : i18n::get("terrain_trap.it", "it");
 
             msg_log::add(
                 i18n::get("terrain_trap.beam_under", "A beam of light shoots out under ") +
@@ -119,7 +119,9 @@ static void communicate_sigil_trigger(const terrain::Trap& trap, const actor::Ac
     }
 
     Snd snd(
-        "I hear an otherworldly blaze.",
+        i18n::get(
+            "terrain_trap.hear_otherworldly_blaze",
+            "I hear an otherworldly blaze."),
         audio::SfxId::sigil_trigger,
         IgnoreMsgIfOriginSeen::yes,
         trap.pos(),
@@ -917,7 +919,12 @@ void TrapDart::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
             map::g_terrain.at(m_dart_origin)
                 ->name(Article::the);
 
-        msg_log::add("A dart is launched from " + name + "!");
+        msg_log::add(
+            i18n::get(
+                "terrain_trap.dart_launched_from",
+                "A dart is launched from ") +
+            name +
+            i18n::get("terrain_trap.exclaim", "!"));
     }
 
     // Make a temporary dart weapon
@@ -1023,7 +1030,12 @@ void TrapSpear::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
             map::g_terrain.at(m_spear_origin)
                 ->name(Article::the);
 
-        msg_log::add("A spear shoots out from " + name + "!");
+        msg_log::add(
+            i18n::get(
+                "terrain_trap.spear_shoots_from",
+                "A spear shoots out from ") +
+            name +
+            i18n::get("terrain_trap.exclaim", "!"));
     }
 
     // Is anyone standing on the trap now?
@@ -1077,7 +1089,10 @@ void TrapBlindingFlash::run_trigger_effect(const WasKnownBeforeTrigger was_known
     TRACE_FUNC_BEGIN;
 
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("There is an intense flash of light!");
+        msg_log::add(
+            i18n::get(
+                "terrain_trap.intense_flash",
+                "There is an intense flash of light!"));
     }
 
     explosion::run(
@@ -1157,12 +1172,13 @@ void TrapSmoke::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
 
     if (map::g_seen.at(m_pos)) {
         msg_log::add(
-            "A burst of smoke is released from a vent in the "
-            "floor!");
+            i18n::get(
+                "terrain_trap.smoke_released",
+                "A burst of smoke is released from a vent in the floor!"));
     }
 
     Snd snd(
-        "I hear a burst of gas.",
+        i18n::get("terrain_trap.hear_burst_gas", "I hear a burst of gas."),
         audio::SfxId::gas,
         IgnoreMsgIfOriginSeen::yes,
         m_pos,
@@ -1201,7 +1217,7 @@ void TrapAlarm::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
     TRACE_FUNC_BEGIN;
 
     Snd snd(
-        "An alarm sounds!",
+        i18n::get("terrain_trap.alarm_sounds", "An alarm sounds!"),
         audio::SfxId::END,
         IgnoreMsgIfOriginSeen::no,
         m_pos,
@@ -1289,7 +1305,11 @@ void TrapWeb::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
                 text_format::first_to_upper(
                     actor::name_the(*actor_here));
 
-            msg_log::add(actor_name + " is entangled in a huge spider web!");
+            msg_log::add(
+                actor_name +
+                i18n::get(
+                    "terrain_trap.entangled_suffix",
+                    " is entangled in a huge spider web!"));
         }
     }
 
@@ -1408,7 +1428,9 @@ void TrapSummonMon::on_bumped(actor::Actor& actor_bumping)
                         text_format::first_to_upper(
                             actor::name_a(*mon));
 
-                    msg_log::add(name_a + " appears!");
+                    msg_log::add(
+                        name_a +
+                        i18n::get("terrain_trap.appears_suffix", " appears!"));
                 }
             });
     }
@@ -1478,7 +1500,10 @@ void TrapAlterEnv::on_bumped(actor::Actor& actor_bumping)
     communicate_sigil_trigger(*m_base_trap, actor_bumping);
 
     if (is_player_seeing_trap_trigger(actor_bumping, m_pos)) {
-        msg_log::add("The surroundings change!");
+        msg_log::add(
+            i18n::get(
+                "terrain_trap.surroundings_change",
+                "The surroundings change!"));
     }
 
     const int change_one_in_n = 2;
@@ -1598,12 +1623,18 @@ void TrapUnlearnSpell::try_unlearn_for_player() const
     }
 
     if (id_bucket.empty()) {
-        msg_log::add("There is no apparent effect.");
+        msg_log::add(
+            i18n::get(
+                "terrain_trap.no_apparent_effect",
+                "There is no apparent effect."));
 
         return;
     }
 
-    msg_log::add("I am surrounded by a misty haze.");
+    msg_log::add(
+        i18n::get(
+            "terrain_trap.misty_haze_self",
+            "I am surrounded by a misty haze."));
 
     const SpellId id = rnd::element(id_bucket);
 
@@ -1618,7 +1649,10 @@ void TrapUnlearnSpell::try_unlearn_for_monster(actor::Actor& actor) const
 
     if (spells.empty()) {
         if (player_sees_actor) {
-            msg_log::add("There is no apparent effect.");
+            msg_log::add(
+                i18n::get(
+                    "terrain_trap.no_apparent_effect",
+                    "There is no apparent effect."));
         }
 
         return;
@@ -1629,7 +1663,12 @@ void TrapUnlearnSpell::try_unlearn_for_monster(actor::Actor& actor) const
             text_format::first_to_upper(
                 actor::name_the(actor));
 
-        msg_log::add("A misty haze surrounds " + actor_name + ".");
+        msg_log::add(
+            i18n::get(
+                "terrain_trap.misty_haze_surrounds",
+                "A misty haze surrounds ") +
+            actor_name +
+            i18n::get("terrain_trap.period", "."));
     }
 
     const int idx = rnd::idx(spells);
