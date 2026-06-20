@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "i18n.hpp"
 #include "panel.hpp"
 #include "property.hpp"
 
@@ -146,13 +147,17 @@ static void init_data_list()
 
     d.id = prop::Id::r_phys;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Physical Resistance";
-    d.name_short = "Phys Res";
-    d.descr = "Cannot be harmed by physical attacks.";
-    d.msg_start_player = "I feel impervious to physical attacks.";
-    d.msg_start_mon = "{} looks tough as steel.";
-    d.msg_end_player = "I feel vulnerable to physical attacks.";
-    d.msg_end_mon = "{} looks less tough.";
+    d.name = i18n::get("property_data.r_phys.name", "Physical Resistance");
+    d.name_short = i18n::get("property_data.r_phys.name_short", "Phys Res");
+    d.descr = i18n::get("property_data.r_phys.descr", "Cannot be harmed by physical attacks.");
+    d.msg_start_player = i18n::get(
+        "property_data.r_phys.msg_start_player",
+        "I feel impervious to physical attacks.");
+    d.msg_start_mon = i18n::get("property_data.r_phys.msg_start_mon", "{} looks tough as steel.");
+    d.msg_end_player = i18n::get(
+        "property_data.r_phys.msg_end_player",
+        "I feel vulnerable to physical attacks.");
+    d.msg_end_mon = i18n::get("property_data.r_phys.msg_end_mon", "{} looks less tough.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -160,13 +165,16 @@ static void init_data_list()
 
     d.id = prop::Id::r_fire;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Fire Resistance";
-    d.name_short = "Fire Res";
-    d.descr = "Cannot be harmed by fire.";
-    d.msg_start_player = "I feel resistant to fire.";
-    d.msg_start_mon = "{} is resistant to fire.";
-    d.msg_end_player = "I feel vulnerable to fire.";
-    d.msg_end_mon = "{} is vulnerable to fire.";
+    d.name = i18n::get("property_data.r_fire.name", "Fire Resistance");
+    d.name_short = i18n::get("property_data.r_fire.name_short", "Fire Res");
+    d.descr = i18n::get("property_data.r_fire.descr", "Cannot be harmed by fire.");
+    d.msg_start_player =
+        i18n::get("property_data.r_fire.msg_start_player", "I feel resistant to fire.");
+    d.msg_start_mon =
+        i18n::get("property_data.r_fire.msg_start_mon", "{} is resistant to fire.");
+    d.msg_end_player =
+        i18n::get("property_data.r_fire.msg_end_player", "I feel vulnerable to fire.");
+    d.msg_end_mon = i18n::get("property_data.r_fire.msg_end_mon", "{} is vulnerable to fire.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -174,13 +182,17 @@ static void init_data_list()
 
     d.id = prop::Id::r_poison;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Poison Resistance";
-    d.name_short = "Poison Res";
-    d.descr = "Cannot be harmed by poison.";
-    d.msg_start_player = "I feel resistant to poison.";
-    d.msg_start_mon = "{} is resistant to poison.";
-    d.msg_end_player = "I feel vulnerable to poison.";
-    d.msg_end_mon = "{} is vulnerable to poison.";
+    d.name = i18n::get("property_data.r_poison.name", "Poison Resistance");
+    d.name_short = i18n::get("property_data.r_poison.name_short", "Poison Res");
+    d.descr = i18n::get("property_data.r_poison.descr", "Cannot be harmed by poison.");
+    d.msg_start_player =
+        i18n::get("property_data.r_poison.msg_start_player", "I feel resistant to poison.");
+    d.msg_start_mon =
+        i18n::get("property_data.r_poison.msg_start_mon", "{} is resistant to poison.");
+    d.msg_end_player =
+        i18n::get("property_data.r_poison.msg_end_player", "I feel vulnerable to poison.");
+    d.msg_end_mon =
+        i18n::get("property_data.r_poison.msg_end_mon", "{} is vulnerable to poison.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -188,13 +200,17 @@ static void init_data_list()
 
     d.id = prop::Id::r_elec;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Electric Resistance";
-    d.name_short = "Elec Res";
-    d.descr = "Cannot be harmed by electricity.";
-    d.msg_start_player = "I feel resistant to electricity.";
-    d.msg_start_mon = "{} is resistant to electricity.";
-    d.msg_end_player = "I feel vulnerable to electricity.";
-    d.msg_end_mon = "{} is vulnerable to electricity.";
+    d.name = i18n::get("property_data.r_elec.name", "Electric Resistance");
+    d.name_short = i18n::get("property_data.r_elec.name_short", "Elec Res");
+    d.descr = i18n::get("property_data.r_elec.descr", "Cannot be harmed by electricity.");
+    d.msg_start_player =
+        i18n::get("property_data.r_elec.msg_start_player", "I feel resistant to electricity.");
+    d.msg_start_mon =
+        i18n::get("property_data.r_elec.msg_start_mon", "{} is resistant to electricity.");
+    d.msg_end_player =
+        i18n::get("property_data.r_elec.msg_end_player", "I feel vulnerable to electricity.");
+    d.msg_end_mon =
+        i18n::get("property_data.r_elec.msg_end_mon", "{} is vulnerable to electricity.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -202,13 +218,14 @@ static void init_data_list()
 
     d.id = prop::Id::r_sleep;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Sleep Resistance";
-    d.name_short = "Sleep Res";
-    d.descr = "Cannot faint or become hypnotized.";
-    d.msg_start_player = "I feel wide awake.";
-    d.msg_start_mon = "{} is wide awake.";
-    d.msg_end_player = "I feel less awake.";
-    d.msg_end_mon = "{} is less awake.";
+    d.name = i18n::get("property_data.r_sleep.name", "Sleep Resistance");
+    d.name_short = i18n::get("property_data.r_sleep.name_short", "Sleep Res");
+    d.descr = i18n::get("property_data.r_sleep.descr", "Cannot faint or become hypnotized.");
+    d.msg_start_player =
+        i18n::get("property_data.r_sleep.msg_start_player", "I feel wide awake.");
+    d.msg_start_mon = i18n::get("property_data.r_sleep.msg_start_mon", "{} is wide awake.");
+    d.msg_end_player = i18n::get("property_data.r_sleep.msg_end_player", "I feel less awake.");
+    d.msg_end_mon = i18n::get("property_data.r_sleep.msg_end_mon", "{} is less awake.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -216,13 +233,16 @@ static void init_data_list()
 
     d.id = prop::Id::r_fear;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Fear Resistance";
-    d.name_short = "Fear Res";
-    d.descr = "Unaffected by fear.";
-    d.msg_start_player = "I cannot be swayed by fear.";
-    d.msg_start_mon = "{} is resistant to fear.";
-    d.msg_end_player = "I feel vulnerable to fear.";
-    d.msg_end_mon = "{} is vulnerable to fear.";
+    d.name = i18n::get("property_data.r_fear.name", "Fear Resistance");
+    d.name_short = i18n::get("property_data.r_fear.name_short", "Fear Res");
+    d.descr = i18n::get("property_data.r_fear.descr", "Unaffected by fear.");
+    d.msg_start_player =
+        i18n::get("property_data.r_fear.msg_start_player", "I cannot be swayed by fear.");
+    d.msg_start_mon =
+        i18n::get("property_data.r_fear.msg_start_mon", "{} is resistant to fear.");
+    d.msg_end_player =
+        i18n::get("property_data.r_fear.msg_end_player", "I feel vulnerable to fear.");
+    d.msg_end_mon = i18n::get("property_data.r_fear.msg_end_mon", "{} is vulnerable to fear.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -230,11 +250,13 @@ static void init_data_list()
 
     d.id = prop::Id::r_slow;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Slow Resistance";
-    d.name_short = "Slow Res";
-    d.descr = "Cannot be magically slowed.";
-    d.msg_start_player = "I feel steadfast.";
-    d.msg_end_player = "I feel more susceptible to time.";
+    d.name = i18n::get("property_data.r_slow.name", "Slow Resistance");
+    d.name_short = i18n::get("property_data.r_slow.name_short", "Slow Res");
+    d.descr = i18n::get("property_data.r_slow.descr", "Cannot be magically slowed.");
+    d.msg_start_player =
+        i18n::get("property_data.r_slow.msg_start_player", "I feel steadfast.");
+    d.msg_end_player =
+        i18n::get("property_data.r_slow.msg_end_player", "I feel more susceptible to time.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -242,13 +264,17 @@ static void init_data_list()
 
     d.id = prop::Id::r_conf;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Confusion Resistance";
-    d.name_short = "Conf Res";
-    d.descr = "Cannot become confused.";
-    d.msg_start_player = "I feel resistant to confusion.";
-    d.msg_start_mon = "{} is resistant to confusion.";
-    d.msg_end_player = "I feel vulnerable to confusion.";
-    d.msg_end_mon = "{} is vulnerable to confusion.";
+    d.name = i18n::get("property_data.r_conf.name", "Confusion Resistance");
+    d.name_short = i18n::get("property_data.r_conf.name_short", "Conf Res");
+    d.descr = i18n::get("property_data.r_conf.descr", "Cannot become confused.");
+    d.msg_start_player =
+        i18n::get("property_data.r_conf.msg_start_player", "I feel resistant to confusion.");
+    d.msg_start_mon =
+        i18n::get("property_data.r_conf.msg_start_mon", "{} is resistant to confusion.");
+    d.msg_end_player =
+        i18n::get("property_data.r_conf.msg_end_player", "I feel vulnerable to confusion.");
+    d.msg_end_mon =
+        i18n::get("property_data.r_conf.msg_end_mon", "{} is vulnerable to confusion.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -256,22 +282,26 @@ static void init_data_list()
 
     d.id = prop::Id::r_disease;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Disease Resistance";
-    d.name_short = "Disease Res";
-    d.descr = "Cannot become diseased.";
-    d.msg_start_player = "I feel resistant to disease.";
-    d.msg_start_mon = "{} is resistant to disease.";
-    d.msg_end_player = "I feel vulnerable to disease.";
-    d.msg_end_mon = "{} is vulnerable to disease.";
+    d.name = i18n::get("property_data.r_disease.name", "Disease Resistance");
+    d.name_short = i18n::get("property_data.r_disease.name_short", "Disease Res");
+    d.descr = i18n::get("property_data.r_disease.descr", "Cannot become diseased.");
+    d.msg_start_player =
+        i18n::get("property_data.r_disease.msg_start_player", "I feel resistant to disease.");
+    d.msg_start_mon =
+        i18n::get("property_data.r_disease.msg_start_mon", "{} is resistant to disease.");
+    d.msg_end_player =
+        i18n::get("property_data.r_disease.msg_end_player", "I feel vulnerable to disease.");
+    d.msg_end_mon =
+        i18n::get("property_data.r_disease.msg_end_mon", "{} is vulnerable to disease.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
     add(d);
 
     d.id = prop::Id::r_blind;
-    d.name = "Blindness Resistance";
-    d.name_short = "Blind Res";
-    d.descr = "Cannot be blinded.";
+    d.name = i18n::get("property_data.r_blind.name", "Blindness Resistance");
+    d.name_short = i18n::get("property_data.r_blind.name_short", "Blind Res");
+    d.descr = i18n::get("property_data.r_blind.descr", "Cannot be blinded.");
     d.allow_display_turns = false;
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::good;
@@ -279,13 +309,14 @@ static void init_data_list()
 
     d.id = prop::Id::r_para;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Paralysis Resistance";
-    d.name_short = "Paralys Res";
-    d.descr = "Cannot be paralyzed.";
-    d.msg_start_player = "I feel more steady.";
-    d.msg_start_mon = "{} looks more steady.";
-    d.msg_end_player = "I feel less steady.";
-    d.msg_end_mon = "{} looks less steady.";
+    d.name = i18n::get("property_data.r_para.name", "Paralysis Resistance");
+    d.name_short = i18n::get("property_data.r_para.name_short", "Paralys Res");
+    d.descr = i18n::get("property_data.r_para.descr", "Cannot be paralyzed.");
+    d.msg_start_player =
+        i18n::get("property_data.r_para.msg_start_player", "I feel more steady.");
+    d.msg_start_mon = i18n::get("property_data.r_para.msg_start_mon", "{} looks more steady.");
+    d.msg_end_player = i18n::get("property_data.r_para.msg_end_player", "I feel less steady.");
+    d.msg_end_mon = i18n::get("property_data.r_para.msg_end_mon", "{} looks less steady.");
     d.allow_display_turns = false;
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::good;
@@ -293,33 +324,43 @@ static void init_data_list()
 
     d.id = prop::Id::r_breath;
     d.std_rnd_turns = Range(50, 100);
-    d.descr = "Cannot be harmed by constricted breathing.";
-    d.msg_start_player = "I can breath without harm.";
-    d.msg_start_mon = "{} can breath without harm.";
+    d.descr =
+        i18n::get("property_data.r_breath.descr", "Cannot be harmed by constricted breathing.");
+    d.msg_start_player =
+        i18n::get("property_data.r_breath.msg_start_player", "I can breath without harm.");
+    d.msg_start_mon =
+        i18n::get("property_data.r_breath.msg_start_mon", "{} can breath without harm.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
     add(d);
 
     d.id = prop::Id::r_spell;
-    d.name = "Spell Resistance";
-    d.name_short = "Spell Res";
-    d.descr = "Cannot be affected by harmful spells.";
-    d.msg_start_player = "I defy harmful spells!";
-    d.msg_start_mon = "{} is defying harmful spells.";
-    d.msg_end_player = "I feel vulnerable to spells.";
-    d.msg_end_mon = "{} is vulnerable to spells.";
+    d.name = i18n::get("property_data.r_spell.name", "Spell Resistance");
+    d.name_short = i18n::get("property_data.r_spell.name_short", "Spell Res");
+    d.descr = i18n::get("property_data.r_spell.descr", "Cannot be affected by harmful spells.");
+    d.msg_start_player =
+        i18n::get("property_data.r_spell.msg_start_player", "I defy harmful spells!");
+    d.msg_start_mon =
+        i18n::get("property_data.r_spell.msg_start_mon", "{} is defying harmful spells.");
+    d.msg_end_player =
+        i18n::get("property_data.r_spell.msg_end_player", "I feel vulnerable to spells.");
+    d.msg_end_mon =
+        i18n::get("property_data.r_spell.msg_end_mon", "{} is vulnerable to spells.");
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::good;
     add(d);
 
     d.id = prop::Id::r_shock;
     d.std_rnd_turns = Range(8, 12);
-    d.name = "Shock Resistance";
-    d.name_short = "Shock Res";
-    d.descr = "Unaffected by shocking events.";
-    d.msg_start_player = "Nothing can disturb my mind!";
-    d.msg_end_player = "I feel susceptible to the horrors of this place again.";
+    d.name = i18n::get("property_data.r_shock.name", "Shock Resistance");
+    d.name_short = i18n::get("property_data.r_shock.name_short", "Shock Res");
+    d.descr = i18n::get("property_data.r_shock.descr", "Unaffected by shocking events.");
+    d.msg_start_player =
+        i18n::get("property_data.r_shock.msg_start_player", "Nothing can disturb my mind!");
+    d.msg_end_player = i18n::get(
+        "property_data.r_shock.msg_end_player",
+        "I feel susceptible to the horrors of this place again.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
