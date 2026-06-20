@@ -971,6 +971,30 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "item_curse.heavy_curse_msg_suffix",
             " suddenly feels much heavier to carry.") == "突然变得重得多。");
+    REQUIRE(i18n::get("item_curse.shrieks_suffix", " shrieks...") == "发出尖叫...");
+    REQUIRE(
+        i18n::get(
+            "item_curse.shriek_descr",
+            "it occasionally emits a disembodied voice in a horrible "
+            "shrieking tone.") == "它偶尔会发出可怕尖叫般的无形声音。");
+    REQUIRE(
+        i18n::get(
+            "item_curse.teleport_discharge_prefix",
+            "I somehow sense that a burst of energy is discharged "
+            "from ") == "我莫名感觉一股能量从");
+    REQUIRE(i18n::get("item_curse.being_teleported", "I am being teleported...") == "我正在被传送...");
+    REQUIRE(i18n::get("item_curse.teleport_descr", "it occasionally teleports the wearer.") == "它偶尔会传送佩戴者。");
+    REQUIRE(i18n::get("item_curse.loud_whistling", "There is a loud whistling sound.") == "响起一阵响亮的哨声。");
+    REQUIRE(i18n::get("item_curse.faint_whistling_nearer", "I hear a faint whistling sound coming nearer...") == "我听到一阵微弱的哨声正在靠近...");
+    REQUIRE(
+        i18n::get(
+            "item_curse.summon_descr",
+            "it calls deadly interdimensional beings into the existence of "
+            "the owner.") == "它会将致命的异维存在召唤到持有者所在的现实。");
+    REQUIRE(i18n::get("item_curse.area_bursts_into_flames", "The surrounding area suddenly burst into flames!") == "周围区域突然燃起火焰！");
+    REQUIRE(i18n::get("item_curse.fire_descr", "it spontaneously sets objects around the caster on fire.") == "它会自发点燃施法者周围的物体。");
+    REQUIRE(i18n::get("item_curse.cannot_read_descr", "it prevents the owner from comprehending written language.") == "它会阻止持有者理解书面语言。");
+    REQUIRE(i18n::get("item_curse.light_sensitive_descr", "the owner is harmed by light.") == "持有者会被光线伤害。");
     REQUIRE(i18n::get("item_potion.feel_more_at_ease", "I feel more at ease.") == "我感到安心多了。");
     REQUIRE(i18n::get("item_potion.feel_insightful", "I feel insightful.") == "我感到洞察力涌现。");
     REQUIRE(i18n::get("item_potion.feel_fine", "I feel fine.") == "我感觉很好。");

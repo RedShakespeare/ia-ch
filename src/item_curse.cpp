@@ -604,7 +604,7 @@ void Shriek::shriek(const item::Item& item) const
                 ItemNameInfo::none));
 
     msg_log::add(
-        name + " shrieks...",
+        name + i18n::get("item_curse.shrieks_suffix", " shrieks..."),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -639,8 +639,10 @@ void Shriek::shriek(const item::Item& item) const
 
 std::string Shriek::descr() const
 {
-    return "it occasionally emits a disembodied voice in a horrible "
-           "shrieking tone.";
+    return i18n::get(
+        "item_curse.shriek_descr",
+        "it occasionally emits a disembodied voice in a horrible "
+        "shrieking tone.");
 }
 
 // -----------------------------------------------------------------------------
@@ -665,13 +667,15 @@ void Teleport::teleport(const item::Item& item) const
     const auto name = item.name(ItemNameType::a, ItemNameInfo::none);
 
     msg_log::add(
-        "I somehow sense that a burst of energy is discharged "
-        "from " +
+        i18n::get(
+            "item_curse.teleport_discharge_prefix",
+            "I somehow sense that a burst of energy is discharged "
+            "from ") +
         name +
-        ".");
+        i18n::get("item_curse.period", "."));
 
     msg_log::add(
-        "I am being teleported...",
+        i18n::get("item_curse.being_teleported", "I am being teleported..."),
         colors::text(),
         MsgInterruptPlayer::yes,
         MorePromptOnMsg::yes);
@@ -681,7 +685,9 @@ void Teleport::teleport(const item::Item& item) const
 
 std::string Teleport::descr() const
 {
-    return "it occasionally teleports the wearer.";
+    return i18n::get(
+        "item_curse.teleport_descr",
+        "it occasionally teleports the wearer.");
 }
 
 // -----------------------------------------------------------------------------
@@ -701,7 +707,9 @@ void Summon::summon(const item::Item& item) const
     (void)item;
 
     msg_log::add(
-        "There is a loud whistling sound.",
+        i18n::get(
+            "item_curse.loud_whistling",
+            "There is a loud whistling sound."),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -714,13 +722,17 @@ std::string Summon::curse_msg(const item::Item& item) const
 {
     (void)item;
 
-    return "I hear a faint whistling sound coming nearer...";
+    return i18n::get(
+        "item_curse.faint_whistling_nearer",
+        "I hear a faint whistling sound coming nearer...");
 }
 
 std::string Summon::descr() const
 {
-    return "it calls deadly interdimensional beings into the existence of "
-           "the owner.";
+    return i18n::get(
+        "item_curse.summon_descr",
+        "it calls deadly interdimensional beings into the existence of "
+        "the owner.");
 }
 
 // -----------------------------------------------------------------------------
@@ -745,7 +757,9 @@ void Fire::run_fire(const item::Item& item) const
     (void)item;
 
     msg_log::add(
-        "The surrounding area suddenly burst into flames!",
+        i18n::get(
+            "item_curse.area_bursts_into_flames",
+            "The surrounding area suddenly burst into flames!"),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -777,7 +791,9 @@ void Fire::run_fire(const item::Item& item) const
 
 std::string Fire::descr() const
 {
-    return "it spontaneously sets objects around the caster on fire.";
+    return i18n::get(
+        "item_curse.fire_descr",
+        "it spontaneously sets objects around the caster on fire.");
 }
 
 // -----------------------------------------------------------------------------
@@ -803,7 +819,9 @@ void CannotRead::on_stop()
 
 std::string CannotRead::descr() const
 {
-    return "it prevents the owner from comprehending written language.";
+    return i18n::get(
+        "item_curse.cannot_read_descr",
+        "it prevents the owner from comprehending written language.");
 }
 
 // -----------------------------------------------------------------------------
@@ -829,7 +847,9 @@ void LightSensitive::on_stop()
 
 std::string LightSensitive::descr() const
 {
-    return "the owner is harmed by light.";
+    return i18n::get(
+        "item_curse.light_sensitive_descr",
+        "the owner is harmed by light.");
 }
 
 }  // namespace item_curse
