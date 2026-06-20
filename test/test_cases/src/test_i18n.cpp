@@ -534,6 +534,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.scorched_by_flames_suffix", " is scorched by flames.") == "被火焰灼伤了。");
     REQUIRE(i18n::get("terrain.fire_spread_here", "Fire has spread here!") == "火势蔓延到了这里！");
     REQUIRE(i18n::get("terrain.step_into_flames_query", "Step into the flames? ") == "要踏入火焰吗？");
+    REQUIRE(i18n::get("terrain.catches_fire_suffix", " catches fire.") == "着火了。");
     REQUIRE(i18n::get("terrain.wade_through_water", "I wade slowly through the knee high water.") == "我缓慢涉过齐膝深的水。");
     REQUIRE(i18n::get("terrain.trudge_through_mud", "I trudge slowly through the knee high mud.") == "我缓慢跋涉过齐膝深的泥泞。");
     REQUIRE(i18n::get("terrain.hear_splash", "I hear a splash.") == "我听到水花声。");
@@ -544,15 +545,107 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.legend_brazier", "Brazier") == "火盆");
     REQUIRE(i18n::get("terrain.legend_tomb", "Tomb") == "坟墓");
     REQUIRE(i18n::get("terrain.legend_fountain", "Fountain") == "喷泉");
+    REQUIRE(i18n::get("terrain.article_a_space", "a ") == "");
+    REQUIRE(i18n::get("terrain.article_an_space", "an ") == "");
+    REQUIRE(i18n::get("terrain.article_the_space", "the ") == "");
+    REQUIRE(i18n::get("terrain.floor_article_a", "") == "");
+    REQUIRE(i18n::get("terrain.floor_flames", "flames") == "火焰");
+    REQUIRE(i18n::get("terrain.floor_scorched_prefix", "scorched ") == "焦黑的");
+    REQUIRE(i18n::get("terrain.floor_stone_floor", "stone floor") == "石地板");
+    REQUIRE(i18n::get("terrain.floor_cavern_floor", "cavern floor") == "洞穴地面");
+    REQUIRE(i18n::get("terrain.floor_stone_path", "stone path") == "石径");
+    REQUIRE(i18n::get("terrain.wall_stone", "stone wall") == "石墙");
+    REQUIRE(i18n::get("terrain.wall_alien", "alien wall") == "异星墙壁");
+    REQUIRE(i18n::get("terrain.wall_cavern", "cavern wall") == "洞穴墙壁");
+    REQUIRE(i18n::get("terrain.wall_cliff", "cliff") == "悬崖");
+    REQUIRE(i18n::get("terrain.wall_moss_grown_prefix", "moss-grown ") == "长苔的");
+    REQUIRE(i18n::get("terrain.pillar_broken", "broken pillar") == "断裂石柱");
+    REQUIRE(i18n::get("terrain.pillar_inscribed", "inscribed pillar") == "刻文石柱");
+    REQUIRE(i18n::get("terrain.pillar", "pillar") == "石柱");
+    REQUIRE(i18n::get("terrain.vegetation_article_a", "") == "");
+    REQUIRE(i18n::get("terrain.grass", "grass") == "草");
+    REQUIRE(i18n::get("terrain.grass_withered", "withered grass") == "枯草");
+    REQUIRE(i18n::get("terrain.grass_burning", "burning grass") == "燃烧的草");
+    REQUIRE(i18n::get("terrain.grass_scorched_ground", "scorched ground") == "焦黑地面");
+    REQUIRE(i18n::get("terrain.shrub", "shrub") == "灌木");
+    REQUIRE(i18n::get("terrain.shrub_withered", "withered shrub") == "枯萎灌木");
+    REQUIRE(i18n::get("terrain.shrub_burning", "burning shrub") == "燃烧的灌木");
+    REQUIRE(i18n::get("terrain.vines_hanging", "hanging vines") == "垂藤");
+    REQUIRE(i18n::get("terrain.vines_burning", "burning vines") == "燃烧的藤蔓");
+    REQUIRE(i18n::get("terrain.vegetation_burning_prefix", "burning ") == "燃烧的");
+    REQUIRE(i18n::get("terrain.vegetation_scorched_prefix", "scorched ") == "焦黑的");
+    REQUIRE(i18n::get("terrain.tree_giant_fungi", "giant fungi") == "巨型真菌");
+    REQUIRE(i18n::get("terrain.tree", "tree") == "树");
+    REQUIRE(i18n::get("terrain.petroglyph", "petroglyph") == "岩刻");
+    REQUIRE(i18n::get("terrain.debris_big_pile", "big pile of debris") == "大堆碎石");
+    REQUIRE(i18n::get("terrain.rubble_article_a", "") == "");
+    REQUIRE(i18n::get("terrain.rubble_burning_prefix", "burning ") == "燃烧的");
+    REQUIRE(i18n::get("terrain.rubble", "rubble") == "瓦砾");
+    REQUIRE(i18n::get("terrain.bones_article_a", "") == "");
+    REQUIRE(i18n::get("terrain.bones", "bones") == "骸骨");
+    REQUIRE(i18n::get("terrain.gravestone_prefix", "gravestone (\"") == "墓碑（\"");
+    REQUIRE(i18n::get("terrain.gravestone_suffix", "\")") == "\"）");
+    REQUIRE(i18n::get("terrain.church_bench", "church bench") == "教堂长椅");
+    REQUIRE(i18n::get("terrain.statue", "statue") == "雕像");
+    REQUIRE(
+        i18n::get(
+            "terrain.statue_of_ghoulish_creature",
+            "statue of a ghoulish creature") == "食尸鬼状生物的雕像");
+    REQUIRE(i18n::get("terrain.urn_inscribed", "inscribed urn") == "刻文瓮");
+    REQUIRE(i18n::get("terrain.urn", "urn") == "瓮");
+    REQUIRE(i18n::get("terrain.stalagmite", "stalagmite") == "石笋");
+    REQUIRE(i18n::get("terrain.carpet_article_a", "") == "");
+    REQUIRE(i18n::get("terrain.carpet", "carpet") == "地毯");
+    REQUIRE(i18n::get("terrain.grate", "grate") == "栅格");
+    REQUIRE(i18n::get("terrain.brazier", "brazier") == "火盆");
+    REQUIRE(i18n::get("terrain.fixture_burning_prefix", "burning ") == "燃烧的");
+    REQUIRE(i18n::get("terrain.cabinet", "cabinet") == "柜子");
+    REQUIRE(i18n::get("terrain.bookshelf", "bookshelf") == "书架");
+    REQUIRE(
+        i18n::get(
+            "terrain.alchemist_workbench",
+            "alchemist's workbench") == "炼金术士的工作台");
+    REQUIRE(i18n::get("terrain.cocoon", "cocoon") == "茧");
+    REQUIRE(i18n::get("terrain.tomb_empty_prefix", "empty ") == "空的");
+    REQUIRE(i18n::get("terrain.tomb_open_prefix", "open ") == "打开的");
+    REQUIRE(i18n::get("terrain.tomb_ornate_prefix", "ornate ") == "华丽的");
+    REQUIRE(i18n::get("terrain.tomb_marvelous_prefix", "marvelous ") == "非凡的");
+    REQUIRE(i18n::get("terrain.tomb", "tomb") == "坟墓");
+    REQUIRE(i18n::get("terrain.chest_wooden_prefix", "wooden ") == "木制");
+    REQUIRE(i18n::get("terrain.chest_iron_prefix", "iron ") == "铁制");
+    REQUIRE(i18n::get("terrain.chest_empty_prefix", "empty ") == "空的");
+    REQUIRE(i18n::get("terrain.chest_open_prefix", "open ") == "打开的");
+    REQUIRE(i18n::get("terrain.chest_locked_prefix", "locked ") == "锁住的");
+    REQUIRE(i18n::get("terrain.chest", "chest") == "箱子");
+    REQUIRE(i18n::get("terrain.fountain_dried_up_name", "dried-up") == "干涸的");
+    REQUIRE(i18n::get("terrain.fountain_type_separator", " ") == "");
+    REQUIRE(i18n::get("terrain.fountain", "fountain") == "喷泉");
+    REQUIRE(i18n::get("terrain.fountain_refreshing", "refreshing") == "清爽的");
+    REQUIRE(i18n::get("terrain.fountain_exalting", "exalting") == "振奋的");
+    REQUIRE(i18n::get("terrain.fountain_cursed", "cursed") == "受诅咒的");
+    REQUIRE(i18n::get("terrain.fountain_diseased", "diseased") == "染病的");
+    REQUIRE(i18n::get("terrain.fountain_poisonous", "poisonous") == "有毒的");
+    REQUIRE(i18n::get("terrain.fountain_enraging", "enraging") == "激怒的");
+    REQUIRE(i18n::get("terrain.fountain_paralyzing", "paralyzing") == "麻痹的");
+    REQUIRE(i18n::get("terrain.fountain_blinding", "blinding") == "致盲的");
+    REQUIRE(i18n::get("terrain.fountain_sleep_inducing", "sleep-inducing") == "催眠的");
+    REQUIRE(i18n::get("terrain.downward_staircase", "downward staircase") == "向下的楼梯");
+    REQUIRE(i18n::get("terrain.bridge", "bridge") == "桥");
+    REQUIRE(i18n::get("terrain.water", "water") == "水");
+    REQUIRE(i18n::get("terrain.shallow_mud", "shallow mud") == "浅泥");
+    REQUIRE(i18n::get("terrain.gleaming_pool", "gleaming pool") == "闪光水池");
+    REQUIRE(i18n::get("terrain.chasm", "chasm") == "深渊");
+    REQUIRE(i18n::get("terrain.crystal_gleaming", "gleaming") == "闪光");
+    REQUIRE(i18n::get("terrain.crystal_dead", "dead") == "失活");
+    REQUIRE(i18n::get("terrain.crystal_suffix", " crystal") == "水晶");
+    REQUIRE(i18n::get("terrain.altar", "altar") == "祭坛");
     REQUIRE(i18n::get("terrain.chains_article_a", "") == "");
     REQUIRE(i18n::get("terrain.chains_article_the", "the ") == "");
     REQUIRE(i18n::get("terrain.chains_name", "rusty chains") == "生锈的锁链");
     REQUIRE(i18n::get("terrain.chains_rattle", "The chains rattle.") == "锁链嘎嘎作响。");
     REQUIRE(i18n::get("terrain.hear_chains_rattling", "I hear chains rattling.") == "我听到锁链嘎嘎作响。");
-    REQUIRE(i18n::get("terrain.pick_up_query_prefix", "Pick up ") == "捡起");
     REQUIRE(i18n::get("terrain.topples_prefix", "The ") == "");
     REQUIRE(i18n::get("terrain.topples_suffix", " topples over.") == "倒下了。");
-    REQUIRE(i18n::get("text_format.and_separator", " and ") == "和");
     REQUIRE(i18n::get("terrain.falls_on_me", "It falls on me!") == "它砸到了我！");
     REQUIRE(i18n::get("terrain.falls_on_prefix", "It falls on ") == "它砸到了");
     REQUIRE(i18n::get("terrain.period", ".") == "。");
@@ -562,6 +655,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.descend_option", "(D)escend") == "(D)下楼");
     REQUIRE(i18n::get("terrain.save_and_quit_option", "(S)ave and quit") == "(S)保存并退出");
     REQUIRE(i18n::get("terrain.descend_stairs", "I descend the stairs.") == "我走下楼梯。");
+    REQUIRE(
+        i18n::get(
+            "terrain.fake_stairs_body",
+            "As I descend the stairs and observe my surroundings, to my "
+            "great bewilderment I realize that I have stepped out into "
+            "the very same ground from which I started my downward climb! "
+            "Turning around, the stairs are nowhere to be found.") ==
+        "当我走下楼梯并观察周围时，我惊讶地发现自己竟然踏回了开始下行的同一片地面！转身一看，楼梯已经无处可寻。");
     REQUIRE(i18n::get("terrain.seems_cleansed_prefix", "The ") == "");
     REQUIRE(i18n::get("terrain.seems_cleansed_suffix", " seems cleansed!") == "看起来被净化了！");
     REQUIRE(i18n::get("terrain.touch_prefix", "I touch ") == "我触摸了");
@@ -570,6 +671,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.light_inside_fades", "The light inside fades.") == "里面的光芒消退了。");
     REQUIRE(i18n::get("terrain.path_opened", "I sense that a path has opened somewhere.") == "我感到某处有一条道路打开了。");
     REQUIRE(i18n::get("terrain.altar_destroyed", "The altar is destroyed.") == "祭坛被摧毁了。");
+    REQUIRE(
+        i18n::get(
+            "terrain.diabolic_altar_warning",
+            "A diabolic altar has been raised here, it must be "
+            "destroyed!") == "这里升起了一座邪恶祭坛，必须将它摧毁！");
     REQUIRE(i18n::get("terrain.topples_over", "It topples over.") == "它倒下了。");
     REQUIRE(i18n::get("terrain.no_more_items_of_interest", "There are no more items of interest.") == "没有更多值得关注的物品。");
     REQUIRE(i18n::get("terrain.unload_prompt", "Unload? [u]") == "卸下？[u]");
@@ -591,54 +697,6 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.attempt_push_lid", "I attempt to push the lid.") == "我试着推开盖子。");
     REQUIRE(i18n::get("terrain.seems_futile", "It seems futile.") == "这似乎徒劳无功。");
     REQUIRE(i18n::get("terrain_door.hear_loud_banging", "I hear a loud banging.") == "我听到响亮的撞击声。");
-    REQUIRE(i18n::get("terrain_door.attempt_to_open_it", "Attempt to open it?") == "要尝试打开它吗？");
-    REQUIRE(i18n::get("terrain_door.open_query_prefix", "Open ") == "打开");
-    REQUIRE(i18n::get("terrain_door.query_suffix", "?") == "？");
-    REQUIRE(
-        i18n::get(
-            "terrain_door.currently_being_opened_cannot_close",
-            "The door is currently being opened, "
-            "and cannot be closed.") == "门正在被打开，无法关闭。");
-    REQUIRE(i18n::get("terrain_door.blocked_prefix", "The ") == "那扇");
-    REQUIRE(i18n::get("terrain_door.blocked_suffix", " is blocked.") == "被挡住了。");
-    REQUIRE(i18n::get("terrain_door.break_open", "open") == "打开");
-    REQUIRE(i18n::get("terrain_door.break_to_floor", "to the floor") == "到地上");
-    REQUIRE(
-        i18n::get(
-            "terrain_door.something_blocking_prefix",
-            "Something is blocking the ") == "有东西挡住了");
-    REQUIRE(
-        i18n::get(
-            "terrain_door.shotgun_blown_to_pieces_suffix",
-            " is blown to pieces!") == "被轰成碎片！");
-    REQUIRE(
-        i18n::get(
-            "terrain_door.hear_door_crashing_open",
-            "I hear a door crashing open!") == "我听到一扇门被撞开！");
-    REQUIRE(
-        i18n::get(
-            "terrain_door.fumbles_blindly_fail_open_a",
-            " fumbles blindly, and fails to open a ") == "盲目地摸索着，但没能打开一扇");
-    REQUIRE(
-        i18n::get(
-            "terrain_door.fumble_blindly_close_prefix",
-            "I fumble blindly with a ") == "我盲目地摸索着一扇");
-    REQUIRE(i18n::get("terrain_door.fail_close_suffix", ", and fail to close it.") == "，但没能关上。");
-    REQUIRE(i18n::get("terrain_door.legend_metal", "Door (metal)") == "门（金属）");
-    REQUIRE(i18n::get("terrain_door.legend_warded", "Door (warded)") == "门（受守护）");
-    REQUIRE(i18n::get("terrain_door.legend", "Door") == "门");
-    REQUIRE(i18n::get("terrain_door.name_article_a", "a ") == "一扇");
-    REQUIRE(i18n::get("terrain_door.name_article_an", "an ") == "一扇");
-    REQUIRE(i18n::get("terrain_door.name_article_the", "the ") == "那扇");
-    REQUIRE(i18n::get("terrain_door.name_modifier_burning", "burning ") == "燃烧的");
-    REQUIRE(i18n::get("terrain_door.name_modifier_open", "open ") == "打开的");
-    REQUIRE(i18n::get("terrain_door.name_modifier_stuck", "stuck ") == "卡住的");
-    REQUIRE(i18n::get("terrain_door.name_wooden_door", "wooden door") == "木门");
-    REQUIRE(i18n::get("terrain_door.name_warded_door", "warded door") == "受守护的门");
-    REQUIRE(i18n::get("terrain_door.name_unwarded_door", "unwarded door") == "失去守护的门");
-    REQUIRE(i18n::get("terrain_door.name_metal_door", "metal door") == "金属门");
-    REQUIRE(i18n::get("terrain_door.name_barred_gate", "barred gate") == "铁栅门");
-    REQUIRE(i18n::get("terrain_door.name_short_door", "door") == "门");
     REQUIRE(i18n::get("terrain_door.open_prefix", "I open the ") == "我打开了");
     REQUIRE(i18n::get("terrain_door.close_prefix", "I close the ") == "我关上了");
     REQUIRE(i18n::get("terrain_door.period", ".") == "。");
@@ -847,6 +905,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("option.display_hints.once", "Once") == "一次");
     REQUIRE(i18n::get("option.auto_reload_weapons.descr", "Automatically perform a reload action instead if attempting to fire a ranged weapon with no ammo loaded.") == "如果试图在没有装填弹药的情况下开火，则自动执行装填动作。");
     REQUIRE(i18n::get("terrain_mob.cough", "I cough.") == "我咳嗽起来。");
+    REQUIRE(i18n::get("terrain_mob.article_the_space", "the ") == "");
+    REQUIRE(i18n::get("terrain_mob.article_a", "a") == "");
+    REQUIRE(i18n::get("terrain_mob.article_the", "the") == "");
+    REQUIRE(i18n::get("terrain_mob.smoke_name", "smoke") == "烟雾");
+    REQUIRE(i18n::get("terrain_mob.mist_name", "mist") == "雾霭");
+    REQUIRE(i18n::get("terrain_mob.force_field_name", " force field") == "力场");
+    REQUIRE(i18n::get("terrain_mob.lit_stick_of_dynamite_name", " lit stick of dynamite") == "点燃的炸药棒");
+    REQUIRE(i18n::get("terrain_mob.lit_flare_name", " lit flare") == "点燃的照明棒");
     REQUIRE(i18n::get("knockback.player_knocked_back", "I am knocked back!") == "我被击退了！");
     REQUIRE(
         i18n::get("game_commands.chilling_howl", "I let out a chilling howl.") ==
@@ -903,6 +969,17 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_player.feel_anxious", "I feel anxious.") == "我感到焦虑。");
     REQUIRE(i18n::get("actor_player.insane_message", "My mind can no longer withstand what it has grasped. I am hopelessly lost.") == "我的心智再也无法承受它所领悟的东西。我已经彻底迷失了。");
     REQUIRE(i18n::get("actor_player.insane_title", "Insane!") == "疯狂！");
+    REQUIRE(
+        i18n::get(
+            "actor_start_turn.encumbered",
+            "I am carrying too much weight, walking will be slower.") == "负重过多，走路会更慢。");
+    REQUIRE(i18n::get("actor_start_turn.spot_prefix", "I spot ") == "我发现了");
+    REQUIRE(i18n::get("actor_start_turn.exclaim", "!") == "！");
+    REQUIRE(i18n::get("actor_start_turn.in_view_suffix", " is in my view.") == "在我的视野中。");
+    REQUIRE(
+        i18n::get(
+            "actor_start_turn.sanity_slipping",
+            "I feel my sanity slipping...") == "我感觉理智正在流失...");
     REQUIRE(i18n::get("actor_mon.cultist_phrase_apigami", "Apigami!") == "Apigami!");
     REQUIRE(i18n::get("actor_mon.cultist_phrase_bhuudesco_invisuu", "Bhuudesco invisuu!") == "Bhuudesco invisuu!");
     REQUIRE(i18n::get("actor_mon.cultist_phrase_bhuuesco_marana", "Bhuuesco marana!") == "Bhuuesco marana!");
@@ -1775,7 +1852,37 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.little_to_offer", "I feel like I have very little to offer.") == "我觉得自己几乎无物可献。");
     REQUIRE(i18n::get("spells.nothing_more_to_shed", "There is nothing more to shed.") == "已经没有更多可以舍弃的了。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
+    REQUIRE(i18n::get("item_explosive.hear_explosion", "I hear an explosion!") == "我听到了一声爆炸！");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
+    REQUIRE(i18n::get("terrain_pylon.destroyed_suffix", " is destroyed.") == "被摧毁了。");
+    REQUIRE(i18n::get("terrain_pylon.the", "the ") == "");
+    REQUIRE(i18n::get("terrain_pylon.angled_pylon", "Angled Pylon") == "斜角塔柱");
+    REQUIRE(i18n::get("terrain_pylon.an_angled_pylon", "an Angled Pylon") == "斜角塔柱");
+    REQUIRE(i18n::get("terrain_pylon.arched_pylon", "Arched Pylon") == "拱形塔柱");
+    REQUIRE(i18n::get("terrain_pylon.an_arched_pylon", "an Arched Pylon") == "拱形塔柱");
+    REQUIRE(i18n::get("terrain_pylon.coiled_pylon", "Coiled Pylon") == "螺旋塔柱");
+    REQUIRE(i18n::get("terrain_pylon.a_coiled_pylon", "a Coiled Pylon") == "螺旋塔柱");
+    REQUIRE(i18n::get("terrain_pylon.serrated_pylon", "A Serrated Pylon") == "锯齿塔柱");
+    REQUIRE(i18n::get("terrain_pylon.a_serrated_pylon", "a Serrated Pylon") == "锯齿塔柱");
+    REQUIRE(i18n::get("terrain_pylon.star_crowned_pylon", "Star-crowned Pylon") == "星冠塔柱");
+    REQUIRE(i18n::get("terrain_pylon.a_star_crowned_pylon", "a Star-crowned Pylon") == "星冠塔柱");
+    REQUIRE(i18n::get("terrain_pylon.two_pronged_pylon", "Two-pronged Pylon") == "双叉塔柱");
+    REQUIRE(i18n::get("terrain_pylon.a_two_pronged_pylon", "a Two-pronged Pylon") == "双叉塔柱");
+    REQUIRE(i18n::get("terrain_pylon.article_a", "a") == "");
+    REQUIRE(i18n::get("terrain_pylon.article_an", "an") == "");
+    REQUIRE(i18n::get("terrain_pylon.article_the", "the") == "");
+    REQUIRE(i18n::get("terrain_pylon.cloaking_pylon_name", " Cloaking Pylon") == "隐形塔柱");
+    REQUIRE(i18n::get("terrain_pylon.cloaking_pylon_effect", "turns creatures invisible") == "使生物隐形");
+    REQUIRE(i18n::get("terrain_pylon.slowing_pylon_name", " Slowing Pylon") == "迟缓塔柱");
+    REQUIRE(i18n::get("terrain_pylon.slowing_pylon_effect", "slows creatures") == "使生物迟缓");
+    REQUIRE(i18n::get("terrain_pylon.accelerating_pylon_name", " Accelerating Pylon") == "加速塔柱");
+    REQUIRE(i18n::get("terrain_pylon.accelerating_pylon_effect", "accelerates creatures") == "使生物加速");
+    REQUIRE(i18n::get("terrain_pylon.repelling_pylon_name", " Repelling Pylon") == "排斥塔柱");
+    REQUIRE(i18n::get("terrain_pylon.repelling_pylon_effect", "repels creatures") == "击退生物");
+    REQUIRE(i18n::get("terrain_pylon.teleporting_pylon_name", " Teleporting Pylon") == "传送塔柱");
+    REQUIRE(i18n::get("terrain_pylon.teleporting_pylon_effect", "teleports creatures") == "传送生物");
+    REQUIRE(i18n::get("terrain_pylon.terror_pylon_name", " Terror Pylon") == "恐惧塔柱");
+    REQUIRE(i18n::get("terrain_pylon.terror_pylon_effect", "causes fear") == "造成恐惧");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");
     REQUIRE(i18n::get("drop.player_prefix", "I drop ") == "我丢下了");
     REQUIRE(i18n::get("drop.monster_drops", " drops ") == "丢下了");

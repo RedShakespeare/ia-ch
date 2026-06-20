@@ -271,7 +271,9 @@ static void communicate_mon_bash_success(
     const std::string snd_msg =
         (is_actor_seen || is_door_seen)
         ? ""
-        : "I hear a door crashing open!";
+        : i18n::get(
+              "terrain_door.hear_door_crashing_open",
+              "I hear a door crashing open!");
 
     // NOTE: When it's a monster bashing down the door, we make the
     // sound alert other monsters since this causes nicer AI
@@ -329,7 +331,7 @@ static void communicate_mon_bash_failed(
     actor::Actor& mon)
 {
     Snd snd(
-        "I hear a loud banging.",
+        i18n::get("terrain_door.hear_loud_banging", "I hear a loud banging."),
         sfx,
         IgnoreMsgIfOriginSeen::yes,
         pos,
@@ -358,7 +360,10 @@ static void communicate_player_open(
         snd.run();
     }
 
-    msg_log::add("I open the " + door_name + ".");
+    msg_log::add(
+        i18n::get("terrain_door.open_prefix", "I open the ") +
+        door_name +
+        i18n::get("terrain_door.period", "."));
 }
 
 static void communicate_mon_open(
@@ -373,7 +378,7 @@ static void communicate_mon_open(
     const std::string snd_msg =
         (is_actor_seen || is_door_seen)
         ? ""
-        : "I hear a door open.";
+        : i18n::get("terrain_door.hear_door_open", "I hear a door open.");
 
     Snd snd(
         snd_msg,
@@ -391,10 +396,17 @@ static void communicate_mon_open(
             text_format::first_to_upper(
                 actor::name_the(mon));
 
-        msg_log::add(actor_name_the + " opens a " + door_name + ".");
+        msg_log::add(
+            actor_name_the +
+            i18n::get("terrain_door.opens_a", " opens a ") +
+            door_name +
+            i18n::get("terrain_door.period", "."));
     }
     else if (is_door_seen) {
-        msg_log::add("I see a " + door_name + " opening.");
+        msg_log::add(
+            i18n::get("terrain_door.see_a", "I see a ") +
+            door_name +
+            i18n::get("terrain_door.opening_suffix", " opening."));
 
         mon.make_player_aware_of_me();
     }
@@ -416,7 +428,12 @@ static void communicate_player_open_blind(
 
     snd.run();
 
-    msg_log::add("I fumble with a " + door_name + ", but manage to open it.");
+    msg_log::add(
+        i18n::get("terrain_door.fumble_with_a", "I fumble with a ") +
+        door_name +
+        i18n::get(
+            "terrain_door.manage_open_suffix",
+            ", but manage to open it."));
 }
 
 static void communicate_mon_open_blind(
@@ -431,7 +448,9 @@ static void communicate_mon_open_blind(
     const std::string snd_msg =
         (is_actor_seen || is_door_seen)
         ? ""
-        : "I hear something open a door awkwardly.";
+        : i18n::get(
+            "terrain_door.hear_door_open_awkwardly",
+            "I hear something open a door awkwardly.");
 
     Snd snd(
         snd_msg,
@@ -451,12 +470,19 @@ static void communicate_mon_open_blind(
 
         msg_log::add(
             actor_name_the +
-            "fumbles, but manages to open a " +
+            i18n::get(
+                "terrain_door.fumbles_manages_open_a",
+                "fumbles, but manages to open a ") +
             door_name +
-            ".");
+            i18n::get("terrain_door.period", "."));
     }
     else if (is_door_seen) {
-        msg_log::add("I see a " + door_name + " open awkwardly.");
+        msg_log::add(
+            i18n::get("terrain_door.see_a", "I see a ") +
+            door_name +
+            i18n::get(
+                "terrain_door.open_awkwardly_suffix",
+                " open awkwardly."));
 
         mon.make_player_aware_of_me();
     }
@@ -478,9 +504,13 @@ static void communicate_player_fail_open_blind(
     snd.run();
 
     msg_log::add(
-        "I fumble blindly with a " +
+        i18n::get(
+            "terrain_door.fumble_blindly_open_prefix",
+            "I fumble blindly with a ") +
         door_name +
-        ", and fail to open it.");
+        i18n::get(
+            "terrain_door.fail_open_suffix",
+            ", and fail to open it."));
 }
 
 static void communicate_mon_fail_open_blind(
@@ -489,7 +519,9 @@ static void communicate_mon_fail_open_blind(
     actor::Actor& mon)
 {
     Snd snd(
-        "I hear something attempting to open a door.",
+        i18n::get(
+            "terrain_door.hear_attempt_open_door",
+            "I hear something attempting to open a door."),
         audio::SfxId::END,
         IgnoreMsgIfOriginSeen::yes,
         pos,
@@ -508,9 +540,11 @@ static void communicate_mon_fail_open_blind(
 
         msg_log::add(
             actor_name_the +
-            " fumbles blindly, and fails to open a " +
+            i18n::get(
+                "terrain_door.fumbles_blindly_fail_open_a",
+                " fumbles blindly, and fails to open a ") +
             door_name +
-            ".");
+            i18n::get("terrain_door.period", "."));
     }
 }
 
@@ -532,7 +566,10 @@ static void communicate_player_close(
         snd.run();
     }
 
-    msg_log::add("I close the " + door_name + ".");
+    msg_log::add(
+        i18n::get("terrain_door.close_prefix", "I close the ") +
+        door_name +
+        i18n::get("terrain_door.period", "."));
 }
 
 static void communicate_player_close_blind(
@@ -551,7 +588,12 @@ static void communicate_player_close_blind(
 
     snd.run();
 
-    msg_log::add("I fumble with a " + door_name + ", but manage to close it.");
+    msg_log::add(
+        i18n::get("terrain_door.fumble_with_a", "I fumble with a ") +
+        door_name +
+        i18n::get(
+            "terrain_door.manage_close_suffix",
+            ", but manage to close it."));
 }
 
 static void communicate_player_fail_close_blind(
@@ -570,9 +612,13 @@ static void communicate_player_fail_close_blind(
     snd.run();
 
     msg_log::add(
-        "I fumble blindly with a " +
+        i18n::get(
+            "terrain_door.fumble_blindly_close_prefix",
+            "I fumble blindly with a ") +
         door_name +
-        ", and fail to close it.");
+        i18n::get(
+            "terrain_door.fail_close_suffix",
+            ", and fail to close it."));
 }
 
 static std::vector<std::string> get_warded_door_summon_bucket_for_dlvl_range(
@@ -795,13 +841,15 @@ void Door::hit(
                 if (map::g_seen.at(m_pos)) {
                     const std::string a =
                         m_is_hidden
-                        ? "A "
-                        : "The ";
+                        ? i18n::get("terrain_door.door_crashes_a", "A ")
+                        : i18n::get("terrain_door.the", "The ");
 
                     msg_log::add(
                         a +
                         base_name_short() +
-                        " is blown to pieces!");
+                        i18n::get(
+                            "terrain_door.shotgun_blown_to_pieces_suffix",
+                            " is blown to pieces!"));
                 }
 
                 const P pos = m_pos;
@@ -871,7 +919,9 @@ void Door::bash(const DmgType dmg_type, actor::Actor& actor, const int dmg)
         is_player &&
         is_pos_seen &&
         !m_is_hidden) {
-        msg_log::add("It seems futile.", colors::msg_note());
+        msg_log::add(
+            i18n::get("terrain_door.futile", "It seems futile."),
+            colors::msg_note());
 
         return;
     }
@@ -901,7 +951,10 @@ void Door::player_bash(const DmgType dmg_type, const int dmg)
     const audio::SfxId sfx_door_bang = get_bang_sfx(m_type);
     const audio::SfxId sfx_door_break = get_break_sfx(m_type);
 
-    const std::string break_descr = (m_type == DoorType::gate) ? "to the floor" : "open";
+    const std::string break_descr =
+        (m_type == DoorType::gate)
+        ? i18n::get("terrain_door.break_to_floor", "to the floor")
+        : i18n::get("terrain_door.break_open", "open");
 
     if (destr_chance_pct <= 0) {
         if (map::g_seen.at(m_pos) && !m_is_hidden) {
@@ -950,7 +1003,10 @@ void Door::mon_bash(actor::Actor& mon)
     const audio::SfxId sfx_door_bang = get_bang_sfx(m_type);
     const audio::SfxId sfx_door_break = get_break_sfx(m_type);
 
-    const std::string break_descr = (m_type == DoorType::gate) ? "to the floor" : "open";
+    const std::string break_descr =
+        (m_type == DoorType::gate)
+        ? i18n::get("terrain_door.break_to_floor", "to the floor")
+        : i18n::get("terrain_door.break_open", "open");
 
     if (rnd::percent(destr_chance_pct)) {
         // Destroyed
@@ -988,7 +1044,8 @@ WasDestroyed Door::on_finished_burning()
     ASSERT(m_ward_state != WardState::warded);
 
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("The door burns down.");
+        msg_log::add(
+            i18n::get("terrain_door.door_burns_down", "The door burns down."));
     }
 
     terrain::Terrain* const t = make(Id::rubble_low, m_pos);
@@ -1053,25 +1110,27 @@ std::string Door::base_name() const
     case DoorType::wood:
         switch (m_ward_state) {
         case WardState::not_warded:
-            return "wooden door";
+            return i18n::get("terrain_door.name_wooden_door", "wooden door");
             break;
 
         case WardState::warded:
-            return "warded door";
+            return i18n::get("terrain_door.name_warded_door", "warded door");
             break;
 
         case WardState::unwarded:
-            return "unwarded door";
+            return i18n::get(
+                "terrain_door.name_unwarded_door",
+                "unwarded door");
             break;
         };
         break;
 
     case DoorType::metal:
-        ret = "metal door";
+        ret = i18n::get("terrain_door.name_metal_door", "metal door");
         break;
 
     case DoorType::gate:
-        ret = "barred gate";
+        ret = i18n::get("terrain_door.name_barred_gate", "barred gate");
         break;
     }
 
@@ -1084,15 +1143,15 @@ std::string Door::base_name_short() const
 
     switch (m_type) {
     case DoorType::wood:
-        ret = "door";
+        ret = i18n::get("terrain_door.name_short_door", "door");
         break;
 
     case DoorType::metal:
-        ret = "door";
+        ret = i18n::get("terrain_door.name_short_door", "door");
         break;
 
     case DoorType::gate:
-        ret = "barred gate";
+        ret = i18n::get("terrain_door.name_barred_gate", "barred gate");
         break;
     }
 
@@ -1112,29 +1171,37 @@ std::string Door::name(const Article article) const
     std::string mod;
 
     if (m_burn_state == BurnState::burning) {
-        a = (article == Article::a) ? "a " : "the ";
+        a = (article == Article::a)
+            ? i18n::get("terrain_door.name_article_a", "a ")
+            : i18n::get("terrain_door.name_article_the", "the ");
 
-        mod = "burning ";
+        mod = i18n::get("terrain_door.name_modifier_burning", "burning ");
     }
 
     if (m_is_open) {
         if (a.empty()) {
-            a = (article == Article::a) ? "an " : "the ";
+            a = (article == Article::a)
+                ? i18n::get("terrain_door.name_article_an", "an ")
+                : i18n::get("terrain_door.name_article_the", "the ");
         }
 
-        mod += "open ";
+        mod += i18n::get("terrain_door.name_modifier_open", "open ");
     }
 
     if (m_is_stuck && m_is_known_stuck) {
-        mod = "stuck ";
+        mod = i18n::get("terrain_door.name_modifier_stuck", "stuck ");
     }
 
     if (a.empty()) {
         if (m_ward_state == WardState::unwarded) {
-            a = (article == Article::a) ? "an " : "the ";
+            a = (article == Article::a)
+                ? i18n::get("terrain_door.name_article_an", "an ")
+                : i18n::get("terrain_door.name_article_the", "the ");
         }
         else {
-            a = (article == Article::a) ? "a " : "the ";
+            a = (article == Article::a)
+                ? i18n::get("terrain_door.name_article_a", "a ")
+                : i18n::get("terrain_door.name_article_the", "the ");
         }
     }
 
@@ -1195,15 +1262,17 @@ std::optional<map::MinimapAppearance> Door::minimap_appearance() const
 
     if (type() == terrain::DoorType::metal) {
         appearance.color = colors::light_teal();
-        appearance.legend_text = "Door (metal)";
+        appearance.legend_text =
+            i18n::get("terrain_door.legend_metal", "Door (metal)");
     }
     else if (is_warded()) {
         appearance.color = colors::light_red();
-        appearance.legend_text = "Door (warded)";
+        appearance.legend_text =
+            i18n::get("terrain_door.legend_warded", "Door (warded)");
     }
     else {
         appearance.color = colors::light_white();
-        appearance.legend_text = "Door";
+        appearance.legend_text = i18n::get("terrain_door.legend", "Door");
     }
 
     return appearance;
@@ -1348,12 +1417,18 @@ void Door::bump(actor::Actor& actor_bumping)
         if (m_ward_state == WardState::warded) {
             // Print a message as a rationale as to how a blind
             // player can know that the door is warded.
-            msg_log::add("Something gives me a foreboding feeling.");
+            msg_log::add(
+                i18n::get(
+                    "terrain_door.foreboding_feeling",
+                    "Something gives me a foreboding feeling."));
         }
 
         const std::string name_a = text_format::first_to_lower(name(Article::a));
 
-        msg_log::add("There is " + name_a + " here.");
+        msg_log::add(
+            i18n::get("terrain_door.there_is", "There is ") +
+            name_a +
+            i18n::get("terrain_door.here", " here."));
 
         const bool is_known_stuck_before = m_is_known_stuck;
 
@@ -1405,12 +1480,17 @@ void Door::bump(actor::Actor& actor_bumping)
             // redundant to refer to it as a warded door here
             // (already done previously).
             do_query = true;
-            query_msg = "Attempt to open it?";
+            query_msg = i18n::get(
+                "terrain_door.attempt_to_open_it",
+                "Attempt to open it?");
         }
         else if (m_ward_state == WardState::warded) {
             do_query = true;
             std::string door_name = text_format::first_to_lower(name(Article::a));
-            query_msg = "Open " + door_name + "?";
+            query_msg =
+                i18n::get("terrain_door.open_query_prefix", "Open ") +
+                door_name +
+                i18n::get("terrain_door.query_suffix", "?");
         }
 
         if (do_query) {
@@ -1454,7 +1534,8 @@ void Door::reveal(const PrintRevealMsg print_reveal_msg)
         (print_reveal_msg == PrintRevealMsg::yes);
 
     if (is_hidden_before && allow_print) {
-        msg_log::add("A secret is revealed.");
+        msg_log::add(
+            i18n::get("terrain_door.secret_revealed", "A secret is revealed."));
     }
 
     // If the player is adjacent, also reveal stuck status to avoid an
@@ -1494,7 +1575,12 @@ void Door::reveal_stuck_status(const PrintRevealMsg print_reveal_msg)
         if (allow_print) {
             const std::string door_name = base_name_short();
 
-            msg_log::add("The " + door_name + " seems to be stuck.");
+            msg_log::add(
+                i18n::get("terrain_door.the", "The ") +
+                door_name +
+                i18n::get(
+                    "terrain_door.seems_stuck_suffix",
+                    " seems to be stuck."));
         }
     }
 }
@@ -1534,9 +1620,16 @@ bool Door::actor_try_jam(actor::Actor& actor_trying)
     if (is_player) {
         m_is_known_stuck = true;
 
-        std::string a = tryer_is_blind ? "a " : "the ";
+        std::string a =
+            tryer_is_blind
+                ? i18n::get("terrain_door.a", "a ")
+                : i18n::get("terrain_door.the_lowercase", "the ");
 
-        msg_log::add("I jam " + a + base_name_short() + " with a spike.");
+        msg_log::add(
+            i18n::get("terrain_door.jam_prefix", "I jam ") +
+            a +
+            base_name_short() +
+            i18n::get("terrain_door.with_a_spike", " with a spike."));
     }
 
     game_time::tick();
@@ -1552,10 +1645,16 @@ void Door::actor_try_close(actor::Actor& actor_trying)
     if (!m_is_open) {
         if (is_player) {
             if (is_door_seen) {
-                msg_log::add("I see nothing there to close.");
+                msg_log::add(
+                    i18n::get(
+                        "terrain_door.see_nothing_to_close",
+                        "I see nothing there to close."));
             }
             else {
-                msg_log::add("I find nothing there to close.");
+                msg_log::add(
+                    i18n::get(
+                        "terrain_door.find_nothing_to_close",
+                        "I find nothing there to close."));
             }
         }
 
@@ -1586,8 +1685,10 @@ void Door::actor_try_close(actor::Actor& actor_trying)
 
             if (is_player) {
                 msg_log::add(
-                    "The door is currently being opened, "
-                    "and cannot be closed.");
+                    i18n::get(
+                        "terrain_door.currently_being_opened_cannot_close",
+                        "The door is currently being opened, "
+                        "and cannot be closed."));
             }
 
             return;
@@ -1617,15 +1718,17 @@ void Door::actor_try_close(actor::Actor& actor_trying)
             if (is_door_seen) {
                 // Can see
                 msg_log::add(
-                    "The " +
+                    i18n::get("terrain_door.blocked_prefix", "The ") +
                     base_name_short() +
-                    " is blocked.");
+                    i18n::get("terrain_door.blocked_suffix", " is blocked."));
             }
             else {
                 msg_log::add(
-                    "Something is blocking the " +
+                    i18n::get(
+                        "terrain_door.something_blocking_prefix",
+                        "Something is blocking the ") +
                     base_name_short() +
-                    ".");
+                    i18n::get("terrain_door.period", "."));
             }
         }
 
@@ -1701,7 +1804,12 @@ void Door::actor_try_open(actor::Actor& actor_trying)
         TRACE << "Is stuck" << "\n";
 
         if (is_player) {
-            msg_log::add("The " + base_name_short() + " seems to be stuck.");
+            msg_log::add(
+                i18n::get("terrain_door.the", "The ") +
+                base_name_short() +
+                i18n::get(
+                    "terrain_door.seems_stuck_suffix",
+                    " seems to be stuck."));
         }
     }
     else {
@@ -1815,7 +1923,10 @@ DidOpen Door::open(actor::Actor* const actor_opening)
     if (map::g_seen.at(m_pos)) {
         const std::string name = base_name();
 
-        msg_log::add("The " + name + " opens.");
+        msg_log::add(
+            i18n::get("terrain_door.the", "The ") +
+            name +
+            i18n::get("terrain_door.opens_suffix", " opens."));
     }
 
     if (actor_opening) {
@@ -1837,7 +1948,10 @@ DidClose Door::close(actor::Actor* const actor_closing)
     if (map::g_seen.at(m_pos)) {
         const std::string name = base_name();
 
-        msg_log::add("The " + name + " closes.");
+        msg_log::add(
+            i18n::get("terrain_door.the", "The ") +
+            name +
+            i18n::get("terrain_door.closes_suffix", " closes."));
     }
 
     return DidClose::yes;
@@ -1899,7 +2013,10 @@ void Door::try_trigger_ward_trap()
     const std::vector<std::string> summon_bucket = get_warded_door_summon_bucket();
 
     if (!summon_bucket.empty()) {
-        msg_log::add("Something approaches...");
+        msg_log::add(
+            i18n::get(
+                "terrain_door.something_approaches",
+                "Something approaches..."));
 
         const std::string id_to_spawn = rnd::element(summon_bucket);
 

@@ -26,6 +26,7 @@
 #include "game_time.hpp"
 #include "global.hpp"
 #include "hints.hpp"
+#include "i18n.hpp"
 #include "insanity.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
@@ -73,7 +74,9 @@ static void handle_warn_player_encumbered()
     msg_log::more_prompt();
 
     msg_log::add(
-        "I am carrying too much weight, walking will be slower.",
+        i18n::get(
+            "actor_start_turn.encumbered",
+            "I am carrying too much weight, walking will be slower."),
         colors::msg_note(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -223,7 +226,9 @@ static void on_player_spot_sneaking_mon(actor::Actor& mon)
     const std::string mon_name = actor::name_a(mon);
 
     msg_log::add(
-        "I spot " + mon_name + "!",
+        i18n::get("actor_start_turn.spot_prefix", "I spot ") +
+            mon_name +
+            i18n::get("actor_start_turn.exclaim", "!"),
         colors::msg_note(),
         MsgInterruptPlayer::yes,
         MorePromptOnMsg::yes);
@@ -283,7 +288,8 @@ static void warn_player_about_mon(const actor::Actor& actor)
             : MorePromptOnMsg::yes;
 
         msg_log::add(
-            name_a + " is in my view.",
+            name_a +
+            i18n::get("actor_start_turn.in_view_suffix", " is in my view."),
             colors::text(),
             MsgInterruptPlayer::yes,
             add_more_prompt);
@@ -392,7 +398,9 @@ static void on_player_shock_over_limit()
 
     if (actor::player_state::g_nr_turns_until_insanity > 0) {
         msg_log::add(
-            "I feel my sanity slipping...",
+            i18n::get(
+                "actor_start_turn.sanity_slipping",
+                "I feel my sanity slipping..."),
             colors::msg_note(),
             MsgInterruptPlayer::yes,
             MorePromptOnMsg::yes);

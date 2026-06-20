@@ -188,10 +188,10 @@ std::string Smoke::name(const Article article) const
     std::string name;
 
     if (article == Article::the) {
-        name = "the ";
+        name = i18n::get("terrain_mob.article_the_space", "the ");
     }
 
-    return name + "smoke";
+    return name + i18n::get("terrain_mob.smoke_name", "smoke");
 }
 
 Color Smoke::color() const
@@ -257,10 +257,10 @@ std::string Mist::name(const Article article) const
     std::string name;
 
     if (article == Article::the) {
-        name = "the ";
+        name = i18n::get("terrain_mob.article_the_space", "the ");
     }
 
-    return name + "mist";
+    return name + i18n::get("terrain_mob.mist_name", "mist");
 }
 
 Color Mist::color() const
@@ -289,10 +289,10 @@ std::string ForceField::name(const Article article) const
 {
     std::string name =
         (article == Article::a)
-        ? "a"
-        : "the";
+        ? i18n::get("terrain_mob.article_a", "a")
+        : i18n::get("terrain_mob.article_the", "the");
 
-    name += " force field";
+    name += i18n::get("terrain_mob.force_field_name", " force field");
 
     return name;
 }
@@ -327,10 +327,13 @@ std::string LitDynamite::name(const Article article) const
 {
     std::string name =
         (article == Article::a)
-        ? "a"
-        : "the";
+        ? i18n::get("terrain_mob.article_a", "a")
+        : i18n::get("terrain_mob.article_the", "the");
 
-    return name + " lit stick of dynamite";
+    return name +
+           i18n::get(
+               "terrain_mob.lit_stick_of_dynamite_name",
+               " lit stick of dynamite");
 }
 
 Color LitDynamite::color() const
@@ -383,10 +386,10 @@ std::string LitFlare::name(const Article article) const
 {
     std::string name =
         (article == Article::a)
-        ? "a"
-        : "the";
+        ? i18n::get("terrain_mob.article_a", "a")
+        : i18n::get("terrain_mob.article_the", "the");
 
-    name += " lit flare";
+    name += i18n::get("terrain_mob.lit_flare_name", " lit flare");
 
     return name;
 }

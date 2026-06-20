@@ -34,6 +34,7 @@
 #include "game_time.hpp"
 #include "gfx.hpp"
 #include "hints.hpp"
+#include "i18n.hpp"
 #include "insanity.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
@@ -118,7 +119,7 @@ static void scorch_actor(actor::Actor& actor)
 {
     if (actor::is_player(&actor)) {
         msg_log::add(
-            "I am scorched by flames.",
+            i18n::get("terrain.scorched_by_flames_player", "I am scorched by flames."),
             colors::msg_bad());
     }
     else if (actor::can_player_see_actor(actor)) {
@@ -128,7 +129,9 @@ static void scorch_actor(actor::Actor& actor)
 
         msg_log::add(
             name_the +
-                " is scorched by flames.",
+                i18n::get(
+                    "terrain.scorched_by_flames_suffix",
+                    " is scorched by flames."),
             colors::msg_good());
     }
 
@@ -153,7 +156,7 @@ static void spread_burning(const terrain::Terrain& terrain)
 
         if (map::g_player->m_pos == p) {
             msg_log::add(
-                "Fire has spread here!",
+                i18n::get("terrain.fire_spread_here", "Fire has spread here!"),
                 colors::msg_note(),
                 MsgInterruptPlayer::yes,
                 MorePromptOnMsg::yes);
@@ -231,10 +234,15 @@ static void topple_object(
         ? AlertsMon::yes
         : AlertsMon::no;
 
-    std::string snd_msg = "I hear a crash.";
+    std::string snd_msg = i18n::get(
+        "terrain.hear_crash",
+        "I hear a crash.");
 
     if (map::g_seen.at(terrain.pos())) {
-        msg_log::add("The " + name + " topples over.");
+        msg_log::add(
+            i18n::get("terrain.topples_prefix", "The ") +
+            name +
+            i18n::get("terrain.topples_suffix", " topples over."));
 
         snd_msg = "";
     }
@@ -262,7 +270,9 @@ static void topple_object(
         actor::is_alive(*actor_behind) &&
         !actor_behind->m_properties.has(prop::Id::ethereal)) {
         if (actor::is_player(actor_behind)) {
-            msg_log::add("It falls on me!");
+            msg_log::add(i18n::get(
+                "terrain.falls_on_me",
+                "It falls on me!"));
         }
         else {
             // Monster is hit
@@ -271,7 +281,10 @@ static void topple_object(
                     *actor_behind);
 
             if (is_player_seeing_actor) {
-                msg_log::add("It falls on " + actor::name_a(*actor_behind) + ".");
+                msg_log::add(
+                    i18n::get("terrain.falls_on_prefix", "It falls on ") +
+                    actor::name_a(*actor_behind) +
+                    i18n::get("terrain.period", "."));
             }
         }
 
@@ -365,7 +378,9 @@ AllowAction Terrain::pre_bump(actor::Actor& actor_bumping)
         !props.has(prop::Id::tiny_flying) &&
         can_move(actor_bumping) &&
         map::g_seen.at(m_pos)) {
-        const std::string msg = "Step into the flames? " + common_text::g_yes_or_no_hint;
+        const std::string msg =
+            i18n::get("terrain.step_into_flames_query", "Step into the flames? ") +
+            common_text::g_yes_or_no_hint;
 
         msg_log::add(
             msg,
@@ -434,7 +449,9 @@ void Terrain::try_start_burning(const Verbose verbose)
     if (is_not_burned || (has_burnt && rnd::one_in(3))) {
         if (map::g_seen.at(m_pos) &&
             (verbose == Verbose::yes)) {
-            std::string str = name(Article::the) + " catches fire.";
+            std::string str =
+                name(Article::the) +
+                i18n::get("terrain.catches_fire_suffix", " catches fire.");
 
             str[0] = (char)std::toupper(str[0]);
 
@@ -693,31 +710,34 @@ gfx::TileId Floor::tile() const
 
 std::string Floor::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "" : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.floor_article_a", "")
+            : i18n::get("terrain.article_the_space", "the ");
 
     if (m_burn_state == BurnState::burning) {
-        str += "flames";
+        str += i18n::get("terrain.floor_flames", "flames");
     }
     else {
         if (m_burn_state == BurnState::has_burned) {
-            str += "scorched ";
+            str += i18n::get("terrain.floor_scorched_prefix", "scorched ");
         }
 
         switch (m_type) {
         case FloorType::common:
-            str += "stone floor";
+            str += i18n::get("terrain.floor_stone_floor", "stone floor");
             break;
 
         case FloorType::cave:
-            str += "cavern floor";
+            str += i18n::get("terrain.floor_cavern_floor", "cavern floor");
             break;
 
         case FloorType::stone_path:
             if (article == Article::a) {
-                str.insert(0, "a ");
+                str.insert(0, i18n::get("terrain.article_a_space", "a "));
             }
 
-            str += "stone path";
+            str += i18n::get("terrain.floor_stone_path", "stone path");
             break;
         }
     }
@@ -807,36 +827,38 @@ std::string Wall::name(const Article article) const
     case WallType::common_alt:
     case WallType::leng_monestary:
     case WallType::egypt:
-        article_str = "a";
-        name_str = "stone wall";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.wall_stone", "stone wall");
         break;
 
     case WallType::mi_go:
-        article_str = "an";
-        name_str = "alien wall";
+        article_str = i18n::get("terrain.article_an_space", "an ");
+        name_str = i18n::get("terrain.wall_alien", "alien wall");
         break;
 
     case WallType::cave:
-        article_str = "a";
-        name_str = "cavern wall";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.wall_cavern", "cavern wall");
         break;
 
     case WallType::cliff:
-        article_str = "a";
-        name_str = "cliff";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.wall_cliff", "cliff");
         break;
     }
 
     if (m_is_mossy) {
-        article_str = "a";
-        name_str = "moss-grown " + name_str;
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str =
+            i18n::get("terrain.wall_moss_grown_prefix", "moss-grown ") +
+            name_str;
     }
 
     if (article == Article::the) {
-        article_str = "the";
+        article_str = i18n::get("terrain.article_the_space", "the ");
     }
 
-    return article_str + " " + name_str;
+    return article_str + name_str;
 }
 
 Color Wall::color_default() const
@@ -997,23 +1019,23 @@ std::string Pillar::name(const Article article) const
     std::string name_str;
 
     if (m_is_broken) {
-        article_str = "a";
-        name_str = "broken pillar";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.pillar_broken", "broken pillar");
     }
     else if (m_is_inscribed) {
-        article_str = "an";
-        name_str = "inscribed pillar";
+        article_str = i18n::get("terrain.article_an_space", "an ");
+        name_str = i18n::get("terrain.pillar_inscribed", "inscribed pillar");
     }
     else {
-        article_str = "a";
-        name_str = "pillar";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.pillar", "pillar");
     }
 
     if (article == Article::the) {
-        article_str = "the";
+        article_str = i18n::get("terrain.article_the_space", "the ");
     }
 
-    return article_str + " " + name_str;
+    return article_str + name_str;
 }
 
 Color Pillar::color_default() const
@@ -1035,7 +1057,8 @@ std::optional<map::MinimapAppearance> Pillar::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Inscribed Object";
+    appearance.legend_text =
+        i18n::get("terrain.legend_inscribed_object", "Inscribed Object");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -1120,11 +1143,15 @@ void Petroglyph::on_new_turn()
 
 std::string Petroglyph::name(const Article article) const
 {
-    const std::string article_str = (article == Article::a) ? "a" : "the";
+    const std::string article_str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    const std::string name_str = "petroglyph";
+    const std::string name_str =
+        i18n::get("terrain.petroglyph", "petroglyph");
 
-    return article_str + " " + name_str;
+    return article_str + name_str;
 }
 
 Color Petroglyph::color_default() const
@@ -1146,7 +1173,8 @@ std::optional<map::MinimapAppearance> Petroglyph::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Inscribed Object";
+    appearance.legend_text =
+        i18n::get("terrain.legend_inscribed_object", "Inscribed Object");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -1182,9 +1210,12 @@ void RubbleHigh::hit(
 
 std::string RubbleHigh::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "big pile of debris";
+    return a + i18n::get("terrain.debris_big_pile", "big pile of debris");
 }
 
 Color RubbleHigh::color_default() const
@@ -1223,15 +1254,19 @@ std::string RubbleLow::name(const Article article) const
 {
     std::string str;
 
+    if (article == Article::a) {
+        str += i18n::get("terrain.rubble_article_a", "");
+    }
+
     if (article == Article::the) {
-        str += "the ";
+        str += i18n::get("terrain.article_the_space", "the ");
     }
 
     if (m_burn_state == BurnState::burning) {
-        str += "burning ";
+        str += i18n::get("terrain.rubble_burning_prefix", "burning ");
     }
 
-    return str + "rubble";
+    return str + i18n::get("terrain.rubble", "rubble");
 }
 
 Color RubbleLow::color_default() const
@@ -1262,11 +1297,15 @@ std::string Bones::name(const Article article) const
 {
     std::string str;
 
-    if (article == Article::the) {
-        str += "the ";
+    if (article == Article::a) {
+        str += i18n::get("terrain.bones_article_a", "");
     }
 
-    return str + "bones";
+    if (article == Article::the) {
+        str += i18n::get("terrain.article_the_space", "the ");
+    }
+
+    return str + i18n::get("terrain.bones", "bones");
 }
 
 Color Bones::color_default() const
@@ -1301,9 +1340,14 @@ void GraveStone::bump(actor::Actor& actor_bumping)
 
 std::string GraveStone::name(const Article article) const
 {
-    const std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "gravestone (\"" + m_inscr + "\")";
+    return a + i18n::get("terrain.gravestone_prefix", "gravestone (\"") +
+           m_inscr +
+           i18n::get("terrain.gravestone_suffix", "\")");
 }
 
 Color GraveStone::color_default() const
@@ -1331,7 +1375,9 @@ void ChurchBench::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The church bench is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.church_bench_destroyed",
+                "The church bench is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -1349,9 +1395,12 @@ void ChurchBench::hit(
 
 std::string ChurchBench::name(const Article article) const
 {
-    const std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "church bench";
+    return a + i18n::get("terrain.church_bench", "church bench");
 }
 
 Color ChurchBench::color_default() const
@@ -1387,7 +1436,11 @@ void Statue::topple(
     const Dir direction,
     actor::Actor* const actor_toppling)
 {
-    topple_object(*this, "statue", direction, actor_toppling);
+    topple_object(
+        *this,
+        i18n::get("terrain.statue", "statue"),
+        direction,
+        actor_toppling);
 }
 
 bool Statue::allow_player_melee_attack(
@@ -1423,7 +1476,9 @@ void Statue::hit(
 
         if ((dmg_type == DmgType::kicking) &&
             actor->m_properties.has(prop::Id::weakened)) {
-            msg_log::add("It wiggles a bit.");
+            msg_log::add(i18n::get(
+                "terrain.wiggles",
+                "It wiggles a bit."));
 
             return;
         }
@@ -1468,15 +1523,20 @@ void Statue::on_new_turn()
 
 std::string Statue::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     switch (m_type) {
     case StatueType::common:
-        str += "statue";
+        str += i18n::get("terrain.statue", "statue");
         break;
 
     case StatueType::ghoul:
-        str += "statue of a ghoulish creature";
+        str += i18n::get(
+            "terrain.statue_of_ghoulish_creature",
+            "statue of a ghoulish creature");
         break;
     }
 
@@ -1551,7 +1611,11 @@ void Urn::topple(
     const Dir direction,
     actor::Actor* const actor_toppling)
 {
-    topple_object(*this, "urn", direction, actor_toppling);
+    topple_object(
+        *this,
+        i18n::get("terrain.urn", "urn"),
+        direction,
+        actor_toppling);
 }
 
 bool Urn::allow_player_melee_attack(
@@ -1587,7 +1651,9 @@ void Urn::hit(
 
         if ((dmg_type == DmgType::kicking) &&
             actor->m_properties.has(prop::Id::weakened)) {
-            msg_log::add("It wiggles a bit.");
+            msg_log::add(i18n::get(
+                "terrain.wiggles",
+                "It wiggles a bit."));
 
             return;
         }
@@ -1624,19 +1690,19 @@ std::string Urn::name(const Article article) const
     std::string name_str;
 
     if (m_is_inscribed) {
-        article_str = "an";
-        name_str = "inscribed urn";
+        article_str = i18n::get("terrain.article_an_space", "an ");
+        name_str = i18n::get("terrain.urn_inscribed", "inscribed urn");
     }
     else {
-        article_str = "an";
-        name_str = "urn";
+        article_str = i18n::get("terrain.article_an_space", "an ");
+        name_str = i18n::get("terrain.urn", "urn");
     }
 
     if (article == Article::the) {
-        article_str = "the";
+        article_str = i18n::get("terrain.article_the_space", "the ");
     }
 
-    return article_str + " " + name_str;
+    return article_str + name_str;
 }
 
 gfx::TileId Urn::tile() const
@@ -1668,7 +1734,8 @@ std::optional<map::MinimapAppearance> Urn::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Inscribed Object";
+    appearance.legend_text =
+        i18n::get("terrain.legend_inscribed_object", "Inscribed Object");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -1704,9 +1771,12 @@ void Stalagmite::hit(
 
 std::string Stalagmite::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "stalagmite";
+    return a + i18n::get("terrain.stalagmite", "stalagmite");
 }
 
 Color Stalagmite::color_default() const
@@ -1748,9 +1818,12 @@ void Stairs::bump(actor::Actor& actor_bumping)
     int choice = 0;
 
     popup::Popup(popup::AddToMsgHistory::no)
-        .set_title("A staircase leading downwards")
+        .set_title(i18n::get(
+            "terrain.stairs_down_title",
+            "A staircase leading downwards"))
         .setup_menu_mode(
-            {"(D)escend", "(S)ave and quit"},
+            {i18n::get("terrain.descend_option", "(D)escend"),
+             i18n::get("terrain.save_and_quit_option", "(S)ave and quit")},
             {'d', 's'},
             popup::MenuModeShowCancelHint::yes,
             &choice)
@@ -1769,7 +1842,9 @@ void Stairs::bump(actor::Actor& actor_bumping)
 
         msg_log::clear();
 
-        msg_log::add("I descend the stairs.");
+        msg_log::add(i18n::get(
+            "terrain.descend_stairs",
+            "I descend the stairs."));
 
         // Always auto-save the game when descending
         //
@@ -1803,11 +1878,12 @@ void Stairs::bump(actor::Actor& actor_bumping)
 
 void Stairs::player_use_fake_stairs()
 {
-    const auto* const msg =
+    const std::string msg = i18n::get(
+        "terrain.fake_stairs_body",
         "As I descend the stairs and observe my surroundings, to my "
         "great bewilderment I realize that I have stepped out into "
         "the very same ground from which I started my downward climb! "
-        "Turning around, the stairs are nowhere to be found.";
+        "Turning around, the stairs are nowhere to be found.");
 
     popup::Popup(popup::AddToMsgHistory::yes)
         .set_msg(msg)
@@ -1826,9 +1902,12 @@ void Stairs::player_use_fake_stairs()
 
 std::string Stairs::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    std::string a =
+        (article == Article::a)
+        ? i18n::get("terrain.article_a_space", "a ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "downward staircase";
+    return a + i18n::get("terrain.downward_staircase", "downward staircase");
 }
 
 Color Stairs::color_default() const
@@ -1841,7 +1920,7 @@ std::optional<map::MinimapAppearance> Stairs::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Stairs";
+    appearance.legend_text = i18n::get("terrain.legend_stairs", "Stairs");
     appearance.symbol = map::MinimapSymbol::rectangle_filled;
 
     return appearance;
@@ -1884,9 +1963,12 @@ char Bridge::character() const
 
 std::string Bridge::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    std::string a =
+        (article == Article::a)
+        ? i18n::get("terrain.article_a_space", "a ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "bridge";
+    return a + i18n::get("terrain.bridge", "bridge");
 }
 
 Color Bridge::color_default() const
@@ -1935,28 +2017,24 @@ void Liquid::bump(actor::Actor& actor_bumping)
             !map::g_player->m_inv.has_item_in_slot(
                 SlotId::head,
                 item::Id::torture_collar)) {
-            std::string type_str;
-            std::string verb_str;
+            std::string msg;
 
             switch (m_type) {
             case LiquidType::water:
             case LiquidType::magic_water:
-                type_str = "water";
-                verb_str = "wade";
+                msg = i18n::get(
+                    "terrain.wade_through_water",
+                    "I wade slowly through the knee high water.");
                 break;
 
             case LiquidType::mud:
-                type_str = "mud";
-                verb_str = "trudge";
+                msg = i18n::get(
+                    "terrain.trudge_through_mud",
+                    "I trudge slowly through the knee high mud.");
                 break;
             }
 
-            msg_log::add(
-                "I " +
-                verb_str +
-                " slowly through the knee high " +
-                type_str +
-                ".");
+            msg_log::add(msg);
         }
 
         // The creature might also get stuck.
@@ -1975,7 +2053,7 @@ void Liquid::bump(actor::Actor& actor_bumping)
         const std::string msg =
             actor::is_player(&actor_bumping)
             ? ""
-            : "I hear a splash.";
+            : i18n::get("terrain.hear_splash", "I hear a splash.");
 
         const auto alerts_mon =
             actor::is_player(&actor_bumping)
@@ -2027,7 +2105,10 @@ void Liquid::run_magic_pool_effects_on_player()
                 ItemNameType::plain,
                 ItemNameInfo::none);
 
-        msg_log::add("The " + name + " seems cleansed!");
+        msg_log::add(
+            i18n::get("terrain.seems_cleansed_prefix", "The ") +
+            name +
+            i18n::get("terrain.seems_cleansed_suffix", " seems cleansed!"));
 
         item->current_curse().on_curse_end();
 
@@ -2040,20 +2121,20 @@ std::string Liquid::name(const Article article) const
     std::string str;
 
     if (article == Article::the) {
-        str += "the ";
+        str += i18n::get("terrain.article_the_space", "the ");
     }
 
     switch (m_type) {
     case LiquidType::water:
-        str += "water";
+        str += i18n::get("terrain.water", "water");
         break;
 
     case LiquidType::mud:
-        str += "shallow mud";
+        str += i18n::get("terrain.shallow_mud", "shallow mud");
         break;
 
     case LiquidType::magic_water:
-        str += "gleaming pool";
+        str += i18n::get("terrain.gleaming_pool", "gleaming pool");
         break;
     }
 
@@ -2110,9 +2191,12 @@ void Chasm::hit(
 
 std::string Chasm::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    std::string a =
+        (article == Article::a)
+        ? i18n::get("terrain.article_a_space", "a ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "chasm";
+    return a + i18n::get("terrain.chasm", "chasm");
 }
 
 Color Chasm::color_default() const
@@ -2140,13 +2224,17 @@ void CrystalKey::hit(
 
 std::string CrystalKey::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a" : "the";
+    std::string str =
+        (article == Article::a)
+        ? i18n::get("terrain.article_a_space", "a ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    str += " ";
+    str +=
+        m_is_active
+        ? i18n::get("terrain.crystal_gleaming", "gleaming")
+        : i18n::get("terrain.crystal_dead", "dead");
 
-    str += m_is_active ? "gleaming" : "dead";
-
-    str += " crystal";
+    str += i18n::get("terrain.crystal_suffix", " crystal");
 
     return str;
 }
@@ -2165,7 +2253,8 @@ std::optional<map::MinimapAppearance> CrystalKey::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Gleaming Crystal";
+    appearance.legend_text =
+        i18n::get("terrain.legend_gleaming_crystal", "Gleaming Crystal");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -2192,24 +2281,33 @@ void CrystalKey::bump(actor::Actor& actor_bumping)
     const std::string terrain_name = text_format::first_to_lower(name(Article::the));
 
     if (is_seen) {
-        msg_log::add("I touch " + terrain_name + ".");
+        msg_log::add(
+            i18n::get("terrain.touch_prefix", "I touch ") +
+            terrain_name +
+            i18n::get("terrain.period", "."));
     }
     else {
         msg_log::clear();
 
-        msg_log::add("I touch some crystal object.");
+        msg_log::add(i18n::get(
+            "terrain.touch_crystal_object",
+            "I touch some crystal object."));
     }
 
     if (!m_is_active) {
         if (is_seen) {
-            msg_log::add("Nothing happens.");
+            msg_log::add(i18n::get(
+                "terrain.nothing_happens",
+                "Nothing happens."));
         }
 
         return;
     }
 
     if (is_seen) {
-        msg_log::add("The light inside fades.");
+        msg_log::add(i18n::get(
+            "terrain.light_inside_fades",
+            "The light inside fades."));
     }
 
     player_deactivate();
@@ -2223,7 +2321,9 @@ void CrystalKey::player_deactivate()
 {
     audio::play(audio::SfxId::crystal_key_disable);
 
-    msg_log::add("I sense that a path has opened somewhere.");
+    msg_log::add(i18n::get(
+        "terrain.path_opened",
+        "I sense that a path has opened somewhere."));
 
     game::incr_player_xp(g_xp_on_deactivate_crystal_key, Verbose::yes);
 
@@ -2275,7 +2375,9 @@ void Altar::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The altar is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.altar_destroyed",
+                "The altar is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -2326,9 +2428,10 @@ void Altar::bump(actor::Actor& actor_bumping)
     if (player_bon::is_bg(Bg::exorcist) &&
         map::g_seen.at(m_pos)) {
         // Exorcist player is bumping a seen altar
-        msg_log::add(
+        msg_log::add(i18n::get(
+            "terrain.diabolic_altar_warning",
             "A diabolic altar has been raised here, it must be "
-            "destroyed!");
+            "destroyed!"));
 
         return;
     }
@@ -2339,9 +2442,12 @@ void Altar::bump(actor::Actor& actor_bumping)
 
 std::string Altar::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "an " : "the ";
+    std::string str =
+        (article == Article::a)
+        ? i18n::get("terrain.article_an_space", "an ")
+        : i18n::get("terrain.article_the_space", "the ");
 
-    return str + "altar";
+    return str + i18n::get("terrain.altar", "altar");
 }
 
 Color Altar::color_default() const
@@ -2354,7 +2460,7 @@ std::optional<map::MinimapAppearance> Altar::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Altar";
+    appearance.legend_text = i18n::get("terrain.legend_altar", "Altar");
     appearance.symbol = map::MinimapSymbol::rectangle_filled;
 
     return appearance;
@@ -2399,9 +2505,12 @@ WasDestroyed Carpet::on_finished_burning()
 
 std::string Carpet::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "" : "the ";
+    const std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.carpet_article_a", "")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return str + "carpet";
+    return str + i18n::get("terrain.carpet", "carpet");
 }
 
 Color Carpet::color_default() const
@@ -2455,26 +2564,30 @@ std::string Grass::name(const Article article) const
 {
     std::string str;
 
+    if (article == Article::a) {
+        str += i18n::get("terrain.vegetation_article_a", "");
+    }
+
     if (article == Article::the) {
-        str += "the ";
+        str += i18n::get("terrain.article_the_space", "the ");
     }
 
     switch (m_burn_state) {
     case BurnState::not_burned:
         switch (m_type) {
         case GrassType::common:
-            return str + "grass";
+            return str + i18n::get("terrain.grass", "grass");
 
         case GrassType::withered:
-            return str + "withered grass";
+            return str + i18n::get("terrain.grass_withered", "withered grass");
         }
         break;
 
     case BurnState::burning:
-        return str + "burning grass";
+        return str + i18n::get("terrain.grass_burning", "burning grass");
 
     case BurnState::has_burned:
-        return str + "scorched ground";
+        return str + i18n::get("terrain.grass_scorched_ground", "scorched ground");
     }
 
     ASSERT("Failed to set name" && false);
@@ -2543,21 +2656,24 @@ WasDestroyed Bush::on_finished_burning()
 
 std::string Bush::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     switch (m_burn_state) {
     case BurnState::not_burned:
         switch (m_type) {
         case GrassType::common:
-            return str + "shrub";
+            return str + i18n::get("terrain.shrub", "shrub");
 
         case GrassType::withered:
-            return str + "withered shrub";
+            return str + i18n::get("terrain.shrub_withered", "withered shrub");
         }
         break;
 
     case BurnState::burning:
-        return str + "burning shrub";
+        return str + i18n::get("terrain.shrub_burning", "burning shrub");
 
     case BurnState::has_burned:
         // Should not happen
@@ -2630,14 +2746,17 @@ WasDestroyed Vines::on_finished_burning()
 
 std::string Vines::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "" : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.vegetation_article_a", "")
+            : i18n::get("terrain.article_the_space", "the ");
 
     switch (m_burn_state) {
     case BurnState::not_burned:
-        return str + "hanging vines";
+        return str + i18n::get("terrain.vines_hanging", "hanging vines");
 
     case BurnState::burning:
-        return str + "burning vines";
+        return str + i18n::get("terrain.vines_burning", "burning vines");
 
     case BurnState::has_burned:
         // Should not happen
@@ -2661,9 +2780,12 @@ Chains::Chains(const P& p, const TerrainData* const data) :
 
 std::string Chains::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "" : "the ";
+    std::string a =
+        (article == Article::a)
+        ? i18n::get("terrain.chains_article_a", "")
+        : i18n::get("terrain.chains_article_the", "the ");
 
-    return a + "rusty chains";
+    return a + i18n::get("terrain.chains_name", "rusty chains");
 }
 
 Color Chains::color_default() const
@@ -2679,10 +2801,12 @@ void Chains::bump(actor::Actor& actor_bumping)
         std::string msg;
 
         if (map::g_seen.at(m_pos)) {
-            msg = "The chains rattle.";
+            msg = i18n::get("terrain.chains_rattle", "The chains rattle.");
         }
         else {
-            msg = "I hear chains rattling.";
+            msg = i18n::get(
+                "terrain.hear_chains_rattling",
+                "I hear chains rattling.");
         }
 
         const auto alerts_mon =
@@ -2756,9 +2880,12 @@ void Grate::hit(
 
 std::string Grate::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "grate";
+    return a + i18n::get("terrain.grate", "grate");
 }
 
 Color Grate::color_default() const
@@ -2848,26 +2975,29 @@ gfx::TileId Tree::tile() const
 
 std::string Tree::name(const Article article) const
 {
-    std::string result = (article == Article::a) ? "a " : "the ";
+    std::string result =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     switch (m_burn_state) {
     case BurnState::not_burned:
         break;
 
     case BurnState::burning:
-        result += "burning ";
+        result += i18n::get("terrain.vegetation_burning_prefix", "burning ");
         break;
 
     case BurnState::has_burned:
-        result += "scorched ";
+        result += i18n::get("terrain.vegetation_scorched_prefix", "scorched ");
         break;
     }
 
     if (is_fungi()) {
-        result += "giant fungi";
+        result += i18n::get("terrain.tree_giant_fungi", "giant fungi");
     }
     else {
-        result += "tree";
+        result += i18n::get("terrain.tree", "tree");
     }
 
     return result;
@@ -2888,9 +3018,12 @@ bool Tree::is_fungi() const
 // -----------------------------------------------------------------------------
 std::string Brazier::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "brazier";
+    return a + i18n::get("terrain.brazier", "brazier");
 }
 
 bool Brazier::allow_player_melee_attack(
@@ -2930,7 +3063,9 @@ void Brazier::hit(
 
         if ((dmg_type == DmgType::kicking) &&
             actor->m_properties.has(prop::Id::weakened)) {
-            msg_log::add("It wiggles a bit.");
+            msg_log::add(i18n::get(
+                "terrain.wiggles",
+                "It wiggles a bit."));
 
             return;
         }
@@ -2961,7 +3096,9 @@ void Brazier::topple(const Dir direction, actor::Actor& actor)
     std::string snd_msg = "I hear a crash.";
 
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("It topples over.");
+            msg_log::add(i18n::get(
+                "terrain.topples_over",
+                "It topples over."));
 
         snd_msg = "";
     }
@@ -3052,7 +3189,7 @@ std::optional<map::MinimapAppearance> Brazier::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = colors::dark_yellow();
-    appearance.legend_text = "Brazier";
+    appearance.legend_text = i18n::get("terrain.legend_brazier", "Brazier");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -3162,7 +3299,9 @@ void ItemContainer::open(
         on_item_found(item, terrain_pos);
     }
 
-    msg_log::add("There are no more items of interest.");
+        msg_log::add(i18n::get(
+            "terrain.no_more_items_of_interest",
+            "There are no more items of interest."));
 
     m_items.clear();
 }
@@ -3206,7 +3345,9 @@ void ItemContainer::on_item_found(
         !data.ranged.has_infinite_ammo;
 
     if (is_unloadable_wpn) {
-        msg_log::add("Unload? [u]", colors::light_white());
+        msg_log::add(
+            i18n::get("terrain.unload_prompt", "Unload? [u]"),
+            colors::light_white());
     }
 
     auto answer = BinaryAnswer::no;
@@ -3283,7 +3424,9 @@ void ItemContainer::destroy_single_fragile()
             (d.id == item::Id::molotov)) {
             delete item;
             m_items.erase(it);
-            msg_log::add("I hear a muffled shatter.");
+        msg_log::add(i18n::get(
+            "terrain.muffled_shatter",
+            "I hear a muffled shatter."));
             break;
         }
     }
@@ -3370,7 +3513,9 @@ void Tomb::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The tomb is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.tomb_destroyed",
+                "The tomb is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -3388,12 +3533,12 @@ std::string Tomb::name(const Article article) const
 
     const std::string empty_str =
         is_empty
-        ? "empty "
+        ? i18n::get("terrain.tomb_empty_prefix", "empty ")
         : "";
 
     const std::string open_str =
         (m_is_open && !is_empty)
-        ? "open "
+        ? i18n::get("terrain.tomb_open_prefix", "open ")
         : "";
 
     std::string a;
@@ -3401,11 +3546,11 @@ std::string Tomb::name(const Article article) const
     if (article == Article::a) {
         a =
             (m_is_open || (m_appearance == TombAppearance::ornate))
-            ? "an "
-            : "a ";
+            ? i18n::get("terrain.article_an_space", "an ")
+            : i18n::get("terrain.article_a_space", "a ");
     }
     else {
-        a = "the ";
+        a = i18n::get("terrain.article_the_space", "the ");
     }
 
     std::string appear_str;
@@ -3417,16 +3562,18 @@ std::string Tomb::name(const Article article) const
         } break;
 
         case TombAppearance::ornate:
-            appear_str = "ornate ";
+            appear_str = i18n::get("terrain.tomb_ornate_prefix", "ornate ");
             break;
 
         case TombAppearance::marvelous:
-            appear_str = "marvelous ";
+            appear_str =
+                i18n::get("terrain.tomb_marvelous_prefix", "marvelous ");
             break;
         }
     }
 
-    return a + empty_str + open_str + appear_str + "tomb";
+    return a + empty_str + open_str + appear_str +
+           i18n::get("terrain.tomb", "tomb");
 }
 
 gfx::TileId Tomb::tile() const
@@ -3466,7 +3613,7 @@ std::optional<map::MinimapAppearance> Tomb::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = colors::gray();
-    appearance.legend_text = "Tomb";
+    appearance.legend_text = i18n::get("terrain.legend_tomb", "Tomb");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -3482,13 +3629,17 @@ void Tomb::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (m_item_container.is_empty() && m_is_open) {
-        msg_log::add("The tomb is empty.");
+        msg_log::add(i18n::get(
+            "terrain.tomb_empty",
+            "The tomb is empty."));
 
         return;
     }
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a stone box here.");
+        msg_log::add(i18n::get(
+            "terrain.stone_box_here",
+            "There is a stone box here."));
 
         return;
     }
@@ -3504,10 +3655,14 @@ void Tomb::bump(actor::Actor& actor_bumping)
         return;
     }
 
-    msg_log::add("I attempt to push the lid.");
+    msg_log::add(i18n::get(
+        "terrain.attempt_push_lid",
+        "I attempt to push the lid."));
 
     if (actor_bumping.m_properties.has(prop::Id::weakened)) {
-        msg_log::add("It seems futile.");
+        msg_log::add(i18n::get(
+            "terrain.seems_futile",
+            "It seems futile."));
 
         game_time::tick();
 
@@ -3541,13 +3696,19 @@ void Tomb::bump(actor::Actor& actor_bumping)
     bool is_success = false;
 
     if (roll_tot < (m_push_lid_one_in_n - 9)) {
-        msg_log::add("It does not yield at all.");
+            msg_log::add(i18n::get(
+                "terrain.does_not_yield",
+                "It does not yield at all."));
     }
     else if (roll_tot < (m_push_lid_one_in_n - 2)) {
-        msg_log::add("It resists.");
+            msg_log::add(i18n::get(
+                "terrain.resists",
+                "It resists."));
     }
     else if (roll_tot == (m_push_lid_one_in_n - 2)) {
-        msg_log::add("It moves a little!");
+            msg_log::add(i18n::get(
+                "terrain.moves_little",
+                "It moves a little!"));
         --m_push_lid_one_in_n;
     }
     else {
@@ -3569,10 +3730,14 @@ void Tomb::bump(actor::Actor& actor_bumping)
 
 void Tomb::player_loot()
 {
-    msg_log::add("I peer inside the tomb.");
+    msg_log::add(i18n::get(
+        "terrain.peer_inside_tomb",
+        "I peer inside the tomb."));
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of value inside.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_value_inside",
+            "There is nothing of value inside."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -3591,7 +3756,9 @@ DidOpen Tomb::open(actor::Actor* const actor_opening)
         m_is_open = true;
 
         Snd snd(
-            "I hear heavy stone sliding.",
+        i18n::get(
+            "terrain.heavy_stone_sliding",
+            "I hear heavy stone sliding."),
             audio::SfxId::tomb_open,
             IgnoreMsgIfOriginSeen::yes,
             m_pos,
@@ -3602,10 +3769,14 @@ DidOpen Tomb::open(actor::Actor* const actor_opening)
         snd.run();
 
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The lid comes off.");
+    msg_log::add(i18n::get(
+        "terrain.lid_comes_off",
+        "The lid comes off."));
 
             if (!m_item_container.is_empty()) {
-                msg_log::add("There is something inside.");
+        msg_log::add(i18n::get(
+            "terrain.something_inside",
+            "There is something inside."));
             }
         }
 
@@ -3835,15 +4006,21 @@ std::string Tomb::get_mon_appear_msg(const std::string& mon_id) const
     // ...) if such an inheritance system is implemented.
 
     if (d.is_ghost) {
-        return "The air suddenly feels colder.";
+        return i18n::get(
+            "terrain.tomb_air_colder",
+            "The air suddenly feels colder.");
     }
 
     if (d.natural_props[(size_t)prop::Id::ooze]) {
-        return "Something repulsive creeps up from the tomb!";
+        return i18n::get(
+            "terrain.tomb_repulsive_creeps_up",
+            "Something repulsive creeps up from the tomb!");
     }
 
     // Standard message.
-    return "Something rises from the tomb!";
+    return i18n::get(
+        "terrain.tomb_something_rises",
+        "Something rises from the tomb!");
 }
 
 void Tomb::trigger_trap_fumes() const
@@ -3852,14 +4029,16 @@ void Tomb::trigger_trap_fumes() const
 
     if (is_seen) {
         msg_log::add(
-            "Fumes burst out from the tomb!",
+            i18n::get(
+                "terrain.tomb_fumes_burst",
+                "Fumes burst out from the tomb!"),
             colors::white(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::yes);
     }
 
     Snd snd(
-        "I hear a burst of gas.",
+        i18n::get("terrain.gas_burst", "I hear a burst of gas."),
         audio::SfxId::gas,
         IgnoreMsgIfOriginSeen::yes,
         m_pos,
@@ -3955,25 +4134,33 @@ void Chest::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a chest here.");
+        msg_log::add(i18n::get(
+            "terrain.chest_here",
+            "There is a chest here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The chest is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.chest_on_fire",
+            "The chest is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_open) {
-        msg_log::add("The chest is empty.");
+        msg_log::add(i18n::get(
+            "terrain.chest_empty",
+            "The chest is empty."));
 
         return;
     }
 
     if (m_is_locked) {
-        msg_log::add("The chest is locked.");
+        msg_log::add(i18n::get(
+            "terrain.chest_locked",
+            "The chest is locked."));
 
         return;
     }
@@ -3994,10 +4181,14 @@ void Chest::bump(actor::Actor& actor_bumping)
 
 void Chest::player_loot()
 {
-    msg_log::add("I search the chest.");
+    msg_log::add(i18n::get(
+        "terrain.search_chest",
+        "I search the chest."));
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of value inside.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_value_inside",
+            "There is nothing of value inside."));
     }
     else {
         // Not empty
@@ -4018,7 +4209,9 @@ DidOpen Chest::open(actor::Actor* const actor_opening)
         m_is_open = true;
 
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The chest opens.");
+    msg_log::add(i18n::get(
+        "terrain.chest_opens",
+        "The chest opens."));
         }
 
         return DidOpen::yes;
@@ -4074,7 +4267,9 @@ void Chest::on_player_kick()
     }
 
     if (m_is_open) {
-        msg_log::add("It is already open.");
+        msg_log::add(i18n::get(
+            "terrain.already_open",
+            "It is already open."));
 
         return;
     }
@@ -4091,7 +4286,9 @@ void Chest::on_player_kick()
     // Is seen and closed
 
     if (!m_is_locked) {
-        msg_log::add("The lid slams open, then falls shut.");
+        msg_log::add(i18n::get(
+            "terrain.lid_slams_open_falls_shut",
+            "The lid slams open, then falls shut."));
 
         snd.run();
 
@@ -4102,7 +4299,9 @@ void Chest::on_player_kick()
 
     if (map::g_player->m_properties.has(prop::Id::weakened) ||
         (m_material == ChestMaterial::iron)) {
-        msg_log::add("It seems futile.");
+        msg_log::add(i18n::get(
+            "terrain.seems_futile",
+            "It seems futile."));
 
         snd.run();
 
@@ -4127,13 +4326,17 @@ void Chest::on_player_kick()
     }
 
     if (rnd::one_in(open_one_in_n)) {
-        msg_log::add("The lock breaks and the lid flies open!");
+            msg_log::add(i18n::get(
+                "terrain.lock_breaks_lid_flies_open",
+                "The lock breaks and the lid flies open!"));
 
         m_is_locked = false;
         m_is_open = true;
     }
     else {
-        msg_log::add("The lock resists.");
+            msg_log::add(i18n::get(
+                "terrain.lock_resists",
+                "The lock resists."));
     }
 
     snd.run();
@@ -4148,35 +4351,36 @@ std::string Chest::name(const Article article) const
     std::string a;
 
     if (m_material == ChestMaterial::wood) {
-        material_str = "wooden ";
-        a = "a ";
+        material_str = i18n::get("terrain.chest_wooden_prefix", "wooden ");
+        a = i18n::get("terrain.article_a_space", "a ");
     }
     else {
-        material_str = "iron ";
-        a = "an ";
+        material_str = i18n::get("terrain.chest_iron_prefix", "iron ");
+        a = i18n::get("terrain.article_an_space", "an ");
     }
 
     if (m_is_open) {
         if (m_item_container.is_empty()) {
-            empty_str = "empty ";
+            empty_str = i18n::get("terrain.chest_empty_prefix", "empty ");
         }
         else {
-            open_str = "open ";
+            open_str = i18n::get("terrain.chest_open_prefix", "open ");
         }
 
-        a = "an ";
+        a = i18n::get("terrain.article_an_space", "an ");
     }
     else if (m_is_locked) {
-        locked_str = "locked ";
+        locked_str = i18n::get("terrain.chest_locked_prefix", "locked ");
 
-        a = "a ";
+        a = i18n::get("terrain.article_a_space", "a ");
     }
 
     if (article == Article::the) {
-        a = "the ";
+        a = i18n::get("terrain.article_the_space", "the ");
     }
 
-    return a + locked_str + empty_str + open_str + material_str + "chest";
+    return a + locked_str + empty_str + open_str + material_str +
+           i18n::get("terrain.chest", "chest");
 }
 
 gfx::TileId Chest::tile() const
@@ -4239,7 +4443,9 @@ void Fountain::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The fountain is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.fountain_destroyed",
+                "The fountain is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -4282,7 +4488,7 @@ std::optional<map::MinimapAppearance> Fountain::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Fountain";
+    appearance.legend_text = i18n::get("terrain.legend_fountain", "Fountain");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -4292,7 +4498,8 @@ std::string Fountain::name(const Article article) const
 {
     std::string type_str;
 
-    std::string indefinite_article = "a";
+    std::string indefinite_article =
+        i18n::get("terrain.article_a_space", "a ");
 
     if (m_has_drinks_left) {
         if (m_is_tried) {
@@ -4302,19 +4509,21 @@ std::string Fountain::name(const Article article) const
         }
     }
     else {
-        type_str = "dried-up";
+        type_str = i18n::get("terrain.fountain_dried_up_name", "dried-up");
     }
 
     const std::string a =
         (article == Article::a)
         ? indefinite_article
-        : "the";
+        : i18n::get("terrain.article_the_space", "the ");
 
-    if (!type_str.empty()) {
-        type_str = " " + type_str;
-    }
+    const std::string type_separator =
+        type_str.empty()
+            ? ""
+            : i18n::get("terrain.fountain_type_separator", " ");
 
-    return a + type_str + " fountain";
+    return a + type_str + type_separator +
+           i18n::get("terrain.fountain", "fountain");
 }
 
 void Fountain::bump(actor::Actor& actor_bumping)
@@ -4330,12 +4539,16 @@ void Fountain::bump(actor::Actor& actor_bumping)
 
     if (!m_has_drinks_left) {
         if (is_seen) {
-            msg_log::add("The fountain is dried-up.");
+        msg_log::add(i18n::get(
+            "terrain.fountain_dried_up",
+            "The fountain is dried-up."));
         }
         else {
             msg_log::add(
-                "There is a fountain here, "
-                "but it's dried-up.");
+                i18n::get(
+                    "terrain.fountain_here_dried_up",
+                    "There is a fountain here, "
+                    "but it's dried-up."));
         }
 
         return;
@@ -4355,14 +4568,22 @@ void Fountain::bump(actor::Actor& actor_bumping)
                 text_format::first_to_lower(
                     name(Article::the));
 
-            msg = "Drink from " + name_the + "?";
+            msg =
+                i18n::get("terrain.drink_from_prefix", "Drink from ") +
+                name_the +
+                i18n::get("terrain.query_suffix", "?");
         }
         else {
             const std::string name_a =
                 text_format::first_to_lower(
                     name(Article::a));
 
-            msg = "There is " + name_a + " here. Drink from it?";
+            msg =
+                i18n::get("terrain.there_is_prefix", "There is ") +
+                name_a +
+                i18n::get(
+                    "terrain.here_drink_from_it_suffix",
+                    " here. Drink from it?");
         }
 
         msg += " " + common_text::g_yes_or_no_hint;
@@ -4390,13 +4611,17 @@ void Fountain::bump(actor::Actor& actor_bumping)
     }
 
     msg_log::clear();
-    msg_log::add("I drink from the fountain...");
+    msg_log::add(i18n::get(
+        "terrain.drink_from_fountain",
+        "I drink from the fountain..."));
 
     audio::play(audio::SfxId::fountain_drink);
 
     switch (m_fountain_effect) {
     case FountainEffect::refreshing: {
-        msg_log::add("It's very refreshing.");
+        msg_log::add(i18n::get(
+            "terrain.very_refreshing",
+            "It's very refreshing."));
 
         actor::restore_hp(
             *map::g_player,
@@ -4414,7 +4639,9 @@ void Fountain::bump(actor::Actor& actor_bumping)
     } break;
 
     case FountainEffect::xp: {
-        msg_log::add("I feel more powerful!");
+        msg_log::add(i18n::get(
+            "terrain.feel_more_powerful",
+            "I feel more powerful!"));
         game::incr_player_xp(g_xp_on_drink_from_xp_fountain);
     } break;
 
@@ -4462,7 +4689,9 @@ void Fountain::bump(actor::Actor& actor_bumping)
     if (rnd::one_in(dry_one_in_n)) {
         m_has_drinks_left = false;
 
-        msg_log::add("The fountain dries up.");
+        msg_log::add(i18n::get(
+            "terrain.fountain_dries_up",
+            "The fountain dries up."));
     }
 
     map::memorize_terrain_at(m_pos);
@@ -4503,8 +4732,9 @@ void Fountain::bless()
                 name(Article::the));
 
         msg_log::add(
-            "The water in " + name_the +
-            " seems clearer.");
+            i18n::get("terrain.water_in_prefix", "The water in ") +
+            name_the +
+            i18n::get("terrain.seems_clearer_suffix", " seems clearer."));
     }
 }
 
@@ -4535,9 +4765,9 @@ void Fountain::curse()
                 name(Article::the));
 
         msg_log::add(
-            "The water in " +
+            i18n::get("terrain.water_in_prefix", "The water in ") +
             name_the +
-            " seems murkier.");
+            i18n::get("terrain.seems_murkier_suffix", " seems murkier."));
     }
 }
 
@@ -4545,39 +4775,41 @@ std::string Fountain::type_name() const
 {
     switch (m_fountain_effect) {
     case FountainEffect::refreshing:
-        return "refreshing";
+        return i18n::get("terrain.fountain_refreshing", "refreshing");
         break;
 
     case FountainEffect::xp:
-        return "exalting";
+        return i18n::get("terrain.fountain_exalting", "exalting");
         break;
 
     case FountainEffect::curse:
-        return "cursed";
+        return i18n::get("terrain.fountain_cursed", "cursed");
         break;
 
     case FountainEffect::disease:
-        return "diseased";
+        return i18n::get("terrain.fountain_diseased", "diseased");
         break;
 
     case FountainEffect::poison:
-        return "poisonous";
+        return i18n::get("terrain.fountain_poisonous", "poisonous");
         break;
 
     case FountainEffect::frenzy:
-        return "enraging";
+        return i18n::get("terrain.fountain_enraging", "enraging");
         break;
 
     case FountainEffect::paralyze:
-        return "paralyzing";
+        return i18n::get("terrain.fountain_paralyzing", "paralyzing");
         break;
 
     case FountainEffect::blind:
-        return "blinding";
+        return i18n::get("terrain.fountain_blinding", "blinding");
         break;
 
     case FountainEffect::faint:
-        return "sleep-inducing";
+        return i18n::get(
+            "terrain.fountain_sleep_inducing",
+            "sleep-inducing");
         break;
 
     case FountainEffect::START_OF_BAD_EFFECTS:
@@ -4594,39 +4826,39 @@ std::string Fountain::type_indefinite_article() const
 {
     switch (m_fountain_effect) {
     case FountainEffect::refreshing:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::xp:
-        return "an";
+        return i18n::get("terrain.article_an_space", "an ");
         break;
 
     case FountainEffect::curse:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::disease:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::poison:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::frenzy:
-        return "an";
+        return i18n::get("terrain.article_an_space", "an ");
         break;
 
     case FountainEffect::paralyze:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::blind:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::faint:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::START_OF_BAD_EFFECTS:
@@ -4683,7 +4915,9 @@ void Cabinet::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The cabinet is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.cabinet_destroyed",
+                "The cabinet is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -4703,7 +4937,9 @@ void Cabinet::hit(
 WasDestroyed Cabinet::on_finished_burning()
 {
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("The cabinet burns down.");
+            msg_log::add(i18n::get(
+                "terrain.cabinet_burns_down",
+                "The cabinet burns down."));
     }
 
     auto* const rubble = make(Id::rubble_low, m_pos);
@@ -4726,19 +4962,25 @@ void Cabinet::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a cabinet here.");
+        msg_log::add(i18n::get(
+            "terrain.cabinet_here",
+            "There is a cabinet here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The cabinet is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.cabinet_on_fire",
+            "The cabinet is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_open) {
-        msg_log::add("The cabinet is empty.");
+        msg_log::add(i18n::get(
+            "terrain.cabinet_empty",
+            "The cabinet is empty."));
 
         return;
     }
@@ -4768,10 +5010,14 @@ void Cabinet::bump(actor::Actor& actor_bumping)
 
 void Cabinet::player_loot()
 {
-    msg_log::add("I search the cabinet.");
+    msg_log::add(i18n::get(
+        "terrain.search_cabinet",
+        "I search the cabinet."));
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of value inside.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_value_inside",
+            "There is nothing of value inside."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -4800,7 +5046,9 @@ DidOpen Cabinet::open(actor::Actor* const actor_opening)
         m_is_open = true;
 
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The cabinet opens.");
+    msg_log::add(i18n::get(
+        "terrain.cabinet_opens",
+        "The cabinet opens."));
         }
 
         return DidOpen::yes;
@@ -4809,13 +5057,16 @@ DidOpen Cabinet::open(actor::Actor* const actor_opening)
 
 std::string Cabinet::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     if (m_burn_state == BurnState::burning) {
-        str += "burning ";
+        str += i18n::get("terrain.fixture_burning_prefix", "burning ");
     }
 
-    return str + "cabinet";
+    return str + i18n::get("terrain.cabinet", "cabinet");
 }
 
 gfx::TileId Cabinet::tile() const
@@ -4877,7 +5128,9 @@ void Bookshelf::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The bookshelf is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.bookshelf_destroyed",
+                "The bookshelf is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -4898,7 +5151,9 @@ void Bookshelf::hit(
 WasDestroyed Bookshelf::on_finished_burning()
 {
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("The bookshelf burns down.");
+            msg_log::add(i18n::get(
+                "terrain.bookshelf_burns_down",
+                "The bookshelf burns down."));
     }
 
     auto* const rubble = make(Id::rubble_low, m_pos);
@@ -4922,19 +5177,25 @@ void Bookshelf::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a bookshelf here.");
+        msg_log::add(i18n::get(
+            "terrain.bookshelf_here",
+            "There is a bookshelf here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The bookshelf is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.bookshelf_on_fire",
+            "The bookshelf is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_looted) {
-        msg_log::add("The bookshelf is empty.");
+        msg_log::add(i18n::get(
+            "terrain.bookshelf_empty",
+            "The bookshelf is empty."));
 
         return;
     }
@@ -4962,7 +5223,7 @@ void Bookshelf::bump(actor::Actor& actor_bumping)
 void Bookshelf::player_loot()
 {
     msg_log::add(
-        "I search the bookshelf.",
+        i18n::get("terrain.search_bookshelf", "I search the bookshelf."),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -4970,7 +5231,9 @@ void Bookshelf::player_loot()
     m_is_looted = true;
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of interest.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_interest",
+            "There is nothing of interest."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -4979,13 +5242,16 @@ void Bookshelf::player_loot()
 
 std::string Bookshelf::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     if (m_burn_state == BurnState::burning) {
-        str += "burning ";
+        str += i18n::get("terrain.fixture_burning_prefix", "burning ");
     }
 
-    return str + "bookshelf";
+    return str + i18n::get("terrain.bookshelf", "bookshelf");
 }
 
 gfx::TileId Bookshelf::tile() const
@@ -5045,7 +5311,9 @@ void AlchemistBench::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The alchemist's workbench is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.alchemist_workbench_destroyed",
+                "The alchemist's workbench is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -5066,7 +5334,9 @@ void AlchemistBench::hit(
 WasDestroyed AlchemistBench::on_finished_burning()
 {
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("The alchemist's workbench burns down.");
+            msg_log::add(i18n::get(
+                "terrain.alchemist_workbench_burns_down",
+                "The alchemist's workbench burns down."));
     }
 
     auto* const rubble = make(Id::rubble_low, m_pos);
@@ -5090,19 +5360,25 @@ void AlchemistBench::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is an alchemist's workbench here.");
+        msg_log::add(i18n::get(
+            "terrain.alchemist_workbench_here",
+            "There is an alchemist's workbench here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The alchemist's workbench is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.alchemist_workbench_on_fire",
+            "The alchemist's workbench is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_looted) {
-        msg_log::add("The alchemist's workbench is empty.");
+        msg_log::add(i18n::get(
+            "terrain.alchemist_workbench_empty",
+            "The alchemist's workbench is empty."));
 
         return;
     }
@@ -5130,7 +5406,9 @@ void AlchemistBench::bump(actor::Actor& actor_bumping)
 void AlchemistBench::player_loot()
 {
     msg_log::add(
-        "I search the alchemist's workbench.",
+        i18n::get(
+            "terrain.search_alchemist_workbench",
+            "I search the alchemist's workbench."),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -5138,7 +5416,9 @@ void AlchemistBench::player_loot()
     m_is_looted = true;
 
     if (m_item_container.is_empty()) {
-        msg_log::add("There is nothing of interest.");
+        msg_log::add(i18n::get(
+            "terrain.nothing_of_interest",
+            "There is nothing of interest."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -5147,19 +5427,25 @@ void AlchemistBench::player_loot()
 
 std::string AlchemistBench::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "an " : "the ";
+    std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_an_space", "an ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     std::string mod;
 
     if (m_burn_state == BurnState::burning) {
         if (article == Article::a) {
-            a = "a ";
+            a = i18n::get("terrain.article_a_space", "a ");
         }
 
-        mod = "burning ";
+        mod = i18n::get("terrain.fixture_burning_prefix", "burning ");
     }
 
-    return a + mod + "alchemist's workbench";
+    return a + mod +
+           i18n::get(
+               "terrain.alchemist_workbench",
+               "alchemist's workbench");
 }
 
 gfx::TileId AlchemistBench::tile() const
@@ -5223,7 +5509,9 @@ void Cocoon::hit(
     case DmgType::explosion:
     case DmgType::pure:
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The cocoon is destroyed.");
+            msg_log::add(i18n::get(
+                "terrain.cocoon_destroyed",
+                "The cocoon is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -5243,7 +5531,9 @@ void Cocoon::hit(
 WasDestroyed Cocoon::on_finished_burning()
 {
     if (map::g_seen.at(m_pos)) {
-        msg_log::add("The cocoon burns down.");
+            msg_log::add(i18n::get(
+                "terrain.cocoon_burns_down",
+                "The cocoon burns down."));
     }
 
     auto* const rubble = make(Id::rubble_low, m_pos);
@@ -5267,19 +5557,25 @@ void Cocoon::bump(actor::Actor& actor_bumping)
     map::update_vision();
 
     if (!map::g_seen.at(m_pos)) {
-        msg_log::add("There is a cocoon here.");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_here",
+            "There is a cocoon here."));
 
         return;
     }
 
     if (m_burn_state == BurnState::burning) {
-        msg_log::add("The cocoon is on fire.");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_on_fire",
+            "The cocoon is on fire."));
 
         return;
     }
 
     if (m_item_container.is_empty() && m_is_open) {
-        msg_log::add("The cocoon is empty.");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_empty",
+            "The cocoon is empty."));
 
         return;
     }
@@ -5318,7 +5614,9 @@ void Cocoon::trigger_trap()
             return;
         }
 
-        msg_log::add("There is a half-dissolved human body inside!");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_half_dissolved_body",
+            "There is a half-dissolved human body inside!"));
 
         map::g_player->incr_shock(12.0, ShockSrc::misc);
 
@@ -5348,7 +5646,9 @@ void Cocoon::trigger_trap()
             TRACE << "Spawn candidates found, attempting to place"
                   << "\n";
 
-            msg_log::add("There are spiders inside!");
+        msg_log::add(i18n::get(
+            "terrain.cocoon_spiders_inside",
+            "There are spiders inside!"));
 
             const auto nr_spiders = (size_t)rnd::range(2, 5);
 
@@ -5366,10 +5666,12 @@ void Cocoon::trigger_trap()
 
 void Cocoon::player_loot()
 {
-    msg_log::add("I search the Cocoon.");
+    msg_log::add(i18n::get(
+        "terrain.search_cocoon",
+        "I search the Cocoon."));
 
     if (m_item_container.is_empty()) {
-        msg_log::add("It is empty.");
+        msg_log::add(i18n::get("terrain.it_is_empty", "It is empty."));
     }
     else {
         m_item_container.open(m_pos, map::g_player);
@@ -5388,7 +5690,9 @@ DidOpen Cocoon::open(actor::Actor* const actor_opening)
         m_is_open = true;
 
         if (map::g_seen.at(m_pos)) {
-            msg_log::add("The cocoon opens.");
+    msg_log::add(i18n::get(
+        "terrain.cocoon_opens",
+        "The cocoon opens."));
         }
 
         trigger_trap();
@@ -5399,13 +5703,16 @@ DidOpen Cocoon::open(actor::Actor* const actor_opening)
 
 std::string Cocoon::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     if (m_burn_state == BurnState::burning) {
-        str += "burning ";
+        str += i18n::get("terrain.fixture_burning_prefix", "burning ");
     }
 
-    return str + "cocoon";
+    return str + i18n::get("terrain.cocoon", "cocoon");
 }
 
 gfx::TileId Cocoon::tile() const

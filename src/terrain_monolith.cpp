@@ -76,9 +76,12 @@ void Monolith::hit(
 
 std::string Monolith::name(const Article article) const
 {
-    std::string str = article == Article::a ? "a " : "the ";
+    std::string str =
+        article == Article::a
+            ? i18n::get("terrain_monolith.article_a", "a ")
+            : i18n::get("terrain_monolith.article_the", "the ");
 
-    return str + "carved monolith";
+    return str + i18n::get("terrain_monolith.carved_monolith", "carved monolith");
 }
 
 Color Monolith::color_default() const
