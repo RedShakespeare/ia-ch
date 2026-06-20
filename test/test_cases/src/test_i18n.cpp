@@ -261,6 +261,10 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "terrain.chasm_edge",
             "I realize I am standing on the edge of a chasm.") == "我意识到自己正站在深渊边缘。");
+    REQUIRE(i18n::get("terrain.scorched_by_flames_player", "I am scorched by flames.") == "我被火焰灼伤了。");
+    REQUIRE(i18n::get("terrain.scorched_by_flames_suffix", " is scorched by flames.") == "被火焰灼伤了。");
+    REQUIRE(i18n::get("terrain.fire_spread_here", "Fire has spread here!") == "火势蔓延到了这里！");
+    REQUIRE(i18n::get("terrain.step_into_flames_query", "Step into the flames? ") == "要踏入火焰吗？");
     REQUIRE(i18n::get("terrain.topples_prefix", "The ") == "");
     REQUIRE(i18n::get("terrain.topples_suffix", " topples over.") == "倒下了。");
     REQUIRE(i18n::get("text_format.and_separator", " and ") == "和");

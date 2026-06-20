@@ -119,7 +119,7 @@ static void scorch_actor(actor::Actor& actor)
 {
     if (actor::is_player(&actor)) {
         msg_log::add(
-            "I am scorched by flames.",
+            i18n::get("terrain.scorched_by_flames_player", "I am scorched by flames."),
             colors::msg_bad());
     }
     else if (actor::can_player_see_actor(actor)) {
@@ -129,7 +129,9 @@ static void scorch_actor(actor::Actor& actor)
 
         msg_log::add(
             name_the +
-                " is scorched by flames.",
+                i18n::get(
+                    "terrain.scorched_by_flames_suffix",
+                    " is scorched by flames."),
             colors::msg_good());
     }
 
@@ -154,7 +156,7 @@ static void spread_burning(const terrain::Terrain& terrain)
 
         if (map::g_player->m_pos == p) {
             msg_log::add(
-                "Fire has spread here!",
+                i18n::get("terrain.fire_spread_here", "Fire has spread here!"),
                 colors::msg_note(),
                 MsgInterruptPlayer::yes,
                 MorePromptOnMsg::yes);
@@ -376,7 +378,9 @@ AllowAction Terrain::pre_bump(actor::Actor& actor_bumping)
         !props.has(prop::Id::tiny_flying) &&
         can_move(actor_bumping) &&
         map::g_seen.at(m_pos)) {
-        const std::string msg = "Step into the flames? " + common_text::g_yes_or_no_hint;
+        const std::string msg =
+            i18n::get("terrain.step_into_flames_query", "Step into the flames? ") +
+            common_text::g_yes_or_no_hint;
 
         msg_log::add(
             msg,
