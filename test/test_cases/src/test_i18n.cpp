@@ -885,6 +885,8 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_hit.spirit_drained", "My spirit is drained!") == "我的精神被抽干了！");
     REQUIRE(i18n::get("actor_hit.spirit_depleted", "All my spirit is depleted, I am devoid of life!") == "我的精神已耗尽，我失去了生命！");
     REQUIRE(i18n::get("actor_hit.no_spirit_left_suffix", " has no spirit left!") == "没有精神力了！");
+    REQUIRE(i18n::get("ai.bashes_at_the", " bashes at the ") == "正在撞击");
+    REQUIRE(i18n::get("ai.exclaim", "!") == "！");
     REQUIRE(i18n::get("ai.looks_desperate_suffix", " looks desperate.") == "看起来绝望了。");
     REQUIRE(i18n::get("actor_move.through", "through") == "穿过");
     REQUIRE(i18n::get("actor_move.under", "under") == "从下方");
@@ -1710,6 +1712,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.flames_rising_suffix", "!") == "周围升起！");
     REQUIRE(i18n::get("spells.vague_change_in_air", "There is a vague change in the air.") == "空气中有一阵模糊的变化。");
     REQUIRE(i18n::get("spells.nothing_appears", "Nothing appears.") == "什么也没有出现。");
+    REQUIRE(i18n::get("spells.appears_suffix", " appears!") == "出现了！");
     REQUIRE(i18n::get("spells.little_to_offer", "I feel like I have very little to offer.") == "我觉得自己几乎无物可献。");
     REQUIRE(i18n::get("spells.nothing_more_to_shed", "There is nothing more to shed.") == "已经没有更多可以舍弃的了。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");

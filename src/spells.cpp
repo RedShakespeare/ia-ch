@@ -7633,7 +7633,9 @@ void SpellSummon::summon(const std::string& id, actor::Actor* caster) const
                 text_format::first_to_upper(
                     actor::name_a(*mon));
 
-            appear_msg = mon_name_a + " appears!";
+            appear_msg =
+                mon_name_a +
+                i18n::get("spells.appears_suffix", " appears!");
         }
 
         msg_log::add(appear_msg);

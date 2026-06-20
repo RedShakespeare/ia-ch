@@ -3093,12 +3093,14 @@ void Brazier::topple(const Dir direction, actor::Actor& actor)
         ? AlertsMon::yes
         : AlertsMon::no;
 
-    std::string snd_msg = "I hear a crash.";
+    std::string snd_msg = i18n::get(
+        "terrain.hear_crash",
+        "I hear a crash.");
 
     if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get(
-                "terrain.topples_over",
-                "It topples over."));
+        msg_log::add(i18n::get(
+            "terrain.topples_over",
+            "It topples over."));
 
         snd_msg = "";
     }

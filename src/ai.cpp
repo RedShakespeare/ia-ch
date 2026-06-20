@@ -288,9 +288,9 @@ DidAction handle_closed_blocking_door(actor::Actor& mon, std::vector<P>& path)
 
             msg_log::add(
                 mon_name_the +
-                " bashes at the " +
+                i18n::get("ai.bashes_at_the", " bashes at the ") +
                 door_name +
-                "!");
+                i18n::get("ai.exclaim", "!"));
         }
 
         terrain->hit(DmgType::blunt, &mon);
