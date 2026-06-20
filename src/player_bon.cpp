@@ -183,14 +183,16 @@ static void update_trait_data()
 
     // --- Adept Melee Fighter ---
     d.id = TraitId::adept_melee;
-    d.title = "Adept Melee Fighter";
-    d.descr = "+10% hit chance and +1 damage with melee attacks";
+    d.title = i18n::get("player_bon.trait.adept_melee.title", "Adept Melee Fighter");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_melee.descr",
+        "+10% hit chance and +1 damage with melee attacks");
     set_trait_data(d);
 
     // --- Expert Melee Fighter ---
     d = trait_data(TraitId::adept_melee);
     d.id = TraitId::expert_melee;
-    d.title = "Expert Melee Fighter";
+    d.title = i18n::get("player_bon.trait.expert_melee.title", "Expert Melee Fighter");
     d.trait_prereqs = {TraitId::adept_melee};
     d.blocked_for_bgs = {Bg::exorcist};
     set_trait_data(d);
@@ -198,15 +200,16 @@ static void update_trait_data()
     // --- Master Melee Fighter ---
     d = trait_data(TraitId::adept_melee);
     d.id = TraitId::master_melee;
-    d.title = "Master Melee Fighter";
+    d.title = i18n::get("player_bon.trait.master_melee.title", "Master Melee Fighter");
     d.trait_prereqs = {TraitId::expert_melee};
     d.blocked_for_bgs = {Bg::exorcist, Bg::occultist};
     set_trait_data(d);
 
     // --- Adept Marksman ---
     d.id = TraitId::adept_marksman;
-    d.title = "Adept Marksman";
-    d.descr = (
+    d.title = i18n::get("player_bon.trait.adept_marksman.title", "Adept Marksman");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_marksman.descr",
         "+10% hit chance and +1 minimum damage with firearms and thrown weapons "
         "(cannot raise maximum damage)");
     d.blocked_for_bgs = {Bg::ghoul};
@@ -215,7 +218,7 @@ static void update_trait_data()
     // --- Expert Marksman ---
     d = trait_data(TraitId::adept_marksman);
     d.id = TraitId::expert_marksman;
-    d.title = "Expert Marksman";
+    d.title = i18n::get("player_bon.trait.expert_marksman.title", "Expert Marksman");
     d.trait_prereqs = {TraitId::adept_marksman};
     d.blocked_for_bgs = {Bg::ghoul, Bg::exorcist};
     set_trait_data(d);
@@ -223,51 +226,58 @@ static void update_trait_data()
     // --- Master Marksman ---
     d = trait_data(TraitId::adept_marksman);
     d.id = TraitId::master_marksman;
-    d.title = "Master Marksman";
+    d.title = i18n::get("player_bon.trait.master_marksman.title", "Master Marksman");
     d.trait_prereqs = {TraitId::expert_marksman};
     d.blocked_for_bgs = {Bg::ghoul, Bg::exorcist, Bg::occultist, Bg::flagellant};
     set_trait_data(d);
 
     // --- Cool-headed ---
     d.id = TraitId::cool_headed;
-    d.title = "Cool-headed";
-    d.descr = "+20% mental shock resistance";
+    d.title = i18n::get("player_bon.trait.cool_headed.title", "Cool-headed");
+    d.descr = i18n::get(
+        "player_bon.trait.cool_headed.descr",
+        "+20% mental shock resistance");
     set_trait_data(d);
 
     // --- Courageous ---
     d = trait_data(TraitId::cool_headed);
     d.id = TraitId::courageous;
-    d.title = "Courageous";
+    d.title = i18n::get("player_bon.trait.courageous.title", "Courageous");
     d.trait_prereqs = {TraitId::cool_headed};
     set_trait_data(d);
 
     // --- Dexterous ---
     d.id = TraitId::dexterous;
-    d.title = "Dexterous";
-    d.descr = "+25% chance to evade attacks";
+    d.title = i18n::get("player_bon.trait.dexterous.title", "Dexterous");
+    d.descr = i18n::get(
+        "player_bon.trait.dexterous.descr",
+        "+25% chance to evade attacks");
     set_trait_data(d);
 
     // --- Lithe ---
     d = trait_data(TraitId::dexterous);
     d.id = TraitId::lithe;
-    d.title = "Lithe";
+    d.title = i18n::get("player_bon.trait.lithe.title", "Lithe");
     d.trait_prereqs = {TraitId::dexterous};
     set_trait_data(d);
 
     // --- Crippling Strikes ---
     d.id = TraitId::crippling_strikes;
-    d.title = "Crippling Strikes";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.crippling_strikes.title", "Crippling Strikes");
+    d.descr = i18n::get(
+        "player_bon.trait.crippling_strikes.descr",
         "Your melee attacks have 60% chance to weaken the target "
-        "creature for 2-3 turns (reducing their melee damage by half)";
+        "creature for 2-3 turns (reducing their melee damage by half)");
     d.trait_prereqs = {TraitId::dexterous, TraitId::adept_melee};
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Fearless ---
     d.id = TraitId::fearless;
-    d.title = "Fearless";
-    d.descr = "You cannot become terrified, +10% mental shock resistance";
+    d.title = i18n::get("player_bon.trait.fearless.title", "Fearless");
+    d.descr = i18n::get(
+        "player_bon.trait.fearless.descr",
+        "You cannot become terrified, +10% mental shock resistance");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_fear);
 
@@ -283,25 +293,28 @@ static void update_trait_data()
 
     // --- Stealthy ---
     d.id = TraitId::stealthy;
-    d.title = "Stealthy";
-    d.descr = "+45% chance to avoid detection by sight";
+    d.title = i18n::get("player_bon.trait.stealthy.title", "Stealthy");
+    d.descr = i18n::get(
+        "player_bon.trait.stealthy.descr",
+        "+45% chance to avoid detection by sight");
     set_trait_data(d);
 
     // --- Imperceptible ---
     d = trait_data(TraitId::stealthy);
     d.id = TraitId::imperceptible;
-    d.title = "Imperceptible";
+    d.title = i18n::get("player_bon.trait.imperceptible.title", "Imperceptible");
     d.trait_prereqs = {TraitId::stealthy};
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Silent ---
     d.id = TraitId::silent;
-    d.title = "Silent";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.silent.title", "Silent");
+    d.descr = i18n::get(
+        "player_bon.trait.silent.descr",
         "All your melee attacks are silent (regardless of the weapon), "
         "and creatures are not alerted when you open or close doors, "
-        "or wade through water";
+        "or wade through water");
     d.trait_prereqs = {TraitId::stealthy};
     set_trait_data(d);
 

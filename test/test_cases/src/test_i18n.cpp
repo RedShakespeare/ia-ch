@@ -182,6 +182,60 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("player_bon.background.occultist.title", "Occultist") == "神秘学者");
     REQUIRE(i18n::get("player_bon.background.rogue.title", "Rogue") == "盗贼");
     REQUIRE(i18n::get("player_bon.background.war_vet.title", "War Veteran") == "战争老兵");
+    REQUIRE(i18n::get("player_bon.trait.adept_melee.title", "Adept Melee Fighter") == "熟练近战斗士");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.adept_melee.descr",
+            "+10% hit chance and +1 damage with melee attacks") ==
+        "+10% 命中率，近战攻击 +1 伤害");
+    REQUIRE(i18n::get("player_bon.trait.expert_melee.title", "Expert Melee Fighter") == "专家近战斗士");
+    REQUIRE(i18n::get("player_bon.trait.master_melee.title", "Master Melee Fighter") == "大师近战斗士");
+    REQUIRE(i18n::get("player_bon.trait.adept_marksman.title", "Adept Marksman") == "熟练射手");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.adept_marksman.descr",
+            "+10% hit chance and +1 minimum damage with firearms and thrown weapons "
+            "(cannot raise maximum damage)") == "使用火器和投掷武器时 +10% 命中率，并且最低伤害 +1（不能提高最大伤害）");
+    REQUIRE(i18n::get("player_bon.trait.expert_marksman.title", "Expert Marksman") == "专家射手");
+    REQUIRE(i18n::get("player_bon.trait.master_marksman.title", "Master Marksman") == "大师射手");
+    REQUIRE(i18n::get("player_bon.trait.cool_headed.title", "Cool-headed") == "冷静");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.cool_headed.descr",
+            "+20% mental shock resistance") == "+20% 精神震惊抗性");
+    REQUIRE(i18n::get("player_bon.trait.courageous.title", "Courageous") == "勇敢");
+    REQUIRE(i18n::get("player_bon.trait.dexterous.title", "Dexterous") == "灵巧");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.dexterous.descr",
+            "+25% chance to evade attacks") == "+25% 闪避攻击几率");
+    REQUIRE(i18n::get("player_bon.trait.lithe.title", "Lithe") == "轻盈");
+    REQUIRE(i18n::get("player_bon.trait.crippling_strikes.title", "Crippling Strikes") == "致残打击");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.crippling_strikes.descr",
+            "Your melee attacks have 60% chance to weaken the target "
+            "creature for 2-3 turns (reducing their melee damage by half)") ==
+        "你的近战攻击有 60% 几率使目标生物虚弱 2-3 回合（使其近战伤害减半）");
+    REQUIRE(i18n::get("player_bon.trait.fearless.title", "Fearless") == "无畏");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.fearless.descr",
+            "You cannot become terrified, +10% mental shock resistance") ==
+        "你不会变得恐惧，+10% 精神震惊抗性");
+    REQUIRE(i18n::get("player_bon.trait.stealthy.title", "Stealthy") == "潜行");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.stealthy.descr",
+            "+45% chance to avoid detection by sight") == "+45% 避免被视觉发现的几率");
+    REQUIRE(i18n::get("player_bon.trait.imperceptible.title", "Imperceptible") == "难以察觉");
+    REQUIRE(i18n::get("player_bon.trait.silent.title", "Silent") == "静默");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.silent.descr",
+            "All your melee attacks are silent (regardless of the weapon), "
+            "and creatures are not alerted when you open or close doors, "
+            "or wade through water") == "你的所有近战攻击都是无声的（无论使用什么武器），打开或关闭门、涉水而过时也不会惊动生物");
     REQUIRE(i18n::get("highscore.browsing_title", "Browsing high scores") == "浏览高分记录");
     REQUIRE(i18n::get("manual.browsing_title", "Browsing manual") == "浏览手册");
     REQUIRE(i18n::get("character_descr.title", "Character description") == "角色描述");
