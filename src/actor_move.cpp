@@ -98,7 +98,7 @@ static void player_displace_allied_mon(actor::Actor& mon, const P& new_mon_pos)
         std::string mon_name =
             can_player_see_actor(mon)
             ? actor::name_a(mon)
-            : "it";
+            : i18n::get("actor_move.it", "it");
 
         msg_log::add(
             i18n::get("actor_move.displace_prefix", "I displace ") +
@@ -178,7 +178,7 @@ static void print_ooze_enter_terrain_msg(
     const auto mon_name = text_format::first_to_upper(actor::name_the(actor));
     const auto ter_name = terrain.name(Article::the);
 
-    std::string preposition = "through";
+    std::string preposition = i18n::get("actor_move.through", "through");
 
     if (terrain.id() == terrain::Id::door) {
         const auto& door =
@@ -190,12 +190,18 @@ static void print_ooze_enter_terrain_msg(
 
         case terrain::DoorType::wood:
         case terrain::DoorType::metal:
-            preposition = "under";
+            preposition = i18n::get("actor_move.under", "under");
             break;
         }
     }
 
-    msg_log::add(mon_name + " seeps " + preposition + " " + ter_name + ".");
+    msg_log::add(
+        mon_name +
+        i18n::get("actor_move.seeps_prefix", " seeps ") +
+        preposition +
+        " " +
+        ter_name +
+        i18n::get("actor_move.period", "."));
 }
 
 static void print_small_creature_enter_terrain_msg(
@@ -205,7 +211,11 @@ static void print_small_creature_enter_terrain_msg(
     const auto mon_name = text_format::first_to_upper(actor::name_the(actor));
     const auto ter_name = terrain.name(Article::the);
 
-    msg_log::add(mon_name + " squirms through " + ter_name + ".");
+    msg_log::add(
+        mon_name +
+        i18n::get("actor_move.squirms_through", " squirms through ") +
+        ter_name +
+        i18n::get("actor_move.period", "."));
 }
 
 static void print_mon_enter_non_walkable_terrain_msg(

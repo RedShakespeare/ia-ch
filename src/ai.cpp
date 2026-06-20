@@ -21,6 +21,7 @@
 #include "direction.hpp"
 #include "fov.hpp"
 #include "game_time.hpp"
+#include "i18n.hpp"
 #include "line_calc.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
@@ -119,7 +120,9 @@ static void print_mon_desperate_cast_msg(const actor::Actor& mon)
         text_format::first_to_upper(
             actor::name_the(mon));
 
-    msg_log::add(mon_name_the + " looks desperate.");
+    msg_log::add(
+        mon_name_the +
+        i18n::get("ai.looks_desperate_suffix", " looks desperate."));
 }
 
 static DidAction try_cast_spell(
