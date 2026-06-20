@@ -6074,7 +6074,7 @@ int SpellPoison::base_max_cost(
 
 std::string SpellPoison::name() const
 {
-    return "Poison";
+    return i18n::get("spells.poison.name", "Poison");
 }
 
 SpellId SpellPoison::id() const
@@ -6184,11 +6184,17 @@ std::vector<std::string> SpellPoison::descr_specific(SpellSkill skill) const
     const prop::PropData& prop_data = prop::g_data[(size_t)prop::Id::poisoned];
 
     descr.emplace_back(
-        "The spell's victims are " +
+        i18n::get(
+            "spells.poison.victims_prefix",
+            "The spell's victims are ") +
         text_format::first_to_lower(prop_data.name) +
-        " (" +
+        i18n::get(
+            "spells.poison.prop_open_paren",
+            " (") +
         prop_data.descr +
-        ")");
+        i18n::get(
+            "spells.poison.close_paren",
+            ")"));
 
     descr.emplace_back(
         skill == SpellSkill::basic
