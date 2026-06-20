@@ -1341,6 +1341,30 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "From caster/allies: ") ==
         "从施法者/盟友身上移除：");
     REQUIRE(i18n::get("spells.cancellation.descr_allies_suffix", ".") == "。");
+    REQUIRE(i18n::get("spells.boundary_sigil.name", "Inscribe Boundary Sigil") == "铭刻边界印记");
+    REQUIRE(
+        i18n::get(
+            "spells.boundary_sigil.descr_main",
+            "Inscribes a magical sigil upon the ground, "
+            "preventing Outer Beings, Undead and Summoned creatures "
+            "from entering it or making melee attacks across its boundary.") ==
+        "在地面上铭刻一道魔法印记，阻止外界存在、不死生物和被召唤生物进入其中，或隔着其边界进行近战攻击。");
+    REQUIRE(
+        i18n::get(
+            "spells.boundary_sigil.descr_actions_prefix",
+            "The sigil can prevent ") ==
+        "该印记可阻止");
+    REQUIRE(
+        i18n::get(
+            "spells.boundary_sigil.descr_actions_suffix",
+            " actions before it fades, "
+            "though it also has a small chance to fade each turn.") ==
+        "次行动后消散，但每回合也有很小几率自行消退。");
+    REQUIRE(
+        i18n::get(
+            "spells.boundary_sigil.descr_floor_only",
+            "Can only be inscribed on floor, but may overwrite an existing sigil.") ==
+        "只能铭刻在地板上，但可以覆盖已有的印记。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

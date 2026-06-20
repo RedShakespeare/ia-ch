@@ -4368,7 +4368,7 @@ std::vector<std::string> SpellCancellation::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellInscribeBoundarySigil::name() const
 {
-    return "Inscribe Boundary Sigil";
+    return i18n::get("spells.boundary_sigil.name", "Inscribe Boundary Sigil");
 }
 
 SpellId SpellInscribeBoundarySigil::id() const
@@ -4502,17 +4502,26 @@ std::vector<std::string> SpellInscribeBoundarySigil::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Inscribes a magical sigil upon the ground, "
-        "preventing Outer Beings, Undead and Summoned creatures "
-        "from entering it or making melee attacks across its boundary.");
+        i18n::get(
+            "spells.boundary_sigil.descr_main",
+            "Inscribes a magical sigil upon the ground, "
+            "preventing Outer Beings, Undead and Summoned creatures "
+            "from entering it or making melee attacks across its boundary."));
 
     descr.emplace_back(
-        "The sigil can prevent " +
+        i18n::get(
+            "spells.boundary_sigil.descr_actions_prefix",
+            "The sigil can prevent ") +
         nr_actions_prevented(skill).str() +
-        " actions before it fades, "
-        "though it also has a small chance to fade each turn.");
+        i18n::get(
+            "spells.boundary_sigil.descr_actions_suffix",
+            " actions before it fades, "
+            "though it also has a small chance to fade each turn."));
 
-    descr.emplace_back("Can only be inscribed on floor, but may overwrite an existing sigil.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.boundary_sigil.descr_floor_only",
+            "Can only be inscribed on floor, but may overwrite an existing sigil."));
 
     return descr;
 }
