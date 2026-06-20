@@ -729,29 +729,33 @@ static void init_data_list()
     add(d);
 
     d.id = prop::Id::nailed;
-    d.name = "Nailed";
-    d.descr =
-        "Fastened by a spike. Tearing it out will be rather painful.";
-    d.msg_start_player = "I am fastened by a spike!";
-    d.msg_start_mon = "{} is fastened by a spike.";
-    d.msg_end_player = "I tear free!";
-    d.msg_end_mon = "{} tears free!";
+    d.name = i18n::get("property_data.nailed.name", "Nailed");
+    d.descr = i18n::get(
+        "property_data.nailed.descr",
+        "Fastened by a spike. Tearing it out will be rather painful.");
+    d.msg_start_player =
+        i18n::get("property_data.nailed.msg_start_player", "I am fastened by a spike!");
+    d.msg_start_mon =
+        i18n::get("property_data.nailed.msg_start_mon", "{} is fastened by a spike.");
+    d.msg_end_player = i18n::get("property_data.nailed.msg_end_player", "I tear free!");
+    d.msg_end_mon = i18n::get("property_data.nailed.msg_end_mon", "{} tears free!");
     d.allow_display_turns = false;
     d.alignment = prop::PropAlignment::bad;
     add(d);
 
     d.id = prop::Id::wound;
-    d.name = "Wounded";
-    d.descr =
+    d.name = i18n::get("property_data.wound.name", "Wounded");
+    d.descr = i18n::get(
+        "property_data.wound.descr",
         "For each wound: "
         "-5% melee hit chance, "
         "-5% chance to evade attacks, "
         "-10% hit points, "
         "and reduced hit point generation rate. "
         "With three concurrent wounds, walking takes extra turns. "
-        "Five concurrent wounds is fatal.";
-    d.msg_start_player = "I am wounded!";
-    d.msg_res_player = "I resist wounding!";
+        "Five concurrent wounds is fatal.");
+    d.msg_start_player = i18n::get("property_data.wound.msg_start_player", "I am wounded!");
+    d.msg_res_player = i18n::get("property_data.wound.msg_res_player", "I resist wounding!");
     d.allow_display_turns = false;
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::bad;
@@ -759,13 +763,17 @@ static void init_data_list()
 
     d.id = prop::Id::infected;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Infected";
-    d.name_short = "Infected";
-    d.descr = "A nasty infection that will get worse if left untreated.";
-    d.msg_start_player = "I am infected!";
-    d.msg_start_mon = "{} is infected.";
-    d.msg_end_player = "My infection is cured!";
-    d.msg_end_mon = "{} is no longer infected.";
+    d.name = i18n::get("property_data.infected.name", "Infected");
+    d.name_short = i18n::get("property_data.infected.name_short", "Infected");
+    d.descr = i18n::get(
+        "property_data.infected.descr",
+        "A nasty infection that will get worse if left untreated.");
+    d.msg_start_player = i18n::get("property_data.infected.msg_start_player", "I am infected!");
+    d.msg_start_mon = i18n::get("property_data.infected.msg_start_mon", "{} is infected.");
+    d.msg_end_player =
+        i18n::get("property_data.infected.msg_end_player", "My infection is cured!");
+    d.msg_end_mon =
+        i18n::get("property_data.infected.msg_end_mon", "{} is no longer infected.");
     d.allow_display_turns = false;
     // Never increase duration if more infection is applied:
     d.duration_on_more = prop::DurationOnMoreBehavior::shortest;
@@ -775,17 +783,23 @@ static void init_data_list()
 
     d.id = prop::Id::diseased;
     d.std_rnd_turns = Range(30, 60);
-    d.name = "Diseased";
-    d.name_short = "Diseased";
-    d.descr = "-50% maximum hit points.";
-    d.msg_start_player = "I am diseased!";
-    d.msg_start_mon = "{} is diseased.";
-    d.msg_end_player = "My disease is cured!";
-    d.msg_end_mon = "{} is no longer diseased.";
-    d.msg_res_player = "I resist disease.";
-    d.msg_res_mon = "{} resists disease.";
-    d.historic_msg_start_permanent = "Caught a horrible disease";
-    d.historic_msg_end_permanent = "Was cured from a horrible disease";
+    d.name = i18n::get("property_data.diseased.name", "Diseased");
+    d.name_short = i18n::get("property_data.diseased.name_short", "Diseased");
+    d.descr = i18n::get("property_data.diseased.descr", "-50% maximum hit points.");
+    d.msg_start_player = i18n::get("property_data.diseased.msg_start_player", "I am diseased!");
+    d.msg_start_mon = i18n::get("property_data.diseased.msg_start_mon", "{} is diseased.");
+    d.msg_end_player =
+        i18n::get("property_data.diseased.msg_end_player", "My disease is cured!");
+    d.msg_end_mon =
+        i18n::get("property_data.diseased.msg_end_mon", "{} is no longer diseased.");
+    d.msg_res_player = i18n::get("property_data.diseased.msg_res_player", "I resist disease.");
+    d.msg_res_mon = i18n::get("property_data.diseased.msg_res_mon", "{} resists disease.");
+    d.historic_msg_start_permanent = i18n::get(
+        "property_data.diseased.historic_msg_start_permanent",
+        "Caught a horrible disease");
+    d.historic_msg_end_permanent = i18n::get(
+        "property_data.diseased.historic_msg_end_permanent",
+        "Was cured from a horrible disease");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;

@@ -1185,6 +1185,36 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("property_data.summoned.name", "召唤物");
     require_translation("property_data.summoned.descr", "被魔法召唤到这里。");
     require_translation("property_data.summoned.msg_end_mon", "{}突然消失了。");
+    require_translation("property_data.nailed.name", "钉住");
+    require_translation("property_data.nailed.descr", "被尖刺固定。拔出来会相当痛苦。");
+    require_translation("property_data.nailed.msg_start_player", "我被尖刺固定住了！");
+    require_translation("property_data.nailed.msg_start_mon", "{}被尖刺固定住了。");
+    require_translation("property_data.nailed.msg_end_player", "我挣脱了！");
+    require_translation("property_data.nailed.msg_end_mon", "{}挣脱了！");
+    require_translation("property_data.wound.name", "受伤");
+    require_translation(
+        "property_data.wound.descr",
+        "每道伤口：近战命中率-5%，闪避攻击几率-5%，生命值-10%，并降低生命恢复速度。三道并发伤口会让行走花费额外回合。五道并发伤口会致命。");
+    require_translation("property_data.wound.msg_start_player", "我受伤了！");
+    require_translation("property_data.wound.msg_res_player", "我抵抗了受伤！");
+    require_translation("property_data.infected.name", "感染");
+    require_translation("property_data.infected.name_short", "感染");
+    require_translation("property_data.infected.descr", "一种讨厌的感染，若不治疗会变得更糟。");
+    require_translation("property_data.infected.msg_start_player", "我感染了！");
+    require_translation("property_data.infected.msg_start_mon", "{}感染了。");
+    require_translation("property_data.infected.msg_end_player", "我的感染被治愈了！");
+    require_translation("property_data.infected.msg_end_mon", "{}不再感染。");
+    require_translation("property_data.diseased.name", "患病");
+    require_translation("property_data.diseased.name_short", "患病");
+    require_translation("property_data.diseased.descr", "最大生命值-50%。");
+    require_translation("property_data.diseased.msg_start_player", "我患病了！");
+    require_translation("property_data.diseased.msg_start_mon", "{}患病了。");
+    require_translation("property_data.diseased.msg_end_player", "我的疾病被治愈了！");
+    require_translation("property_data.diseased.msg_end_mon", "{}不再患病。");
+    require_translation("property_data.diseased.msg_res_player", "我抵抗了疾病。");
+    require_translation("property_data.diseased.msg_res_mon", "{}抵抗了疾病。");
+    require_translation("property_data.diseased.historic_msg_start_permanent", "染上可怕的疾病");
+    require_translation("property_data.diseased.historic_msg_end_permanent", "可怕的疾病被治愈");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");
