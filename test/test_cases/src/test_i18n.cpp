@@ -352,6 +352,54 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "The barrier can only be created in empty spaces "
             "(i.e. not in spaces occupied by creatures, walls, etc).") ==
         "启动后，这个装置会在使用者周围构建一道临时的不透明屏障，阻挡所有物质。屏障只能在空地中生成（即没有生物、墙壁等占据的空间）。");
+    REQUIRE(i18n::get("item_rod.look_iron", "Iron") == "铁");
+    REQUIRE(i18n::get("item_rod.look_iron_a", "an Iron") == "铁");
+    REQUIRE(i18n::get("item_rod.look_zinc", "Zinc") == "锌");
+    REQUIRE(i18n::get("item_rod.look_zinc_a", "a Zinc") == "锌");
+    REQUIRE(i18n::get("item_rod.look_chromium", "Chromium") == "铬");
+    REQUIRE(i18n::get("item_rod.look_chromium_a", "a Chromium") == "铬");
+    REQUIRE(i18n::get("item_rod.look_tin", "Tin") == "锡");
+    REQUIRE(i18n::get("item_rod.look_tin_a", "a Tin") == "锡");
+    REQUIRE(i18n::get("item_rod.look_silver", "Silver") == "银");
+    REQUIRE(i18n::get("item_rod.look_silver_a", "a Silver") == "银");
+    REQUIRE(i18n::get("item_rod.look_golden", "Golden") == "金");
+    REQUIRE(i18n::get("item_rod.look_golden_a", "a Golden") == "金");
+    REQUIRE(i18n::get("item_rod.look_nickel", "Nickel") == "镍");
+    REQUIRE(i18n::get("item_rod.look_nickel_a", "a Nickel") == "镍");
+    REQUIRE(i18n::get("item_rod.look_copper", "Copper") == "铜");
+    REQUIRE(i18n::get("item_rod.look_copper_a", "a Copper") == "铜");
+    REQUIRE(i18n::get("item_rod.look_lead", "Lead") == "铅");
+    REQUIRE(i18n::get("item_rod.look_lead_a", "a Lead") == "铅");
+    REQUIRE(i18n::get("item_rod.look_tungsten", "Tungsten") == "钨");
+    REQUIRE(i18n::get("item_rod.look_tungsten_a", "a Tungsten") == "钨");
+    REQUIRE(i18n::get("item_rod.look_platinum", "Platinum") == "铂");
+    REQUIRE(i18n::get("item_rod.look_platinum_a", "a Platinum") == "铂");
+    REQUIRE(i18n::get("item_rod.look_lithium", "Lithium") == "锂");
+    REQUIRE(i18n::get("item_rod.look_lithium_a", "a Lithium") == "锂");
+    REQUIRE(i18n::get("item_rod.look_zirconium", "Zirconium") == "锆");
+    REQUIRE(i18n::get("item_rod.look_zirconium_a", "a Zirconium") == "锆");
+    REQUIRE(i18n::get("item_rod.look_gallium", "Gallium") == "镓");
+    REQUIRE(i18n::get("item_rod.look_gallium_a", "a Gallium") == "镓");
+    REQUIRE(i18n::get("item_rod.look_cobalt", "Cobalt") == "钴");
+    REQUIRE(i18n::get("item_rod.look_cobalt_a", "a Cobalt") == "钴");
+    REQUIRE(i18n::get("item_rod.look_titanium", "Titanium") == "钛");
+    REQUIRE(i18n::get("item_rod.look_titanium_a", "a Titanium") == "钛");
+    REQUIRE(i18n::get("item_rod.look_magnesium", "Magnesium") == "镁");
+    REQUIRE(i18n::get("item_rod.look_magnesium_a", "a Magnesium") == "镁");
+    REQUIRE(i18n::get("item_rod.rod_suffix", " Rod") == "魔杖");
+    REQUIRE(i18n::get("item_rod.rods_suffix", " Rods") == "魔杖");
+    REQUIRE(i18n::get("item_rod.rod_of_prefix", "Rod of ") == "魔杖：");
+    REQUIRE(i18n::get("item_rod.rods_of_prefix", "Rods of ") == "魔杖：");
+    REQUIRE(i18n::get("item_rod.a_rod_of_prefix", "a Rod of ") == "魔杖：");
+    REQUIRE(i18n::get("item_rod.turns_left_open", "(") == "（");
+    REQUIRE(i18n::get("item_rod.turns_left_suffix", " turns)") == "回合）");
+    REQUIRE(i18n::get("item_rod.tried", "(Tried)") == "（已试）");
+    REQUIRE(i18n::get("item_rod.displacement_name", "Displacement") == "置换");
+    REQUIRE(
+        i18n::get(
+            "item_rod.displacement_descr",
+            "When activated, this device moves the user a short distance.") ==
+        "激活时，此装置会将使用者短距离移动。");
     REQUIRE(i18n::get("player_bon.extra_trait_title", "You gain an extra trait!") == "你获得了额外特质！");
     REQUIRE(i18n::get("player_spells.known_title", "Known spells") == "已知法术");
     REQUIRE(i18n::get("player_spells.skill_label", "Skill: ") == "技能：");
