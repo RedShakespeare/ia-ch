@@ -19,6 +19,7 @@
 #include "colors.hpp"
 #include "debug.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "item.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
@@ -266,7 +267,9 @@ void Curse::print_trigger_msg(const item::Item& item) const
             ItemNameInfo::none);
 
     msg_log::add(
-        "A curse lies upon " + item_name + "!",
+        i18n::get("item_curse.lies_upon_prefix", "A curse lies upon ") +
+            item_name +
+            i18n::get("item_curse.exclaim", "!"),
         colors::msg_note(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -288,12 +291,14 @@ void Curse::print_warning_msg(const item::Item& item) const
             ItemNameInfo::none);
 
     const std::vector<std::string> msg_bucket = {
-        {"I am growing very attached to " +
-         item_name +
-         "."},
-        {"I am starting to think that I should hold on to " +
-         item_name +
-         ", forever..."},
+        {i18n::get(
+             "item_curse.growing_attached_prefix",
+             "I am growing very attached to ") +
+         item_name + i18n::get("item_curse.period", ".")},
+        {i18n::get(
+             "item_curse.hold_on_prefix",
+             "I am starting to think that I should hold on to ") +
+         item_name + i18n::get("item_curse.forever_suffix", ", forever...")},
     };
 
     const auto msg = rnd::element(msg_bucket);
@@ -397,7 +402,8 @@ std::string Curse::descr() const
         return "";
     }
 
-    return "This item is cursed, " + m_curse_impl->descr();
+    return i18n::get("item_curse.descr_prefix", "This item is cursed, ") +
+           m_curse_impl->descr();
 }
 
 // -----------------------------------------------------------------------------
@@ -423,8 +429,10 @@ void HitChancePenalty::on_stop()
 
 std::string HitChancePenalty::descr() const
 {
-    return "it makes the owner less accurate (-10% hit chance with melee "
-           "and ranged attacks).";
+    return i18n::get(
+        "item_curse.hit_chance_penalty_descr",
+        "it makes the owner less accurate (-10% hit chance with melee "
+        "and ranged attacks).");
 }
 
 // -----------------------------------------------------------------------------
@@ -450,7 +458,9 @@ void IncreasedShock::on_stop()
 
 std::string IncreasedShock::descr() const
 {
-    return "it is a burden on the mind of the owner (+10% minimum shock).";
+    return i18n::get(
+        "item_curse.increased_shock_descr",
+        "it is a burden on the mind of the owner (+10% minimum shock).");
 }
 
 // -----------------------------------------------------------------------------
@@ -463,7 +473,9 @@ int Heavy::affect_weight(const int weight)
 
 std::string Heavy::descr() const
 {
-    return "it is inexplicably heavy for its size.";
+    return i18n::get(
+        "item_curse.heavy_descr",
+        "it is inexplicably heavy for its size.");
 }
 
 std::string Heavy::curse_msg(const item::Item& item) const
@@ -476,7 +488,10 @@ std::string Heavy::curse_msg(const item::Item& item) const
                 ItemNameType::a,
                 ItemNameInfo::none));
 
-    return name + " suddenly feels much heavier to carry.";
+    return name +
+           i18n::get(
+               "item_curse.heavy_curse_msg_suffix",
+               " suddenly feels much heavier to carry.");
 }
 
 // -----------------------------------------------------------------------------

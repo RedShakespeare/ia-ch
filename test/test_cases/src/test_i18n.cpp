@@ -943,6 +943,34 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("item.weight_a_bit_heavy", "a bit heavy") == "有点重");
     REQUIRE(i18n::get("item.weight_heavy", "heavy") == "重");
     REQUIRE(i18n::get("item.cannot_apply", "I cannot apply that.") == "我不能使用那个。");
+    REQUIRE(i18n::get("item_curse.lies_upon_prefix", "A curse lies upon ") == "诅咒降临在");
+    REQUIRE(i18n::get("item_curse.exclaim", "!") == "！");
+    REQUIRE(
+        i18n::get(
+            "item_curse.growing_attached_prefix",
+            "I am growing very attached to ") == "我越来越离不开");
+    REQUIRE(i18n::get("item_curse.period", ".") == "。");
+    REQUIRE(
+        i18n::get(
+            "item_curse.hold_on_prefix",
+            "I am starting to think that I should hold on to ") == "我开始觉得应该永远留着");
+    REQUIRE(i18n::get("item_curse.forever_suffix", ", forever...") == "……");
+    REQUIRE(i18n::get("item_curse.descr_prefix", "This item is cursed, ") == "这件物品被诅咒了，");
+    REQUIRE(
+        i18n::get(
+            "item_curse.hit_chance_penalty_descr",
+            "it makes the owner less accurate (-10% hit chance with melee "
+            "and ranged attacks).") == "它会使持有者不那么准确（近战和远程攻击命中率 -10%）。");
+    REQUIRE(
+        i18n::get(
+            "item_curse.increased_shock_descr",
+            "it is a burden on the mind of the owner (+10% minimum shock).") ==
+        "它会成为持有者精神上的负担（最低震惊值 +10%）。");
+    REQUIRE(i18n::get("item_curse.heavy_descr", "it is inexplicably heavy for its size.") == "它的重量相对于大小而言莫名其妙地重。");
+    REQUIRE(
+        i18n::get(
+            "item_curse.heavy_curse_msg_suffix",
+            " suddenly feels much heavier to carry.") == "突然变得重得多。");
     REQUIRE(i18n::get("item_potion.feel_more_at_ease", "I feel more at ease.") == "我感到安心多了。");
     REQUIRE(i18n::get("item_potion.feel_insightful", "I feel insightful.") == "我感到洞察力涌现。");
     REQUIRE(i18n::get("item_potion.feel_fine", "I feel fine.") == "我感觉很好。");
