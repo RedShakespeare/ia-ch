@@ -6384,7 +6384,7 @@ bool SpellEnfeeble::is_noisy(const SpellSkill skill) const
 
 std::string SpellEnfeeble::name() const
 {
-    return "Enfeeble";
+    return i18n::get("spells.enfeeble.name", "Enfeeble");
 }
 
 int SpellEnfeeble::base_max_cost(
@@ -6464,8 +6464,10 @@ std::vector<std::string> SpellEnfeeble::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Physically enfeebles the spell's victims, causing them to "
-        "only do half damage in melee combat.");
+        i18n::get(
+            "spells.enfeeble.descr",
+            "Physically enfeebles the spell's victims, causing them to "
+            "only do half damage in melee combat."));
 
     descr.emplace_back(not_alerting_mon_descr());
 

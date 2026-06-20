@@ -1532,6 +1532,13 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         "法术的受害者会变成");
     REQUIRE(i18n::get("spells.poison.prop_open_paren", " (") == "（");
     REQUIRE(i18n::get("spells.poison.close_paren", ")") == "）");
+    REQUIRE(i18n::get("spells.enfeeble.name", "Enfeeble") == "虚弱");
+    REQUIRE(
+        i18n::get(
+            "spells.enfeeble.descr",
+            "Physically enfeebles the spell's victims, causing them to "
+            "only do half damage in melee combat.") ==
+        "从肉体上削弱法术的受害者，使其在近战中只能造成一半伤害。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
