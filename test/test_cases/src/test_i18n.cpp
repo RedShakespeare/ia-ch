@@ -1062,6 +1062,17 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("property.bewilders_me_suffix", " bewilders me.") == "使我困惑。");
     REQUIRE(i18n::get("property.is_taunting_me_suffix", " is taunting me!") == "正在嘲弄我！");
     REQUIRE(i18n::get("property.collapses_suffix", " collapses!") == "倒塌了！");
+    REQUIRE(i18n::get("property.thorns_it", "it") == "它");
+    REQUIRE(i18n::get("property.thorns_it_upper", "It") == "它");
+    REQUIRE(i18n::get("property.thorns_player_retaliate_prefix", "I retaliate upon ") == "我反击了");
+    REQUIRE(i18n::get("property.exclaim", "!") == "！");
+    REQUIRE(i18n::get("property.thorns_mon_retaliate_player_prefix", "My attack upon ") == "我对");
+    REQUIRE(
+        i18n::get(
+            "property.thorns_mon_retaliate_player_suffix",
+            " is retaliated by a magic aura!") == "的攻击被一道魔法灵光反击了！");
+    REQUIRE(i18n::get("property.thorns_mon_retaliate_mon_middle", "retaliates upon ") == "以魔法灵光反击了");
+    REQUIRE(i18n::get("property.thorns_mon_retaliate_mon_suffix", " by a magic aura!") == "！");
     REQUIRE(i18n::get("property.tomb_legions_sound", "A voice is calling forth Tomb-Legions!") == "有个声音正在召唤坟墓军团！");
     REQUIRE(i18n::get("property.their", "their") == "其");
     REQUIRE(i18n::get("property.its", "its") == "它的");

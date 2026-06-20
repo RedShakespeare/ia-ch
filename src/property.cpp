@@ -4018,10 +4018,13 @@ void Thorns::print_msg_player_retaliate_mon(
         target_name = actor::name_the(target);
     }
     else {
-        target_name = "it";
+        target_name = i18n::get("property.thorns_it", "it");
     }
 
-    const std::string msg = "I retaliate upon " + target_name + "!";
+    const std::string msg =
+        i18n::get("property.thorns_player_retaliate_prefix", "I retaliate upon ") +
+        target_name +
+        i18n::get("property.exclaim", "!");
 
     msg_log::add(msg, colors::msg_good());
 }
@@ -4037,13 +4040,15 @@ void Thorns::print_msg_mon_retaliate_player() const
         retaliator_name = actor::name_the(*m_owner);
     }
     else {
-        retaliator_name = "it";
+        retaliator_name = i18n::get("property.thorns_it", "it");
     }
 
     const std::string msg =
-        "My attack upon " +
+        i18n::get("property.thorns_mon_retaliate_player_prefix", "My attack upon ") +
         retaliator_name +
-        " is retaliated by a magic aura!";
+        i18n::get(
+            "property.thorns_mon_retaliate_player_suffix",
+            " is retaliated by a magic aura!");
 
     msg_log::add(msg, colors::msg_bad());
 }
@@ -4066,21 +4071,23 @@ void Thorns::print_msg_mon_retaliate_mon(
                 actor::name_the(*m_owner));
     }
     else {
-        retaliator_name = "It";
+        retaliator_name = i18n::get("property.thorns_it_upper", "It");
     }
 
     if (player_see_target) {
         target_name = actor::name_the(target);
     }
     else {
-        target_name = "it";
+        target_name = i18n::get("property.thorns_it", "it");
     }
 
     const std::string msg =
         retaliator_name +
-        "retaliates upon " +
+        i18n::get(
+            "property.thorns_mon_retaliate_mon_middle",
+            "retaliates upon ") +
         target_name +
-        " by a magic aura!";
+        i18n::get("property.thorns_mon_retaliate_mon_suffix", " by a magic aura!");
 
     msg_log::add(msg);
 }
