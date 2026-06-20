@@ -1,0 +1,4 @@
+interface:
+  display_name: "Update Font"
+  short_description: "Update CJK-enabled bitmap fonts"
+  default_prompt: "Use $update-font to regenerate only CJK-enabled bitmap fonts, run checks, and commit if everything passes."
