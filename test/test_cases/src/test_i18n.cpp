@@ -388,6 +388,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_mon.in_the_name_of_prefix", "In the name of ") == "以此之名：");
     REQUIRE(i18n::get("actor_mon.voice_prefix", "Voice: ") == "声音：");
     REQUIRE(i18n::get("actor_mon.sees_me_suffix", " sees me!") == "看见了我！");
+    REQUIRE(i18n::get("actor_common.dies", "dies.") == "死了。");
     REQUIRE(i18n::get("actor_death.agonized_screaming", "I hear agonized screaming.") == "我听到痛苦的尖叫。");
     REQUIRE(i18n::get("actor_death.resurrect_history", "Was brought back from the dead") == "死而复生");
     REQUIRE(i18n::get("actor_eat.ripping_and_chewing", "I hear ripping and chewing.") == "我听到撕咬和咀嚼声。");

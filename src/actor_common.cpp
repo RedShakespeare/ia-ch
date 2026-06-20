@@ -666,7 +666,7 @@ std::string death_msg(const actor::Actor& actor)
     std::string msg_end;
 
     if (actor.m_data->death_msg_override.empty()) {
-        msg_end = "dies.";
+        msg_end = i18n::get("actor_common.dies", "dies.");
     }
     else {
         msg_end = actor.m_data->death_msg_override;
