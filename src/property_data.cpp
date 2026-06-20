@@ -447,17 +447,20 @@ static void init_data_list()
 
     d.id = prop::Id::burning;
     d.std_rnd_turns = Range(6, 8);
-    d.name = "Burning";
-    d.name_short = "Burning";
-    d.descr =
+    d.name = i18n::get("property_data.burning.name", "Burning");
+    d.name_short = i18n::get("property_data.burning.name_short", "Burning");
+    d.descr = i18n::get(
+        "property_data.burning.descr",
         "Takes damage each turn, 50% chance to fail when attempting to "
-        "read or cast spells.";
-    d.msg_start_player = "I am Burning!";
-    d.msg_start_mon = "{} is burning.";
-    d.msg_end_player = "The flames are put out.";
-    d.msg_end_mon = "{} is no longer burning.";
-    d.msg_res_player = "I resist burning.";
-    d.msg_res_mon = "{} resists burning.";
+        "read or cast spells.");
+    d.msg_start_player = i18n::get("property_data.burning.msg_start_player", "I am Burning!");
+    d.msg_start_mon = i18n::get("property_data.burning.msg_start_mon", "{} is burning.");
+    d.msg_end_player =
+        i18n::get("property_data.burning.msg_end_player", "The flames are put out.");
+    d.msg_end_mon =
+        i18n::get("property_data.burning.msg_end_mon", "{} is no longer burning.");
+    d.msg_res_player = i18n::get("property_data.burning.msg_res_player", "I resist burning.");
+    d.msg_res_mon = i18n::get("property_data.burning.msg_res_mon", "{} resists burning.");
     d.allow_display_turns = true;
     d.force_interrupt_player_on_start = true;
     d.update_vision_on_toggled = true;
@@ -467,19 +470,22 @@ static void init_data_list()
 
     d.id = prop::Id::poisoned;
     d.std_rnd_turns = Range(40, 80);
-    d.name = "Poisoned";
-    d.name_short = "Poisoned";
-    d.descr =
+    d.name = i18n::get("property_data.poisoned.name", "Poisoned");
+    d.name_short = i18n::get("property_data.poisoned.name_short", "Poisoned");
+    d.descr = i18n::get(
+        "property_data.poisoned.descr",
         "Takes damage over time while health is above 50% of maximum hit points, "
         "hit points do not regenerate naturally, "
         "-25% melee damage, -10% melee hit chance. "
-        "Poison duration stacks if more is applied.";
-    d.msg_start_player = "I am poisoned!";
-    d.msg_start_mon = "{} is poisoned.";
-    d.msg_end_player = "My body is cleansed from poisoning!";
-    d.msg_end_mon = "{} is cleansed from poisoning.";
-    d.msg_res_player = "I resist poisoning.";
-    d.msg_res_mon = "{} resists poisoning.";
+        "Poison duration stacks if more is applied.");
+    d.msg_start_player = i18n::get("property_data.poisoned.msg_start_player", "I am poisoned!");
+    d.msg_start_mon = i18n::get("property_data.poisoned.msg_start_mon", "{} is poisoned.");
+    d.msg_end_player =
+        i18n::get("property_data.poisoned.msg_end_player", "My body is cleansed from poisoning!");
+    d.msg_end_mon =
+        i18n::get("property_data.poisoned.msg_end_mon", "{} is cleansed from poisoning.");
+    d.msg_res_player = i18n::get("property_data.poisoned.msg_res_player", "I resist poisoning.");
+    d.msg_res_mon = i18n::get("property_data.poisoned.msg_res_mon", "{} resists poisoning.");
     d.allow_display_turns = true;
     d.duration_on_more = prop::DurationOnMoreBehavior::stacked;
     d.allow_test_on_bot = true;
@@ -488,15 +494,19 @@ static void init_data_list()
 
     d.id = prop::Id::paralyzed;
     d.std_rnd_turns = Range(3, 5);
-    d.name = "Paralyzed";
-    d.name_short = "Paralyzed";
-    d.descr = "Cannot move.";
-    d.msg_start_player = "I am paralyzed!";
-    d.msg_start_mon = "{} is paralyzed.";
-    d.msg_end_player = "I can move again!";
-    d.msg_end_mon = "{} can move again.";
-    d.msg_res_player = "I resist paralyzation.";
-    d.msg_res_mon = "{} resists paralyzation.";
+    d.name = i18n::get("property_data.paralyzed.name", "Paralyzed");
+    d.name_short = i18n::get("property_data.paralyzed.name_short", "Paralyzed");
+    d.descr = i18n::get("property_data.paralyzed.descr", "Cannot move.");
+    d.msg_start_player =
+        i18n::get("property_data.paralyzed.msg_start_player", "I am paralyzed!");
+    d.msg_start_mon = i18n::get("property_data.paralyzed.msg_start_mon", "{} is paralyzed.");
+    d.msg_end_player =
+        i18n::get("property_data.paralyzed.msg_end_player", "I can move again!");
+    d.msg_end_mon = i18n::get("property_data.paralyzed.msg_end_mon", "{} can move again.");
+    d.msg_res_player =
+        i18n::get("property_data.paralyzed.msg_res_player", "I resist paralyzation.");
+    d.msg_res_mon =
+        i18n::get("property_data.paralyzed.msg_res_mon", "{} resists paralyzation.");
     d.allow_display_turns = true;
     d.force_interrupt_player_on_start = true;
     d.allow_test_on_bot = true;
@@ -511,17 +521,20 @@ static void init_data_list()
 
     d.id = prop::Id::terrified;
     d.std_rnd_turns = Range(20, 30);
-    d.name = "Terrified";
-    d.name_short = "Terrified";
-    d.descr =
+    d.name = i18n::get("property_data.terrified.name", "Terrified");
+    d.name_short = i18n::get("property_data.terrified.name_short", "Terrified");
+    d.descr = i18n::get(
+        "property_data.terrified.descr",
         "Cannot perform melee attacks, -20% ranged hit chance, +20% "
-        "chance to evade attacks.";
-    d.msg_start_player = "I am terrified!";
-    d.msg_start_mon = "{} looks terrified.";
-    d.msg_end_player = "I am no longer terrified!";
-    d.msg_end_mon = "{} is no longer terrified.";
-    d.msg_res_player = "I resist fear.";
-    d.msg_res_mon = "{} resists fear.";
+        "chance to evade attacks.");
+    d.msg_start_player = i18n::get("property_data.terrified.msg_start_player", "I am terrified!");
+    d.msg_start_mon = i18n::get("property_data.terrified.msg_start_mon", "{} looks terrified.");
+    d.msg_end_player =
+        i18n::get("property_data.terrified.msg_end_player", "I am no longer terrified!");
+    d.msg_end_mon =
+        i18n::get("property_data.terrified.msg_end_mon", "{} is no longer terrified.");
+    d.msg_res_player = i18n::get("property_data.terrified.msg_res_player", "I resist fear.");
+    d.msg_res_mon = i18n::get("property_data.terrified.msg_res_mon", "{} resists fear.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -529,17 +542,21 @@ static void init_data_list()
 
     d.id = prop::Id::confused;
     d.std_rnd_turns = Range(30, 60);
-    d.name = "Confused";
-    d.name_short = "Confused";
-    d.descr =
+    d.name = i18n::get("property_data.confused.name", "Confused");
+    d.name_short = i18n::get("property_data.confused.name_short", "Confused");
+    d.descr = i18n::get(
+        "property_data.confused.descr",
         "Occasionally moving in random directions, cannot read or "
-        "cast spells, cannot search for hidden doors or traps.";
-    d.msg_start_player = "I am confused!";
-    d.msg_start_mon = "{} looks confused.";
-    d.msg_end_player = "I come to my senses.";
-    d.msg_end_mon = "{} is no longer confused.";
-    d.msg_res_player = "I manage to keep my head together.";
-    d.msg_res_mon = "{} resists confusion.";
+        "cast spells, cannot search for hidden doors or traps.");
+    d.msg_start_player = i18n::get("property_data.confused.msg_start_player", "I am confused!");
+    d.msg_start_mon = i18n::get("property_data.confused.msg_start_mon", "{} looks confused.");
+    d.msg_end_player =
+        i18n::get("property_data.confused.msg_end_player", "I come to my senses.");
+    d.msg_end_mon =
+        i18n::get("property_data.confused.msg_end_mon", "{} is no longer confused.");
+    d.msg_res_player =
+        i18n::get("property_data.confused.msg_res_player", "I manage to keep my head together.");
+    d.msg_res_mon = i18n::get("property_data.confused.msg_res_mon", "{} resists confusion.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -547,12 +564,18 @@ static void init_data_list()
 
     d.id = prop::Id::hallucinating;
     d.std_rnd_turns = Range(75, 150);
-    d.name = "Hallucinating";
-    d.name_short = "Halluc";
-    d.descr = "The senses cannot always be trusted.";
-    d.msg_start_player = "I am starting to doubt my senses.";
-    d.msg_end_player = "I feel more sure of my senses.";
-    d.msg_res_player = "I manage to maintain a grip on what is real.";
+    d.name = i18n::get("property_data.hallucinating.name", "Hallucinating");
+    d.name_short = i18n::get("property_data.hallucinating.name_short", "Halluc");
+    d.descr =
+        i18n::get("property_data.hallucinating.descr", "The senses cannot always be trusted.");
+    d.msg_start_player = i18n::get(
+        "property_data.hallucinating.msg_start_player",
+        "I am starting to doubt my senses.");
+    d.msg_end_player =
+        i18n::get("property_data.hallucinating.msg_end_player", "I feel more sure of my senses.");
+    d.msg_res_player = i18n::get(
+        "property_data.hallucinating.msg_res_player",
+        "I manage to maintain a grip on what is real.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -618,14 +641,15 @@ static void init_data_list()
 
     d.id = prop::Id::stunned;
     d.std_rnd_turns = Range(5, 9);
-    d.name = "Stunned";
-    d.name_short = "Stunned";
-    d.msg_start_player = "I am stunned!";
-    d.msg_start_mon = "{} is stunned.";
-    d.msg_end_player = "I am no longer stunned.";
-    d.msg_end_mon = "{} is no longer stunned.";
-    d.msg_res_player = "I resist stunning.";
-    d.msg_res_mon = "{} resists stunning.";
+    d.name = i18n::get("property_data.stunned.name", "Stunned");
+    d.name_short = i18n::get("property_data.stunned.name_short", "Stunned");
+    d.msg_start_player = i18n::get("property_data.stunned.msg_start_player", "I am stunned!");
+    d.msg_start_mon = i18n::get("property_data.stunned.msg_start_mon", "{} is stunned.");
+    d.msg_end_player =
+        i18n::get("property_data.stunned.msg_end_player", "I am no longer stunned.");
+    d.msg_end_mon = i18n::get("property_data.stunned.msg_end_mon", "{} is no longer stunned.");
+    d.msg_res_player = i18n::get("property_data.stunned.msg_res_player", "I resist stunning.");
+    d.msg_res_mon = i18n::get("property_data.stunned.msg_res_mon", "{} resists stunning.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
