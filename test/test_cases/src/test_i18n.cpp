@@ -1539,6 +1539,24 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "Physically enfeebles the spell's victims, causing them to "
             "only do half damage in melee combat.") ==
         "从肉体上削弱法术的受害者，使其在近战中只能造成一半伤害。");
+    REQUIRE(i18n::get("spells.temporal_echo.name", "Temporal Echo") == "时间回响");
+    REQUIRE(
+        i18n::get(
+            "spells.temporal_echo.descr_main",
+            "For all visible enemies, time is manipulated so that damage taken during a "
+            "brief period will recur when the effect ends.") ==
+        "对于所有可见敌人，时间会被操纵，使其在短暂期间内受到的伤害在效果结束时再次重现。");
+    REQUIRE(i18n::get("spells.temporal_echo.duration_prefix", "The effect lasts for ") == "效果持续");
+    REQUIRE(
+        i18n::get(
+            "spells.temporal_echo.duration_middle",
+            " turns (their turns). ") ==
+        "回合（按它们自己的回合计）。期间受到的伤害中有");
+    REQUIRE(
+        i18n::get(
+            "spells.temporal_echo.duration_suffix",
+            "% of the damage taken during the effect is dealt again.") ==
+        "%会再次结算。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

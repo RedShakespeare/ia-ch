@@ -6536,7 +6536,7 @@ bool SpellTemporalEcho::is_noisy(const SpellSkill skill) const
 
 std::string SpellTemporalEcho::name() const
 {
-    return "Temporal Echo";
+    return i18n::get("spells.temporal_echo.name", "Temporal Echo");
 }
 
 int SpellTemporalEcho::base_max_cost(
@@ -6620,15 +6620,23 @@ std::vector<std::string> SpellTemporalEcho::descr_specific(
     const SpellSkill skill) const
 {
     std::vector<std::string> descr = {
-        "For all visible enemies, time is manipulated so that damage taken during a "
-        "brief period will recur when the effect ends."};
+        i18n::get(
+            "spells.temporal_echo.descr_main",
+            "For all visible enemies, time is manipulated so that damage taken during a "
+            "brief period will recur when the effect ends.")};
 
     descr.push_back(
-        "The effect lasts for " +
+        i18n::get(
+            "spells.temporal_echo.duration_prefix",
+            "The effect lasts for ") +
         duration_range().str() +
-        " turns (their turns). " +
+        i18n::get(
+            "spells.temporal_echo.duration_middle",
+            " turns (their turns). ") +
         std::to_string(pct_damage_dealt(skill)) +
-        "% of the damage taken during the effect is dealt again.");
+        i18n::get(
+            "spells.temporal_echo.duration_suffix",
+            "% of the damage taken during the effect is dealt again."));
 
     return descr;
 }
