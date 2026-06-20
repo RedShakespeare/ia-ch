@@ -280,6 +280,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("option.display_hints.once", "Once") == "一次");
     REQUIRE(i18n::get("option.auto_reload_weapons.descr", "Automatically perform a reload action instead if attempting to fire a ranged weapon with no ammo loaded.") == "如果试图在没有装填弹药的情况下开火，则自动执行装填动作。");
     REQUIRE(i18n::get("terrain_mob.cough", "I cough.") == "我咳嗽起来。");
+    REQUIRE(i18n::get("terrain_mob.article_the_space", "the ") == "");
+    REQUIRE(i18n::get("terrain_mob.article_a", "a") == "");
+    REQUIRE(i18n::get("terrain_mob.article_the", "the") == "");
+    REQUIRE(i18n::get("terrain_mob.smoke_name", "smoke") == "烟雾");
+    REQUIRE(i18n::get("terrain_mob.mist_name", "mist") == "雾霭");
+    REQUIRE(i18n::get("terrain_mob.force_field_name", " force field") == "力场");
+    REQUIRE(i18n::get("terrain_mob.lit_stick_of_dynamite_name", " lit stick of dynamite") == "点燃的炸药棒");
+    REQUIRE(i18n::get("terrain_mob.lit_flare_name", " lit flare") == "点燃的照明棒");
     REQUIRE(i18n::get("knockback.player_knocked_back", "I am knocked back!") == "我被击退了！");
     REQUIRE(
         i18n::get("game_commands.chilling_howl", "I let out a chilling howl.") ==
