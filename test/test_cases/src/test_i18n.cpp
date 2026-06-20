@@ -1432,6 +1432,28 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "making it extremely difficult for assailants to achieve a "
             "succesful hit.") ==
         "赋予施法者对针对自身攻击的预知，使袭击者极难成功命中。");
+    REQUIRE(i18n::get("spells.erudition.name", "Erudition") == "博学");
+    REQUIRE(
+        i18n::get(
+            "spells.erudition.descr_main",
+            "Temporarily bestows the caster with an expanded understanding "
+            "of the esoteric mechanisms behind magical practice. "
+            "The caster's skill is improved by one level for all spells.") ==
+        "暂时赋予施法者对魔法实践背后神秘机制的更深理解。施法者所有法术的技能等级都会提高一级。");
+    REQUIRE(i18n::get("spells.erudition.duration_prefix", "The spell lasts ") == "法术持续");
+    REQUIRE(i18n::get("spells.erudition.duration_turns", " turns") == "回合");
+    REQUIRE(
+        i18n::get(
+            "spells.erudition.duration_transcendent_suffix",
+            ". The effect does not end when casting spells, "
+            "only when the duration expires.") ==
+        "。施放法术时效果不会结束，只有在持续时间到期时才会结束。");
+    REQUIRE(
+        i18n::get(
+            "spells.erudition.duration_normal_suffix",
+            ", or until a spell is cast (either from a Manuscript "
+            "or from memory).") ==
+        "，或者直到施放一个法术为止（无论来自手稿还是记忆）。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

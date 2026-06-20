@@ -5198,7 +5198,7 @@ bool SpellPremonition::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellErudition::name() const
 {
-    return "Erudition";
+    return i18n::get("spells.erudition.name", "Erudition");
 }
 
 SpellId SpellErudition::id() const
@@ -5285,24 +5285,34 @@ std::vector<std::string> SpellErudition::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Temporarily bestows the caster with an expanded understanding "
-        "of the esoteric mechanisms behind magical practice. "
-        "The caster's skill is improved by one level for all spells.");
+        i18n::get(
+            "spells.erudition.descr_main",
+            "Temporarily bestows the caster with an expanded understanding "
+            "of the esoteric mechanisms behind magical practice. "
+            "The caster's skill is improved by one level for all spells."));
 
     std::string duration_descr =
-        "The spell lasts " +
+        i18n::get(
+            "spells.erudition.duration_prefix",
+            "The spell lasts ") +
         get_duration_range(skill).str() +
-        " turns";
+        i18n::get(
+            "spells.erudition.duration_turns",
+            " turns");
 
     if (skill == SpellSkill::transcendent) {
         duration_descr +=
-            ". The effect does not end when casting spells, "
-            "only when the duration expires.";
+            i18n::get(
+                "spells.erudition.duration_transcendent_suffix",
+                ". The effect does not end when casting spells, "
+                "only when the duration expires.");
     }
     else {
         duration_descr +=
-            ", or until a spell is cast (either from a Manuscript "
-            "or from memory).";
+            i18n::get(
+                "spells.erudition.duration_normal_suffix",
+                ", or until a spell is cast (either from a Manuscript "
+                "or from memory).");
     }
 
     descr.push_back(duration_descr);
