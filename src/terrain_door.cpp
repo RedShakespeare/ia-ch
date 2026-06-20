@@ -1171,29 +1171,37 @@ std::string Door::name(const Article article) const
     std::string mod;
 
     if (m_burn_state == BurnState::burning) {
-        a = (article == Article::a) ? "a " : "the ";
+        a = (article == Article::a)
+            ? i18n::get("terrain_door.name_article_a", "a ")
+            : i18n::get("terrain_door.name_article_the", "the ");
 
-        mod = "burning ";
+        mod = i18n::get("terrain_door.name_modifier_burning", "burning ");
     }
 
     if (m_is_open) {
         if (a.empty()) {
-            a = (article == Article::a) ? "an " : "the ";
+            a = (article == Article::a)
+                ? i18n::get("terrain_door.name_article_an", "an ")
+                : i18n::get("terrain_door.name_article_the", "the ");
         }
 
-        mod += "open ";
+        mod += i18n::get("terrain_door.name_modifier_open", "open ");
     }
 
     if (m_is_stuck && m_is_known_stuck) {
-        mod = "stuck ";
+        mod = i18n::get("terrain_door.name_modifier_stuck", "stuck ");
     }
 
     if (a.empty()) {
         if (m_ward_state == WardState::unwarded) {
-            a = (article == Article::a) ? "an " : "the ";
+            a = (article == Article::a)
+                ? i18n::get("terrain_door.name_article_an", "an ")
+                : i18n::get("terrain_door.name_article_the", "the ");
         }
         else {
-            a = (article == Article::a) ? "a " : "the ";
+            a = (article == Article::a)
+                ? i18n::get("terrain_door.name_article_a", "a ")
+                : i18n::get("terrain_door.name_article_the", "the ");
         }
     }
 

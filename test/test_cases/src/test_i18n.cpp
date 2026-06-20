@@ -338,6 +338,12 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain_door.legend_metal", "Door (metal)") == "门（金属）");
     REQUIRE(i18n::get("terrain_door.legend_warded", "Door (warded)") == "门（受守护）");
     REQUIRE(i18n::get("terrain_door.legend", "Door") == "门");
+    REQUIRE(i18n::get("terrain_door.name_article_a", "a ") == "一扇");
+    REQUIRE(i18n::get("terrain_door.name_article_an", "an ") == "一扇");
+    REQUIRE(i18n::get("terrain_door.name_article_the", "the ") == "那扇");
+    REQUIRE(i18n::get("terrain_door.name_modifier_burning", "burning ") == "燃烧的");
+    REQUIRE(i18n::get("terrain_door.name_modifier_open", "open ") == "打开的");
+    REQUIRE(i18n::get("terrain_door.name_modifier_stuck", "stuck ") == "卡住的");
     REQUIRE(i18n::get("terrain_door.name_wooden_door", "wooden door") == "木门");
     REQUIRE(i18n::get("terrain_door.name_warded_door", "warded door") == "受守护的门");
     REQUIRE(i18n::get("terrain_door.name_unwarded_door", "unwarded door") == "失去守护的门");
