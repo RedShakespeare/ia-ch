@@ -8618,7 +8618,7 @@ std::vector<std::string> SpellClairvoyance::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellBloodTempering::name() const
 {
-    return "Blood Tempering";
+    return i18n::get("spells.blood_tempering.name", "Blood Tempering");
 }
 
 SpellId SpellBloodTempering::id() const
@@ -8697,10 +8697,12 @@ std::vector<std::string> SpellBloodTempering::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Through ardous suffering, the caster tempers their body to "
-        "resist physical force (cannot be harmed by normal attacks, "
-        "however other forms of damage such as fire is still "
-        "harmful).");
+        i18n::get(
+            "spells.blood_tempering.descr",
+            "Through ardous suffering, the caster tempers their body to "
+            "resist physical force (cannot be harmed by normal attacks, "
+            "however other forms of damage such as fire is still "
+            "harmful)."));
 
     descr.emplace_back(spell_duration_descr(duration_range(skill).str()));
 
