@@ -1112,6 +1112,28 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "Any time a creature takes damage from the spell, "
             "they may be destroyed immediately (2% chance).") ==
         "每当一个生物受到此法术伤害时，它都可能立即被摧毁（2% 几率）。");
+    REQUIRE(i18n::get("spells.force_bolt.hit_msg_ending", "struck by a bolt!") == "被力能箭击中！");
+    REQUIRE(i18n::get("spells.force_bolt.name", "Force Bolt") == "力能箭");
+    REQUIRE(i18n::get("spells.darkbolt.hit_msg_ending", "struck by a blast!") == "被暗能冲击击中！");
+    REQUIRE(i18n::get("spells.darkbolt.name", "Darkbolt") == "暗能箭");
+    REQUIRE(
+        i18n::get(
+            "spells.darkbolt.descr",
+            "A bolt of siphoned energy is hurled towards a target "
+            "with great force. "
+            "The conjured bolt has some will on its own - "
+            "once released, it seeks creatures that pose a threat, "
+            "precise control is therefore not possible.") ==
+        "一支被汲取出的能量箭以强大力量射向目标。被召唤出的能量箭有一定自主意志——一旦释放，它会寻找构成威胁的生物，因此无法精确控制。");
+    REQUIRE(i18n::get("spells.darkbolt.impact_dmg_prefix", "The impact deals ") == "冲击造成");
+    REQUIRE(i18n::get("spells.darkbolt.impact_dmg_suffix", " damage.") == "点伤害。");
+    REQUIRE(i18n::get("spells.darkbolt.paralyze_burn", " The target is paralyzed and set aflame.") == "目标被麻痹并被点燃。");
+    REQUIRE(
+        i18n::get(
+            "spells.darkbolt.distant_explosion",
+            " If the target is sufficiently far away from "
+            "the caster, the bolt explodes on impact.") == "如果目标距离施法者足够远，能量箭会在命中时爆炸。");
+    REQUIRE(i18n::get("spells.darkbolt.paralyze", " The target is paralyzed.") == "目标被麻痹。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

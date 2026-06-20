@@ -1959,7 +1959,7 @@ void ForceBolt::on_hit(
 
 std::string ForceBolt::hit_msg_ending() const
 {
-    return "struck by a bolt!";
+    return i18n::get("spells.force_bolt.hit_msg_ending", "struck by a bolt!");
 }
 
 int ForceBolt::mon_cooldown() const
@@ -1969,7 +1969,7 @@ int ForceBolt::mon_cooldown() const
 
 std::string ForceBolt::name() const
 {
-    return "Force Bolt";
+    return i18n::get("spells.force_bolt.name", "Force Bolt");
 }
 
 SpellId ForceBolt::id() const
@@ -2010,7 +2010,7 @@ std::vector<std::string> ForceBolt::descr_specific(const SpellSkill skill) const
 
 std::string Darkbolt::hit_msg_ending() const
 {
-    return "struck by a blast!";
+    return i18n::get("spells.darkbolt.hit_msg_ending", "struck by a blast!");
 }
 
 int Darkbolt::mon_cooldown() const
@@ -2020,7 +2020,7 @@ int Darkbolt::mon_cooldown() const
 
 std::string Darkbolt::name() const
 {
-    return "Darkbolt";
+    return i18n::get("spells.darkbolt.name", "Darkbolt");
 }
 
 SpellId Darkbolt::id() const
@@ -2057,28 +2057,38 @@ std::vector<std::string> Darkbolt::descr_specific(const SpellSkill skill) const
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "A bolt of siphoned energy is hurled towards a target "
-        "with great force. "
-        "The conjured bolt has some will on its own - "
-        "once released, it seeks creatures that pose a threat, "
-        "precise control is therefore not possible.");
+        i18n::get(
+            "spells.darkbolt.descr",
+            "A bolt of siphoned energy is hurled towards a target "
+            "with great force. "
+            "The conjured bolt has some will on its own - "
+            "once released, it seeks creatures that pose a threat, "
+            "precise control is therefore not possible."));
 
     const Range dmg_range = damage(skill);
 
-    std::string effect_str = "The impact deals " + dmg_range.str() + " damage.";
+    std::string effect_str =
+        i18n::get("spells.darkbolt.impact_dmg_prefix", "The impact deals ") +
+        dmg_range.str() +
+        i18n::get("spells.darkbolt.impact_dmg_suffix", " damage.");
 
     if (skill >= SpellSkill::master) {
-        effect_str += " The target is paralyzed and set aflame.";
+        effect_str += i18n::get(
+            "spells.darkbolt.paralyze_burn",
+            " The target is paralyzed and set aflame.");
 
         if (skill == SpellSkill::transcendent) {
-            effect_str +=
+            effect_str += i18n::get(
+                "spells.darkbolt.distant_explosion",
                 " If the target is sufficiently far away from "
-                "the caster, the bolt explodes on impact.";
+                "the caster, the bolt explodes on impact.");
         }
     }
     else {
         // <= Expert
-        effect_str += " The target is paralyzed.";
+        effect_str += i18n::get(
+            "spells.darkbolt.paralyze",
+            " The target is paralyzed.");
     }
 
     descr.push_back(effect_str);
