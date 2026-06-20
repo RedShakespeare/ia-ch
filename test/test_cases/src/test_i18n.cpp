@@ -1198,6 +1198,56 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "are immune to magic, can cast spells, and have "
             "extra hit points and damage.") ==
         "其中一些老鼠是以太形态（更难命中，可以穿过实体物体），免疫魔法，可以施放法术，并拥有额外生命值和伤害。");
+    REQUIRE(i18n::get("spells.mirror_images.name", "Mirror Images") == "镜像");
+    REQUIRE(
+        i18n::get(
+            "spells.mirror_images.descr",
+            "Conjures illusory duplicates of the caster "
+            "to mislead enemies and draw their attacks.") == "召唤施法者的幻象复制体，以误导敌人并吸引它们的攻击。");
+    REQUIRE(
+        i18n::get(
+            "spells.mirror_images.presence_descr",
+            "The mirror images project a powerful magical presence, "
+            "causing attackers to prefer them over the caster. "
+            "As magical apparitions rather than living creatures, "
+            "they are extremely difficult to strike with conventional attacks. "
+            "They are immune to elemental damage and largely unaffected by physical "
+            "or mental afflictions.") ==
+        "镜像散发强大的魔法存在感，使攻击者更倾向于攻击它们而不是施法者。它们是魔法幻影而非活物，常规攻击极难命中。它们免疫元素伤害，并且基本不受身体或精神异常影响。");
+    REQUIRE(i18n::get("spells.mirror_images.creates_prefix", "Creates ") == "创造");
+    REQUIRE(i18n::get("spells.mirror_images.creates_middle", " mirror images. They exist for ") == "个镜像。它们存在");
+    REQUIRE(i18n::get("spells.mirror_images.creates_suffix", " turns (their own turns).") == "回合（以它们自己的回合计）。");
+    REQUIRE(i18n::get("spells.projected_strike.name", "Projected Strike") == "投影打击");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.descr",
+            "Launches a psychic projection of the caster's carried melee weapons.") == "发射施法者携带的近战武器的灵能投影。");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.attack_prefix",
+            "Each projection attacks a visible enemy, using the caster's combat skill with +") ==
+        "每个投影攻击一个可见敌人，使用施法者的战斗技能并获得 +");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.attack_suffix",
+            "% hit chance bonus. "
+            "No enemy can be targeted more than once.") == "% 命中率加成。没有敌人会被选为目标超过一次。");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.unlimited_weapons",
+            "An unlimited number of weapons can be used for atacking.") == "可以使用无限数量的武器进行攻击。");
+    REQUIRE(i18n::get("spells.projected_strike.max_weapons_prefix", "A maximum of ") == "最多可使用");
+    REQUIRE(i18n::get("spells.projected_strike.max_weapons_middle", " ") == "");
+    REQUIRE(i18n::get("spells.projected_strike.weapon_singular", "weapon") == "件武器");
+    REQUIRE(i18n::get("spells.projected_strike.weapon_plural", "weapons") == "件武器");
+    REQUIRE(i18n::get("spells.projected_strike.max_weapons_suffix", " may be used for attacking.") == "进行攻击。");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.attacker_descr",
+            "The caster acts as attacker - all normal conditions that affect "
+            "hit chance or damage apply "
+            "(e.g. bonus damage from melee traits, or damage penalty from being weakened).") ==
+        "施法者被视为攻击者 - 所有影响命中率或伤害的常规条件都会生效（例如近战特质的额外伤害，或虚弱造成的伤害惩罚）。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

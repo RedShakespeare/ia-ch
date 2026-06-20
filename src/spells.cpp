@@ -3020,7 +3020,7 @@ bool SpellPestilence::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellMirrorImages::name() const
 {
-    return "Mirror Images";
+    return i18n::get("spells.mirror_images.name", "Mirror Images");
 }
 
 SpellId SpellMirrorImages::id() const
@@ -3143,27 +3143,35 @@ std::vector<std::string> SpellMirrorImages::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Conjures illusory duplicates of the caster "
-        "to mislead enemies and draw their attacks.");
+        i18n::get(
+            "spells.mirror_images.descr",
+            "Conjures illusory duplicates of the caster "
+            "to mislead enemies and draw their attacks."));
 
     descr.emplace_back(
-        "The mirror images project a powerful magical presence, "
-        "causing attackers to prefer them over the caster. "
-        "As magical apparitions rather than living creatures, "
-        "they are extremely difficult to strike with conventional attacks. "
-        "They are immune to elemental damage and largely unaffected by physical "
-        "or mental afflictions.");
+        i18n::get(
+            "spells.mirror_images.presence_descr",
+            "The mirror images project a powerful magical presence, "
+            "causing attackers to prefer them over the caster. "
+            "As magical apparitions rather than living creatures, "
+            "they are extremely difficult to strike with conventional attacks. "
+            "They are immune to elemental damage and largely unaffected by physical "
+            "or mental afflictions."));
 
     const size_t nr_mon = nr_mirror_images_summoned(skill);
 
     const Range duration = duration_range(skill);
 
     descr.emplace_back(
-        "Creates " +
+        i18n::get("spells.mirror_images.creates_prefix", "Creates ") +
         std::to_string(nr_mon) +
-        " mirror images. They exist for " +
+        i18n::get(
+            "spells.mirror_images.creates_middle",
+            " mirror images. They exist for ") +
         duration.str() +
-        " turns (their own turns).");
+        i18n::get(
+            "spells.mirror_images.creates_suffix",
+            " turns (their own turns)."));
 
     return descr;
 }
@@ -3173,7 +3181,7 @@ std::vector<std::string> SpellMirrorImages::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellProjectedStrike::name() const
 {
-    return "Projected Strike";
+    return i18n::get("spells.projected_strike.name", "Projected Strike");
 }
 
 SpellId SpellProjectedStrike::id() const
@@ -3350,40 +3358,55 @@ std::vector<std::string> SpellProjectedStrike::descr_specific(
 {
     std::vector<std::string> descr;
 
-    descr.emplace_back("Launches a psychic projection of the caster's carried melee weapons.");
+    descr.emplace_back(i18n::get(
+        "spells.projected_strike.descr",
+        "Launches a psychic projection of the caster's carried melee weapons."));
 
     descr.emplace_back(
-        "Each projection attacks a visible enemy, using the caster's combat skill with +" +
+        i18n::get(
+            "spells.projected_strike.attack_prefix",
+            "Each projection attacks a visible enemy, using the caster's combat skill with +") +
         std::to_string(hit_chance_bonus(skill)) +
-        "% hit chance bonus. "
-        "No enemy can be targeted more than once.");
+        i18n::get(
+            "spells.projected_strike.attack_suffix",
+            "% hit chance bonus. "
+            "No enemy can be targeted more than once."));
 
     const int nr_max = max_nr_weapons(skill);
 
     std::string nr_str;
 
     if (nr_max == -1) {
-        nr_str = "An unlimited number of weapons can be used for atacking.";
+        nr_str = i18n::get(
+            "spells.projected_strike.unlimited_weapons",
+            "An unlimited number of weapons can be used for atacking.");
     }
     else {
-        nr_str = "A maximum of " + std::to_string(nr_max) + " ";
+        nr_str =
+            i18n::get("spells.projected_strike.max_weapons_prefix", "A maximum of ") +
+            std::to_string(nr_max) +
+            i18n::get("spells.projected_strike.max_weapons_middle", " ");
 
         if (nr_max == 1) {
-            nr_str += "weapon";
+            nr_str += i18n::get("spells.projected_strike.weapon_singular", "weapon");
         }
         else {
-            nr_str += "weapons";
+            nr_str += i18n::get("spells.projected_strike.weapon_plural", "weapons");
         }
 
-        nr_str += " may be used for attacking.";
+        nr_str += i18n::get(
+            "spells.projected_strike.max_weapons_suffix",
+            " may be used for attacking.");
     }
 
     descr.push_back(nr_str);
 
     descr.emplace_back(
-        "The caster acts as attacker - all normal conditions that affect "
-        "hit chance or damage apply "
-        "(e.g. bonus damage from melee traits, or damage penalty from being weakened).");
+        i18n::get(
+            "spells.projected_strike.attacker_descr",
+            "The caster acts as attacker - all normal conditions that affect "
+            "hit chance or damage apply "
+            "(e.g. bonus damage from melee traits, or damage penalty from being weakened)."));
 
     return descr;
 }
