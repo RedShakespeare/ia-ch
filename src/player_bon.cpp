@@ -1131,22 +1131,22 @@ std::string bg_title(const Bg id)
 {
     switch (id) {
     case Bg::exorcist:
-        return "Exorcist";
+        return i18n::get("player_bon.background.exorcist.title", "Exorcist");
 
     case Bg::flagellant:
-        return "Flagellant";
+        return i18n::get("player_bon.background.flagellant.title", "Flagellant");
 
     case Bg::ghoul:
-        return "Ghoul";
+        return i18n::get("player_bon.background.ghoul.title", "Ghoul");
 
     case Bg::occultist:
-        return "Occultist";
+        return i18n::get("player_bon.background.occultist.title", "Occultist");
 
     case Bg::rogue:
-        return "Rogue";
+        return i18n::get("player_bon.background.rogue.title", "Rogue");
 
     case Bg::war_vet:
-        return "War Veteran";
+        return i18n::get("player_bon.background.war_vet.title", "War Veteran");
 
     case Bg::END:
         break;

@@ -1095,25 +1095,25 @@ std::string spell_domain_title(const SpellDomain domain)
 {
     switch (domain) {
     case SpellDomain::channeling:
-        return "Channeling";
+        return i18n::get("spells.domain.channeling", "Channeling");
 
     case SpellDomain::corruption:
-        return "Corruption";
+        return i18n::get("spells.domain.corruption", "Corruption");
 
     case SpellDomain::illusion:
-        return "Illusion";
+        return i18n::get("spells.domain.illusion", "Illusion");
 
     case SpellDomain::mind:
-        return "Mind";
+        return i18n::get("spells.domain.mind", "Mind");
 
     case SpellDomain::time:
-        return "Time";
+        return i18n::get("spells.domain.time", "Time");
 
     case SpellDomain::warding:
-        return "Warding";
+        return i18n::get("spells.domain.warding", "Warding");
 
     case SpellDomain::blood:
-        return "Blood";
+        return i18n::get("spells.domain.blood", "Blood");
 
     case SpellDomain::END:
         break;
