@@ -910,35 +910,41 @@ static void update_trait_data()
 
     // --- Prolonged Life ---
     d.id = TraitId::prolonged_life;
-    d.title = "Prolonged Life";
-    d.descr = "Any fatal damage received is instead drained from your fervor points";
+    d.title = i18n::get("player_bon.trait.prolonged_life.title", "Prolonged Life");
+    d.descr = i18n::get(
+        "player_bon.trait.prolonged_life.descr",
+        "Any fatal damage received is instead drained from your fervor points");
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
 
     // --- Ravenous ---
     d.id = TraitId::ravenous;
-    d.title = "Ravenous";
-    d.descr = "You occasionally feed on living victims when attacking with claws";
+    d.title = i18n::get("player_bon.trait.ravenous.title", "Ravenous");
+    d.descr = i18n::get(
+        "player_bon.trait.ravenous.descr",
+        "You occasionally feed on living victims when attacking with claws");
     d.trait_prereqs = {TraitId::adept_melee};
     d.bg_prereq = Bg::ghoul;
     set_trait_data(d);
 
     // --- Foul ---
     d.id = TraitId::foul;
-    d.title = "Foul";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.foul.title", "Foul");
+    d.descr = i18n::get(
+        "player_bon.trait.foul.descr",
         "+1 claw damage, when attacking with claws, vicious worms "
         "occasionally burst out from the corpses of your victims to "
-        "attack your enemies";
+        "attack your enemies");
     d.bg_prereq = Bg::ghoul;
     set_trait_data(d);
 
     // --- Toxic ---
     d.id = TraitId::toxic;
-    d.title = "Toxic";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.toxic.title", "Toxic");
+    d.descr = i18n::get(
+        "player_bon.trait.toxic.descr",
         "+1 claw damage, you are immune to poison, and attacks with "
-        "your claws often poisons your victims";
+        "your claws often poisons your victims");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_poison);
 
@@ -959,67 +965,80 @@ static void update_trait_data()
 
     // --- Indomitable Fury ---
     d.id = TraitId::indomitable_fury;
-    d.title = "Indomitable Fury";
-    d.descr = "While frenzied, you are immune to wounds, and your claw attacks cause fear";
+    d.title = i18n::get("player_bon.trait.indomitable_fury.title", "Indomitable Fury");
+    d.descr = i18n::get(
+        "player_bon.trait.indomitable_fury.descr",
+        "While frenzied, you are immune to wounds, and your claw attacks cause fear");
     d.trait_prereqs = {TraitId::adept_melee, TraitId::tough};
     d.bg_prereq = Bg::ghoul;
     set_trait_data(d);
 
     // --- Elusive ---
     d.id = TraitId::elusive;
-    d.title = "Elusive";
-    d.descr = "Creatures only remember you for half the normal duration (rounded up).";
+    d.title = i18n::get("player_bon.trait.elusive.title", "Elusive");
+    d.descr = i18n::get(
+        "player_bon.trait.elusive.descr",
+        "Creatures only remember you for half the normal duration (rounded up).");
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Vicious ---
     d.id = TraitId::vicious;
-    d.title = "Vicious";
-    d.descr = "+100% backstab damage (in addition to the normal +50%)";
+    d.title = i18n::get("player_bon.trait.vicious.title", "Vicious");
+    d.descr = i18n::get(
+        "player_bon.trait.vicious.descr",
+        "+100% backstab damage (in addition to the normal +50%)");
     d.trait_prereqs = {TraitId::stealthy, TraitId::dexterous};
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Ruthless ---
     d.id = TraitId::ruthless;
-    d.title = "Ruthless";
-    d.descr = "+100% backstab damage";
+    d.title = i18n::get("player_bon.trait.ruthless.title", "Ruthless");
+    d.descr = i18n::get(
+        "player_bon.trait.ruthless.descr",
+        "+100% backstab damage");
     d.trait_prereqs = {TraitId::vicious};
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Steady Aimer ---
     d.id = TraitId::steady_aimer;
-    d.title = "Steady Aimer";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.steady_aimer.title", "Steady Aimer");
+    d.descr = i18n::get(
+        "player_bon.trait.steady_aimer.descr",
         "Standing still gives ranged attacks maximum damage and +10% "
-        "hit chance on the following turn, unless damage is taken";
+        "hit chance on the following turn, unless damage is taken");
     d.bg_prereq = Bg::war_vet;
     set_trait_data(d);
 
     // --- Galvanization ---
     d.id = TraitId::galvanization;
-    d.title = "Galvanization";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.galvanization.title", "Galvanization");
+    d.descr = i18n::get(
+        "player_bon.trait.galvanization.descr",
         "Casting any spell from the Blood domain grants "
         "Regeneration for 4-6 turns "
         "(+1 extra hit point regenerated per turn), if "
-        "hit points are lost from casting the spell";
+        "hit points are lost from casting the spell");
     d.bg_prereq = Bg::flagellant;
     set_trait_data(d);
 
     d.id = TraitId::enthusiasm;
-    d.title = "Enthusiasm";
-    d.descr = "Doubles all bonuses for the moribund effect";
+    d.title = i18n::get("player_bon.trait.enthusiasm.title", "Enthusiasm");
+    d.descr = i18n::get(
+        "player_bon.trait.enthusiasm.descr",
+        "Doubles all bonuses for the moribund effect");
     d.bg_prereq = Bg::flagellant;
     set_trait_data(d);
 
     // --- Memento Mori ---
     d.id = TraitId::memento_mori;
-    d.title = "Memento Mori";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.memento_mori.title", "Memento Mori");
+    d.descr = i18n::get(
+        "player_bon.trait.memento_mori.descr",
         "Raises the threshold of the moribund status to 8 hit points, "
-        "and increases the duration of the effect by 50% (rounded down)";
+        "and increases the duration of the effect by 50% (rounded down)");
     d.bg_prereq = Bg::flagellant;
     set_trait_data(d);
 }

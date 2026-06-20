@@ -464,6 +464,68 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("player_bon.trait.cast_sanctuary_ii.title", "Cast Sanctuary II") == "施放庇护 II");
     REQUIRE(i18n::get("player_bon.trait.cast_see_invisible_i.title", "Cast See Invisible") == "施放识破隐形");
     REQUIRE(i18n::get("player_bon.trait.cast_see_invisible_ii.title", "Cast See Invisible II") == "施放识破隐形 II");
+    REQUIRE(i18n::get("player_bon.trait.prolonged_life.title", "Prolonged Life") == "延续生命");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.prolonged_life.descr",
+            "Any fatal damage received is instead drained from your fervor points") == "受到任何致命伤害时改为消耗你的热忱点数");
+    REQUIRE(i18n::get("player_bon.trait.ravenous.title", "Ravenous") == "贪食");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.ravenous.descr",
+            "You occasionally feed on living victims when attacking with claws") == "用爪攻击时，你偶尔会吞食活体受害者");
+    REQUIRE(i18n::get("player_bon.trait.foul.title", "Foul") == "污秽");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.foul.descr",
+            "+1 claw damage, when attacking with claws, vicious worms "
+            "occasionally burst out from the corpses of your victims to "
+            "attack your enemies") == "+1爪击伤害，用爪攻击时，恶毒蠕虫偶尔会从受害者尸体中爆出并攻击你的敌人");
+    REQUIRE(i18n::get("player_bon.trait.toxic.title", "Toxic") == "剧毒");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.toxic.descr",
+            "+1 claw damage, you are immune to poison, and attacks with "
+            "your claws often poisons your victims") == "+1爪击伤害，你免疫中毒，并且用爪攻击经常会使受害者中毒");
+    REQUIRE(i18n::get("player_bon.trait.indomitable_fury.title", "Indomitable Fury") == "不屈狂怒");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.indomitable_fury.descr",
+            "While frenzied, you are immune to wounds, and your claw attacks cause fear") == "狂暴时，你免疫伤口，爪击会造成恐惧");
+    REQUIRE(i18n::get("player_bon.trait.elusive.title", "Elusive") == "难以捉摸");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.elusive.descr",
+            "Creatures only remember you for half the normal duration (rounded up).") == "生物记住你的时间只有正常持续时间的一半（向上取整）。");
+    REQUIRE(i18n::get("player_bon.trait.vicious.title", "Vicious") == "凶狠");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.vicious.descr",
+            "+100% backstab damage (in addition to the normal +50%)") == "+100%背刺伤害（在普通+50%之外）");
+    REQUIRE(i18n::get("player_bon.trait.ruthless.title", "Ruthless") == "无情");
+    REQUIRE(i18n::get("player_bon.trait.ruthless.descr", "+100% backstab damage") == "+100%背刺伤害");
+    REQUIRE(i18n::get("player_bon.trait.steady_aimer.title", "Steady Aimer") == "稳定瞄准");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.steady_aimer.descr",
+            "Standing still gives ranged attacks maximum damage and +10% "
+            "hit chance on the following turn, unless damage is taken") == "站立不动会让下一回合的远程攻击造成最大伤害并+10%命中率，除非受到伤害");
+    REQUIRE(i18n::get("player_bon.trait.galvanization.title", "Galvanization") == "激发");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.galvanization.descr",
+            "Casting any spell from the Blood domain grants "
+            "Regeneration for 4-6 turns "
+            "(+1 extra hit point regenerated per turn), if "
+            "hit points are lost from casting the spell") == "施放任何鲜血领域法术会赋予再生4-6回合（每回合额外再生+1生命值），前提是施法损失了生命值");
+    REQUIRE(i18n::get("player_bon.trait.enthusiasm.title", "Enthusiasm") == "狂热");
+    REQUIRE(i18n::get("player_bon.trait.enthusiasm.descr", "Doubles all bonuses for the moribund effect") == "使濒死效果的所有加成翻倍");
+    REQUIRE(i18n::get("player_bon.trait.memento_mori.title", "Memento Mori") == "记住死亡");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.memento_mori.descr",
+            "Raises the threshold of the moribund status to 8 hit points, "
+            "and increases the duration of the effect by 50% (rounded down)") == "将濒死状态阈值提高到8点生命值，并将效果持续时间增加50%（向下取整）");
     REQUIRE(
         i18n::get(
             "property.mon_struggles_tear_free_suffix",
