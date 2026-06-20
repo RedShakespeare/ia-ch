@@ -307,6 +307,24 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.vegetation_scorched_prefix", "scorched ") == "焦黑的");
     REQUIRE(i18n::get("terrain.tree_giant_fungi", "giant fungi") == "巨型真菌");
     REQUIRE(i18n::get("terrain.tree", "tree") == "树");
+    REQUIRE(i18n::get("terrain.petroglyph", "petroglyph") == "岩刻");
+    REQUIRE(i18n::get("terrain.debris_big_pile", "big pile of debris") == "大堆碎石");
+    REQUIRE(i18n::get("terrain.rubble_article_a", "") == "");
+    REQUIRE(i18n::get("terrain.rubble_burning_prefix", "burning ") == "燃烧的");
+    REQUIRE(i18n::get("terrain.rubble", "rubble") == "瓦砾");
+    REQUIRE(i18n::get("terrain.bones_article_a", "") == "");
+    REQUIRE(i18n::get("terrain.bones", "bones") == "骸骨");
+    REQUIRE(i18n::get("terrain.gravestone_prefix", "gravestone (\"") == "墓碑（\"");
+    REQUIRE(i18n::get("terrain.gravestone_suffix", "\")") == "\"）");
+    REQUIRE(i18n::get("terrain.church_bench", "church bench") == "教堂长椅");
+    REQUIRE(i18n::get("terrain.statue", "statue") == "雕像");
+    REQUIRE(
+        i18n::get(
+            "terrain.statue_of_ghoulish_creature",
+            "statue of a ghoulish creature") == "食尸鬼状生物的雕像");
+    REQUIRE(i18n::get("terrain.urn_inscribed", "inscribed urn") == "刻文瓮");
+    REQUIRE(i18n::get("terrain.urn", "urn") == "瓮");
+    REQUIRE(i18n::get("terrain.stalagmite", "stalagmite") == "石笋");
     REQUIRE(i18n::get("terrain.downward_staircase", "downward staircase") == "向下的楼梯");
     REQUIRE(i18n::get("terrain.bridge", "bridge") == "桥");
     REQUIRE(i18n::get("terrain.water", "water") == "水");

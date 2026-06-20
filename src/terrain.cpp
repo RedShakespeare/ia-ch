@@ -1143,11 +1143,15 @@ void Petroglyph::on_new_turn()
 
 std::string Petroglyph::name(const Article article) const
 {
-    const std::string article_str = (article == Article::a) ? "a" : "the";
+    const std::string article_str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    const std::string name_str = "petroglyph";
+    const std::string name_str =
+        i18n::get("terrain.petroglyph", "petroglyph");
 
-    return article_str + " " + name_str;
+    return article_str + name_str;
 }
 
 Color Petroglyph::color_default() const
@@ -1206,9 +1210,12 @@ void RubbleHigh::hit(
 
 std::string RubbleHigh::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "big pile of debris";
+    return a + i18n::get("terrain.debris_big_pile", "big pile of debris");
 }
 
 Color RubbleHigh::color_default() const
@@ -1247,15 +1254,19 @@ std::string RubbleLow::name(const Article article) const
 {
     std::string str;
 
+    if (article == Article::a) {
+        str += i18n::get("terrain.rubble_article_a", "");
+    }
+
     if (article == Article::the) {
-        str += "the ";
+        str += i18n::get("terrain.article_the_space", "the ");
     }
 
     if (m_burn_state == BurnState::burning) {
-        str += "burning ";
+        str += i18n::get("terrain.rubble_burning_prefix", "burning ");
     }
 
-    return str + "rubble";
+    return str + i18n::get("terrain.rubble", "rubble");
 }
 
 Color RubbleLow::color_default() const
@@ -1286,11 +1297,15 @@ std::string Bones::name(const Article article) const
 {
     std::string str;
 
-    if (article == Article::the) {
-        str += "the ";
+    if (article == Article::a) {
+        str += i18n::get("terrain.bones_article_a", "");
     }
 
-    return str + "bones";
+    if (article == Article::the) {
+        str += i18n::get("terrain.article_the_space", "the ");
+    }
+
+    return str + i18n::get("terrain.bones", "bones");
 }
 
 Color Bones::color_default() const
@@ -1325,9 +1340,14 @@ void GraveStone::bump(actor::Actor& actor_bumping)
 
 std::string GraveStone::name(const Article article) const
 {
-    const std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "gravestone (\"" + m_inscr + "\")";
+    return a + i18n::get("terrain.gravestone_prefix", "gravestone (\"") +
+           m_inscr +
+           i18n::get("terrain.gravestone_suffix", "\")");
 }
 
 Color GraveStone::color_default() const
@@ -1375,9 +1395,12 @@ void ChurchBench::hit(
 
 std::string ChurchBench::name(const Article article) const
 {
-    const std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "church bench";
+    return a + i18n::get("terrain.church_bench", "church bench");
 }
 
 Color ChurchBench::color_default() const
@@ -1413,7 +1436,11 @@ void Statue::topple(
     const Dir direction,
     actor::Actor* const actor_toppling)
 {
-    topple_object(*this, "statue", direction, actor_toppling);
+    topple_object(
+        *this,
+        i18n::get("terrain.statue", "statue"),
+        direction,
+        actor_toppling);
 }
 
 bool Statue::allow_player_melee_attack(
@@ -1496,15 +1523,20 @@ void Statue::on_new_turn()
 
 std::string Statue::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     switch (m_type) {
     case StatueType::common:
-        str += "statue";
+        str += i18n::get("terrain.statue", "statue");
         break;
 
     case StatueType::ghoul:
-        str += "statue of a ghoulish creature";
+        str += i18n::get(
+            "terrain.statue_of_ghoulish_creature",
+            "statue of a ghoulish creature");
         break;
     }
 
@@ -1579,7 +1611,11 @@ void Urn::topple(
     const Dir direction,
     actor::Actor* const actor_toppling)
 {
-    topple_object(*this, "urn", direction, actor_toppling);
+    topple_object(
+        *this,
+        i18n::get("terrain.urn", "urn"),
+        direction,
+        actor_toppling);
 }
 
 bool Urn::allow_player_melee_attack(
@@ -1654,19 +1690,19 @@ std::string Urn::name(const Article article) const
     std::string name_str;
 
     if (m_is_inscribed) {
-        article_str = "an";
-        name_str = "inscribed urn";
+        article_str = i18n::get("terrain.article_an_space", "an ");
+        name_str = i18n::get("terrain.urn_inscribed", "inscribed urn");
     }
     else {
-        article_str = "an";
-        name_str = "urn";
+        article_str = i18n::get("terrain.article_an_space", "an ");
+        name_str = i18n::get("terrain.urn", "urn");
     }
 
     if (article == Article::the) {
-        article_str = "the";
+        article_str = i18n::get("terrain.article_the_space", "the ");
     }
 
-    return article_str + " " + name_str;
+    return article_str + name_str;
 }
 
 gfx::TileId Urn::tile() const
@@ -1735,9 +1771,12 @@ void Stalagmite::hit(
 
 std::string Stalagmite::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "stalagmite";
+    return a + i18n::get("terrain.stalagmite", "stalagmite");
 }
 
 Color Stalagmite::color_default() const
