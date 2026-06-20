@@ -123,11 +123,12 @@ static std::string make_continue_remove_armor_query_msg()
             ItemNameInfo::yes);
 
     return (
-        "Continue taking off " +
+        i18n::get("actor_player.continue_taking_off", "Continue taking off ") +
         armor_name +
-        " (" +
+        i18n::get("actor_player.turns_left_open", " (") +
         turns_left_str +
-        " turns left)? " +
+        i18n::get("actor_player.turns_left_suffix", " turns left)?") +
+        " " +
         common_text::g_yes_or_no_hint);
 }
 
@@ -143,11 +144,12 @@ static std::string make_continue_equip_armor_query_msg()
             ItemNameInfo::yes);
 
     return (
-        "Continue putting on " +
+        i18n::get("actor_player.continue_putting_on", "Continue putting on ") +
         armor_name +
-        " (" +
+        i18n::get("actor_player.turns_left_open", " (") +
         turns_left_str +
-        " turns left)? " +
+        i18n::get("actor_player.turns_left_suffix", " turns left)?") +
+        " " +
         common_text::g_yes_or_no_hint);
 }
 
@@ -223,9 +225,10 @@ static void interrupt_equip_other_item(const ForceInterruptActions is_forced)
                 ItemNameInfo::yes);
 
         const std::string msg =
-            "Continue equipping " +
+            i18n::get("actor_player.continue_equipping", "Continue equipping ") +
             wpn_name +
-            "? " +
+            i18n::get("actor_player.query_suffix", "?") +
+            " " +
             common_text::g_yes_or_no_hint;
 
         msg_log::add(
@@ -298,13 +301,13 @@ void print_player_aware_invis_mon_msg(const Actor& mon)
     std::string mon_ref;
 
     if (mon.m_data->is_ghost) {
-        mon_ref = "some foul entity";
+        mon_ref = i18n::get("actor_player.some_foul_entity", "some foul entity");
     }
     else if (mon.m_data->is_humanoid) {
-        mon_ref = "someone";
+        mon_ref = i18n::get("actor_player.someone", "someone");
     }
     else {
-        mon_ref = "a creature";
+        mon_ref = i18n::get("actor_player.a_creature", "a creature");
     }
 
     msg_log::add(
@@ -682,14 +685,19 @@ void Actor::mon_feeling() const
 
     if (print_unique_mon_feeling && rnd::percent(80)) {
         std::vector<std::string> msg_bucket {
-            "A chill runs down my spine.",
-            "I sense a great danger.",
+            i18n::get(
+                "actor_player.chill_runs_down_spine",
+                "A chill runs down my spine."),
+            i18n::get(
+                "actor_player.sense_great_danger",
+                "I sense a great danger."),
         };
 
         // This message only makes sense if the player is fearful
         if (!player_bon::has_trait(TraitId::fearless) &&
             !m_properties.has(prop::Id::frenzied)) {
-            msg_bucket.emplace_back("I feel anxious.");
+            msg_bucket.emplace_back(
+                i18n::get("actor_player.feel_anxious", "I feel anxious."));
         }
 
         const auto msg = rnd::element(msg_bucket);

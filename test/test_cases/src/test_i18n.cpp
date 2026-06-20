@@ -337,6 +337,18 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_player.monster_here_prefix", "There is ") == "这里有");
     REQUIRE(i18n::get("actor_player.monster_here_suffix", " here!") == "！");
     REQUIRE(i18n::get("actor_player.more_fervent", "I feel more fervent!") == "我感到更加虔诚！");
+    REQUIRE(i18n::get("actor_player.continue_taking_off", "Continue taking off ") == "继续脱下");
+    REQUIRE(i18n::get("actor_player.continue_putting_on", "Continue putting on ") == "继续穿上");
+    REQUIRE(i18n::get("actor_player.continue_equipping", "Continue equipping ") == "继续装备");
+    REQUIRE(i18n::get("actor_player.turns_left_open", " (") == "（");
+    REQUIRE(i18n::get("actor_player.turns_left_suffix", " turns left)?") == "回合剩余）？");
+    REQUIRE(i18n::get("actor_player.query_suffix", "?") == "？");
+    REQUIRE(i18n::get("actor_player.some_foul_entity", "some foul entity") == "某个污秽的实体");
+    REQUIRE(i18n::get("actor_player.someone", "someone") == "某人");
+    REQUIRE(i18n::get("actor_player.a_creature", "a creature") == "某个生物");
+    REQUIRE(i18n::get("actor_player.chill_runs_down_spine", "A chill runs down my spine.") == "一阵寒意顺着我的脊背爬过。");
+    REQUIRE(i18n::get("actor_player.sense_great_danger", "I sense a great danger.") == "我感觉到巨大的危险。");
+    REQUIRE(i18n::get("actor_player.feel_anxious", "I feel anxious.") == "我感到焦虑。");
     REQUIRE(i18n::get("actor_player.insane_message", "My mind can no longer withstand what it has grasped. I am hopelessly lost.") == "我的心智再也无法承受它所领悟的东西。我已经彻底迷失了。");
     REQUIRE(i18n::get("actor_player.insane_title", "Insane!") == "疯狂！");
     REQUIRE(i18n::get("actor_death.agonized_screaming", "I hear agonized screaming.") == "我听到痛苦的尖叫。");
