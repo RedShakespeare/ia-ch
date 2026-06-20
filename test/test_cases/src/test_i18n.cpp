@@ -995,6 +995,48 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("item_curse.fire_descr", "it spontaneously sets objects around the caster on fire.") == "它会自发点燃施法者周围的物体。");
     REQUIRE(i18n::get("item_curse.cannot_read_descr", "it prevents the owner from comprehending written language.") == "它会阻止持有者理解书面语言。");
     REQUIRE(i18n::get("item_curse.light_sensitive_descr", "the owner is harmed by light.") == "持有者会被光线伤害。");
+    REQUIRE(i18n::get("item_potion.vitality_name", "Vitality") == "生命力");
+    REQUIRE(
+        i18n::get(
+            "item_potion.vitality_descr",
+            "This elixir fully restores all hit points, heals all "
+            "wounds, and cures blindness, deafness, poisoning, "
+            "infections, disease and weakening. "
+            "Also, for some duration after consuming the potion, "
+            "+1 extra hit point is healed per turn, and there is "
+            "10% chance per turn to heal one wound.") ==
+        "这种灵药会完全恢复所有生命值，治疗所有伤口，并治愈失明、失聪、中毒、感染、疾病和虚弱。此外，饮用药水后的一段时间内，每回合会额外恢复 1 点生命值，并且每回合有 10% 几率治疗一个伤口。");
+    REQUIRE(i18n::get("item_potion.spirit_name", "Spirit") == "精神");
+    REQUIRE(i18n::get("item_potion.spirit_descr", "Fully restores the spirit.") == "完全恢复精神。");
+    REQUIRE(i18n::get("item_potion.blindness_name", "Blindness") == "失明");
+    REQUIRE(i18n::get("item_potion.blindness_descr", "Causes temporary loss of vision.") == "导致暂时失去视觉。");
+    REQUIRE(i18n::get("item_potion.paralyzation_name", "Paralyzation") == "麻痹");
+    REQUIRE(i18n::get("item_potion.paralyzation_descr", "Causes paralysis.") == "导致麻痹。");
+    REQUIRE(i18n::get("item_potion.disease_name", "Disease") == "疾病");
+    REQUIRE(i18n::get("item_potion.disease_descr", "Causes disease.") == "导致疾病。");
+    REQUIRE(i18n::get("item_potion.confusion_name", "Confusion") == "混乱");
+    REQUIRE(i18n::get("item_potion.confusion_descr", "Causes confusion.") == "导致混乱。");
+    REQUIRE(i18n::get("item_potion.fortitude_name", "Fortitude") == "坚韧");
+    REQUIRE(
+        i18n::get(
+            "item_potion.fortitude_descr",
+            "Gives the consumer complete peace and clarity of mind.") ==
+        "给予饮用者完全的平静与清明。");
+    REQUIRE(i18n::get("item_potion.poison_name", "Poison") == "毒");
+    REQUIRE(i18n::get("item_potion.poison_descr", "A sinister brew.") == "一剂邪恶的药水。");
+    REQUIRE(i18n::get("item_potion.insight_name", "Insight") == "洞察");
+    REQUIRE(
+        i18n::get(
+            "item_potion.insight_descr",
+            "This strange concoction causes a sudden flash of intuition.") ==
+        "这种奇异的混合物会带来一阵突如其来的直觉闪现。");
+    REQUIRE(i18n::get("item_potion.curing_name", "Curing") == "治疗");
+    REQUIRE(
+        i18n::get(
+            "item_potion.curing_descr",
+            "Restores 3 hit points, and cures blindness, deafness, "
+            "poisoning, infections, disease and weakening.") ==
+        "恢复 3 点生命值，并治愈失明、失聪、中毒、感染、疾病和虚弱。");
     REQUIRE(i18n::get("item_potion.feel_more_at_ease", "I feel more at ease.") == "我感到安心多了。");
     REQUIRE(i18n::get("item_potion.feel_insightful", "I feel insightful.") == "我感到洞察力涌现。");
     REQUIRE(i18n::get("item_potion.feel_fine", "I feel fine.") == "我感觉很好。");

@@ -448,18 +448,20 @@ Color Potion::interface_color() const
 
 std::string Vitality::real_name() const
 {
-    return "Vitality";
+    return i18n::get("item_potion.vitality_name", "Vitality");
 }
 
 std::string Vitality::descr_identified() const
 {
     return (
-        "This elixir fully restores all hit points, heals all "
-        "wounds, and cures blindness, deafness, poisoning, "
-        "infections, disease and weakening. "
-        "Also, for some duration after consuming the potion, "
-        "+1 extra hit point is healed per turn, and there is "
-        "10% chance per turn to heal one wound.");
+        i18n::get(
+            "item_potion.vitality_descr",
+            "This elixir fully restores all hit points, heals all "
+            "wounds, and cures blindness, deafness, poisoning, "
+            "infections, disease and weakening. "
+            "Also, for some duration after consuming the potion, "
+            "+1 extra hit point is healed per turn, and there is "
+            "10% chance per turn to heal one wound."));
 }
 
 PotionAlignment Vitality::alignment() const
@@ -502,12 +504,12 @@ void Vitality::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Spirit::real_name() const
 {
-    return "Spirit";
+    return i18n::get("item_potion.spirit_name", "Spirit");
 }
 
 std::string Spirit::descr_identified() const
 {
-    return "Fully restores the spirit.";
+    return i18n::get("item_potion.spirit_descr", "Fully restores the spirit.");
 }
 
 PotionAlignment Spirit::alignment() const
@@ -540,12 +542,14 @@ void Spirit::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Blindness::real_name() const
 {
-    return "Blindness";
+    return i18n::get("item_potion.blindness_name", "Blindness");
 }
 
 std::string Blindness::descr_identified() const
 {
-    return "Causes temporary loss of vision.";
+    return i18n::get(
+        "item_potion.blindness_descr",
+        "Causes temporary loss of vision.");
 }
 
 PotionAlignment Blindness::alignment() const
@@ -573,12 +577,12 @@ void Blindness::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Paral::real_name() const
 {
-    return "Paralyzation";
+    return i18n::get("item_potion.paralyzation_name", "Paralyzation");
 }
 
 std::string Paral::descr_identified() const
 {
-    return "Causes paralysis.";
+    return i18n::get("item_potion.paralyzation_descr", "Causes paralysis.");
 }
 
 PotionAlignment Paral::alignment() const
@@ -606,12 +610,12 @@ void Paral::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Disease::real_name() const
 {
-    return "Disease";
+    return i18n::get("item_potion.disease_name", "Disease");
 }
 
 std::string Disease::descr_identified() const
 {
-    return "Causes disease.";
+    return i18n::get("item_potion.disease_descr", "Causes disease.");
 }
 
 PotionAlignment Disease::alignment() const
@@ -639,12 +643,12 @@ void Disease::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Conf::real_name() const
 {
-    return "Confusion";
+    return i18n::get("item_potion.confusion_name", "Confusion");
 }
 
 std::string Conf::descr_identified() const
 {
-    return "Causes confusion.";
+    return i18n::get("item_potion.confusion_descr", "Causes confusion.");
 }
 
 PotionAlignment Conf::alignment() const
@@ -672,12 +676,14 @@ void Conf::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Fortitude::real_name() const
 {
-    return "Fortitude";
+    return i18n::get("item_potion.fortitude_name", "Fortitude");
 }
 
 std::string Fortitude::descr_identified() const
 {
-    return "Gives the consumer complete peace and clarity of mind.";
+    return i18n::get(
+        "item_potion.fortitude_descr",
+        "Gives the consumer complete peace and clarity of mind.");
 }
 
 PotionAlignment Fortitude::alignment() const
@@ -728,12 +734,12 @@ void Fortitude::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Poison::real_name() const
 {
-    return "Poison";
+    return i18n::get("item_potion.poison_name", "Poison");
 }
 
 std::string Poison::descr_identified() const
 {
-    return "A sinister brew.";
+    return i18n::get("item_potion.poison_descr", "A sinister brew.");
 }
 
 PotionAlignment Poison::alignment() const
@@ -761,12 +767,14 @@ void Poison::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Insight::real_name() const
 {
-    return "Insight";
+    return i18n::get("item_potion.insight_name", "Insight");
 }
 
 std::string Insight::descr_identified() const
 {
-    return "This strange concoction causes a sudden flash of intuition.";
+    return i18n::get(
+        "item_potion.insight_descr",
+        "This strange concoction causes a sudden flash of intuition.");
 }
 
 PotionAlignment Insight::alignment() const
@@ -806,14 +814,16 @@ void Insight::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Curing::real_name() const
 {
-    return "Curing";
+    return i18n::get("item_potion.curing_name", "Curing");
 }
 
 std::string Curing::descr_identified() const
 {
     return (
-        "Restores 3 hit points, and cures blindness, deafness, "
-        "poisoning, infections, disease and weakening.");
+        i18n::get(
+            "item_potion.curing_descr",
+            "Restores 3 hit points, and cures blindness, deafness, "
+            "poisoning, infections, disease and weakening."));
 }
 
 PotionAlignment Curing::alignment() const
