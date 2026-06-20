@@ -5325,7 +5325,7 @@ std::vector<std::string> SpellErudition::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellIdentify::name() const
 {
-    return "Identify";
+    return i18n::get("spells.identify.name", "Identify");
 }
 
 SpellId SpellIdentify::id() const
@@ -5406,26 +5406,42 @@ std::vector<std::string> SpellIdentify::descr_specific(
     const SpellSkill skill) const
 {
     if (skill == SpellSkill::transcendent) {
-        return {"Immediately identifies all carried items."};
+        return {i18n::get(
+            "spells.identify.descr_all_items",
+            "Immediately identifies all carried items.")};
     }
 
     std::vector<std::string> descr;
 
-    descr.emplace_back("Identifies one carried item.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.identify.descr_one_item",
+            "Identifies one carried item."));
 
-    std::string identifies_str = "The spell can identify ";
+    std::string identifies_str =
+        i18n::get(
+            "spells.identify.allowed_prefix",
+            "The spell can identify ");
 
     switch (skill) {
-    case SpellSkill::basic:  identifies_str += "Manuscripts"; break;
-    case SpellSkill::expert: identifies_str += "Manuscripts and Potions"; break;
-    case SpellSkill::master: identifies_str += "all items"; break;
+    case SpellSkill::basic:
+        identifies_str += i18n::get("spells.identify.allowed_basic", "Manuscripts");
+        break;
+    case SpellSkill::expert:
+        identifies_str += i18n::get(
+            "spells.identify.allowed_expert",
+            "Manuscripts and Potions");
+        break;
+    case SpellSkill::master:
+        identifies_str += i18n::get("spells.identify.allowed_master", "all items");
+        break;
 
     case SpellSkill::transcendent:
         ASSERT(false);
         break;
     }
 
-    identifies_str += ".";
+    identifies_str += i18n::get("spells.identify.allowed_suffix", ".");
 
     descr.push_back(identifies_str);
 

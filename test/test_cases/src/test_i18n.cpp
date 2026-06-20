@@ -1454,6 +1454,22 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             ", or until a spell is cast (either from a Manuscript "
             "or from memory).") ==
         "，或者直到施放一个法术为止（无论来自手稿还是记忆）。");
+    REQUIRE(i18n::get("spells.identify.name", "Identify") == "鉴定");
+    REQUIRE(
+        i18n::get(
+            "spells.identify.descr_all_items",
+            "Immediately identifies all carried items.") ==
+        "立即鉴定所有携带中的物品。");
+    REQUIRE(
+        i18n::get(
+            "spells.identify.descr_one_item",
+            "Identifies one carried item.") ==
+        "鉴定一件携带中的物品。");
+    REQUIRE(i18n::get("spells.identify.allowed_prefix", "The spell can identify ") == "该法术可以鉴定");
+    REQUIRE(i18n::get("spells.identify.allowed_basic", "Manuscripts") == "手稿");
+    REQUIRE(i18n::get("spells.identify.allowed_expert", "Manuscripts and Potions") == "手稿和药水");
+    REQUIRE(i18n::get("spells.identify.allowed_master", "all items") == "所有物品");
+    REQUIRE(i18n::get("spells.identify.allowed_suffix", ".") == "。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
