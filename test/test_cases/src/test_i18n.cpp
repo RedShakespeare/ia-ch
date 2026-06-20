@@ -1120,6 +1120,9 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("item_weapon.looks_shocked_suffix", " looks shocked!") == "看起来震惊了！");
     REQUIRE(i18n::get("item_weapon.bows_before_me_suffix", " bows before me.") == "向我俯首。");
     REQUIRE(i18n::get("item_weapon.assailed_by_dark_energy_suffix", " is assailed by dark energy.") == "被黑暗能量袭击了。");
+    REQUIRE(i18n::get("item_weapon.energy_feed_prefix", "The ") == "这把");
+    REQUIRE(i18n::get("item_weapon.energy_feed_suffix", " feeds on my energy!") == "汲取了我的能量！");
+    REQUIRE(i18n::get("item_weapon.unseen_target_it", "It") == "它");
     REQUIRE(i18n::get("item.discovered_prefix", "I have discovered ") == "我发现了");
     REQUIRE(i18n::get("item.exclamation_mark", "!") == "！");
     REQUIRE(i18n::get("item.discovered_history_prefix", "Discovered ") == "发现了");

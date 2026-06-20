@@ -193,7 +193,10 @@ void ElectricGun::pre_ranged_attack()
 
     const auto wpn_name = name(ItemNameType::plain, ItemNameInfo::none);
 
-    const auto msg = "The " + wpn_name + " feeds on my energy!";
+    const auto msg =
+        i18n::get("item_weapon.energy_feed_prefix", "The ") +
+        wpn_name +
+        i18n::get("item_weapon.energy_feed_suffix", " feeds on my energy!");
 
     msg_log::add(msg, colors::msg_bad());
 
@@ -222,7 +225,10 @@ void MorphicBlaster::pre_ranged_attack()
 
     const auto wpn_name = name(ItemNameType::plain, ItemNameInfo::none);
 
-    const auto msg = "The " + wpn_name + " feeds on my energy!";
+    const auto msg =
+        i18n::get("item_weapon.energy_feed_prefix", "The ") +
+        wpn_name +
+        i18n::get("item_weapon.energy_feed_suffix", " feeds on my energy!");
 
     msg_log::add(msg, colors::msg_bad());
 
@@ -622,7 +628,7 @@ void ShadowDagger::hit_radiant_creature(actor::Actor& actor) const
         const std::string target_name =
             player_see_target
             ? text_format::first_to_upper(actor::name_the(actor))
-            : "It";
+            : i18n::get("item_weapon.unseen_target_it", "It");
 
         msg_log::add(
             target_name +
