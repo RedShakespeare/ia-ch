@@ -12,20 +12,20 @@ Use this skill to find candidate hardcoded English strings in Infra Arcana. It i
 From the repository root:
 
 ```sh
-python3 .codex/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py
+python3 .claude/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py src
 ```
 
 Useful variants:
 
 ```sh
 # Only files changed relative to HEAD
-python3 .codex/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py --changed
+python3 .claude/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py --changed
 
 # Search one file or subtree
-python3 .codex/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py src/item_misc.cpp
+python3 .claude/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py src/item_misc.cpp
 
 # Include broad low-confidence string literals after reviewing direct hits
-python3 .codex/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py --include-broad src/
+python3 .claude/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py --include-broad src/
 ```
 
 ## Review rules
