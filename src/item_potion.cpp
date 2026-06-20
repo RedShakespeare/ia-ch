@@ -118,28 +118,94 @@ void init()
 
     // Init possible potion colors and fake names
     s_potion_appearances.assign(
-        {{"Golden", "a Golden", colors::yellow()},
-         {"Yellow", "a Yellow", colors::yellow()},
-         {"Dark", "a Dark", colors::gray()},
-         {"Black", "a Black", colors::gray()},
-         {"Oily", "an Oily", colors::gray()},
-         {"Smoky", "a Smoky", colors::white()},
-         {"Slimy", "a Slimy", colors::green()},
-         {"Green", "a Green", colors::light_green()},
-         {"Fiery", "a Fiery", colors::light_red()},
-         {"Murky", "a Murky", colors::dark_brown()},
-         {"Muddy", "a Muddy", colors::brown()},
-         {"Violet", "a Violet", colors::violet()},
-         {"Orange", "an Orange", colors::orange()},
-         {"Watery", "a Watery", colors::light_blue()},
-         {"Metallic", "a Metallic", colors::gray()},
-         {"Clear", "a Clear", colors::light_white()},
-         {"Misty", "a Misty", colors::light_white()},
-         {"Bloody", "a Bloody", colors::red()},
-         {"Magenta", "a Magenta", colors::magenta()},
-         {"Clotted", "a Clotted", colors::green()},
-         {"Moldy", "a Moldy", colors::brown()},
-         {"Frothy", "a Frothy", colors::white()}});
+        {{i18n::get("item_potion.appearance_golden", "Golden"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_golden", "Golden"),
+          colors::yellow()},
+         {i18n::get("item_potion.appearance_yellow", "Yellow"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_yellow", "Yellow"),
+          colors::yellow()},
+         {i18n::get("item_potion.appearance_dark", "Dark"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_dark", "Dark"),
+          colors::gray()},
+         {i18n::get("item_potion.appearance_black", "Black"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_black", "Black"),
+          colors::gray()},
+         {i18n::get("item_potion.appearance_oily", "Oily"),
+          i18n::get("item_potion.article_an_space", "an ") +
+              i18n::get("item_potion.appearance_oily", "Oily"),
+          colors::gray()},
+         {i18n::get("item_potion.appearance_smoky", "Smoky"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_smoky", "Smoky"),
+          colors::white()},
+         {i18n::get("item_potion.appearance_slimy", "Slimy"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_slimy", "Slimy"),
+          colors::green()},
+         {i18n::get("item_potion.appearance_green", "Green"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_green", "Green"),
+          colors::light_green()},
+         {i18n::get("item_potion.appearance_fiery", "Fiery"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_fiery", "Fiery"),
+          colors::light_red()},
+         {i18n::get("item_potion.appearance_murky", "Murky"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_murky", "Murky"),
+          colors::dark_brown()},
+         {i18n::get("item_potion.appearance_muddy", "Muddy"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_muddy", "Muddy"),
+          colors::brown()},
+         {i18n::get("item_potion.appearance_violet", "Violet"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_violet", "Violet"),
+          colors::violet()},
+         {i18n::get("item_potion.appearance_orange", "Orange"),
+          i18n::get("item_potion.article_an_space", "an ") +
+              i18n::get("item_potion.appearance_orange", "Orange"),
+          colors::orange()},
+         {i18n::get("item_potion.appearance_watery", "Watery"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_watery", "Watery"),
+          colors::light_blue()},
+         {i18n::get("item_potion.appearance_metallic", "Metallic"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_metallic", "Metallic"),
+          colors::gray()},
+         {i18n::get("item_potion.appearance_clear", "Clear"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_clear", "Clear"),
+          colors::light_white()},
+         {i18n::get("item_potion.appearance_misty", "Misty"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_misty", "Misty"),
+          colors::light_white()},
+         {i18n::get("item_potion.appearance_bloody", "Bloody"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_bloody", "Bloody"),
+          colors::red()},
+         {i18n::get("item_potion.appearance_magenta", "Magenta"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_magenta", "Magenta"),
+          colors::magenta()},
+         {i18n::get("item_potion.appearance_clotted", "Clotted"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_clotted", "Clotted"),
+          colors::green()},
+         {i18n::get("item_potion.appearance_moldy", "Moldy"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_moldy", "Moldy"),
+          colors::brown()},
+         {i18n::get("item_potion.appearance_frothy", "Frothy"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_frothy", "Frothy"),
+          colors::white()}});
 
     for (auto& d : item::g_data) {
         if (d.type != ItemType::potion) {
@@ -152,12 +218,16 @@ void init()
         auto& look = s_potion_appearances[idx];
 
         d.base_name_un_id.names[(size_t)ItemNameType::plain] =
-            look.name_plain + " Potion";
+            look.name_plain +
+            i18n::get("item_potion.unidentified_suffix", " Potion");
 
         d.base_name_un_id.names[(size_t)ItemNameType::plural] =
-            look.name_plain + " Potions";
+            look.name_plain +
+            i18n::get("item_potion.unidentified_plural_suffix", " Potions");
 
-        d.base_name_un_id.names[(size_t)ItemNameType::a] = look.name_a + " Potion";
+        d.base_name_un_id.names[(size_t)ItemNameType::a] =
+            look.name_a +
+            i18n::get("item_potion.unidentified_suffix", " Potion");
 
         d.color = look.color;
 
@@ -172,9 +242,15 @@ void init()
 
         delete potion;
 
-        const std::string real_name = "Potion of " + real_type_name;
-        const std::string real_name_plural = "Potions of " + real_type_name;
-        const std::string real_name_a = "a Potion of " + real_type_name;
+        const std::string real_name =
+            i18n::get("item_potion.real_name_prefix", "Potion of ") +
+            real_type_name;
+        const std::string real_name_plural =
+            i18n::get("item_potion.real_name_plural_prefix", "Potions of ") +
+            real_type_name;
+        const std::string real_name_a =
+            i18n::get("item_potion.real_name_a_prefix", "a Potion of ") +
+            real_type_name;
 
         d.base_name.names[(size_t)ItemNameType::plain] = real_name;
         d.base_name.names[(size_t)ItemNameType::plural] = real_name_plural;

@@ -1083,6 +1083,35 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "it grants the consumer the ability to burrow through earth and rock "
             "(can burrow through walls and rubble).") ==
         "注入了经过炼金处理的钻地魔血液，赋予饮用者穿过泥土和岩石掘进的能力（可以穿过墙壁和瓦砾）。");
+    REQUIRE(i18n::get("item_potion.article_a_space", "a ") == "");
+    REQUIRE(i18n::get("item_potion.article_an_space", "an ") == "");
+    REQUIRE(i18n::get("item_potion.appearance_golden", "Golden") == "金色");
+    REQUIRE(i18n::get("item_potion.appearance_yellow", "Yellow") == "黄色");
+    REQUIRE(i18n::get("item_potion.appearance_dark", "Dark") == "暗色");
+    REQUIRE(i18n::get("item_potion.appearance_black", "Black") == "黑色");
+    REQUIRE(i18n::get("item_potion.appearance_oily", "Oily") == "油状");
+    REQUIRE(i18n::get("item_potion.appearance_smoky", "Smoky") == "烟雾状");
+    REQUIRE(i18n::get("item_potion.appearance_slimy", "Slimy") == "黏滑");
+    REQUIRE(i18n::get("item_potion.appearance_green", "Green") == "绿色");
+    REQUIRE(i18n::get("item_potion.appearance_fiery", "Fiery") == "火红");
+    REQUIRE(i18n::get("item_potion.appearance_murky", "Murky") == "浑浊");
+    REQUIRE(i18n::get("item_potion.appearance_muddy", "Muddy") == "泥色");
+    REQUIRE(i18n::get("item_potion.appearance_violet", "Violet") == "紫罗兰色");
+    REQUIRE(i18n::get("item_potion.appearance_orange", "Orange") == "橙色");
+    REQUIRE(i18n::get("item_potion.appearance_watery", "Watery") == "水状");
+    REQUIRE(i18n::get("item_potion.appearance_metallic", "Metallic") == "金属色");
+    REQUIRE(i18n::get("item_potion.appearance_clear", "Clear") == "透明");
+    REQUIRE(i18n::get("item_potion.appearance_misty", "Misty") == "雾状");
+    REQUIRE(i18n::get("item_potion.appearance_bloody", "Bloody") == "血色");
+    REQUIRE(i18n::get("item_potion.appearance_magenta", "Magenta") == "品红色");
+    REQUIRE(i18n::get("item_potion.appearance_clotted", "Clotted") == "凝块状");
+    REQUIRE(i18n::get("item_potion.appearance_moldy", "Moldy") == "霉斑");
+    REQUIRE(i18n::get("item_potion.appearance_frothy", "Frothy") == "泡沫状");
+    REQUIRE(i18n::get("item_potion.unidentified_suffix", " Potion") == "药水");
+    REQUIRE(i18n::get("item_potion.unidentified_plural_suffix", " Potions") == "药水");
+    REQUIRE(i18n::get("item_potion.real_name_prefix", "Potion of ") == "药水：");
+    REQUIRE(i18n::get("item_potion.real_name_plural_prefix", "Potions of ") == "药水：");
+    REQUIRE(i18n::get("item_potion.real_name_a_prefix", "a Potion of ") == "药水：");
     REQUIRE(i18n::get("item_potion.feel_more_at_ease", "I feel more at ease.") == "我感到安心多了。");
     REQUIRE(i18n::get("item_potion.feel_insightful", "I feel insightful.") == "我感到洞察力涌现。");
     REQUIRE(i18n::get("item_potion.feel_fine", "I feel fine.") == "我感觉很好。");
