@@ -366,6 +366,79 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "Rods recharge twice as fast, strange devices are less likely "
             "to malfunction or break, electric lanterns last twice as "
             "long, +1 damage with electricity weapons") == "魔杖充能速度加倍，奇异装置更不容易故障或损坏，电提灯持续时间加倍，电击武器伤害+1");
+    REQUIRE(i18n::get("player_bon.trait.adept_of_channeling.title", "Adept of Channeling") == "导能熟手");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.adept_of_channeling.descr",
+            "Specialize in the channeling of violent energy. "
+            "Channeling spells are cast at a higher skill level.") == "专精于暴烈能量的导引。导能法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.master_of_channeling.title", "Master of Channeling") == "导能大师");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.master_of_channeling.descr",
+            "Attain mastery over the channeling of violent energy. "
+            "Channeling spells are cast at a higher skill level.") == "掌握暴烈能量的导引。导能法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.adept_of_corruption.title", "Adept of Corruption") == "腐化熟手");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.adept_of_corruption.descr",
+            "Specialize in corruption and withering. "
+            "Corruption spells are cast at a higher skill level.") == "专精于腐化和枯萎。腐化法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.master_of_corruption.title", "Master of Corruption") == "腐化大师");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.master_of_corruption.descr",
+            "Attain mastery over corruption and withering. "
+            "Corruption spells are cast at a higher skill level.") == "掌握腐化和枯萎。腐化法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.adept_of_illusion.title", "Adept of Illusion") == "幻象熟手");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.adept_of_illusion.descr",
+            "Specialize in the casting of illusions. "
+            "Illusion spells are cast at a higher skill level.") == "专精于施放幻象。幻象法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.master_of_illusion.title", "Master of Illusion") == "幻象大师");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.master_of_illusion.descr",
+            "Attain mastery over the casting of illusions. "
+            "Illusion spells are cast at a higher skill level.") == "掌握幻象的施放。幻象法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.adept_of_the_mind.title", "Adept of the Mind") == "心灵熟手");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.adept_of_the_mind.descr",
+            "Specialize in knowledge, foresight, and will. "
+            "Mind spells are cast at a higher skill level.") == "专精于知识、预见和意志。心灵法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.master_of_the_mind.title", "Master of the Mind") == "心灵大师");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.master_of_the_mind.descr",
+            "Attain mastery over knowledge, foresight, and will. "
+            "Mind spells are cast at a higher skill level, "
+            "and you also sense items and creatures.") == "掌握知识、预见和意志。心灵法术以更高技能等级施放，并且你还能感知物品和生物。");
+    REQUIRE(i18n::get("player_bon.trait.adept_of_time.title", "Adept of Time") == "时间熟手");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.adept_of_time.descr",
+            "Specialize in the manipulation of time and causality. "
+            "Time spells are cast at a higher skill level.") == "专精于时间和因果的操纵。时间法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.master_of_time.title", "Master of Time") == "时间大师");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.master_of_time.descr",
+            "Attain mastery over the manipulation of time and causality. "
+            "Time spells are cast at a higher skill level.") == "掌握时间和因果的操纵。时间法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.adept_of_warding.title", "Adept of Warding") == "守护熟手");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.adept_of_warding.descr",
+            "Specialize in protective magic. "
+            "Warding spells are cast at a higher skill level.") == "专精于防护魔法。守护法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.master_of_warding.title", "Master of Warding") == "守护大师");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.master_of_warding.descr",
+            "Attain mastery over protective magic. "
+            "Warding spells are cast at a higher skill level.") == "掌握防护魔法。守护法术以更高技能等级施放。");
     REQUIRE(
         i18n::get(
             "property.mon_struggles_tear_free_suffix",

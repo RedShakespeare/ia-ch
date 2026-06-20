@@ -606,10 +606,11 @@ static void update_trait_data()
 
     // -- Adept of Channeling ---
     d.id = TraitId::adept_of_channeling;
-    d.title = "Adept of Channeling";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_channeling.title", "Adept of Channeling");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_channeling.descr",
         "Specialize in the channeling of violent energy. "
-        "Channeling spells are cast at a higher skill level.";
+        "Channeling spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::channeling); };
@@ -618,10 +619,11 @@ static void update_trait_data()
 
     // -- Master of Channeling ---
     d.id = TraitId::master_of_channeling;
-    d.title = "Master of Channeling";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_channeling.title", "Master of Channeling");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_channeling.descr",
         "Attain mastery over the channeling of violent energy. "
-        "Channeling spells are cast at a higher skill level.";
+        "Channeling spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_channeling};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -631,10 +633,11 @@ static void update_trait_data()
 
     // -- Adept of Corruption ---
     d.id = TraitId::adept_of_corruption;
-    d.title = "Adept of Corruption";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_corruption.title", "Adept of Corruption");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_corruption.descr",
         "Specialize in corruption and withering. "
-        "Corruption spells are cast at a higher skill level.";
+        "Corruption spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::corruption); };
@@ -643,10 +646,11 @@ static void update_trait_data()
 
     // -- Master of Corruption ---
     d.id = TraitId::master_of_corruption;
-    d.title = "Master of Corruption";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_corruption.title", "Master of Corruption");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_corruption.descr",
         "Attain mastery over corruption and withering. "
-        "Corruption spells are cast at a higher skill level.";
+        "Corruption spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_corruption};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -656,10 +660,11 @@ static void update_trait_data()
 
     // -- Adept of Illusion ---
     d.id = TraitId::adept_of_illusion;
-    d.title = "Adept of Illusion";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_illusion.title", "Adept of Illusion");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_illusion.descr",
         "Specialize in the casting of illusions. "
-        "Illusion spells are cast at a higher skill level.";
+        "Illusion spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::illusion); };
@@ -668,10 +673,11 @@ static void update_trait_data()
 
     // -- Master of Illusion ---
     d.id = TraitId::master_of_illusion;
-    d.title = "Master of Illusion";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_illusion.title", "Master of Illusion");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_illusion.descr",
         "Attain mastery over the casting of illusions. "
-        "Illusion spells are cast at a higher skill level.";
+        "Illusion spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_illusion};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -681,10 +687,11 @@ static void update_trait_data()
 
     // -- Adept of The_mind ---
     d.id = TraitId::adept_of_the_mind;
-    d.title = "Adept of the Mind";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_the_mind.title", "Adept of the Mind");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_the_mind.descr",
         "Specialize in knowledge, foresight, and will. "
-        "Mind spells are cast at a higher skill level.";
+        "Mind spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::mind); };
@@ -693,11 +700,12 @@ static void update_trait_data()
 
     // -- Master of The_mind ---
     d.id = TraitId::master_of_the_mind;
-    d.title = "Master of the Mind";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_the_mind.title", "Master of the Mind");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_the_mind.descr",
         "Attain mastery over knowledge, foresight, and will. "
         "Mind spells are cast at a higher skill level, "
-        "and you also sense items and creatures.";
+        "and you also sense items and creatures.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_the_mind};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -707,10 +715,11 @@ static void update_trait_data()
 
     // -- Adept of Time ---
     d.id = TraitId::adept_of_time;
-    d.title = "Adept of Time";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_time.title", "Adept of Time");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_time.descr",
         "Specialize in the manipulation of time and causality. "
-        "Time spells are cast at a higher skill level.";
+        "Time spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::time); };
@@ -719,10 +728,11 @@ static void update_trait_data()
 
     // -- Master of Time ---
     d.id = TraitId::master_of_time;
-    d.title = "Master of Time";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_time.title", "Master of Time");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_time.descr",
         "Attain mastery over the manipulation of time and causality. "
-        "Time spells are cast at a higher skill level.";
+        "Time spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_time};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -732,10 +742,11 @@ static void update_trait_data()
 
     // -- Adept of Warding ---
     d.id = TraitId::adept_of_warding;
-    d.title = "Adept of Warding";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_warding.title", "Adept of Warding");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_warding.descr",
         "Specialize in protective magic. "
-        "Warding spells are cast at a higher skill level.";
+        "Warding spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::warding); };
@@ -744,10 +755,11 @@ static void update_trait_data()
 
     // -- Master of Warding ---
     d.id = TraitId::master_of_warding;
-    d.title = "Master of Warding";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_warding.title", "Master of Warding");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_warding.descr",
         "Attain mastery over protective magic. "
-        "Warding spells are cast at a higher skill level.";
+        "Warding spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_warding};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
