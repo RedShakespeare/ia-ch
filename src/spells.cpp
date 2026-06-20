@@ -5102,7 +5102,7 @@ bool SpellHaste::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellPremonition::name() const
 {
-    return "Premonition";
+    return i18n::get("spells.premonition.name", "Premonition");
 }
 
 SpellId SpellPremonition::id() const
@@ -5173,9 +5173,11 @@ std::vector<std::string> SpellPremonition::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Grants foresight of attacks against the caster, "
-        "making it extremely difficult for assailants to achieve a "
-        "succesful hit.");
+        i18n::get(
+            "spells.premonition.descr",
+            "Grants foresight of attacks against the caster, "
+            "making it extremely difficult for assailants to achieve a "
+            "succesful hit."));
 
     descr.emplace_back(spell_duration_descr(duration_range(skill).str()));
 

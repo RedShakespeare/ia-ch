@@ -1424,6 +1424,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "spells.haste.descr",
             "The caster moves faster relative to the world around them.") ==
         "施法者相对于周围世界移动得更快。");
+    REQUIRE(i18n::get("spells.premonition.name", "Premonition") == "预感");
+    REQUIRE(
+        i18n::get(
+            "spells.premonition.descr",
+            "Grants foresight of attacks against the caster, "
+            "making it extremely difficult for assailants to achieve a "
+            "succesful hit.") ==
+        "赋予施法者对针对自身攻击的预知，使袭击者极难成功命中。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
