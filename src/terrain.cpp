@@ -449,7 +449,9 @@ void Terrain::try_start_burning(const Verbose verbose)
     if (is_not_burned || (has_burnt && rnd::one_in(3))) {
         if (map::g_seen.at(m_pos) &&
             (verbose == Verbose::yes)) {
-            std::string str = name(Article::the) + " catches fire.";
+            std::string str =
+                name(Article::the) +
+                i18n::get("terrain.catches_fire_suffix", " catches fire.");
 
             str[0] = (char)std::toupper(str[0]);
 
