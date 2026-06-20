@@ -5097,7 +5097,7 @@ void Bookshelf::bump(actor::Actor& actor_bumping)
 void Bookshelf::player_loot()
 {
     msg_log::add(
-        "I search the bookshelf.",
+        i18n::get("terrain.search_bookshelf", "I search the bookshelf."),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
@@ -5277,7 +5277,9 @@ void AlchemistBench::bump(actor::Actor& actor_bumping)
 void AlchemistBench::player_loot()
 {
     msg_log::add(
-        "I search the alchemist's workbench.",
+        i18n::get(
+            "terrain.search_alchemist_workbench",
+            "I search the alchemist's workbench."),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);
