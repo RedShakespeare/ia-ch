@@ -1085,7 +1085,10 @@ std::string CtrlObjOpen::menu_label(const terrain::Terrain& terrain) const
 {
     const std::string name = terrain.name(Article::the);
 
-    return "(o) Open " + name;
+    return i18n::get(
+               "marker.control_object.open_prefix",
+               "(o) Open ") +
+           name;
 }
 
 char CtrlObjOpen::menu_key() const
@@ -1137,16 +1140,20 @@ DidAction CtrlObjCloseDoor::run(
                         *actor_here));
         }
         else {
-            actor_name = "Something";
+            actor_name = i18n::get(
+                "marker.control_object.something",
+                "Something");
         }
 
         const std::string terrain_name = terrain.name(Article::the);
 
         msg_log::add(
             actor_name +
-            " prevents closing " +
+            i18n::get(
+                "marker.control_object.prevents_closing",
+                " prevents closing ") +
             terrain_name +
-            ".");
+            i18n::get("marker.control_object.period", "."));
 
         return DidAction::no;
     }
@@ -1160,7 +1167,10 @@ std::string CtrlObjCloseDoor::menu_label(const terrain::Terrain& terrain) const
 {
     const std::string name = terrain.name(Article::the);
 
-    return "(c) Close " + name;
+    return i18n::get(
+               "marker.control_object.close_prefix",
+               "(c) Close ") +
+           name;
 }
 
 char CtrlObjCloseDoor::menu_key() const
@@ -1453,7 +1463,10 @@ std::string CtrlObjDestrWall::menu_label(const terrain::Terrain& terrain) const
 {
     const std::string name = terrain.name(Article::the);
 
-    return "(w) Destroy " + name;
+    return i18n::get(
+               "marker.control_object.destroy_prefix",
+               "(w) Destroy ") +
+           name;
 }
 
 char CtrlObjDestrWall::menu_key() const
@@ -1484,7 +1497,9 @@ bool CtrlObj::is_allowed_at_dist() const
 void CtrlObj::on_start_hook()
 {
     msg_log::add(
-        "Select an object to control.",
+        i18n::get(
+            "marker.control_object.select_object",
+            "Select an object to control."),
         colors::white(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes,
@@ -1510,9 +1525,13 @@ void CtrlObj::on_moved()
         : colors::msg_bad();
 
     const std::string dist_msg =
-        "Distance: " +
+        i18n::get(
+            "marker.control_object.distance_prefix",
+            "Distance: ") +
         dist_str +
-        "/" +
+        i18n::get(
+            "marker.control_object.distance_separator",
+            "/") +
         max_dist_str;
 
     msg_log::add(
@@ -1525,7 +1544,11 @@ void CtrlObj::on_moved()
     if (is_allowed_at_dist() && !m_possible_actions.empty()) {
         const terrain::Terrain* const terrain = map::g_terrain.at(m_pos);
         const std::string name_the = terrain->name(Article::the);
-        const std::string control_str = "[enter] to control " + name_the;
+        const std::string control_str =
+            i18n::get(
+                "marker.control_object.control_prefix",
+                "[enter] to control ") +
+            name_the;
 
         msg_log::add(
             control_str,
@@ -1557,7 +1580,9 @@ void CtrlObj::handle_input(const io::InputData& input)
 
     if (!map::g_seen.at(m_pos)) {
         msg_log::add(
-            "I have no vision here.",
+            i18n::get(
+                "marker.control_object.no_vision_here",
+                "I have no vision here."),
             colors::white(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::no,
@@ -1569,8 +1594,12 @@ void CtrlObj::handle_input(const io::InputData& input)
     if (!is_allowed_at_dist()) {
         const std::string msg =
             (current_dist() == 0)
-            ? "The distance is too small."
-            : "The distance is too great.";
+            ? i18n::get(
+                  "marker.control_object.distance_too_small",
+                  "The distance is too small.")
+            : i18n::get(
+                  "marker.control_object.distance_too_great",
+                  "The distance is too great.");
 
         msg_log::add(
             msg,
@@ -1584,7 +1613,9 @@ void CtrlObj::handle_input(const io::InputData& input)
 
     if (m_possible_actions.empty()) {
         msg_log::add(
-            "I cannot control any object here.",
+            i18n::get(
+                "marker.control_object.cannot_control_here",
+                "I cannot control any object here."),
             colors::white(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::no,
