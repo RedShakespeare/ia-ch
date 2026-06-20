@@ -28,6 +28,7 @@
 #include "drop.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "io.hpp"
 #include "item.hpp"
 #include "item_data.hpp"
@@ -56,9 +57,12 @@ static void print_creature_hit_msg(const actor::Actor& actor)
     const std::string name =
         actor::can_player_see_actor(actor)
         ? text_format::first_to_upper(actor::name_the(actor))
-        : "An unseen creature";
+        : i18n::get("throwing.unseen_creature", "An unseen creature");
 
-    msg_log::add(name + " is hit.", colors::msg_good());
+    msg_log::add(
+        name +
+            i18n::get("throwing.is_hit_suffix", " is hit."),
+        colors::msg_good());
 }
 
 static void apply_potion_on_actor(item::Item& item, actor::Actor& actor)
@@ -236,7 +240,10 @@ void throw_item(
     if (actor::is_player(&actor_throwing)) {
         msg_log::clear();
 
-        msg_log::add("I throw " + item_name_a + ".");
+        msg_log::add(
+            i18n::get("throwing.player_throw_prefix", "I throw ") +
+            item_name_a +
+            i18n::get("throwing.period", "."));
     }
     else {
         // Monster throwing
@@ -247,7 +254,11 @@ void throw_item(
                 text_format::first_to_upper(
                     actor::name_the(actor_throwing));
 
-            msg_log::add(name_the + " throws " + item_name_a + ".");
+            msg_log::add(
+                name_the +
+                i18n::get("throwing.monster_throws", " throws ") +
+                item_name_a +
+                i18n::get("throwing.period", "."));
         }
     }
 
@@ -307,7 +318,7 @@ void throw_item(
                 actor_here->make_player_aware_of_me();
 
                 Snd snd(
-                    "A creature is hit.",
+                    i18n::get("throwing.creature_hit", "A creature is hit."),
                     audio::SfxId::hit_small,
                     IgnoreMsgIfOriginSeen::yes,
                     pos,

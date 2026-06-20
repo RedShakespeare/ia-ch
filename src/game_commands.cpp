@@ -1075,10 +1075,14 @@ void handle(const GameCmd cmd)
 
     case GameCmd::make_noise: {
         if (player_bon::bg() == Bg::ghoul) {
-            msg_log::add("I let out a chilling howl.");
+            msg_log::add(i18n::get(
+                "game_commands.chilling_howl",
+                "I let out a chilling howl."));
         }
         else {
-            msg_log::add("I make some noise.");
+            msg_log::add(i18n::get(
+                "game_commands.make_some_noise",
+                "I make some noise."));
         }
 
         Snd snd(

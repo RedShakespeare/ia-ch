@@ -11,6 +11,7 @@
 
 #include "colors.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "item.hpp"
 
 struct P;
@@ -72,7 +73,9 @@ public:
 
     std::string str_on_player_throw() const override
     {
-        return "I throw a lit dynamite stick.";
+        return i18n::get(
+            "item_explosive.throw_lit_dynamite",
+            "I throw a lit dynamite stick.");
     }
 
 protected:
@@ -101,7 +104,9 @@ public:
 
     std::string str_on_player_throw() const override
     {
-        return "I throw a lit Molotov Cocktail.";
+        return i18n::get(
+            "item_explosive.throw_lit_molotov",
+            "I throw a lit Molotov Cocktail.");
     }
 
 protected:
@@ -129,7 +134,9 @@ public:
 
     std::string str_on_player_throw() const override
     {
-        return "I throw a lit flare.";
+        return i18n::get(
+            "item_explosive.throw_lit_flare",
+            "I throw a lit flare.");
     }
 
 protected:
@@ -154,7 +161,9 @@ public:
 
     std::string str_on_player_throw() const override
     {
-        return "I throw a smoke grenade.";
+        return i18n::get(
+            "item_explosive.throw_smoke_grenade",
+            "I throw a smoke grenade.");
     }
 
 protected:

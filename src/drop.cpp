@@ -17,6 +17,7 @@
 #include "array2.hpp"
 #include "colors.hpp"
 #include "debug.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
 #include "item_data.hpp"
@@ -100,7 +101,10 @@ void drop_item_from_inv(
 
     // Print message
     if (actor::is_player(&actor)) {
-        msg_log::add("I drop " + item_ref + ".");
+        msg_log::add(
+            i18n::get("drop.player_prefix", "I drop ") +
+            item_ref +
+            i18n::get("drop.period", "."));
     }
     else {
         // Monster is dropping item
@@ -109,7 +113,11 @@ void drop_item_from_inv(
                 text_format::first_to_upper(
                     actor::name_the(actor));
 
-            msg_log::add(mon_name_the + " drops " + item_ref + ".");
+            msg_log::add(
+                mon_name_the +
+                i18n::get("drop.monster_drops", " drops ") +
+                item_ref +
+                i18n::get("drop.period", "."));
         }
     }
 
