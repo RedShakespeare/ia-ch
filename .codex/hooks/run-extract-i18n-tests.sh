@@ -4,6 +4,8 @@ set -eu
 
 root_dir=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 script_path="$root_dir/.codex/hooks/run-extract-i18n-tests.sh"
+build_dir=build-linux-tests
+stamp_path="$root_dir/$build_dir/extract-i18n-tests.ok"
 
 if [ "${CONDA_DEFAULT_ENV:-}" != "ia" ]; then
     if [ "${IA_TEST_CONDA_REEXEC:-}" = "1" ]; then
@@ -31,6 +33,18 @@ changed_files=$(
         git ls-files --others --exclude-standard -- CMakeLists.txt include src test installed_files/data/locale 2>/dev/null || true
     } | sort -u
 )
+changed_hash=$(
+    if [ -n "$changed_files" ]; then
+        printf '%s\n' "$changed_files" |
+            while IFS= read -r path; do
+                if [ -e "$path" ]; then
+                    printf '%s\t%s\n' "$path" "$(git hash-object -- "$path")"
+                else
+                    printf '%s\t%s\n' "$path" "deleted"
+                fi
+            done
+    fi | git hash-object --stdin
+)
 
 if [ -z "$changed_files" ] && [ "${IA_TEST_FORCE:-}" != "1" ]; then
     echo "extract-i18n test hook: no relevant source, locale, or test changes; skipping."
@@ -42,7 +56,6 @@ if [ -n "$changed_files" ]; then
     printf '%s\n' "$changed_files"
 fi
 
-build_dir=build-linux-tests
 jobs=${IA_TEST_JOBS:-$(nproc)}
 
 cmake -S . -B "$build_dir" \
@@ -53,7 +66,10 @@ cmake --build "$build_dir" --target ia-test -- -j"$jobs"
 cd "$build_dir"
 
 if [ -n "${IA_TEST_FILTER:-}" ]; then
-    exec ./ia-test -D 3 --abort "$IA_TEST_FILTER"
+    ./ia-test -D 3 --abort "$IA_TEST_FILTER"
+else
+    ./ia-test -D 3 --abort
 fi
 
-exec ./ia-test -D 3 --abort
+printf '%s\n' "$changed_hash" >"$stamp_path"
+echo "extract-i18n test hook: recorded successful test stamp."

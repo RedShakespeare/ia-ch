@@ -1,6 +1,6 @@
 ---
 name: extract-i18n
-description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract a complete coherent class of related text into locale text.ini via i18n::get lookups, rely on the pre-commit test hook that builds and runs ia-test in build-linux-tests, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
+description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract a complete coherent class of related text into locale text.ini via i18n::get lookups, run the visible i18n test script before staging, pass the pre-add test-stamp gate, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
 ---
 
 # Extract raw text into the i18n layer
@@ -144,6 +144,9 @@ Rules:
   `.clang-format`).
 - Keep keys alphabetically/logically grouped as neighboring keys are; don't
   reorder unrelated lines.
+- Do not run `clang-format` as part of this workflow unless the user explicitly
+  asks for it. Match nearby formatting manually; the agent environment may have
+  a formatter version too old for this repo's `.clang-format`.
 
 ## 4. Add or update tests
 
@@ -152,25 +155,38 @@ Mirror the existing coverage in `test/test_cases/src/test_i18n.cpp`: add a
 wrapping/measurement behavior, cover it in `test_text_formatting.cpp` and
 remember CJK glyphs are measured by pixel advance, not character count.
 
-## 5. Let the test hook run before staging
+## 5. Run the visible test script before staging
 
 Do not use `./run-tests.sh` as the default validation path for this workflow.
 This repo's normal `build/` directory may be configured for mingw release
 artifacts, which produces a Windows `ia-test.exe` that cannot run in the Linux
 agent shell.
 
-The repo has a Codex pre-tool hook in `.codex/hooks.json`. Before `git add`,
-the hook runs `.codex/hooks/run-extract-i18n-tests.sh`, which:
+Run the repo's i18n test script yourself before staging:
+
+```sh
+.codex/hooks/run-extract-i18n-tests.sh
+```
+
+It prints progress while it runs and:
 
 - enters the `ia` conda environment with `conda run -n ia` if needed
 - configures a native Linux CMake build in `build-linux-tests/`
 - builds the `ia-test` target
 - runs `./ia-test -D 3 --abort`
+- records a success stamp in `build-linux-tests/extract-i18n-tests.ok`
 
-Treat this hook as the required test gate before staging extraction changes. If
-the hook fails, fix the failure and do not stage the changes. If the hook does
-not fire before a `git add` command, run `.codex/hooks/run-extract-i18n-tests.sh`
-once and report that the hook did not run automatically.
+The Codex PreToolUse hook in `.codex/hooks.json` is a fast pre-add gate, not the
+long-running test runner. Before `git add`, it checks whether the success stamp
+matches the current relevant changes under `CMakeLists.txt`, `include`, `src`,
+`test`, and `installed_files/data/locale`. If the stamp is missing or stale, the
+hook blocks staging immediately and tells you to run the script above.
+
+Treat the script plus pre-add stamp check as the required test gate before
+staging extraction changes. If the script fails, fix the failure and do not
+stage the changes. If the hook does not fire before a `git add` command, still
+run `.codex/hooks/run-extract-i18n-tests.sh` once and report that the hook did
+not run automatically.
 
 `build-linux-tests/` is generated output; do not commit it. If conda, the `ia`
 environment, or SDL/system dependencies are missing and block the hook, report
