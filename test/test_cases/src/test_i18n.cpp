@@ -244,6 +244,45 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "All your melee attacks are silent (regardless of the weapon), "
             "and creatures are not alerted when you open or close doors, "
             "or wade through water") == "你的所有近战攻击都是无声的（无论使用什么武器），打开或关闭门、涉水而过时也不会惊动生物");
+    REQUIRE(i18n::get("player_bon.trait.vigilant.title", "Vigilant") == "警觉");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.vigilant.descr",
+            "You are always aware of nearby creatures") == "你总能察觉附近的生物");
+    REQUIRE(i18n::get("player_bon.trait.treasure_hunter.title", "Treasure Hunter") == "寻宝者");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.treasure_hunter.descr",
+            "You tend to find more items") == "你往往会找到更多物品");
+    REQUIRE(i18n::get("player_bon.trait.self_aware.title", "Self-aware") == "自知");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.self_aware.descr",
+            "You cannot become confused, the number of remaining turns "
+            "for status effects are displayed") == "你不会变得混乱，并会显示状态效果的剩余回合数");
+    REQUIRE(i18n::get("player_bon.trait.healer.title", "Healer") == "治疗者");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.healer.descr",
+            "Using medical equipment requires only half the normal time "
+            "and resources") == "使用医疗器械只需要一半的正常时间和资源");
+    REQUIRE(i18n::get("player_bon.trait.rapid_recoverer.title", "Rapid Recoverer") == "快速恢复者");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.rapid_recoverer.descr",
+            "You regenerate 1 hit point every third turn") == "你每三个回合恢复1点生命值");
+    REQUIRE(i18n::get("player_bon.trait.survivalist.title", "Survivalist") == "生存专家");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.survivalist.descr",
+            "You cannot become diseased, "
+            "only half your wounds count, "
+            "rounded down "
+            "(i.e. number of wounds are halved when calculating "
+            "combat, hit point and regeneration penalties, "
+            "slower walking speed happens at 6 wounds instead of 3, "
+            "and you die from 10 wounds instead of 5)") ==
+        "你不会患病，并且只有一半伤口数计入惩罚（向下取整；也就是计算战斗、生命值和再生惩罚时伤口数减半，行走变慢从6处伤口而不是3处开始，死亡从10处伤口而不是5处开始）");
     REQUIRE(
         i18n::get(
             "property.mon_struggles_tear_free_suffix",

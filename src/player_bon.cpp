@@ -320,23 +320,28 @@ static void update_trait_data()
 
     // --- Vigilant ---
     d.id = TraitId::vigilant;
-    d.title = "Vigilant";
-    d.descr = "You are always aware of nearby creatures";
+    d.title = i18n::get("player_bon.trait.vigilant.title", "Vigilant");
+    d.descr = i18n::get(
+        "player_bon.trait.vigilant.descr",
+        "You are always aware of nearby creatures");
     set_trait_data(d);
 
     // --- Treasure Hunter ---
     d.id = TraitId::treasure_hunter;
-    d.title = "Treasure Hunter";
-    d.descr = "You tend to find more items";
+    d.title = i18n::get("player_bon.trait.treasure_hunter.title", "Treasure Hunter");
+    d.descr = i18n::get(
+        "player_bon.trait.treasure_hunter.descr",
+        "You tend to find more items");
     d.blocked_for_bgs = {Bg::exorcist, Bg::ghoul, Bg::war_vet, Bg::flagellant};
     set_trait_data(d);
 
     // --- Self-aware ---
     d.id = TraitId::self_aware;
-    d.title = "Self-aware";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.self_aware.title", "Self-aware");
+    d.descr = i18n::get(
+        "player_bon.trait.self_aware.descr",
         "You cannot become confused, the number of remaining turns "
-        "for status effects are displayed";
+        "for status effects are displayed");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_conf);
 
@@ -356,32 +361,36 @@ static void update_trait_data()
 
     // --- Healer ---
     d.id = TraitId::healer;
-    d.title = "Healer";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.healer.title", "Healer");
+    d.descr = i18n::get(
+        "player_bon.trait.healer.descr",
         "Using medical equipment requires only half the normal time "
-        "and resources";
+        "and resources");
     d.blocked_for_bgs = {Bg::ghoul};
     set_trait_data(d);
 
     // --- Rapid Recoverer ---
     d.id = TraitId::rapid_recoverer;
-    d.title = "Rapid Recoverer";
-    d.descr = "You regenerate 1 hit point every third turn";
+    d.title = i18n::get("player_bon.trait.rapid_recoverer.title", "Rapid Recoverer");
+    d.descr = i18n::get(
+        "player_bon.trait.rapid_recoverer.descr",
+        "You regenerate 1 hit point every third turn");
     d.trait_prereqs = {TraitId::tough, TraitId::healer};
     d.blocked_for_bgs = {Bg::ghoul};
     set_trait_data(d);
 
     // --- Survivalist ---
     d.id = TraitId::survivalist;
-    d.title = "Survivalist";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.survivalist.title", "Survivalist");
+    d.descr = i18n::get(
+        "player_bon.trait.survivalist.descr",
         "You cannot become diseased, "
         "only half your wounds count, "
         "rounded down "
         "(i.e. number of wounds are halved when calculating "
         "combat, hit point and regeneration penalties, "
         "slower walking speed happens at 6 wounds instead of 3, "
-        "and you die from 10 wounds instead of 5)";
+        "and you die from 10 wounds instead of 5)");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_disease);
 
