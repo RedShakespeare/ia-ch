@@ -1037,6 +1037,52 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "Restores 3 hit points, and cures blindness, deafness, "
             "poisoning, infections, disease and weakening.") ==
         "恢复 3 点生命值，并治愈失明、失聪、中毒、感染、疾病和虚弱。");
+    REQUIRE(i18n::get("item_potion.resistance_name", "Resistance") == "抗性");
+    REQUIRE(
+        i18n::get(
+            "item_potion.resistance_descr",
+            "Completely protects the consumer from electricity, fire and poison - "
+            "and also prevents paralysis.") ==
+        "完全保护饮用者免受电击、火焰和毒素伤害，并且防止麻痹。");
+    REQUIRE(i18n::get("item_potion.descent_name", "Descent") == "下沉");
+    REQUIRE(
+        i18n::get(
+            "item_potion.descent_descr",
+            "A bizarre liquid that causes the consumer to "
+            "dematerialize and sink through the ground.") ==
+        "一种奇异液体，会让饮用者非物质化并沉入地下。");
+    REQUIRE(i18n::get("item_potion.skill_name", "Skill") == "技艺");
+    REQUIRE(
+        i18n::get(
+            "item_potion.skill_descr",
+            "The consumer becomes more skillful "
+            "(+10% to hit chance, evasion, stealth, and searching).") ==
+        "饮用者变得更加熟练（命中率、闪避、潜行和搜索 +10%）。");
+    REQUIRE(i18n::get("item_potion.carapace_name", "Carapace") == "甲壳");
+    REQUIRE(
+        i18n::get(
+            "item_potion.carapace_descr",
+            "Causes a tough carapace to grow over the consumer's skin "
+            "providing protection against physical attacks "
+            "(+3 armor points), "
+            "as well as some resistance against burning "
+            "(+25% chance to resist burning).") ==
+        "使坚硬的甲壳覆盖饮用者的皮肤，提供对物理攻击的防护（+3 护甲点），并获得一些燃烧抗性（+25% 抵抗燃烧几率）。");
+    REQUIRE(i18n::get("item_potion.blinking_name", "Blinking") == "闪现");
+    REQUIRE(
+        i18n::get(
+            "item_potion.blinking_descr",
+            "Causes the consumer to rapidly fade away from existence, "
+            "and reappear again at a nearby position "
+            "of their choosing.") == "使饮用者快速从现实中淡出，并在自己选择的附近位置重新出现。");
+    REQUIRE(i18n::get("item_potion.burrowing_name", "Burrowing") == "掘地");
+    REQUIRE(
+        i18n::get(
+            "item_potion.burrowing_descr",
+            "Infused with the alchemically treated blood of Chthonians, "
+            "it grants the consumer the ability to burrow through earth and rock "
+            "(can burrow through walls and rubble).") ==
+        "注入了经过炼金处理的钻地魔血液，赋予饮用者穿过泥土和岩石掘进的能力（可以穿过墙壁和瓦砾）。");
     REQUIRE(i18n::get("item_potion.feel_more_at_ease", "I feel more at ease.") == "我感到安心多了。");
     REQUIRE(i18n::get("item_potion.feel_insightful", "I feel insightful.") == "我感到洞察力涌现。");
     REQUIRE(i18n::get("item_potion.feel_fine", "I feel fine.") == "我感觉很好。");

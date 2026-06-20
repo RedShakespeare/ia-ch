@@ -883,14 +883,16 @@ void Curing::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Resistance::real_name() const
 {
-    return "Resistance";
+    return i18n::get("item_potion.resistance_name", "Resistance");
 }
 
 std::string Resistance::descr_identified() const
 {
     return (
-        "Completely protects the consumer from electricity, fire and poison - "
-        "and also prevents paralysis.");
+        i18n::get(
+            "item_potion.resistance_descr",
+            "Completely protects the consumer from electricity, fire and poison - "
+            "and also prevents paralysis."));
 }
 
 PotionAlignment Resistance::alignment() const
@@ -923,14 +925,16 @@ void Resistance::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Descent::real_name() const
 {
-    return "Descent";
+    return i18n::get("item_potion.descent_name", "Descent");
 }
 
 std::string Descent::descr_identified() const
 {
     return (
-        "A bizarre liquid that causes the consumer to "
-        "dematerialize and sink through the ground.");
+        i18n::get(
+            "item_potion.descent_descr",
+            "A bizarre liquid that causes the consumer to "
+            "dematerialize and sink through the ground."));
 }
 
 PotionAlignment Descent::alignment() const
@@ -965,14 +969,16 @@ void Descent::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Skill::real_name() const
 {
-    return "Skill";
+    return i18n::get("item_potion.skill_name", "Skill");
 }
 
 std::string Skill::descr_identified() const
 {
     return (
-        "The consumer becomes more skillful "
-        "(+10% to hit chance, evasion, stealth, and searching).");
+        i18n::get(
+            "item_potion.skill_descr",
+            "The consumer becomes more skillful "
+            "(+10% to hit chance, evasion, stealth, and searching)."));
 }
 
 PotionAlignment Skill::alignment() const
@@ -1000,17 +1006,19 @@ void Skill::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Carapace::real_name() const
 {
-    return "Carapace";
+    return i18n::get("item_potion.carapace_name", "Carapace");
 }
 
 std::string Carapace::descr_identified() const
 {
     return (
-        "Causes a tough carapace to grow over the consumer's skin "
-        "providing protection against physical attacks "
-        "(+3 armor points), "
-        "as well as some resistance against burning "
-        "(+25% chance to resist burning).");
+        i18n::get(
+            "item_potion.carapace_descr",
+            "Causes a tough carapace to grow over the consumer's skin "
+            "providing protection against physical attacks "
+            "(+3 armor points), "
+            "as well as some resistance against burning "
+            "(+25% chance to resist burning)."));
 }
 
 PotionAlignment Carapace::alignment() const
@@ -1038,15 +1046,17 @@ void Carapace::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Blinking::real_name() const
 {
-    return "Blinking";
+    return i18n::get("item_potion.blinking_name", "Blinking");
 }
 
 std::string Blinking::descr_identified() const
 {
     return (
-        "Causes the consumer to rapidly fade away from existence, "
-        "and reappear again at a nearby position "
-        "of their choosing.");
+        i18n::get(
+            "item_potion.blinking_descr",
+            "Causes the consumer to rapidly fade away from existence, "
+            "and reappear again at a nearby position "
+            "of their choosing."));
 }
 
 PotionAlignment Blinking::alignment() const
@@ -1082,15 +1092,17 @@ void Blinking::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Burrowing::real_name() const
 {
-    return "Burrowing";
+    return i18n::get("item_potion.burrowing_name", "Burrowing");
 }
 
 std::string Burrowing::descr_identified() const
 {
     return (
-        "Infused with the alchemically treated blood of Chthonians, "
-        "it grants the consumer the ability to burrow through earth and rock "
-        "(can burrow through walls and rubble).");
+        i18n::get(
+            "item_potion.burrowing_descr",
+            "Infused with the alchemically treated blood of Chthonians, "
+            "it grants the consumer the ability to burrow through earth and rock "
+            "(can burrow through walls and rubble)."));
 }
 
 PotionAlignment Burrowing::alignment() const
