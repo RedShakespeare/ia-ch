@@ -5602,7 +5602,7 @@ bool SpellExpulsion::is_noisy(const SpellSkill skill) const
 
 std::string SpellExpulsion::name() const
 {
-    return "Expulsion";
+    return i18n::get("spells.expulsion.name", "Expulsion");
 }
 
 int SpellExpulsion::max_dist(SpellSkill skill) const
@@ -5689,15 +5689,31 @@ std::vector<std::string> SpellExpulsion::descr_specific(
     std::vector<std::string> descr;
 
     if (skill == SpellSkill::transcendent) {
-        descr.emplace_back("All visible hostile creatures are teleported away.");
+        descr.emplace_back(
+            i18n::get(
+                "spells.expulsion.descr_all",
+                "All visible hostile creatures are teleported away."));
     }
     else {
-        descr.emplace_back("One random visible hostile creature is teleported away.");
+        descr.emplace_back(
+            i18n::get(
+                "spells.expulsion.descr_one",
+                "One random visible hostile creature is teleported away."));
     }
 
-    descr.emplace_back("Max distance is " + std::to_string(max_dist(skill)) + " steps.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.expulsion.max_dist_prefix",
+            "Max distance is ") +
+        std::to_string(max_dist(skill)) +
+        i18n::get(
+            "spells.expulsion.max_dist_suffix",
+            " steps."));
 
-    descr.emplace_back("The teleportation is forced; the target can never control it.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.expulsion.forced",
+            "The teleportation is forced; the target can never control it."));
 
     return descr;
 }

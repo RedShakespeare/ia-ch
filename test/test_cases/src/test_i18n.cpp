@@ -1488,6 +1488,24 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "On teleporting, the caster is invisible for ") ==
         "传送后，施法者会隐形");
     REQUIRE(i18n::get("spells.teleport.invis_suffix", " turns.") == "回合。");
+    REQUIRE(i18n::get("spells.expulsion.name", "Expulsion") == "驱逐");
+    REQUIRE(
+        i18n::get(
+            "spells.expulsion.descr_all",
+            "All visible hostile creatures are teleported away.") ==
+        "所有可见敌对生物都会被传送走。");
+    REQUIRE(
+        i18n::get(
+            "spells.expulsion.descr_one",
+            "One random visible hostile creature is teleported away.") ==
+        "一个随机可见敌对生物会被传送走。");
+    REQUIRE(i18n::get("spells.expulsion.max_dist_prefix", "Max distance is ") == "最大距离为");
+    REQUIRE(i18n::get("spells.expulsion.max_dist_suffix", " steps.") == "步。");
+    REQUIRE(
+        i18n::get(
+            "spells.expulsion.forced",
+            "The teleportation is forced; the target can never control it.") ==
+        "这是强制传送；目标永远无法控制它。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
