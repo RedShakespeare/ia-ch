@@ -20,6 +20,7 @@
 #include "debug.hpp"
 #include "game.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
 #include "player_spells.hpp"
@@ -80,23 +81,23 @@ static std::string trait_descr_for_spell(
     std::unique_ptr<Spell> spell(spells::make(spell_id));
 
     std::string str =
-        "Gain the ability to cast \"" +
+        i18n::get("player_bon.trait.gain_cast_prefix", "Gain the ability to cast \"") +
         spell->name() +
-        "\"";
+        i18n::get("player_bon.trait.gain_cast_suffix", "\"");
 
     if (spell->can_be_improved_with_skill()) {
         str +=
-            " at " +
+            i18n::get("player_bon.trait.gain_cast_skill_prefix", " at ") +
             spells::skill_to_str(skill) +
-            " level";
+            i18n::get("player_bon.trait.gain_cast_skill_suffix", " level");
     }
 
-    str += " -";
+    str += i18n::get("player_bon.trait.gain_cast_descr_separator", " -");
 
     const auto descr = spell->descr_specific(skill);
 
     for (const auto& line : descr) {
-        str += " " + line;
+        str += i18n::get("player_bon.trait.gain_cast_line_separator", " ") + line;
     }
 
     // Assert that the player character has been initialized, as it is used
@@ -106,7 +107,10 @@ static std::string trait_descr_for_spell(
 
     const auto cost_str = spell->cost_range(skill, map::g_player).str();
 
-    str += (" This spell costs " + cost_str + " spirit to cast.");
+    str +=
+        i18n::get("player_bon.trait.gain_cast_cost_prefix", " This spell costs ") +
+        cost_str +
+        i18n::get("player_bon.trait.gain_cast_cost_suffix", " spirit to cast.");
 
     return str;
 }
@@ -116,16 +120,26 @@ static std::string get_player_available_sp_str()
     const std::string sp_str = std::to_string(map::g_player->m_sp);
     const std::string max_sp_str = std::to_string(actor::max_sp(*map::g_player));
 
-    std::string descr = "You currently have " + sp_str + "/" + max_sp_str + " spirit";
+    std::string descr =
+        i18n::get("player_bon.trait.available_sp_prefix", "You currently have ") +
+        sp_str +
+        "/" +
+        max_sp_str +
+        i18n::get("player_bon.trait.available_sp_suffix", " spirit");
 
     if (player_bon::is_bg(Bg::exorcist)) {
         const std::string fp_str = std::to_string(actor::player_state::g_exorcist_fervor);
         const std::string max_fp_str = std::to_string(actor::player_exorcist_max_fervor());
 
-        descr += " and " + fp_str + "/" + max_fp_str + " fervor";
+        descr +=
+            i18n::get("player_bon.trait.available_fp_prefix", " and ") +
+            fp_str +
+            "/" +
+            max_fp_str +
+            i18n::get("player_bon.trait.available_fp_suffix", " fervor");
     }
 
-    descr += ".";
+    descr += i18n::get("player_bon.trait.available_sp_period", ".");
 
     return descr;
 }
@@ -182,14 +196,16 @@ static void update_trait_data()
 
     // --- Adept Melee Fighter ---
     d.id = TraitId::adept_melee;
-    d.title = "Adept Melee Fighter";
-    d.descr = "+10% hit chance and +1 damage with melee attacks";
+    d.title = i18n::get("player_bon.trait.adept_melee.title", "Adept Melee Fighter");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_melee.descr",
+        "+10% hit chance and +1 damage with melee attacks");
     set_trait_data(d);
 
     // --- Expert Melee Fighter ---
     d = trait_data(TraitId::adept_melee);
     d.id = TraitId::expert_melee;
-    d.title = "Expert Melee Fighter";
+    d.title = i18n::get("player_bon.trait.expert_melee.title", "Expert Melee Fighter");
     d.trait_prereqs = {TraitId::adept_melee};
     d.blocked_for_bgs = {Bg::exorcist};
     set_trait_data(d);
@@ -197,15 +213,16 @@ static void update_trait_data()
     // --- Master Melee Fighter ---
     d = trait_data(TraitId::adept_melee);
     d.id = TraitId::master_melee;
-    d.title = "Master Melee Fighter";
+    d.title = i18n::get("player_bon.trait.master_melee.title", "Master Melee Fighter");
     d.trait_prereqs = {TraitId::expert_melee};
     d.blocked_for_bgs = {Bg::exorcist, Bg::occultist};
     set_trait_data(d);
 
     // --- Adept Marksman ---
     d.id = TraitId::adept_marksman;
-    d.title = "Adept Marksman";
-    d.descr = (
+    d.title = i18n::get("player_bon.trait.adept_marksman.title", "Adept Marksman");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_marksman.descr",
         "+10% hit chance and +1 minimum damage with firearms and thrown weapons "
         "(cannot raise maximum damage)");
     d.blocked_for_bgs = {Bg::ghoul};
@@ -214,7 +231,7 @@ static void update_trait_data()
     // --- Expert Marksman ---
     d = trait_data(TraitId::adept_marksman);
     d.id = TraitId::expert_marksman;
-    d.title = "Expert Marksman";
+    d.title = i18n::get("player_bon.trait.expert_marksman.title", "Expert Marksman");
     d.trait_prereqs = {TraitId::adept_marksman};
     d.blocked_for_bgs = {Bg::ghoul, Bg::exorcist};
     set_trait_data(d);
@@ -222,51 +239,58 @@ static void update_trait_data()
     // --- Master Marksman ---
     d = trait_data(TraitId::adept_marksman);
     d.id = TraitId::master_marksman;
-    d.title = "Master Marksman";
+    d.title = i18n::get("player_bon.trait.master_marksman.title", "Master Marksman");
     d.trait_prereqs = {TraitId::expert_marksman};
     d.blocked_for_bgs = {Bg::ghoul, Bg::exorcist, Bg::occultist, Bg::flagellant};
     set_trait_data(d);
 
     // --- Cool-headed ---
     d.id = TraitId::cool_headed;
-    d.title = "Cool-headed";
-    d.descr = "+20% mental shock resistance";
+    d.title = i18n::get("player_bon.trait.cool_headed.title", "Cool-headed");
+    d.descr = i18n::get(
+        "player_bon.trait.cool_headed.descr",
+        "+20% mental shock resistance");
     set_trait_data(d);
 
     // --- Courageous ---
     d = trait_data(TraitId::cool_headed);
     d.id = TraitId::courageous;
-    d.title = "Courageous";
+    d.title = i18n::get("player_bon.trait.courageous.title", "Courageous");
     d.trait_prereqs = {TraitId::cool_headed};
     set_trait_data(d);
 
     // --- Dexterous ---
     d.id = TraitId::dexterous;
-    d.title = "Dexterous";
-    d.descr = "+25% chance to evade attacks";
+    d.title = i18n::get("player_bon.trait.dexterous.title", "Dexterous");
+    d.descr = i18n::get(
+        "player_bon.trait.dexterous.descr",
+        "+25% chance to evade attacks");
     set_trait_data(d);
 
     // --- Lithe ---
     d = trait_data(TraitId::dexterous);
     d.id = TraitId::lithe;
-    d.title = "Lithe";
+    d.title = i18n::get("player_bon.trait.lithe.title", "Lithe");
     d.trait_prereqs = {TraitId::dexterous};
     set_trait_data(d);
 
     // --- Crippling Strikes ---
     d.id = TraitId::crippling_strikes;
-    d.title = "Crippling Strikes";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.crippling_strikes.title", "Crippling Strikes");
+    d.descr = i18n::get(
+        "player_bon.trait.crippling_strikes.descr",
         "Your melee attacks have 60% chance to weaken the target "
-        "creature for 2-3 turns (reducing their melee damage by half)";
+        "creature for 2-3 turns (reducing their melee damage by half)");
     d.trait_prereqs = {TraitId::dexterous, TraitId::adept_melee};
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Fearless ---
     d.id = TraitId::fearless;
-    d.title = "Fearless";
-    d.descr = "You cannot become terrified, +10% mental shock resistance";
+    d.title = i18n::get("player_bon.trait.fearless.title", "Fearless");
+    d.descr = i18n::get(
+        "player_bon.trait.fearless.descr",
+        "You cannot become terrified, +10% mental shock resistance");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_fear);
 
@@ -282,47 +306,55 @@ static void update_trait_data()
 
     // --- Stealthy ---
     d.id = TraitId::stealthy;
-    d.title = "Stealthy";
-    d.descr = "+45% chance to avoid detection by sight";
+    d.title = i18n::get("player_bon.trait.stealthy.title", "Stealthy");
+    d.descr = i18n::get(
+        "player_bon.trait.stealthy.descr",
+        "+45% chance to avoid detection by sight");
     set_trait_data(d);
 
     // --- Imperceptible ---
     d = trait_data(TraitId::stealthy);
     d.id = TraitId::imperceptible;
-    d.title = "Imperceptible";
+    d.title = i18n::get("player_bon.trait.imperceptible.title", "Imperceptible");
     d.trait_prereqs = {TraitId::stealthy};
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Silent ---
     d.id = TraitId::silent;
-    d.title = "Silent";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.silent.title", "Silent");
+    d.descr = i18n::get(
+        "player_bon.trait.silent.descr",
         "All your melee attacks are silent (regardless of the weapon), "
         "and creatures are not alerted when you open or close doors, "
-        "or wade through water";
+        "or wade through water");
     d.trait_prereqs = {TraitId::stealthy};
     set_trait_data(d);
 
     // --- Vigilant ---
     d.id = TraitId::vigilant;
-    d.title = "Vigilant";
-    d.descr = "You are always aware of nearby creatures";
+    d.title = i18n::get("player_bon.trait.vigilant.title", "Vigilant");
+    d.descr = i18n::get(
+        "player_bon.trait.vigilant.descr",
+        "You are always aware of nearby creatures");
     set_trait_data(d);
 
     // --- Treasure Hunter ---
     d.id = TraitId::treasure_hunter;
-    d.title = "Treasure Hunter";
-    d.descr = "You tend to find more items";
+    d.title = i18n::get("player_bon.trait.treasure_hunter.title", "Treasure Hunter");
+    d.descr = i18n::get(
+        "player_bon.trait.treasure_hunter.descr",
+        "You tend to find more items");
     d.blocked_for_bgs = {Bg::exorcist, Bg::ghoul, Bg::war_vet, Bg::flagellant};
     set_trait_data(d);
 
     // --- Self-aware ---
     d.id = TraitId::self_aware;
-    d.title = "Self-aware";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.self_aware.title", "Self-aware");
+    d.descr = i18n::get(
+        "player_bon.trait.self_aware.descr",
         "You cannot become confused, the number of remaining turns "
-        "for status effects are displayed";
+        "for status effects are displayed");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_conf);
 
@@ -342,32 +374,36 @@ static void update_trait_data()
 
     // --- Healer ---
     d.id = TraitId::healer;
-    d.title = "Healer";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.healer.title", "Healer");
+    d.descr = i18n::get(
+        "player_bon.trait.healer.descr",
         "Using medical equipment requires only half the normal time "
-        "and resources";
+        "and resources");
     d.blocked_for_bgs = {Bg::ghoul};
     set_trait_data(d);
 
     // --- Rapid Recoverer ---
     d.id = TraitId::rapid_recoverer;
-    d.title = "Rapid Recoverer";
-    d.descr = "You regenerate 1 hit point every third turn";
+    d.title = i18n::get("player_bon.trait.rapid_recoverer.title", "Rapid Recoverer");
+    d.descr = i18n::get(
+        "player_bon.trait.rapid_recoverer.descr",
+        "You regenerate 1 hit point every third turn");
     d.trait_prereqs = {TraitId::tough, TraitId::healer};
     d.blocked_for_bgs = {Bg::ghoul};
     set_trait_data(d);
 
     // --- Survivalist ---
     d.id = TraitId::survivalist;
-    d.title = "Survivalist";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.survivalist.title", "Survivalist");
+    d.descr = i18n::get(
+        "player_bon.trait.survivalist.descr",
         "You cannot become diseased, "
         "only half your wounds count, "
         "rounded down "
         "(i.e. number of wounds are halved when calculating "
         "combat, hit point and regeneration penalties, "
         "slower walking speed happens at 6 wounds instead of 3, "
-        "and you die from 10 wounds instead of 5)";
+        "and you die from 10 wounds instead of 5)");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_disease);
 
@@ -387,11 +423,12 @@ static void update_trait_data()
 
     // --- Stout Spirit ---
     d.id = TraitId::stout_spirit;
-    d.title = "Stout Spirit";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.stout_spirit.title", "Stout Spirit");
+    d.descr = i18n::get(
+        "player_bon.trait.stout_spirit.descr",
         "+2 spirit points, increased spirit regeneration rate, you "
         "can defy harmful spells (it takes 125-150 turns to regain "
-        "spell resistance after a spell is blocked)";
+        "spell resistance after a spell is blocked)");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_spell);
 
@@ -413,33 +450,36 @@ static void update_trait_data()
     // --- Strong Spirit ---
     d = trait_data(TraitId::stout_spirit);
     d.id = TraitId::strong_spirit;
-    d.title = "Strong Spirit";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.strong_spirit.title", "Strong Spirit");
+    d.descr = i18n::get(
+        "player_bon.trait.strong_spirit.descr",
         "+2 spirit points, increased spirit regeneration rate, it "
         "takes 75-100 turns to regain spell resistance after a spell "
-        "is blocked";
+        "is blocked");
     d.trait_prereqs = {TraitId::stout_spirit};
     set_trait_data(d);
 
     // --- Mighty Spirit ---
     d = trait_data(TraitId::stout_spirit);
     d.id = TraitId::mighty_spirit;
-    d.title = "Mighty Spirit";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.mighty_spirit.title", "Mighty Spirit");
+    d.descr = i18n::get(
+        "player_bon.trait.mighty_spirit.descr",
         "+2 spirit points, increased spirit regeneration rate, it "
         "takes 25-50 turns to regain spell resistance after a spell "
-        "is blocked";
+        "is blocked");
     d.trait_prereqs = {TraitId::strong_spirit};
     set_trait_data(d);
 
     // --- Meditative ---
     d.id = TraitId::meditative;
-    d.title = "Meditative";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.meditative.title", "Meditative");
+    d.descr = i18n::get(
+        "player_bon.trait.meditative.descr",
         "Applies a focused state which allows the next spell to be "
         "cast without spending a turn, and with the casting cost "
         "reduced by 1 point - it takes 125-150 turns to regain this "
-        "state after a spell is cast";
+        "state after a spell is cast");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::meditative_focused);
 
@@ -457,11 +497,12 @@ static void update_trait_data()
 
     // --- Sage ---
     d.id = TraitId::sage;
-    d.title = "Sage";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.sage.title", "Sage");
+    d.descr = i18n::get(
+        "player_bon.trait.sage.descr",
         "When focused, spells are cast without spending spirit points, "
         "and the duration to regain the focused state is reduced to "
-        "75-100 turns";
+        "75-100 turns");
     d.trait_prereqs = {TraitId::meditative};
     d.blocked_for_bgs = trait_data(TraitId::meditative).blocked_for_bgs;
     d.blocked_for_bgs.push_back(Bg::flagellant);
@@ -469,23 +510,25 @@ static void update_trait_data()
 
     // --- Absorption ---
     d.id = TraitId::absorption;
-    d.title = "Absorption";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.absorption.title", "Absorption");
+    d.descr = i18n::get(
+        "player_bon.trait.absorption.descr",
         "1-6 spirit points are restored each time Spell Shield is ended "
         "by a hostile spell "
-        "(Spell Shield is granted by spirit traits or the Spell Shield spell)";
+        "(Spell Shield is granted by spirit traits or the Spell Shield spell)");
     d.trait_prereqs = {TraitId::strong_spirit};
     set_trait_data(d);
 
     // --- Tough ---
     d.id = TraitId::tough;
-    d.title = "Tough";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.tough.title", "Tough");
+    d.descr = i18n::get(
+        "player_bon.trait.tough.descr",
         "+6 hit points, "
         "+10% chance to resist burning, poisoning and paralysis, "
         "less likely to sprain when kicking, more likely to "
         "succeed with object interactions requiring strength (e.g. "
-        "bashing things open)";
+        "bashing things open)");
     d.on_picked = []() {
         const int hp_incr = 6;
 
@@ -505,74 +548,82 @@ static void update_trait_data()
     // --- Rugged ---
     d = trait_data(TraitId::tough);
     d.id = TraitId::rugged;
-    d.title = "Rugged";
+    d.title = i18n::get("player_bon.trait.rugged.title", "Rugged");
     d.trait_prereqs = {TraitId::tough};
     set_trait_data(d);
 
     // --- Unbreakable ---
     d = trait_data(TraitId::rugged);
     d.id = TraitId::unbreakable;
-    d.title = "Unbreakable";
+    d.title = i18n::get("player_bon.trait.unbreakable.title", "Unbreakable");
     d.bg_prereq = Bg::flagellant;
     d.trait_prereqs = {TraitId::rugged};
     set_trait_data(d);
 
     // --- Thick Skinned ---
     d.id = TraitId::thick_skinned;
-    d.title = "Thick Skinned";
-    d.descr = "+1 armor point (physical damage reduced by 1 point)";
+    d.title = i18n::get("player_bon.trait.thick_skinned.title", "Thick Skinned");
+    d.descr = i18n::get(
+        "player_bon.trait.thick_skinned.descr",
+        "+1 armor point (physical damage reduced by 1 point)");
     d.trait_prereqs = {TraitId::tough};
     set_trait_data(d);
 
     // --- Callous ---
     d = trait_data(TraitId::thick_skinned);
     d.id = TraitId::callous;
-    d.title = "Callous";
+    d.title = i18n::get("player_bon.trait.callous.title", "Callous");
     d.bg_prereq = Bg::flagellant;
     d.trait_prereqs = {TraitId::thick_skinned};
     set_trait_data(d);
 
     // --- Resistant ---
     d.id = TraitId::resistant;
-    d.title = "Resistant";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.resistant.title", "Resistant");
+    d.descr = i18n::get(
+        "player_bon.trait.resistant.descr",
         "+25% chance to resist burning, poisoning and paralysis - "
-        "and the duration of those effects is halved";
+        "and the duration of those effects is halved");
     d.trait_prereqs = {TraitId::tough};
     set_trait_data(d);
 
     // --- Strong-backed ---
     d.id = TraitId::strong_backed;
-    d.title = "Strong-backed";
-    d.descr = "+50% carry weight limit";
+    d.title = i18n::get("player_bon.trait.strong_backed.title", "Strong-backed");
+    d.descr = i18n::get(
+        "player_bon.trait.strong_backed.descr",
+        "+50% carry weight limit");
     d.trait_prereqs = {TraitId::tough};
     set_trait_data(d);
 
     // --- Bane of the Undead ---
     d.id = TraitId::undead_bane;
-    d.title = "Bane of the Undead";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.undead_bane.title", "Bane of the Undead");
+    d.descr = i18n::get(
+        "player_bon.trait.undead_bane.descr",
         "+2 melee and ranged attack damage against all undead "
-        "monsters, +50% hit chance against ethereal undead monsters";
+        "monsters, +50% hit chance against ethereal undead monsters");
     d.trait_prereqs = {TraitId::tough, TraitId::fearless, TraitId::stout_spirit};
     set_trait_data(d);
 
     // --- Electrically Inclined ---
     d.id = TraitId::elec_incl;
-    d.title = "Electrically Inclined";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.elec_incl.title", "Electrically Inclined");
+    d.descr = i18n::get(
+        "player_bon.trait.elec_incl.descr",
         "Rods recharge twice as fast, strange devices are less likely "
         "to malfunction or break, electric lanterns last twice as "
-        "long, +1 damage with electricity weapons";
+        "long, +1 damage with electricity weapons");
     d.blocked_for_bgs = {Bg::ghoul};
     set_trait_data(d);
 
     // -- Adept of Channeling ---
     d.id = TraitId::adept_of_channeling;
-    d.title = "Adept of Channeling";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_channeling.title", "Adept of Channeling");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_channeling.descr",
         "Specialize in the channeling of violent energy. "
-        "Channeling spells are cast at a higher skill level.";
+        "Channeling spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::channeling); };
@@ -581,10 +632,11 @@ static void update_trait_data()
 
     // -- Master of Channeling ---
     d.id = TraitId::master_of_channeling;
-    d.title = "Master of Channeling";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_channeling.title", "Master of Channeling");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_channeling.descr",
         "Attain mastery over the channeling of violent energy. "
-        "Channeling spells are cast at a higher skill level.";
+        "Channeling spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_channeling};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -594,10 +646,11 @@ static void update_trait_data()
 
     // -- Adept of Corruption ---
     d.id = TraitId::adept_of_corruption;
-    d.title = "Adept of Corruption";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_corruption.title", "Adept of Corruption");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_corruption.descr",
         "Specialize in corruption and withering. "
-        "Corruption spells are cast at a higher skill level.";
+        "Corruption spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::corruption); };
@@ -606,10 +659,11 @@ static void update_trait_data()
 
     // -- Master of Corruption ---
     d.id = TraitId::master_of_corruption;
-    d.title = "Master of Corruption";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_corruption.title", "Master of Corruption");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_corruption.descr",
         "Attain mastery over corruption and withering. "
-        "Corruption spells are cast at a higher skill level.";
+        "Corruption spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_corruption};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -619,10 +673,11 @@ static void update_trait_data()
 
     // -- Adept of Illusion ---
     d.id = TraitId::adept_of_illusion;
-    d.title = "Adept of Illusion";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_illusion.title", "Adept of Illusion");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_illusion.descr",
         "Specialize in the casting of illusions. "
-        "Illusion spells are cast at a higher skill level.";
+        "Illusion spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::illusion); };
@@ -631,10 +686,11 @@ static void update_trait_data()
 
     // -- Master of Illusion ---
     d.id = TraitId::master_of_illusion;
-    d.title = "Master of Illusion";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_illusion.title", "Master of Illusion");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_illusion.descr",
         "Attain mastery over the casting of illusions. "
-        "Illusion spells are cast at a higher skill level.";
+        "Illusion spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_illusion};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -644,10 +700,11 @@ static void update_trait_data()
 
     // -- Adept of The_mind ---
     d.id = TraitId::adept_of_the_mind;
-    d.title = "Adept of the Mind";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_the_mind.title", "Adept of the Mind");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_the_mind.descr",
         "Specialize in knowledge, foresight, and will. "
-        "Mind spells are cast at a higher skill level.";
+        "Mind spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::mind); };
@@ -656,11 +713,12 @@ static void update_trait_data()
 
     // -- Master of The_mind ---
     d.id = TraitId::master_of_the_mind;
-    d.title = "Master of the Mind";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_the_mind.title", "Master of the Mind");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_the_mind.descr",
         "Attain mastery over knowledge, foresight, and will. "
         "Mind spells are cast at a higher skill level, "
-        "and you also sense items and creatures.";
+        "and you also sense items and creatures.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_the_mind};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -670,10 +728,11 @@ static void update_trait_data()
 
     // -- Adept of Time ---
     d.id = TraitId::adept_of_time;
-    d.title = "Adept of Time";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_time.title", "Adept of Time");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_time.descr",
         "Specialize in the manipulation of time and causality. "
-        "Time spells are cast at a higher skill level.";
+        "Time spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::time); };
@@ -682,10 +741,11 @@ static void update_trait_data()
 
     // -- Master of Time ---
     d.id = TraitId::master_of_time;
-    d.title = "Master of Time";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_time.title", "Master of Time");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_time.descr",
         "Attain mastery over the manipulation of time and causality. "
-        "Time spells are cast at a higher skill level.";
+        "Time spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_time};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -695,10 +755,11 @@ static void update_trait_data()
 
     // -- Adept of Warding ---
     d.id = TraitId::adept_of_warding;
-    d.title = "Adept of Warding";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.adept_of_warding.title", "Adept of Warding");
+    d.descr = i18n::get(
+        "player_bon.trait.adept_of_warding.descr",
         "Specialize in protective magic. "
-        "Warding spells are cast at a higher skill level.";
+        "Warding spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_1;
     d.on_picked = []() { incr_spell_skills(SpellDomain::warding); };
@@ -707,10 +768,11 @@ static void update_trait_data()
 
     // -- Master of Warding ---
     d.id = TraitId::master_of_warding;
-    d.title = "Master of Warding";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.master_of_warding.title", "Master of Warding");
+    d.descr = i18n::get(
+        "player_bon.trait.master_of_warding.descr",
         "Attain mastery over protective magic. "
-        "Warding spells are cast at a higher skill level.";
+        "Warding spells are cast at a higher skill level.");
     d.bg_prereq = Bg::occultist;
     d.trait_prereqs = {TraitId::adept_of_warding};
     d.clvl_prereq = s_occultist_spell_upgrade_lvl_2;
@@ -720,7 +782,7 @@ static void update_trait_data()
 
     // --- Cast Bless ---
     d.id = TraitId::cast_bless_i;
-    d.title = "Cast Bless";
+    d.title = i18n::get("player_bon.trait.cast_bless_i.title", "Cast Bless");
     d.descr = trait_descr_for_spell(SpellId::bless, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::bless, Verbose::no); };
@@ -730,7 +792,7 @@ static void update_trait_data()
 
     // --- Cast Bless II ---
     d.id = TraitId::cast_bless_ii;
-    d.title = "Cast Bless II";
+    d.title = i18n::get("player_bon.trait.cast_bless_ii.title", "Cast Bless II");
     d.descr = trait_descr_for_spell(SpellId::bless, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::bless, Verbose::no); };
@@ -741,7 +803,7 @@ static void update_trait_data()
 
     // --- Cast Cleansing Fire ---
     d.id = TraitId::cast_cleansing_fire_i;
-    d.title = "Cast Cleansing Fire";
+    d.title = i18n::get("player_bon.trait.cast_cleansing_fire_i.title", "Cast Cleansing Fire");
     d.descr = trait_descr_for_spell(SpellId::cleansing_fire, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::cleansing_fire, Verbose::no); };
@@ -751,7 +813,7 @@ static void update_trait_data()
 
     // --- Cast Cleansing Fire II ---
     d.id = TraitId::cast_cleansing_fire_ii;
-    d.title = "Cast Cleansing Fire II";
+    d.title = i18n::get("player_bon.trait.cast_cleansing_fire_ii.title", "Cast Cleansing Fire II");
     d.descr = trait_descr_for_spell(SpellId::cleansing_fire, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::cleansing_fire, Verbose::no); };
@@ -764,7 +826,7 @@ static void update_trait_data()
 
     // --- Cast Heal ---
     d.id = TraitId::cast_heal_i;
-    d.title = "Cast Heal";
+    d.title = i18n::get("player_bon.trait.cast_heal_i.title", "Cast Heal");
     d.descr = trait_descr_for_spell(SpellId::heal, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::heal, Verbose::no); };
@@ -774,7 +836,7 @@ static void update_trait_data()
 
     // --- Cast Heal II ---
     d.id = TraitId::cast_heal_ii;
-    d.title = "Cast Heal II";
+    d.title = i18n::get("player_bon.trait.cast_heal_ii.title", "Cast Heal II");
     d.descr = trait_descr_for_spell(SpellId::heal, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::heal, Verbose::no); };
@@ -785,7 +847,7 @@ static void update_trait_data()
 
     // --- Cast Light ---
     d.id = TraitId::cast_light_i;
-    d.title = "Cast Light";
+    d.title = i18n::get("player_bon.trait.cast_light_i.title", "Cast Light");
     d.descr = trait_descr_for_spell(SpellId::light, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::light, Verbose::no); };
@@ -795,7 +857,7 @@ static void update_trait_data()
 
     // --- Cast Light II ---
     d.id = TraitId::cast_light_ii;
-    d.title = "Cast Light II";
+    d.title = i18n::get("player_bon.trait.cast_light_ii.title", "Cast Light II");
     d.descr = trait_descr_for_spell(SpellId::light, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::light, Verbose::no); };
@@ -806,7 +868,7 @@ static void update_trait_data()
 
     // --- Cast Sanctuary ---
     d.id = TraitId::cast_sanctuary_i;
-    d.title = "Cast Sanctuary";
+    d.title = i18n::get("player_bon.trait.cast_sanctuary_i.title", "Cast Sanctuary");
     d.descr = trait_descr_for_spell(SpellId::sanctuary, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::sanctuary, Verbose::no); };
@@ -816,7 +878,7 @@ static void update_trait_data()
 
     // --- Cast Sanctuary II ---
     d.id = TraitId::cast_sanctuary_ii;
-    d.title = "Cast Sanctuary II";
+    d.title = i18n::get("player_bon.trait.cast_sanctuary_ii.title", "Cast Sanctuary II");
     d.descr = trait_descr_for_spell(SpellId::sanctuary, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::sanctuary, Verbose::no); };
@@ -827,7 +889,7 @@ static void update_trait_data()
 
     // --- Cast See Invisible ---
     d.id = TraitId::cast_see_invisible_i;
-    d.title = "Cast See Invisible";
+    d.title = i18n::get("player_bon.trait.cast_see_invisible_i.title", "Cast See Invisible");
     d.descr = trait_descr_for_spell(SpellId::see_invis, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::see_invis, Verbose::no); };
@@ -837,7 +899,7 @@ static void update_trait_data()
 
     // --- Cast See Invisible II ---
     d.id = TraitId::cast_see_invisible_ii;
-    d.title = "Cast See Invisible II";
+    d.title = i18n::get("player_bon.trait.cast_see_invisible_ii.title", "Cast See Invisible II");
     d.descr = trait_descr_for_spell(SpellId::see_invis, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::see_invis, Verbose::no); };
@@ -848,35 +910,41 @@ static void update_trait_data()
 
     // --- Prolonged Life ---
     d.id = TraitId::prolonged_life;
-    d.title = "Prolonged Life";
-    d.descr = "Any fatal damage received is instead drained from your fervor points";
+    d.title = i18n::get("player_bon.trait.prolonged_life.title", "Prolonged Life");
+    d.descr = i18n::get(
+        "player_bon.trait.prolonged_life.descr",
+        "Any fatal damage received is instead drained from your fervor points");
     d.bg_prereq = Bg::exorcist;
     set_trait_data(d);
 
     // --- Ravenous ---
     d.id = TraitId::ravenous;
-    d.title = "Ravenous";
-    d.descr = "You occasionally feed on living victims when attacking with claws";
+    d.title = i18n::get("player_bon.trait.ravenous.title", "Ravenous");
+    d.descr = i18n::get(
+        "player_bon.trait.ravenous.descr",
+        "You occasionally feed on living victims when attacking with claws");
     d.trait_prereqs = {TraitId::adept_melee};
     d.bg_prereq = Bg::ghoul;
     set_trait_data(d);
 
     // --- Foul ---
     d.id = TraitId::foul;
-    d.title = "Foul";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.foul.title", "Foul");
+    d.descr = i18n::get(
+        "player_bon.trait.foul.descr",
         "+1 claw damage, when attacking with claws, vicious worms "
         "occasionally burst out from the corpses of your victims to "
-        "attack your enemies";
+        "attack your enemies");
     d.bg_prereq = Bg::ghoul;
     set_trait_data(d);
 
     // --- Toxic ---
     d.id = TraitId::toxic;
-    d.title = "Toxic";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.toxic.title", "Toxic");
+    d.descr = i18n::get(
+        "player_bon.trait.toxic.descr",
         "+1 claw damage, you are immune to poison, and attacks with "
-        "your claws often poisons your victims";
+        "your claws often poisons your victims");
     d.on_picked = []() {
         prop::Prop* prop = prop::make(prop::Id::r_poison);
 
@@ -897,67 +965,80 @@ static void update_trait_data()
 
     // --- Indomitable Fury ---
     d.id = TraitId::indomitable_fury;
-    d.title = "Indomitable Fury";
-    d.descr = "While frenzied, you are immune to wounds, and your claw attacks cause fear";
+    d.title = i18n::get("player_bon.trait.indomitable_fury.title", "Indomitable Fury");
+    d.descr = i18n::get(
+        "player_bon.trait.indomitable_fury.descr",
+        "While frenzied, you are immune to wounds, and your claw attacks cause fear");
     d.trait_prereqs = {TraitId::adept_melee, TraitId::tough};
     d.bg_prereq = Bg::ghoul;
     set_trait_data(d);
 
     // --- Elusive ---
     d.id = TraitId::elusive;
-    d.title = "Elusive";
-    d.descr = "Creatures only remember you for half the normal duration (rounded up).";
+    d.title = i18n::get("player_bon.trait.elusive.title", "Elusive");
+    d.descr = i18n::get(
+        "player_bon.trait.elusive.descr",
+        "Creatures only remember you for half the normal duration (rounded up).");
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Vicious ---
     d.id = TraitId::vicious;
-    d.title = "Vicious";
-    d.descr = "+100% backstab damage (in addition to the normal +50%)";
+    d.title = i18n::get("player_bon.trait.vicious.title", "Vicious");
+    d.descr = i18n::get(
+        "player_bon.trait.vicious.descr",
+        "+100% backstab damage (in addition to the normal +50%)");
     d.trait_prereqs = {TraitId::stealthy, TraitId::dexterous};
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Ruthless ---
     d.id = TraitId::ruthless;
-    d.title = "Ruthless";
-    d.descr = "+100% backstab damage";
+    d.title = i18n::get("player_bon.trait.ruthless.title", "Ruthless");
+    d.descr = i18n::get(
+        "player_bon.trait.ruthless.descr",
+        "+100% backstab damage");
     d.trait_prereqs = {TraitId::vicious};
     d.bg_prereq = Bg::rogue;
     set_trait_data(d);
 
     // --- Steady Aimer ---
     d.id = TraitId::steady_aimer;
-    d.title = "Steady Aimer";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.steady_aimer.title", "Steady Aimer");
+    d.descr = i18n::get(
+        "player_bon.trait.steady_aimer.descr",
         "Standing still gives ranged attacks maximum damage and +10% "
-        "hit chance on the following turn, unless damage is taken";
+        "hit chance on the following turn, unless damage is taken");
     d.bg_prereq = Bg::war_vet;
     set_trait_data(d);
 
     // --- Galvanization ---
     d.id = TraitId::galvanization;
-    d.title = "Galvanization";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.galvanization.title", "Galvanization");
+    d.descr = i18n::get(
+        "player_bon.trait.galvanization.descr",
         "Casting any spell from the Blood domain grants "
         "Regeneration for 4-6 turns "
         "(+1 extra hit point regenerated per turn), if "
-        "hit points are lost from casting the spell";
+        "hit points are lost from casting the spell");
     d.bg_prereq = Bg::flagellant;
     set_trait_data(d);
 
     d.id = TraitId::enthusiasm;
-    d.title = "Enthusiasm";
-    d.descr = "Doubles all bonuses for the moribund effect";
+    d.title = i18n::get("player_bon.trait.enthusiasm.title", "Enthusiasm");
+    d.descr = i18n::get(
+        "player_bon.trait.enthusiasm.descr",
+        "Doubles all bonuses for the moribund effect");
     d.bg_prereq = Bg::flagellant;
     set_trait_data(d);
 
     // --- Memento Mori ---
     d.id = TraitId::memento_mori;
-    d.title = "Memento Mori";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.memento_mori.title", "Memento Mori");
+    d.descr = i18n::get(
+        "player_bon.trait.memento_mori.descr",
         "Raises the threshold of the moribund status to 8 hit points, "
-        "and increases the duration of the effect by 50% (rounded down)";
+        "and increases the duration of the effect by 50% (rounded down)");
     d.bg_prereq = Bg::flagellant;
     set_trait_data(d);
 }
@@ -1098,24 +1179,34 @@ std::vector<ColoredString> bg_descr(const Bg id)
 
     switch (id) {
     case Bg::exorcist:
-        put("Cannot use manuscripts, altars, monoliths, or gongs, "
+        put(i18n::get(
+            "player_bon.background.exorcist.destroy_sacred_tools_descr",
+            "Cannot use manuscripts, altars, monoliths, or gongs, "
             "but instead gains experience and fervor for destroying "
             "these (manuscripts are destroyed when picking them up). "
             "Fervor can be used for casting spells - these points "
             "are used automatically when there is not enough "
-            "spirit points to cast from.");
+            "spirit points to cast from."));
         put("");
-        put("Starts with a Holy Symbol, which can restore "
+        put(i18n::get(
+            "player_bon.background.exorcist.holy_symbol_descr",
+            "Starts with a Holy Symbol, which can restore "
             "spirit points and grant resistance against "
-            "mental shock and fear.");
+            "mental shock and fear."));
         put("");
-        put("Gains a bonus trait at character levels " +
+        put(i18n::get(
+                "player_bon.background.exorcist.bonus_trait_levels_prefix",
+                "Gains a bonus trait at character levels ") +
             std::to_string(s_exorcist_bon_trait_lvl_1) +
-            ", " +
+            i18n::get(
+                "player_bon.background.exorcist.bonus_trait_levels_separator",
+                ", ") +
             std::to_string(s_exorcist_bon_trait_lvl_2) +
-            ", and " +
+            i18n::get(
+                "player_bon.background.exorcist.bonus_trait_levels_and_separator",
+                ", and ") +
             std::to_string(s_exorcist_bon_trait_lvl_3) +
-            ".");
+            i18n::get("player_bon.background.exorcist.bonus_trait_levels_suffix", "."));
         put("");
         put_trait(TraitId::stout_spirit);
         put("");
@@ -1123,28 +1214,42 @@ std::vector<ColoredString> bg_descr(const Bg id)
         break;
 
     case Bg::flagellant:
-        put("No mental shock received for taking damage.");
+        put(i18n::get(
+            "player_bon.background.flagellant.no_damage_shock_descr",
+            "No mental shock received for taking damage."));
         put("");
-        put("If health is reduced to 6 hit points or below when taking damage, "
+        put(i18n::get(
+            "player_bon.background.flagellant.moribund_descr",
+            "If health is reduced to 6 hit points or below when taking damage, "
             "the moribund status is applied for 5-7 turns "
-            "(+3 melee damage, +30% melee hit chance, +3 armor points).");
+            "(+3 melee damage, +30% melee hit chance, +3 armor points)."));
         put("");
-        put("Wears a torture collar which cannot be taken off; "
+        put(i18n::get(
+            "player_bon.background.flagellant.torture_collar_descr",
+            "Wears a torture collar which cannot be taken off; "
             "walking requires extra turns, and stealth and evasion "
             "are reduced by 20%. However, wearing the collar hardens "
             "the Flagellant against physical suffering, armor is "
-            "increased by 3 points.");
+            "increased by 3 points."));
         put("");
-        put("Specializes in spells belonging to the Blood domain. "
-            "At character levels " +
+        put(i18n::get(
+                "player_bon.background.flagellant.blood_upgrade_levels_prefix",
+                "Specializes in spells belonging to the Blood domain. "
+                "At character levels ") +
             std::to_string(s_flagellant_spell_upgrade_lvl_1) +
-            " and " +
+            i18n::get(
+                "player_bon.background.flagellant.blood_upgrade_levels_and_separator",
+                " and ") +
             std::to_string(s_flagellant_spell_upgrade_lvl_2) +
-            ", all spells belonging to this domain are cast at "
-            "a higher skill level.");
+            i18n::get(
+                "player_bon.background.flagellant.blood_upgrade_levels_suffix",
+                ", all spells belonging to this domain are cast at "
+                "a higher skill level."));
         put("");
-        put("-25% mental shock taken from casting memorized spells "
-            "from the Blood domain.");
+        put(i18n::get(
+            "player_bon.background.flagellant.blood_spell_shock_descr",
+            "-25% mental shock taken from casting memorized spells "
+            "from the Blood domain."));
         put("");
         put_trait(TraitId::self_aware);
         put("");
@@ -1152,47 +1257,66 @@ std::vector<ColoredString> bg_descr(const Bg id)
         break;
 
     case Bg::ghoul:
-        put("-50% mental shock taken from seeing monsters and "
+        put(i18n::get(
+            "player_bon.background.ghoul.darkness_shock_descr",
+            "-50% mental shock taken from seeing monsters and "
             "standing in darkness - "
-            "but also only gains halved shock reduction from light.");
+            "but also only gains halved shock reduction from light."));
         put("");
-        put("Does not regenerate hit points and cannot use medical equipment - "
+        put(i18n::get(
+            "player_bon.background.ghoul.corpse_feeding_descr",
+            "Does not regenerate hit points and cannot use medical equipment - "
             "instead heals by feeding on corpses "
-            "(feeding is done by waiting on a corpse).");
+            "(feeding is done by waiting on a corpse)."));
         put("");
-        put("Can incite frenzy at will, and does not become weakened "
-            "when frenzy ends.");
+        put(i18n::get(
+            "player_bon.background.ghoul.frenzy_descr",
+            "Can incite frenzy at will, and does not become weakened "
+            "when frenzy ends."));
         put("");
-        put("+8 hit points.");
+        put(i18n::get("player_bon.background.ghoul.hit_points_descr", "+8 hit points."));
         put("");
-        put("Is immune to disease and infections.");
+        put(i18n::get(
+            "player_bon.background.ghoul.disease_immunity_descr",
+            "Is immune to disease and infections."));
         put("");
-        put("Does not get sprains.");
+        put(i18n::get("player_bon.background.ghoul.sprain_immunity_descr", "Does not get sprains."));
         put("");
-        put("Can see in darkness.");
+        put(i18n::get("player_bon.background.ghoul.darkvision_descr", "Can see in darkness."));
         put("");
-        put("-15% hit chance with firearms and thrown weapons.");
+        put(i18n::get(
+            "player_bon.background.ghoul.ranged_penalty_descr",
+            "-15% hit chance with firearms and thrown weapons."));
         put("");
-        put("All ghouls are allied.");
+        put(i18n::get("player_bon.background.ghoul.ghoul_allies_descr", "All ghouls are allied."));
         break;
 
     case Bg::occultist:
-        put("-50% mental shock taken from casting memorized spells "
+        put(i18n::get(
+            "player_bon.background.occultist.strange_item_shock_descr",
+            "-50% mental shock taken from casting memorized spells "
             "and from using or identifying strange items such as "
             "potions or manuscripts "
-            "(in addition to \"Cool-headed\").");
+            "(in addition to \"Cool-headed\")."));
         put("");
-        put("Can gain traits to increase skill level in various spell domains.");
+        put(i18n::get(
+            "player_bon.background.occultist.spell_domain_traits_descr",
+            "Can gain traits to increase skill level in various spell domains."));
         put("");
-        put("Chooses background in a specific spell domain at character creation, "
-            "which determines starting spells.");
+        put(i18n::get(
+            "player_bon.background.occultist.choose_domain_descr",
+            "Chooses background in a specific spell domain at character creation, "
+            "which determines starting spells."));
         put("");
-        put("+3 spirit points (in addition to \"Stout Spirit\").");
+        put(i18n::get(
+            "player_bon.background.occultist.spirit_points_descr",
+            "+3 spirit points (in addition to \"Stout Spirit\")."));
         put("");
-        put("Starts with several Bone Charms, that can be used for "
+        put(i18n::get(
+            "player_bon.background.occultist.bone_charms_descr",
+            "Starts with several Bone Charms, that can be used for "
             "gaining spell resistance or dispelling sigils "
-            ""
-            "(\"strange shape\" on the floor).");
+            "(\"strange shape\" on the floor)."));
 
         put("");
         put_trait(TraitId::stout_spirit);
@@ -1201,28 +1325,44 @@ std::vector<ColoredString> bg_descr(const Bg id)
         break;
 
     case Bg::rogue:
-        put("Mental shock received passively over time is reduced by 25%.");
+        put(i18n::get(
+            "player_bon.background.rogue.passive_shock_descr",
+            "Mental shock received passively over time is reduced by 25%."));
         put("");
-        put("+10% chance to spot hidden monsters, doors, and traps.");
+        put(i18n::get(
+            "player_bon.background.rogue.spot_hidden_descr",
+            "+10% chance to spot hidden monsters, doors, and traps."));
         put("");
-        put("Remains aware of the presence of other creatures longer.");
+        put(i18n::get(
+            "player_bon.background.rogue.creature_awareness_descr",
+            "Remains aware of the presence of other creatures longer."));
         put("");
-        put("Can sense the presence of unique monsters or powerful "
-            "artifacts.");
+        put(i18n::get(
+            "player_bon.background.rogue.sense_uniques_descr",
+            "Can sense the presence of unique monsters or powerful "
+            "artifacts."));
         put("");
-        put("Has acquired an artifact which can cloud the minds of all "
+        put(i18n::get(
+            "player_bon.background.rogue.mind_cloud_artifact_descr",
+            "Has acquired an artifact which can cloud the minds of all "
             "enemies, causing them to forget the presence of the "
-            "user.");
+            "user."));
         put("");
         put_trait(TraitId::stealthy);
         break;
 
     case Bg::war_vet:
-        put("Switches to prepared weapon instantly.");
+        put(i18n::get(
+            "player_bon.background.war_vet.instant_prepare_descr",
+            "Switches to prepared weapon instantly."));
         put("");
-        put("Starts with a Flak Jacket.");
+        put(i18n::get(
+            "player_bon.background.war_vet.flak_jacket_descr",
+            "Starts with a Flak Jacket."));
         put("");
-        put("Maintains armor twice as long before it breaks.");
+        put(i18n::get(
+            "player_bon.background.war_vet.armor_maintenance_descr",
+            "Maintains armor twice as long before it breaks."));
         put("");
         put_trait(TraitId::adept_marksman);
         put("");
@@ -1258,42 +1398,72 @@ std::string occultist_domain_descr(const SpellDomain domain)
     switch (domain) {
     case SpellDomain::channeling:
         return (
-            "You have previously dabbled in the channeling of violent energy, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.channeling_prefix",
+                "You have previously dabbled in the channeling of violent energy, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::corruption:
         // NOTE: The phrasing here match the Corruption domain starting spells Aura of Decay
         // and Curse:
         return (
-            "You have previously dabbled in spells that wither and corrupt, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.corruption_prefix",
+                "You have previously dabbled in spells that wither and corrupt, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::illusion:
         return (
-            "You have previously dabbled in the casting of illusions, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.illusion_prefix",
+                "You have previously dabbled in the casting of illusions, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::mind:
         return (
-            "You have previously dabbled in disciplines of revelation, foresight, "
-            "and will, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.mind_prefix",
+                "You have previously dabbled in disciplines of revelation, foresight, "
+                "and will, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::time:
         return (
-            "You have previously dabbled in the manipulation of time and causality, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.time_prefix",
+                "You have previously dabbled in the manipulation of time and causality, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::warding:
         return (
-            "You have previously dabbled in protective magic, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.warding_prefix",
+                "You have previously dabbled in protective magic, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::blood:
     case SpellDomain::END:
@@ -1676,7 +1846,9 @@ void on_player_gained_lvl(const int new_lvl)
         if (is_exorcist_extra_trait) {
             states::push(
                 std::make_unique<PickTraitState>(
-                    "You gain an extra trait!",
+                    i18n::get(
+                        "player_bon.extra_trait_title",
+                        "You gain an extra trait!"),
                     IsCharacterCreationTraitPick::no));
         }
     } break;
