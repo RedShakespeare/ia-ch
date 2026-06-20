@@ -1386,6 +1386,25 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "will also burn for ") ==
         "闪光强烈到使任何被其波及的受害者还会燃烧");
     REQUIRE(i18n::get("spells.light.descr_burn_suffix", " turns.") == "回合。");
+    REQUIRE(i18n::get("spells.invisibility.name", "Invisibility") == "隐形");
+    REQUIRE(
+        i18n::get(
+            "spells.invisibility.descr_main",
+            "Makes the caster invisible to normal vision for a "
+            "brief time.") ==
+        "使施法者暂时对普通视觉隐形。");
+    REQUIRE(
+        i18n::get(
+            "spells.invisibility.descr_basic",
+            "Attacking or casting spells reveals the caster.") ==
+        "攻击或施放法术会暴露施法者。");
+    REQUIRE(
+        i18n::get(
+            "spells.invisibility.descr_advanced",
+            "The caster is truly invisible for the duration of "
+            "the the spell, and can freely attack or cast "
+            "spells without breaking the invisibility.") ==
+        "在法术持续期间，施法者将真正隐形，可以自由攻击或施放法术而不会打破隐形。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

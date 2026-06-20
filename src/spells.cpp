@@ -4692,7 +4692,7 @@ std::vector<std::string> SpellLight::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellInvis::name() const
 {
-    return "Invisibility";
+    return i18n::get("spells.invisibility.name", "Invisibility");
 }
 
 SpellId SpellInvis::id() const
@@ -4770,18 +4770,24 @@ std::vector<std::string> SpellInvis::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Makes the caster invisible to normal vision for a "
-        "brief time.");
+        i18n::get(
+            "spells.invisibility.descr_main",
+            "Makes the caster invisible to normal vision for a "
+            "brief time."));
 
     if (skill == SpellSkill::basic) {
         descr.emplace_back(
-            "Attacking or casting spells reveals the caster.");
+            i18n::get(
+                "spells.invisibility.descr_basic",
+                "Attacking or casting spells reveals the caster."));
     }
     else {
         descr.emplace_back(
-            "The caster is truly invisible for the duration of "
-            "the the spell, and can freely attack or cast "
-            "spells without breaking the invisibility.");
+            i18n::get(
+                "spells.invisibility.descr_advanced",
+                "The caster is truly invisible for the duration of "
+                "the the spell, and can freely attack or cast "
+                "spells without breaking the invisibility."));
     }
 
     descr.push_back(spell_duration_descr(duration_range(skill).str()));
