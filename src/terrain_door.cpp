@@ -1246,15 +1246,17 @@ std::optional<map::MinimapAppearance> Door::minimap_appearance() const
 
     if (type() == terrain::DoorType::metal) {
         appearance.color = colors::light_teal();
-        appearance.legend_text = "Door (metal)";
+        appearance.legend_text =
+            i18n::get("terrain_door.legend_metal", "Door (metal)");
     }
     else if (is_warded()) {
         appearance.color = colors::light_red();
-        appearance.legend_text = "Door (warded)";
+        appearance.legend_text =
+            i18n::get("terrain_door.legend_warded", "Door (warded)");
     }
     else {
         appearance.color = colors::light_white();
-        appearance.legend_text = "Door";
+        appearance.legend_text = i18n::get("terrain_door.legend", "Door");
     }
 
     return appearance;
