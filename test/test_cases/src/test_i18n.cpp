@@ -1754,6 +1754,41 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "spells.sacrifice_life.spirit_point_plural_suffix",
             " spirit points are gained.") ==
         "点精神。");
+    REQUIRE(i18n::get("spells.shed_impurity.name", "Shed Impurity") == "蜕除污秽");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.descr",
+            "Purifies the caster by carving away all that is extraneous, "
+            "revealing the essential core of their being.") ==
+        "通过剜除一切多余之物净化施法者，显露其存在的本质核心。");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.moribund_prefix",
+            "Hit points are lowered to the limit where the Moribund effect is activated "
+            "(bonuses for having low hit points). "
+            "This limit is at ") == "生命值会降至触发濒死效果的阈值（低生命值加成）。该阈值为");
+    REQUIRE(i18n::get("spells.shed_impurity.moribund_suffix", " hit points.") == "点生命值。");
+    REQUIRE(i18n::get("spells.shed_impurity.bonus_prefix", "If at least ") == "如果至少失去");
+    REQUIRE(i18n::get("spells.shed_impurity.bonus_middle", " hit points are lost, then ") == "点生命值，则");
+    REQUIRE(i18n::get("spells.shed_impurity.cures_basic", "weakening and poisoning are cured.") == "治愈虚弱和中毒。");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.cures_expert",
+            "weakening, poisoning, infection and disease are cured.") ==
+        "治愈虚弱、中毒、感染和疾病。");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.cures_master",
+            "weakening, poisoning, infection, disease and slowing are cured.") ==
+        "治愈虚弱、中毒、感染、疾病和迟缓。");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.cures_transcendent_prefix",
+            "weakening, poisoning, infection, disease and slowing are cured. "
+            "The caster is also blessed for ") == "治愈虚弱、中毒、感染、疾病和迟缓。施法者还会获得祝福，持续");
+    REQUIRE(i18n::get("spells.shed_impurity.cures_transcendent_suffix", " turns.") == "回合。");
+    REQUIRE(i18n::get("spells.shed_impurity.current_removed_prefix", " Currently ") == "当前会移除");
+    REQUIRE(i18n::get("spells.shed_impurity.current_removed_suffix", " hit points would be removed.") == "点生命值。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

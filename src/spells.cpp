@@ -9085,7 +9085,7 @@ std::vector<std::string> SpellSacrificeLife::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellShedImpurity::name() const
 {
-    return "Shed Impurity";
+    return i18n::get("spells.shed_impurity.name", "Shed Impurity");
 }
 
 SpellId SpellShedImpurity::id() const
@@ -9183,35 +9183,47 @@ std::vector<std::string> SpellShedImpurity::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Purifies the caster by carving away all that is extraneous, "
-        "revealing the essential core of their being.");
+        i18n::get(
+            "spells.shed_impurity.descr",
+            "Purifies the caster by carving away all that is extraneous, "
+            "revealing the essential core of their being."));
 
     descr.emplace_back(
-        "Hit points are lowered to the limit where the Moribund effect is activated "
-        "(bonuses for having low hit points). "
-        "This limit is at " +
+        i18n::get(
+            "spells.shed_impurity.moribund_prefix",
+            "Hit points are lowered to the limit where the Moribund effect is activated "
+            "(bonuses for having low hit points). "
+            "This limit is at ") +
         std::to_string(get_moribund_hp_limit()) +
-        " hit points.");
+        i18n::get("spells.shed_impurity.moribund_suffix", " hit points."));
 
     std::string bonus_effect_descr =
-        "If at least " +
+        i18n::get("spells.shed_impurity.bonus_prefix", "If at least ") +
         std::to_string(get_min_hp_removed_for_bonus_effects()) +
-        " hit points are lost, then ";
+        i18n::get(
+            "spells.shed_impurity.bonus_middle",
+            " hit points are lost, then ");
 
     switch (skill) {
     case SpellSkill::basic: {
         bonus_effect_descr +=
-            "weakening and poisoning are cured.";
+            i18n::get(
+                "spells.shed_impurity.cures_basic",
+                "weakening and poisoning are cured.");
     } break;
 
     case SpellSkill::expert: {
         bonus_effect_descr +=
-            "weakening, poisoning, infection and disease are cured.";
+            i18n::get(
+                "spells.shed_impurity.cures_expert",
+                "weakening, poisoning, infection and disease are cured.");
     } break;
 
     case SpellSkill::master: {
         bonus_effect_descr +=
-            "weakening, poisoning, infection, disease and slowing are cured.";
+            i18n::get(
+                "spells.shed_impurity.cures_master",
+                "weakening, poisoning, infection, disease and slowing are cured.");
     } break;
 
     case SpellSkill::transcendent: {
@@ -9219,17 +9231,21 @@ std::vector<std::string> SpellShedImpurity::descr_specific(
             static_cast<SpellBless*>(spells::make(SpellId::bless)));
 
         bonus_effect_descr +=
-            "weakening, poisoning, infection, disease and slowing are cured. "
-            "The caster is also blessed for " +
+            i18n::get(
+                "spells.shed_impurity.cures_transcendent_prefix",
+                "weakening, poisoning, infection, disease and slowing are cured. "
+                "The caster is also blessed for ") +
             bless_spell->duration_range(SpellSkill::basic).str() +
-            " turns.";
+            i18n::get("spells.shed_impurity.cures_transcendent_suffix", " turns.");
     } break;
     }
 
     bonus_effect_descr +=
-        " Currently " +
+        i18n::get("spells.shed_impurity.current_removed_prefix", " Currently ") +
         std::to_string(calc_nr_hp_removed(map::g_player)) +
-        " hit points would be removed.";
+        i18n::get(
+            "spells.shed_impurity.current_removed_suffix",
+            " hit points would be removed.");
 
     descr.push_back(bonus_effect_descr);
 
