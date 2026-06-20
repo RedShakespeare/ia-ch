@@ -439,6 +439,31 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "player_bon.trait.master_of_warding.descr",
             "Attain mastery over protective magic. "
             "Warding spells are cast at a higher skill level.") == "掌握防护魔法。守护法术以更高技能等级施放。");
+    REQUIRE(i18n::get("player_bon.trait.gain_cast_prefix", "Gain the ability to cast \"") == "获得施放“");
+    REQUIRE(i18n::get("player_bon.trait.gain_cast_suffix", "\"") == "”的能力");
+    REQUIRE(i18n::get("player_bon.trait.gain_cast_skill_prefix", " at ") == "，以");
+    REQUIRE(i18n::get("player_bon.trait.gain_cast_skill_suffix", " level") == "等级");
+    REQUIRE(i18n::get("player_bon.trait.gain_cast_descr_separator", " -") == "；");
+    REQUIRE(i18n::get("player_bon.trait.gain_cast_line_separator", " ") == "");
+    REQUIRE(i18n::get("player_bon.trait.gain_cast_cost_prefix", " This spell costs ") == "此法术消耗");
+    REQUIRE(i18n::get("player_bon.trait.gain_cast_cost_suffix", " spirit to cast.") == "点精神施放。");
+    REQUIRE(i18n::get("player_bon.trait.available_sp_prefix", "You currently have ") == "你当前有");
+    REQUIRE(i18n::get("player_bon.trait.available_sp_suffix", " spirit") == "点精神");
+    REQUIRE(i18n::get("player_bon.trait.available_fp_prefix", " and ") == "和");
+    REQUIRE(i18n::get("player_bon.trait.available_fp_suffix", " fervor") == "点热忱");
+    REQUIRE(i18n::get("player_bon.trait.available_sp_period", ".") == "。");
+    REQUIRE(i18n::get("player_bon.trait.cast_bless_i.title", "Cast Bless") == "施放祝福");
+    REQUIRE(i18n::get("player_bon.trait.cast_bless_ii.title", "Cast Bless II") == "施放祝福 II");
+    REQUIRE(i18n::get("player_bon.trait.cast_cleansing_fire_i.title", "Cast Cleansing Fire") == "施放净化之火");
+    REQUIRE(i18n::get("player_bon.trait.cast_cleansing_fire_ii.title", "Cast Cleansing Fire II") == "施放净化之火 II");
+    REQUIRE(i18n::get("player_bon.trait.cast_heal_i.title", "Cast Heal") == "施放治疗");
+    REQUIRE(i18n::get("player_bon.trait.cast_heal_ii.title", "Cast Heal II") == "施放治疗 II");
+    REQUIRE(i18n::get("player_bon.trait.cast_light_i.title", "Cast Light") == "施放光亮");
+    REQUIRE(i18n::get("player_bon.trait.cast_light_ii.title", "Cast Light II") == "施放光亮 II");
+    REQUIRE(i18n::get("player_bon.trait.cast_sanctuary_i.title", "Cast Sanctuary") == "施放庇护");
+    REQUIRE(i18n::get("player_bon.trait.cast_sanctuary_ii.title", "Cast Sanctuary II") == "施放庇护 II");
+    REQUIRE(i18n::get("player_bon.trait.cast_see_invisible_i.title", "Cast See Invisible") == "施放识破隐形");
+    REQUIRE(i18n::get("player_bon.trait.cast_see_invisible_ii.title", "Cast See Invisible II") == "施放识破隐形 II");
     REQUIRE(
         i18n::get(
             "property.mon_struggles_tear_free_suffix",

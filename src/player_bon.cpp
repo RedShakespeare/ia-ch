@@ -81,23 +81,23 @@ static std::string trait_descr_for_spell(
     std::unique_ptr<Spell> spell(spells::make(spell_id));
 
     std::string str =
-        "Gain the ability to cast \"" +
+        i18n::get("player_bon.trait.gain_cast_prefix", "Gain the ability to cast \"") +
         spell->name() +
-        "\"";
+        i18n::get("player_bon.trait.gain_cast_suffix", "\"");
 
     if (spell->can_be_improved_with_skill()) {
         str +=
-            " at " +
+            i18n::get("player_bon.trait.gain_cast_skill_prefix", " at ") +
             spells::skill_to_str(skill) +
-            " level";
+            i18n::get("player_bon.trait.gain_cast_skill_suffix", " level");
     }
 
-    str += " -";
+    str += i18n::get("player_bon.trait.gain_cast_descr_separator", " -");
 
     const auto descr = spell->descr_specific(skill);
 
     for (const auto& line : descr) {
-        str += " " + line;
+        str += i18n::get("player_bon.trait.gain_cast_line_separator", " ") + line;
     }
 
     // Assert that the player character has been initialized, as it is used
@@ -107,7 +107,10 @@ static std::string trait_descr_for_spell(
 
     const auto cost_str = spell->cost_range(skill, map::g_player).str();
 
-    str += (" This spell costs " + cost_str + " spirit to cast.");
+    str +=
+        i18n::get("player_bon.trait.gain_cast_cost_prefix", " This spell costs ") +
+        cost_str +
+        i18n::get("player_bon.trait.gain_cast_cost_suffix", " spirit to cast.");
 
     return str;
 }
@@ -117,16 +120,26 @@ static std::string get_player_available_sp_str()
     const std::string sp_str = std::to_string(map::g_player->m_sp);
     const std::string max_sp_str = std::to_string(actor::max_sp(*map::g_player));
 
-    std::string descr = "You currently have " + sp_str + "/" + max_sp_str + " spirit";
+    std::string descr =
+        i18n::get("player_bon.trait.available_sp_prefix", "You currently have ") +
+        sp_str +
+        "/" +
+        max_sp_str +
+        i18n::get("player_bon.trait.available_sp_suffix", " spirit");
 
     if (player_bon::is_bg(Bg::exorcist)) {
         const std::string fp_str = std::to_string(actor::player_state::g_exorcist_fervor);
         const std::string max_fp_str = std::to_string(actor::player_exorcist_max_fervor());
 
-        descr += " and " + fp_str + "/" + max_fp_str + " fervor";
+        descr +=
+            i18n::get("player_bon.trait.available_fp_prefix", " and ") +
+            fp_str +
+            "/" +
+            max_fp_str +
+            i18n::get("player_bon.trait.available_fp_suffix", " fervor");
     }
 
-    descr += ".";
+    descr += i18n::get("player_bon.trait.available_sp_period", ".");
 
     return descr;
 }
@@ -769,7 +782,7 @@ static void update_trait_data()
 
     // --- Cast Bless ---
     d.id = TraitId::cast_bless_i;
-    d.title = "Cast Bless";
+    d.title = i18n::get("player_bon.trait.cast_bless_i.title", "Cast Bless");
     d.descr = trait_descr_for_spell(SpellId::bless, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::bless, Verbose::no); };
@@ -779,7 +792,7 @@ static void update_trait_data()
 
     // --- Cast Bless II ---
     d.id = TraitId::cast_bless_ii;
-    d.title = "Cast Bless II";
+    d.title = i18n::get("player_bon.trait.cast_bless_ii.title", "Cast Bless II");
     d.descr = trait_descr_for_spell(SpellId::bless, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::bless, Verbose::no); };
@@ -790,7 +803,7 @@ static void update_trait_data()
 
     // --- Cast Cleansing Fire ---
     d.id = TraitId::cast_cleansing_fire_i;
-    d.title = "Cast Cleansing Fire";
+    d.title = i18n::get("player_bon.trait.cast_cleansing_fire_i.title", "Cast Cleansing Fire");
     d.descr = trait_descr_for_spell(SpellId::cleansing_fire, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::cleansing_fire, Verbose::no); };
@@ -800,7 +813,7 @@ static void update_trait_data()
 
     // --- Cast Cleansing Fire II ---
     d.id = TraitId::cast_cleansing_fire_ii;
-    d.title = "Cast Cleansing Fire II";
+    d.title = i18n::get("player_bon.trait.cast_cleansing_fire_ii.title", "Cast Cleansing Fire II");
     d.descr = trait_descr_for_spell(SpellId::cleansing_fire, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::cleansing_fire, Verbose::no); };
@@ -813,7 +826,7 @@ static void update_trait_data()
 
     // --- Cast Heal ---
     d.id = TraitId::cast_heal_i;
-    d.title = "Cast Heal";
+    d.title = i18n::get("player_bon.trait.cast_heal_i.title", "Cast Heal");
     d.descr = trait_descr_for_spell(SpellId::heal, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::heal, Verbose::no); };
@@ -823,7 +836,7 @@ static void update_trait_data()
 
     // --- Cast Heal II ---
     d.id = TraitId::cast_heal_ii;
-    d.title = "Cast Heal II";
+    d.title = i18n::get("player_bon.trait.cast_heal_ii.title", "Cast Heal II");
     d.descr = trait_descr_for_spell(SpellId::heal, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::heal, Verbose::no); };
@@ -834,7 +847,7 @@ static void update_trait_data()
 
     // --- Cast Light ---
     d.id = TraitId::cast_light_i;
-    d.title = "Cast Light";
+    d.title = i18n::get("player_bon.trait.cast_light_i.title", "Cast Light");
     d.descr = trait_descr_for_spell(SpellId::light, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::light, Verbose::no); };
@@ -844,7 +857,7 @@ static void update_trait_data()
 
     // --- Cast Light II ---
     d.id = TraitId::cast_light_ii;
-    d.title = "Cast Light II";
+    d.title = i18n::get("player_bon.trait.cast_light_ii.title", "Cast Light II");
     d.descr = trait_descr_for_spell(SpellId::light, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::light, Verbose::no); };
@@ -855,7 +868,7 @@ static void update_trait_data()
 
     // --- Cast Sanctuary ---
     d.id = TraitId::cast_sanctuary_i;
-    d.title = "Cast Sanctuary";
+    d.title = i18n::get("player_bon.trait.cast_sanctuary_i.title", "Cast Sanctuary");
     d.descr = trait_descr_for_spell(SpellId::sanctuary, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::sanctuary, Verbose::no); };
@@ -865,7 +878,7 @@ static void update_trait_data()
 
     // --- Cast Sanctuary II ---
     d.id = TraitId::cast_sanctuary_ii;
-    d.title = "Cast Sanctuary II";
+    d.title = i18n::get("player_bon.trait.cast_sanctuary_ii.title", "Cast Sanctuary II");
     d.descr = trait_descr_for_spell(SpellId::sanctuary, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::sanctuary, Verbose::no); };
@@ -876,7 +889,7 @@ static void update_trait_data()
 
     // --- Cast See Invisible ---
     d.id = TraitId::cast_see_invisible_i;
-    d.title = "Cast See Invisible";
+    d.title = i18n::get("player_bon.trait.cast_see_invisible_i.title", "Cast See Invisible");
     d.descr = trait_descr_for_spell(SpellId::see_invis, SpellSkill::basic);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::learn_spell(SpellId::see_invis, Verbose::no); };
@@ -886,7 +899,7 @@ static void update_trait_data()
 
     // --- Cast See Invisible II ---
     d.id = TraitId::cast_see_invisible_ii;
-    d.title = "Cast See Invisible II";
+    d.title = i18n::get("player_bon.trait.cast_see_invisible_ii.title", "Cast See Invisible II");
     d.descr = trait_descr_for_spell(SpellId::see_invis, SpellSkill::expert);
     d.extra_descr_when_picking = get_player_available_sp_str();
     d.on_picked = []() { player_spells::incr_spell_skill(SpellId::see_invis, Verbose::no); };
