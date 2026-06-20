@@ -368,28 +368,38 @@ static void init_data_list()
 
     d.id = prop::Id::light_sensitive;
     d.std_rnd_turns = Range(30, 60);
-    d.name = "Light Sensitive";
-    d.name_short = "Lgt Sens";
-    d.descr = "Is vulnerable to light.";
-    d.msg_start_player = "I feel vulnerable to light!";
-    d.msg_start_mon = "{} is vulnerable to light.";
-    d.msg_end_player = "I no longer feel vulnerable to light.";
-    d.msg_end_mon = "{} no longer is vulnerable to light.";
+    d.name = i18n::get("property_data.light_sensitive.name", "Light Sensitive");
+    d.name_short = i18n::get("property_data.light_sensitive.name_short", "Lgt Sens");
+    d.descr = i18n::get("property_data.light_sensitive.descr", "Is vulnerable to light.");
+    d.msg_start_player =
+        i18n::get("property_data.light_sensitive.msg_start_player", "I feel vulnerable to light!");
+    d.msg_start_mon =
+        i18n::get("property_data.light_sensitive.msg_start_mon", "{} is vulnerable to light.");
+    d.msg_end_player = i18n::get(
+        "property_data.light_sensitive.msg_end_player",
+        "I no longer feel vulnerable to light.");
+    d.msg_end_mon = i18n::get(
+        "property_data.light_sensitive.msg_end_mon",
+        "{} no longer is vulnerable to light.");
     d.allow_display_turns = true;
     d.alignment = prop::PropAlignment::bad;
     add(d);
 
     d.id = prop::Id::blind;
     d.std_rnd_turns = Range(6, 12);
-    d.name = "Blind";
-    d.name_short = "Blind";
-    d.descr = "Cannot see, -20% hit chance, -50% chance to evade attacks.";
-    d.msg_start_player = "I am blinded!";
-    d.msg_start_mon = "{} is blinded.";
-    d.msg_end_player = "I can see again!";
-    d.msg_end_mon = "{} can see again.";
-    d.historic_msg_start_permanent = "Became permanently blind";
-    d.historic_msg_end_permanent = "My sight came back";
+    d.name = i18n::get("property_data.blind.name", "Blind");
+    d.name_short = i18n::get("property_data.blind.name_short", "Blind");
+    d.descr = i18n::get(
+        "property_data.blind.descr",
+        "Cannot see, -20% hit chance, -50% chance to evade attacks.");
+    d.msg_start_player = i18n::get("property_data.blind.msg_start_player", "I am blinded!");
+    d.msg_start_mon = i18n::get("property_data.blind.msg_start_mon", "{} is blinded.");
+    d.msg_end_player = i18n::get("property_data.blind.msg_end_player", "I can see again!");
+    d.msg_end_mon = i18n::get("property_data.blind.msg_end_mon", "{} can see again.");
+    d.historic_msg_start_permanent =
+        i18n::get("property_data.blind.historic_msg_start_permanent", "Became permanently blind");
+    d.historic_msg_end_permanent =
+        i18n::get("property_data.blind.historic_msg_end_permanent", "My sight came back");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -397,15 +407,19 @@ static void init_data_list()
 
     d.id = prop::Id::deaf;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Deaf";
-    d.name_short = "Deaf";
-    d.descr = "Cannot hear sounds.";
-    d.msg_start_player = "I am deaf!";
-    d.msg_start_mon = "{} stops reacting to any noise.";
-    d.msg_end_player = "I can hear again.";
-    d.msg_end_mon = "{} is reacting to noise again.";
-    d.historic_msg_start_permanent = "Became permanently deaf";
-    d.historic_msg_end_permanent = "My hearing came back";
+    d.name = i18n::get("property_data.deaf.name", "Deaf");
+    d.name_short = i18n::get("property_data.deaf.name_short", "Deaf");
+    d.descr = i18n::get("property_data.deaf.descr", "Cannot hear sounds.");
+    d.msg_start_player = i18n::get("property_data.deaf.msg_start_player", "I am deaf!");
+    d.msg_start_mon =
+        i18n::get("property_data.deaf.msg_start_mon", "{} stops reacting to any noise.");
+    d.msg_end_player = i18n::get("property_data.deaf.msg_end_player", "I can hear again.");
+    d.msg_end_mon =
+        i18n::get("property_data.deaf.msg_end_mon", "{} is reacting to noise again.");
+    d.historic_msg_start_permanent =
+        i18n::get("property_data.deaf.historic_msg_start_permanent", "Became permanently deaf");
+    d.historic_msg_end_permanent =
+        i18n::get("property_data.deaf.historic_msg_end_permanent", "My hearing came back");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -413,17 +427,18 @@ static void init_data_list()
 
     d.id = prop::Id::fainted;
     d.std_rnd_turns = Range(30, 60);
-    d.name = "Fainted";
-    d.name_short = "Fainted";
-    d.descr =
+    d.name = i18n::get("property_data.fainted.name", "Fainted");
+    d.name_short = i18n::get("property_data.fainted.name_short", "Fainted");
+    d.descr = i18n::get(
+        "property_data.fainted.descr",
         "Temporarily lost consciousness, will wake up if any damage "
-        "is taken or enough time passes.";
-    d.msg_start_player = "I faint!";
-    d.msg_start_mon = "{} faints.";
-    d.msg_end_player = "I am awake.";
-    d.msg_end_mon = "{} wakes up.";
-    d.msg_res_player = "I resist fainting.";
-    d.msg_res_mon = "{} resists fainting.";
+        "is taken or enough time passes.");
+    d.msg_start_player = i18n::get("property_data.fainted.msg_start_player", "I faint!");
+    d.msg_start_mon = i18n::get("property_data.fainted.msg_start_mon", "{} faints.");
+    d.msg_end_player = i18n::get("property_data.fainted.msg_end_player", "I am awake.");
+    d.msg_end_mon = i18n::get("property_data.fainted.msg_end_mon", "{} wakes up.");
+    d.msg_res_player = i18n::get("property_data.fainted.msg_res_player", "I resist fainting.");
+    d.msg_res_mon = i18n::get("property_data.fainted.msg_res_mon", "{} resists fainting.");
     d.allow_display_turns = true;
     d.force_interrupt_player_on_start = true;
     d.allow_test_on_bot = true;
