@@ -807,10 +807,11 @@ static void init_data_list()
 
     d.id = prop::Id::descend;
     d.std_rnd_turns = Range(20, 30);
-    d.name = "Descending";
-    d.name_short = "Descending";
-    d.descr = "Soon moved to a deeper level.";
-    d.msg_start_player = "I feel a sinking sensation.";
+    d.name = i18n::get("property_data.descend.name", "Descending");
+    d.name_short = i18n::get("property_data.descend.name_short", "Descending");
+    d.descr = i18n::get("property_data.descend.descr", "Soon moved to a deeper level.");
+    d.msg_start_player =
+        i18n::get("property_data.descend.msg_start_player", "I feel a sinking sensation.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::neutral;
@@ -1023,26 +1024,27 @@ static void init_data_list()
     add(d);
 
     d.id = prop::Id::entangled;
-    d.name = "Entangled";
-    d.name_short = "Entangled";
-    d.descr = "Entangled in something.";
-    d.msg_start_player = "I am entangled!";
-    d.msg_start_mon = "{} is entangled.";
-    d.msg_end_player = "I tear free!";
-    d.msg_end_mon = "{} tears free!";
+    d.name = i18n::get("property_data.entangled.name", "Entangled");
+    d.name_short = i18n::get("property_data.entangled.name_short", "Entangled");
+    d.descr = i18n::get("property_data.entangled.descr", "Entangled in something.");
+    d.msg_start_player =
+        i18n::get("property_data.entangled.msg_start_player", "I am entangled!");
+    d.msg_start_mon = i18n::get("property_data.entangled.msg_start_mon", "{} is entangled.");
+    d.msg_end_player = i18n::get("property_data.entangled.msg_end_player", "I tear free!");
+    d.msg_end_mon = i18n::get("property_data.entangled.msg_end_mon", "{} tears free!");
     d.allow_display_turns = false;
     d.force_interrupt_player_on_start = true;
     d.alignment = prop::PropAlignment::bad;
     add(d);
 
     d.id = prop::Id::stuck;
-    d.name = "Stuck";
-    d.name_short = "Stuck";
-    d.descr = "Stuck in something.";
-    d.msg_start_player = "I am stuck!";
-    d.msg_start_mon = "{} is stuck.";
-    d.msg_end_player = "I pull myself free!";
-    d.msg_end_mon = "{} pulls free!";
+    d.name = i18n::get("property_data.stuck.name", "Stuck");
+    d.name_short = i18n::get("property_data.stuck.name_short", "Stuck");
+    d.descr = i18n::get("property_data.stuck.descr", "Stuck in something.");
+    d.msg_start_player = i18n::get("property_data.stuck.msg_start_player", "I am stuck!");
+    d.msg_start_mon = i18n::get("property_data.stuck.msg_start_mon", "{} is stuck.");
+    d.msg_end_player = i18n::get("property_data.stuck.msg_end_player", "I pull myself free!");
+    d.msg_end_mon = i18n::get("property_data.stuck.msg_end_mon", "{} pulls free!");
     d.allow_display_turns = false;
     d.force_interrupt_player_on_start = true;
     d.alignment = prop::PropAlignment::bad;
