@@ -3533,12 +3533,12 @@ std::string Tomb::name(const Article article) const
 
     const std::string empty_str =
         is_empty
-        ? "empty "
+        ? i18n::get("terrain.tomb_empty_prefix", "empty ")
         : "";
 
     const std::string open_str =
         (m_is_open && !is_empty)
-        ? "open "
+        ? i18n::get("terrain.tomb_open_prefix", "open ")
         : "";
 
     std::string a;
@@ -3546,11 +3546,11 @@ std::string Tomb::name(const Article article) const
     if (article == Article::a) {
         a =
             (m_is_open || (m_appearance == TombAppearance::ornate))
-            ? "an "
-            : "a ";
+            ? i18n::get("terrain.article_an_space", "an ")
+            : i18n::get("terrain.article_a_space", "a ");
     }
     else {
-        a = "the ";
+        a = i18n::get("terrain.article_the_space", "the ");
     }
 
     std::string appear_str;
@@ -3562,16 +3562,18 @@ std::string Tomb::name(const Article article) const
         } break;
 
         case TombAppearance::ornate:
-            appear_str = "ornate ";
+            appear_str = i18n::get("terrain.tomb_ornate_prefix", "ornate ");
             break;
 
         case TombAppearance::marvelous:
-            appear_str = "marvelous ";
+            appear_str =
+                i18n::get("terrain.tomb_marvelous_prefix", "marvelous ");
             break;
         }
     }
 
-    return a + empty_str + open_str + appear_str + "tomb";
+    return a + empty_str + open_str + appear_str +
+           i18n::get("terrain.tomb", "tomb");
 }
 
 gfx::TileId Tomb::tile() const
@@ -4349,35 +4351,36 @@ std::string Chest::name(const Article article) const
     std::string a;
 
     if (m_material == ChestMaterial::wood) {
-        material_str = "wooden ";
-        a = "a ";
+        material_str = i18n::get("terrain.chest_wooden_prefix", "wooden ");
+        a = i18n::get("terrain.article_a_space", "a ");
     }
     else {
-        material_str = "iron ";
-        a = "an ";
+        material_str = i18n::get("terrain.chest_iron_prefix", "iron ");
+        a = i18n::get("terrain.article_an_space", "an ");
     }
 
     if (m_is_open) {
         if (m_item_container.is_empty()) {
-            empty_str = "empty ";
+            empty_str = i18n::get("terrain.chest_empty_prefix", "empty ");
         }
         else {
-            open_str = "open ";
+            open_str = i18n::get("terrain.chest_open_prefix", "open ");
         }
 
-        a = "an ";
+        a = i18n::get("terrain.article_an_space", "an ");
     }
     else if (m_is_locked) {
-        locked_str = "locked ";
+        locked_str = i18n::get("terrain.chest_locked_prefix", "locked ");
 
-        a = "a ";
+        a = i18n::get("terrain.article_a_space", "a ");
     }
 
     if (article == Article::the) {
-        a = "the ";
+        a = i18n::get("terrain.article_the_space", "the ");
     }
 
-    return a + locked_str + empty_str + open_str + material_str + "chest";
+    return a + locked_str + empty_str + open_str + material_str +
+           i18n::get("terrain.chest", "chest");
 }
 
 gfx::TileId Chest::tile() const

@@ -337,6 +337,17 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "terrain.alchemist_workbench",
             "alchemist's workbench") == "炼金术士的工作台");
     REQUIRE(i18n::get("terrain.cocoon", "cocoon") == "茧");
+    REQUIRE(i18n::get("terrain.tomb_empty_prefix", "empty ") == "空的");
+    REQUIRE(i18n::get("terrain.tomb_open_prefix", "open ") == "打开的");
+    REQUIRE(i18n::get("terrain.tomb_ornate_prefix", "ornate ") == "华丽的");
+    REQUIRE(i18n::get("terrain.tomb_marvelous_prefix", "marvelous ") == "非凡的");
+    REQUIRE(i18n::get("terrain.tomb", "tomb") == "坟墓");
+    REQUIRE(i18n::get("terrain.chest_wooden_prefix", "wooden ") == "木制");
+    REQUIRE(i18n::get("terrain.chest_iron_prefix", "iron ") == "铁制");
+    REQUIRE(i18n::get("terrain.chest_empty_prefix", "empty ") == "空的");
+    REQUIRE(i18n::get("terrain.chest_open_prefix", "open ") == "打开的");
+    REQUIRE(i18n::get("terrain.chest_locked_prefix", "locked ") == "锁住的");
+    REQUIRE(i18n::get("terrain.chest", "chest") == "箱子");
     REQUIRE(i18n::get("terrain.downward_staircase", "downward staircase") == "向下的楼梯");
     REQUIRE(i18n::get("terrain.bridge", "bridge") == "桥");
     REQUIRE(i18n::get("terrain.water", "water") == "水");
