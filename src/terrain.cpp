@@ -1834,11 +1834,12 @@ void Stairs::bump(actor::Actor& actor_bumping)
 
 void Stairs::player_use_fake_stairs()
 {
-    const auto* const msg =
+    const std::string msg = i18n::get(
+        "terrain.fake_stairs_body",
         "As I descend the stairs and observe my surroundings, to my "
         "great bewilderment I realize that I have stepped out into "
         "the very same ground from which I started my downward climb! "
-        "Turning around, the stairs are nowhere to be found.";
+        "Turning around, the stairs are nowhere to be found.");
 
     popup::Popup(popup::AddToMsgHistory::yes)
         .set_msg(msg)

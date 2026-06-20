@@ -294,6 +294,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.descend_option", "(D)escend") == "(D)下楼");
     REQUIRE(i18n::get("terrain.save_and_quit_option", "(S)ave and quit") == "(S)保存并退出");
     REQUIRE(i18n::get("terrain.descend_stairs", "I descend the stairs.") == "我走下楼梯。");
+    REQUIRE(
+        i18n::get(
+            "terrain.fake_stairs_body",
+            "As I descend the stairs and observe my surroundings, to my "
+            "great bewilderment I realize that I have stepped out into "
+            "the very same ground from which I started my downward climb! "
+            "Turning around, the stairs are nowhere to be found.") ==
+        "当我走下楼梯并观察周围时，我惊讶地发现自己竟然踏回了开始下行的同一片地面！转身一看，楼梯已经无处可寻。");
     REQUIRE(i18n::get("terrain.seems_cleansed_prefix", "The ") == "");
     REQUIRE(i18n::get("terrain.seems_cleansed_suffix", " seems cleansed!") == "看起来被净化了！");
     REQUIRE(i18n::get("terrain.touch_prefix", "I touch ") == "我触摸了");
