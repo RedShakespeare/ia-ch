@@ -1961,28 +1961,24 @@ void Liquid::bump(actor::Actor& actor_bumping)
             !map::g_player->m_inv.has_item_in_slot(
                 SlotId::head,
                 item::Id::torture_collar)) {
-            std::string type_str;
-            std::string verb_str;
+            std::string msg;
 
             switch (m_type) {
             case LiquidType::water:
             case LiquidType::magic_water:
-                type_str = "water";
-                verb_str = "wade";
+                msg = i18n::get(
+                    "terrain.wade_through_water",
+                    "I wade slowly through the knee high water.");
                 break;
 
             case LiquidType::mud:
-                type_str = "mud";
-                verb_str = "trudge";
+                msg = i18n::get(
+                    "terrain.trudge_through_mud",
+                    "I trudge slowly through the knee high mud.");
                 break;
             }
 
-            msg_log::add(
-                "I " +
-                verb_str +
-                " slowly through the knee high " +
-                type_str +
-                ".");
+            msg_log::add(msg);
         }
 
         // The creature might also get stuck.
@@ -2001,7 +1997,7 @@ void Liquid::bump(actor::Actor& actor_bumping)
         const std::string msg =
             actor::is_player(&actor_bumping)
             ? ""
-            : "I hear a splash.";
+            : i18n::get("terrain.hear_splash", "I hear a splash.");
 
         const auto alerts_mon =
             actor::is_player(&actor_bumping)
