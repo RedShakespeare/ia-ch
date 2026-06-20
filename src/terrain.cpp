@@ -3233,9 +3233,10 @@ void ItemContainer::on_item_found(
             ItemNameAttackInfo::main_attack_mode);
 
     const std::string msg =
-        "Pick up " +
+        i18n::get("terrain.pick_up_query_prefix", "Pick up ") +
         name +
-        "? " +
+        i18n::get("terrain.query_suffix", "?") +
+        " " +
         common_text::g_yes_or_no_hint;
 
     msg_log::add(

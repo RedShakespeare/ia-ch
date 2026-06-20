@@ -280,6 +280,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.chains_name", "rusty chains") == "生锈的锁链");
     REQUIRE(i18n::get("terrain.chains_rattle", "The chains rattle.") == "锁链嘎嘎作响。");
     REQUIRE(i18n::get("terrain.hear_chains_rattling", "I hear chains rattling.") == "我听到锁链嘎嘎作响。");
+    REQUIRE(i18n::get("terrain.pick_up_query_prefix", "Pick up ") == "捡起");
     REQUIRE(i18n::get("terrain.topples_prefix", "The ") == "");
     REQUIRE(i18n::get("terrain.topples_suffix", " topples over.") == "倒下了。");
     REQUIRE(i18n::get("text_format.and_separator", " and ") == "和");
