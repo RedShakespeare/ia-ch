@@ -4805,7 +4805,7 @@ int SpellSeeInvis::mon_cooldown() const
 
 std::string SpellSeeInvis::name() const
 {
-    return "See Invisible";
+    return i18n::get("spells.see_invisible.name", "See Invisible");
 }
 
 SpellId SpellSeeInvis::id() const
@@ -4883,7 +4883,10 @@ std::vector<std::string> SpellSeeInvis::descr_specific(
 {
     std::vector<std::string> descr;
 
-    descr.emplace_back("Grants the caster the ability to see the invisible.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.see_invisible.descr",
+            "Grants the caster the ability to see the invisible."));
 
     if (skill == SpellSkill::transcendent) {
         descr.emplace_back(spell_indefinite_duration_descr());
