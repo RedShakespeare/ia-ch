@@ -4,7 +4,7 @@ set -eu
 
 input=$(cat || true)
 
-if ! printf '%s\n' "$input" | grep -Eq '"(command|cmd)"[[:space:]]*:[[:space:]]*"([^"]*[[:space:]])?git[[:space:]]+commit([[:space:]]|")'; then
+if ! printf '%s\n' "$input" | grep -Eq '"(command|cmd)"[[:space:]]*:[[:space:]]*"([^"]*[[:space:]])?git[[:space:]]+add([[:space:]]|")'; then
     exit 0
 fi
 

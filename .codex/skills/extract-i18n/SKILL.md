@@ -152,14 +152,14 @@ Mirror the existing coverage in `test/test_cases/src/test_i18n.cpp`: add a
 wrapping/measurement behavior, cover it in `test_text_formatting.cpp` and
 remember CJK glyphs are measured by pixel advance, not character count.
 
-## 5. Let the test hook run
+## 5. Let the test hook run before staging
 
 Do not use `./run-tests.sh` as the default validation path for this workflow.
 This repo's normal `build/` directory may be configured for mingw release
 artifacts, which produces a Windows `ia-test.exe` that cannot run in the Linux
 agent shell.
 
-The repo has a Codex pre-commit hook in `.codex/hooks.json`. Before `git commit`,
+The repo has a Codex pre-tool hook in `.codex/hooks.json`. Before `git add`,
 the hook runs `.codex/hooks/run-extract-i18n-tests.sh`, which:
 
 - enters the `ia` conda environment with `conda run -n ia` if needed
@@ -167,10 +167,10 @@ the hook runs `.codex/hooks/run-extract-i18n-tests.sh`, which:
 - builds the `ia-test` target
 - runs `./ia-test -D 3 --abort`
 
-Treat this hook as the required test gate before an extraction commit. If the
-hook fails, fix the failure and commit again. If the hook does not fire before a
-commit command, run `.codex/hooks/run-extract-i18n-tests.sh` once and report that
-the hook did not run automatically.
+Treat this hook as the required test gate before staging extraction changes. If
+the hook fails, fix the failure and do not stage the changes. If the hook does
+not fire before a `git add` command, run `.codex/hooks/run-extract-i18n-tests.sh`
+once and report that the hook did not run automatically.
 
 `build-linux-tests/` is generated output; do not commit it. If conda, the `ia`
 environment, or SDL/system dependencies are missing and block the hook, report
