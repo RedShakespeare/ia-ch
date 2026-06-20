@@ -5749,7 +5749,7 @@ int SpellKnockBack::mon_cooldown() const
 
 std::string SpellKnockBack::name() const
 {
-    return "Knockback";
+    return i18n::get("spells.knockback.name", "Knockback");
 }
 
 SpellId SpellKnockBack::id() const
@@ -6245,7 +6245,7 @@ int SpellHealOthers::base_max_cost(
 
 std::string SpellHealOthers::name() const
 {
-    return "Heal Others";
+    return i18n::get("spells.heal_others.name", "Heal Others");
 }
 
 SpellId SpellHealOthers::id() const

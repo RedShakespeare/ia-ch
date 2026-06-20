@@ -1637,7 +1637,9 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "A horrible disease is starting to afflict ") ==
         "一种可怕的疾病开始折磨");
     REQUIRE(i18n::get("spells.blind.name", "Blind") == "致盲");
+    REQUIRE(i18n::get("spells.knockback.name", "Knockback") == "击退");
     REQUIRE(i18n::get("spells.healing.name", "Healing") == "治疗");
+    REQUIRE(i18n::get("spells.heal_others.name", "Heal Others") == "治疗他者");
     REQUIRE(i18n::get("spells.healing.restore_prefix", "Restores ") == "恢复");
     REQUIRE(i18n::get("spells.healing.restore_suffix", " hit points.") == "点生命值。");
     REQUIRE(i18n::get("spells.healing.cures_basic", "Cures weakening and poisoning.") == "治愈虚弱和中毒。");
