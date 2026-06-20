@@ -1,6 +1,6 @@
 ---
 name: extract-i18n
-description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract a complete coherent class of related text into locale text.ini via i18n::get lookups, build and run the test suite, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
+description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract a complete coherent class of related text into locale text.ini via i18n::get lookups, rely on the pre-commit test hook that builds and runs ia-test in build-linux-tests, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
 ---
 
 # Extract raw text into the i18n layer
@@ -152,49 +152,30 @@ Mirror the existing coverage in `test/test_cases/src/test_i18n.cpp`: add a
 wrapping/measurement behavior, cover it in `test_text_formatting.cpp` and
 remember CJK glyphs are measured by pixel advance, not character count.
 
-## 5. Build and run the tests
+## 5. Let the test hook run
 
-Run the project test suite and confirm it passes:
+Do not use `./run-tests.sh` as the default validation path for this workflow.
+This repo's normal `build/` directory may be configured for mingw release
+artifacts, which produces a Windows `ia-test.exe` that cannot run in the Linux
+agent shell.
 
-```sh
-./run-tests.sh
-```
+The repo has a Codex pre-commit hook in `.codex/hooks.json`. Before `git commit`,
+the hook runs `.codex/hooks/run-extract-i18n-tests.sh`, which:
 
-This builds the `ia-test` target via `./build-tests.sh` (which runs
-`cmake -B build` then builds with `-j$(nproc)`) and runs Catch2 with `-D 3
---abort`. To run a focused subset, pass a Catch2 name/tag filter:
+- enters the `ia` conda environment with `conda run -n ia` if needed
+- configures a native Linux CMake build in `build-linux-tests/`
+- builds the `ia-test` target
+- runs `./ia-test -D 3 --abort`
 
-```sh
-./run-tests.sh "*I18n*"
-```
+Treat this hook as the required test gate before an extraction commit. If the
+hook fails, fix the failure and commit again. If the hook does not fire before a
+commit command, run `.codex/hooks/run-extract-i18n-tests.sh` once and report that
+the hook did not run automatically.
 
-### Cross-compile environments (mingw `build/`)
-
-`./run-tests.sh` reuses the `build/` directory. If `build/` was first
-configured with the mingw cross-compile toolchain
-(`Toolchain-cross-mingw32.txt`), every `cmake -B build` keeps cross-compiling
-and produces a Windows `ia-test.exe`, so the script's `./ia-test` invocation
-fails with `not found`. Check with:
-
-```sh
-grep -i 'mingw\|CMAKE_TOOLCHAIN_FILE' build/CMakeCache.txt
-```
-
-When that happens, build and run the tests natively in a SEPARATE directory so
-the mingw `build/` (used for Windows release artifacts) is left untouched:
-
-```sh
-cmake -B build-linux-tests
-cmake --build build-linux-tests --target ia-test -- -j$(nproc)
-cd build-linux-tests && ./ia-test -D 3 --abort "*I18n*"   # or no filter for all
-```
-
-The native binary is `ia-test` (no `.exe`). `build-linux-tests/` is generated
-output — do not commit it.
-
-If SDL/system dependencies are missing and block the build, report the exact
-command attempted and the missing dependency rather than silently skipping the
-run.
+`build-linux-tests/` is generated output; do not commit it. If conda, the `ia`
+environment, or SDL/system dependencies are missing and block the hook, report
+the exact failed command and dependency error rather than silently skipping
+validation.
 
 ## 6. Commit before finishing
 

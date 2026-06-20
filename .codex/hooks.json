@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash|exec_command|functions\\.exec_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".codex/hooks/extract-i18n-pre-commit.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
