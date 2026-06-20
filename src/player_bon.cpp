@@ -508,13 +508,14 @@ static void update_trait_data()
 
     // --- Tough ---
     d.id = TraitId::tough;
-    d.title = "Tough";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.tough.title", "Tough");
+    d.descr = i18n::get(
+        "player_bon.trait.tough.descr",
         "+6 hit points, "
         "+10% chance to resist burning, poisoning and paralysis, "
         "less likely to sprain when kicking, more likely to "
         "succeed with object interactions requiring strength (e.g. "
-        "bashing things open)";
+        "bashing things open)");
     d.on_picked = []() {
         const int hp_incr = 6;
 
@@ -534,65 +535,72 @@ static void update_trait_data()
     // --- Rugged ---
     d = trait_data(TraitId::tough);
     d.id = TraitId::rugged;
-    d.title = "Rugged";
+    d.title = i18n::get("player_bon.trait.rugged.title", "Rugged");
     d.trait_prereqs = {TraitId::tough};
     set_trait_data(d);
 
     // --- Unbreakable ---
     d = trait_data(TraitId::rugged);
     d.id = TraitId::unbreakable;
-    d.title = "Unbreakable";
+    d.title = i18n::get("player_bon.trait.unbreakable.title", "Unbreakable");
     d.bg_prereq = Bg::flagellant;
     d.trait_prereqs = {TraitId::rugged};
     set_trait_data(d);
 
     // --- Thick Skinned ---
     d.id = TraitId::thick_skinned;
-    d.title = "Thick Skinned";
-    d.descr = "+1 armor point (physical damage reduced by 1 point)";
+    d.title = i18n::get("player_bon.trait.thick_skinned.title", "Thick Skinned");
+    d.descr = i18n::get(
+        "player_bon.trait.thick_skinned.descr",
+        "+1 armor point (physical damage reduced by 1 point)");
     d.trait_prereqs = {TraitId::tough};
     set_trait_data(d);
 
     // --- Callous ---
     d = trait_data(TraitId::thick_skinned);
     d.id = TraitId::callous;
-    d.title = "Callous";
+    d.title = i18n::get("player_bon.trait.callous.title", "Callous");
     d.bg_prereq = Bg::flagellant;
     d.trait_prereqs = {TraitId::thick_skinned};
     set_trait_data(d);
 
     // --- Resistant ---
     d.id = TraitId::resistant;
-    d.title = "Resistant";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.resistant.title", "Resistant");
+    d.descr = i18n::get(
+        "player_bon.trait.resistant.descr",
         "+25% chance to resist burning, poisoning and paralysis - "
-        "and the duration of those effects is halved";
+        "and the duration of those effects is halved");
     d.trait_prereqs = {TraitId::tough};
     set_trait_data(d);
 
     // --- Strong-backed ---
     d.id = TraitId::strong_backed;
-    d.title = "Strong-backed";
-    d.descr = "+50% carry weight limit";
+    d.title = i18n::get("player_bon.trait.strong_backed.title", "Strong-backed");
+    d.descr = i18n::get(
+        "player_bon.trait.strong_backed.descr",
+        "+50% carry weight limit");
     d.trait_prereqs = {TraitId::tough};
     set_trait_data(d);
 
     // --- Bane of the Undead ---
     d.id = TraitId::undead_bane;
-    d.title = "Bane of the Undead";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.undead_bane.title", "Bane of the Undead");
+    d.descr = i18n::get(
+        "player_bon.trait.undead_bane.descr",
         "+2 melee and ranged attack damage against all undead "
-        "monsters, +50% hit chance against ethereal undead monsters";
+        "monsters, +50% hit chance against ethereal undead monsters");
     d.trait_prereqs = {TraitId::tough, TraitId::fearless, TraitId::stout_spirit};
     set_trait_data(d);
 
     // --- Electrically Inclined ---
     d.id = TraitId::elec_incl;
-    d.title = "Electrically Inclined";
-    d.descr =
+    d.title = i18n::get("player_bon.trait.elec_incl.title", "Electrically Inclined");
+    d.descr = i18n::get(
+        "player_bon.trait.elec_incl.descr",
         "Rods recharge twice as fast, strange devices are less likely "
         "to malfunction or break, electric lanterns last twice as "
-        "long, +1 damage with electricity weapons";
+        "long, +1 damage with electricity weapons");
     d.blocked_for_bgs = {Bg::ghoul};
     set_trait_data(d);
 

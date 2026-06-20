@@ -326,6 +326,46 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "1-6 spirit points are restored each time Spell Shield is ended "
             "by a hostile spell "
             "(Spell Shield is granted by spirit traits or the Spell Shield spell)") == "每当法术护盾被敌对法术终止时，恢复1-6点精神（法术护盾由精神特质或法术护盾法术赋予）");
+    REQUIRE(i18n::get("player_bon.trait.tough.title", "Tough") == "坚韧");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.tough.descr",
+            "+6 hit points, "
+            "+10% chance to resist burning, poisoning and paralysis, "
+            "less likely to sprain when kicking, more likely to "
+            "succeed with object interactions requiring strength (e.g. "
+            "bashing things open)") ==
+        "+6点生命值，+10%抵抗燃烧、中毒和麻痹的几率，踢击时更不容易扭伤，更容易成功完成需要力量的物体互动（例如撞开东西）");
+    REQUIRE(i18n::get("player_bon.trait.rugged.title", "Rugged") == "强健");
+    REQUIRE(i18n::get("player_bon.trait.unbreakable.title", "Unbreakable") == "不屈");
+    REQUIRE(i18n::get("player_bon.trait.thick_skinned.title", "Thick Skinned") == "厚皮");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.thick_skinned.descr",
+            "+1 armor point (physical damage reduced by 1 point)") == "+1点护甲（物理伤害减少1点）");
+    REQUIRE(i18n::get("player_bon.trait.callous.title", "Callous") == "冷硬");
+    REQUIRE(i18n::get("player_bon.trait.resistant.title", "Resistant") == "抗性");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.resistant.descr",
+            "+25% chance to resist burning, poisoning and paralysis - "
+            "and the duration of those effects is halved") == "+25%抵抗燃烧、中毒和麻痹的几率，并且这些效果的持续时间减半");
+    REQUIRE(i18n::get("player_bon.trait.strong_backed.title", "Strong-backed") == "强壮背负");
+    REQUIRE(i18n::get("player_bon.trait.strong_backed.descr", "+50% carry weight limit") == "+50%负重上限");
+    REQUIRE(i18n::get("player_bon.trait.undead_bane.title", "Bane of the Undead") == "亡灵克星");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.undead_bane.descr",
+            "+2 melee and ranged attack damage against all undead "
+            "monsters, +50% hit chance against ethereal undead monsters") ==
+        "对所有亡灵怪物的近战和远程攻击伤害+2，对以太亡灵怪物的命中率+50%");
+    REQUIRE(i18n::get("player_bon.trait.elec_incl.title", "Electrically Inclined") == "电气亲和");
+    REQUIRE(
+        i18n::get(
+            "player_bon.trait.elec_incl.descr",
+            "Rods recharge twice as fast, strange devices are less likely "
+            "to malfunction or break, electric lanterns last twice as "
+            "long, +1 damage with electricity weapons") == "魔杖充能速度加倍，奇异装置更不容易故障或损坏，电提灯持续时间加倍，电击武器伤害+1");
     REQUIRE(
         i18n::get(
             "property.mon_struggles_tear_free_suffix",
