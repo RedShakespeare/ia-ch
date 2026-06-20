@@ -1685,6 +1685,29 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "Casting the spell again while it is already active cancels "
             "the effect (this does not drain hit points or cause shock).") ==
         "在效果已激活时再次施放该法术会取消效果（这不会消耗生命值，也不会造成震撼）。");
+    REQUIRE(i18n::get("spells.sacrifice_life.name", "Sacrifice Life") == "牺牲生命");
+    REQUIRE(
+        i18n::get(
+            "spells.sacrifice_life.descr",
+            "Sacrifices the life force of the caster in order to restore "
+            "the spirit. The amount restored is proportional to the life "
+            "lost. A maximum of 8 hit points may be sacrificed.") ==
+        "牺牲施法者的生命力以恢复精神。恢复量与失去的生命成正比。最多可以牺牲8点生命值。");
+    REQUIRE(
+        i18n::get(
+            "spells.sacrifice_life.spirit_point_prefix",
+            "For each hit point sacrificed, ") ==
+        "每牺牲1点生命值，就获得");
+    REQUIRE(
+        i18n::get(
+            "spells.sacrifice_life.spirit_point_singular_suffix",
+            " spirit point is gained.") ==
+        "点精神。");
+    REQUIRE(
+        i18n::get(
+            "spells.sacrifice_life.spirit_point_plural_suffix",
+            " spirit points are gained.") ==
+        "点精神。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

@@ -8945,7 +8945,7 @@ std::vector<std::string> SpellCrimsonPassage::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellSacrificeLife::name() const
 {
-    return "Sacrifice Life";
+    return i18n::get("spells.sacrifice_life.name", "Sacrifice Life");
 }
 
 SpellId SpellSacrificeLife::id() const
@@ -9027,23 +9027,33 @@ std::vector<std::string> SpellSacrificeLife::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Sacrifices the life force of the caster in order to restore "
-        "the spirit. The amount restored is proportional to the life "
-        "lost. A maximum of 8 hit points may be sacrificed.");
+        i18n::get(
+            "spells.sacrifice_life.descr",
+            "Sacrifices the life force of the caster in order to restore "
+            "the spirit. The amount restored is proportional to the life "
+            "lost. A maximum of 8 hit points may be sacrificed."));
 
     const int k = nr_sp_per_hp(skill);
 
     if (k == 1) {
         descr.emplace_back(
-            "For each hit point sacrificed, " +
+            i18n::get(
+                "spells.sacrifice_life.spirit_point_prefix",
+                "For each hit point sacrificed, ") +
             std::to_string(k) +
-            " spirit point is gained.");
+            i18n::get(
+                "spells.sacrifice_life.spirit_point_singular_suffix",
+                " spirit point is gained."));
     }
     else {
         descr.emplace_back(
-            "For each hit point sacrificed, " +
+            i18n::get(
+                "spells.sacrifice_life.spirit_point_prefix",
+                "For each hit point sacrificed, ") +
             std::to_string(k) +
-            " spirit points are gained.");
+            i18n::get(
+                "spells.sacrifice_life.spirit_point_plural_suffix",
+                " spirit points are gained."));
     }
 
     return descr;
