@@ -1470,6 +1470,24 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.identify.allowed_expert", "Manuscripts and Potions") == "手稿和药水");
     REQUIRE(i18n::get("spells.identify.allowed_master", "all items") == "所有物品");
     REQUIRE(i18n::get("spells.identify.allowed_suffix", ".") == "。");
+    REQUIRE(i18n::get("spells.teleport.name", "Teleport") == "传送");
+    REQUIRE(
+        i18n::get(
+            "spells.teleport.descr_main",
+            "Instantly moves the caster to a different position.") ==
+        "立即将施法者移动到另一个位置。");
+    REQUIRE(
+        i18n::get(
+            "spells.teleport.max_dist_prefix",
+            "Maximum teleport distance is ") ==
+        "最大传送距离为");
+    REQUIRE(i18n::get("spells.teleport.max_dist_suffix", ".") == "。");
+    REQUIRE(
+        i18n::get(
+            "spells.teleport.invis_prefix",
+            "On teleporting, the caster is invisible for ") ==
+        "传送后，施法者会隐形");
+    REQUIRE(i18n::get("spells.teleport.invis_suffix", " turns.") == "回合。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

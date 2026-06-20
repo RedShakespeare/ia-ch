@@ -5458,7 +5458,7 @@ int SpellTeleport::mon_cooldown() const
 
 std::string SpellTeleport::name() const
 {
-    return "Teleport";
+    return i18n::get("spells.teleport.name", "Teleport");
 }
 
 SpellId SpellTeleport::id() const
@@ -5547,18 +5547,29 @@ std::vector<std::string> SpellTeleport::descr_specific(
 {
     std::vector<std::string> descr;
 
-    descr.emplace_back("Instantly moves the caster to a different position.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.teleport.descr_main",
+            "Instantly moves the caster to a different position."));
 
     descr.emplace_back(
-        "Maximum teleport distance is " +
+        i18n::get(
+            "spells.teleport.max_dist_prefix",
+            "Maximum teleport distance is ") +
         std::to_string(max_dist(skill)) +
-        ".");
+        i18n::get(
+            "spells.teleport.max_dist_suffix",
+            "."));
 
     if (skill >= SpellSkill::master) {
         descr.push_back(
-            "On teleporting, the caster is invisible for " +
+            i18n::get(
+                "spells.teleport.invis_prefix",
+                "On teleporting, the caster is invisible for ") +
             std::to_string(invis_duration(skill)) +
-            " turns.");
+            i18n::get(
+                "spells.teleport.invis_suffix",
+                " turns."));
     }
 
     return descr;
