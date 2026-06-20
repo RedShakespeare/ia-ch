@@ -818,18 +818,19 @@ static void init_data_list()
 
     d.id = prop::Id::weakened;
     d.std_rnd_turns = Range(30, 60);
-    d.name = "Weakened";
-    d.name_short = "Weakened";
-    d.descr =
+    d.name = i18n::get("property_data.weakened.name", "Weakened");
+    d.name_short = i18n::get("property_data.weakened.name_short", "Weakened");
+    d.descr = i18n::get(
+        "property_data.weakened.descr",
         "-50% melee damage, cannot do backstab attacks, "
         "cannot bash doors or chests open, "
-        "knock heavy objects over, etc.";
-    d.msg_start_player = "I feel weaker.";
-    d.msg_start_mon = "{} looks weaker.";
-    d.msg_end_player = "I feel stronger!";
-    d.msg_end_mon = "{} looks stronger!";
-    d.msg_res_player = "I resist weakness.";
-    d.msg_res_mon = "{} resists weakness.";
+        "knock heavy objects over, etc.");
+    d.msg_start_player = i18n::get("property_data.weakened.msg_start_player", "I feel weaker.");
+    d.msg_start_mon = i18n::get("property_data.weakened.msg_start_mon", "{} looks weaker.");
+    d.msg_end_player = i18n::get("property_data.weakened.msg_end_player", "I feel stronger!");
+    d.msg_end_mon = i18n::get("property_data.weakened.msg_end_mon", "{} looks stronger!");
+    d.msg_res_player = i18n::get("property_data.weakened.msg_res_player", "I resist weakness.");
+    d.msg_res_mon = i18n::get("property_data.weakened.msg_res_mon", "{} resists weakness.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -837,17 +838,20 @@ static void init_data_list()
 
     d.id = prop::Id::frenzied;
     d.std_rnd_turns = Range(30, 60);
-    d.name = "Frenzied";
-    d.name_short = "Frenzied";
-    d.descr =
+    d.name = i18n::get("property_data.frenzied.name", "Frenzied");
+    d.name_short = i18n::get("property_data.frenzied.name_short", "Frenzied");
+    d.descr = i18n::get(
+        "property_data.frenzied.descr",
         "Cannot move away from seen enemies, moves faster, +1 melee "
         "damage, +10% melee hit chance, immune to confusion, fainting, "
         "fear, and weakening, cannot read or cast spells, becomes "
-        "weakened when the frenzy ends.";
-    d.msg_start_player = "I feel ferocious!!!";
-    d.msg_start_mon = "{} looks ferocious!";
-    d.msg_end_player = "I calm down.";
-    d.msg_end_mon = "{} calms down a little.";
+        "weakened when the frenzy ends.");
+    d.msg_start_player =
+        i18n::get("property_data.frenzied.msg_start_player", "I feel ferocious!!!");
+    d.msg_start_mon = i18n::get("property_data.frenzied.msg_start_mon", "{} looks ferocious!");
+    d.msg_end_player = i18n::get("property_data.frenzied.msg_end_player", "I calm down.");
+    d.msg_end_mon =
+        i18n::get("property_data.frenzied.msg_end_mon", "{} calms down a little.");
     d.allow_display_turns = true;
     d.force_interrupt_player_on_start = true;
     d.allow_test_on_bot = true;
@@ -856,13 +860,18 @@ static void init_data_list()
 
     d.id = prop::Id::blessed;
     d.std_rnd_turns = Range(400, 600);
-    d.name = "Blessed";
-    d.name_short = "Blessed";
-    d.descr = "+10% to hit chance, evasion, stealth, and searching.";
-    d.msg_start_player = "I feel luckier.";
-    d.msg_end_player = "I have normal luck.";
-    d.historic_msg_start_permanent = "Received an everlasting blessing";
-    d.historic_msg_end_permanent = "My great blessing ceased";
+    d.name = i18n::get("property_data.blessed.name", "Blessed");
+    d.name_short = i18n::get("property_data.blessed.name_short", "Blessed");
+    d.descr = i18n::get(
+        "property_data.blessed.descr",
+        "+10% to hit chance, evasion, stealth, and searching.");
+    d.msg_start_player = i18n::get("property_data.blessed.msg_start_player", "I feel luckier.");
+    d.msg_end_player = i18n::get("property_data.blessed.msg_end_player", "I have normal luck.");
+    d.historic_msg_start_permanent = i18n::get(
+        "property_data.blessed.historic_msg_start_permanent",
+        "Received an everlasting blessing");
+    d.historic_msg_end_permanent =
+        i18n::get("property_data.blessed.historic_msg_end_permanent", "My great blessing ceased");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -870,17 +879,26 @@ static void init_data_list()
 
     d.id = prop::Id::cursed;
     d.std_rnd_turns = Range(30, 60);
-    d.name = "Cursed";
-    d.name_short = "Cursed";
-    d.descr = "-10% to hit chance, evasion, stealth, and searching.";
-    d.msg_start_player = "I feel misfortunate.";
-    d.msg_start_mon = "{} is cursed.";
-    d.msg_end_player = "I feel more fortunate.";
-    d.msg_end_mon = "{} is no longer cursed.";
-    d.msg_res_player = "I resist misfortune.";
-    d.msg_res_mon = "{} resists misfortune.";
-    d.historic_msg_start_permanent = "A perpetual curse was put upon me";
-    d.historic_msg_end_permanent = "A terrible curse was lifted from me";
+    d.name = i18n::get("property_data.cursed.name", "Cursed");
+    d.name_short = i18n::get("property_data.cursed.name_short", "Cursed");
+    d.descr = i18n::get(
+        "property_data.cursed.descr",
+        "-10% to hit chance, evasion, stealth, and searching.");
+    d.msg_start_player =
+        i18n::get("property_data.cursed.msg_start_player", "I feel misfortunate.");
+    d.msg_start_mon = i18n::get("property_data.cursed.msg_start_mon", "{} is cursed.");
+    d.msg_end_player =
+        i18n::get("property_data.cursed.msg_end_player", "I feel more fortunate.");
+    d.msg_end_mon =
+        i18n::get("property_data.cursed.msg_end_mon", "{} is no longer cursed.");
+    d.msg_res_player = i18n::get("property_data.cursed.msg_res_player", "I resist misfortune.");
+    d.msg_res_mon = i18n::get("property_data.cursed.msg_res_mon", "{} resists misfortune.");
+    d.historic_msg_start_permanent = i18n::get(
+        "property_data.cursed.historic_msg_start_permanent",
+        "A perpetual curse was put upon me");
+    d.historic_msg_end_permanent = i18n::get(
+        "property_data.cursed.historic_msg_end_permanent",
+        "A terrible curse was lifted from me");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -888,18 +906,24 @@ static void init_data_list()
 
     d.id = prop::Id::doomed;
     d.std_rnd_turns = Range(30, 60);
-    d.name = "Doomed";
-    d.name_short = "Doomed";
-    d.descr =
+    d.name = i18n::get("property_data.doomed.name", "Doomed");
+    d.name_short = i18n::get("property_data.doomed.name_short", "Doomed");
+    d.descr = i18n::get(
+        "property_data.doomed.descr",
         "-20% to hit chance, evasion, stealth, and searching, "
-        "10% chance to fail when attempting to read or cast spells.";
-    d.msg_start_player = "I feel doomed!";
-    d.msg_start_mon = "{} is doomed!";
-    d.msg_end_player = "My doom does not feel so certain anymore.";
-    d.msg_end_mon = "{} is no longer doomed.";
-    d.msg_res_player = "I resist a great misfortune.";
-    d.historic_msg_start_permanent = "My doom was written";
-    d.historic_msg_end_permanent = "Hope returned again";
+        "10% chance to fail when attempting to read or cast spells.");
+    d.msg_start_player = i18n::get("property_data.doomed.msg_start_player", "I feel doomed!");
+    d.msg_start_mon = i18n::get("property_data.doomed.msg_start_mon", "{} is doomed!");
+    d.msg_end_player = i18n::get(
+        "property_data.doomed.msg_end_player",
+        "My doom does not feel so certain anymore.");
+    d.msg_end_mon = i18n::get("property_data.doomed.msg_end_mon", "{} is no longer doomed.");
+    d.msg_res_player =
+        i18n::get("property_data.doomed.msg_res_player", "I resist a great misfortune.");
+    d.historic_msg_start_permanent =
+        i18n::get("property_data.doomed.historic_msg_start_permanent", "My doom was written");
+    d.historic_msg_end_permanent =
+        i18n::get("property_data.doomed.historic_msg_end_permanent", "Hope returned again");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
