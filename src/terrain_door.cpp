@@ -833,13 +833,15 @@ void Door::hit(
                 if (map::g_seen.at(m_pos)) {
                     const std::string a =
                         m_is_hidden
-                        ? "A "
-                        : "The ";
+                        ? i18n::get("terrain_door.door_crashes_a", "A ")
+                        : i18n::get("terrain_door.the", "The ");
 
                     msg_log::add(
                         a +
                         base_name_short() +
-                        " is blown to pieces!");
+                        i18n::get(
+                            "terrain_door.shotgun_blown_to_pieces_suffix",
+                            " is blown to pieces!"));
                 }
 
                 const P pos = m_pos;
@@ -1452,12 +1454,17 @@ void Door::bump(actor::Actor& actor_bumping)
             // redundant to refer to it as a warded door here
             // (already done previously).
             do_query = true;
-            query_msg = "Attempt to open it?";
+            query_msg = i18n::get(
+                "terrain_door.attempt_to_open_it",
+                "Attempt to open it?");
         }
         else if (m_ward_state == WardState::warded) {
             do_query = true;
             std::string door_name = text_format::first_to_lower(name(Article::a));
-            query_msg = "Open " + door_name + "?";
+            query_msg =
+                i18n::get("terrain_door.open_query_prefix", "Open ") +
+                door_name +
+                i18n::get("terrain_door.query_suffix", "?");
         }
 
         if (do_query) {
@@ -1652,8 +1659,10 @@ void Door::actor_try_close(actor::Actor& actor_trying)
 
             if (is_player) {
                 msg_log::add(
-                    "The door is currently being opened, "
-                    "and cannot be closed.");
+                    i18n::get(
+                        "terrain_door.currently_being_opened_cannot_close",
+                        "The door is currently being opened, "
+                        "and cannot be closed."));
             }
 
             return;
@@ -1683,15 +1692,17 @@ void Door::actor_try_close(actor::Actor& actor_trying)
             if (is_door_seen) {
                 // Can see
                 msg_log::add(
-                    "The " +
+                    i18n::get("terrain_door.blocked_prefix", "The ") +
                     base_name_short() +
-                    " is blocked.");
+                    i18n::get("terrain_door.blocked_suffix", " is blocked."));
             }
             else {
                 msg_log::add(
-                    "Something is blocking the " +
+                    i18n::get(
+                        "terrain_door.something_blocking_prefix",
+                        "Something is blocking the ") +
                     base_name_short() +
-                    ".");
+                    i18n::get("terrain_door.period", "."));
             }
         }
 

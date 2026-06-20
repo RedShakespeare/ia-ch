@@ -13,6 +13,7 @@
 #include "actor.hpp"
 #include "debug.hpp"
 #include "gfx.hpp"
+#include "i18n.hpp"
 #include "property_data.hpp"
 #include "property_handler.hpp"
 #include "terrain.hpp"
@@ -274,9 +275,10 @@ static void init_data_list()
     d.can_have_gore = false;
     d.can_have_corpse = false;
     d.msg_on_player_blocked =
-        "A chasm lies in my way.";
-    d.msg_on_player_blocked_blind =
-        "I realize I am standing on the edge of a chasm.";
+        i18n::get("terrain.chasm_in_way", "A chasm lies in my way.");
+    d.msg_on_player_blocked_blind = i18n::get(
+        "terrain.chasm_edge",
+        "I realize I am standing on the edge of a chasm.");
     d.material_type = Material::empty;
     d.shock_when_adjacent = 3;
     add_to_list_and_reset(d);

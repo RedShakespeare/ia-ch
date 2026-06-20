@@ -256,6 +256,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "terrain_event.rats_discovery_title",
             "A gruesome discovery...") == "可怖的发现……");
     REQUIRE(i18n::get("terrain.hear_crash", "I hear a crash.") == "我听到一声撞击。");
+    REQUIRE(i18n::get("terrain.chasm_in_way", "A chasm lies in my way.") == "一道深渊挡住了我的路。");
+    REQUIRE(
+        i18n::get(
+            "terrain.chasm_edge",
+            "I realize I am standing on the edge of a chasm.") == "我意识到自己正站在深渊边缘。");
     REQUIRE(i18n::get("terrain.topples_prefix", "The ") == "");
     REQUIRE(i18n::get("terrain.topples_suffix", " topples over.") == "倒下了。");
     REQUIRE(i18n::get("text_format.and_separator", " and ") == "和");
@@ -297,6 +302,24 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.attempt_push_lid", "I attempt to push the lid.") == "我试着推开盖子。");
     REQUIRE(i18n::get("terrain.seems_futile", "It seems futile.") == "这似乎徒劳无功。");
     REQUIRE(i18n::get("terrain_door.hear_loud_banging", "I hear a loud banging.") == "我听到响亮的撞击声。");
+    REQUIRE(i18n::get("terrain_door.attempt_to_open_it", "Attempt to open it?") == "要尝试打开它吗？");
+    REQUIRE(i18n::get("terrain_door.open_query_prefix", "Open ") == "打开");
+    REQUIRE(i18n::get("terrain_door.query_suffix", "?") == "？");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.currently_being_opened_cannot_close",
+            "The door is currently being opened, "
+            "and cannot be closed.") == "门正在被打开，无法关闭。");
+    REQUIRE(i18n::get("terrain_door.blocked_prefix", "The ") == "那扇");
+    REQUIRE(i18n::get("terrain_door.blocked_suffix", " is blocked.") == "被挡住了。");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.something_blocking_prefix",
+            "Something is blocking the ") == "有东西挡住了");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.shotgun_blown_to_pieces_suffix",
+            " is blown to pieces!") == "被轰成碎片！");
     REQUIRE(i18n::get("terrain_door.open_prefix", "I open the ") == "我打开了");
     REQUIRE(i18n::get("terrain_door.close_prefix", "I close the ") == "我关上了");
     REQUIRE(i18n::get("terrain_door.period", ".") == "。");
@@ -551,6 +574,17 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_player.feel_anxious", "I feel anxious.") == "我感到焦虑。");
     REQUIRE(i18n::get("actor_player.insane_message", "My mind can no longer withstand what it has grasped. I am hopelessly lost.") == "我的心智再也无法承受它所领悟的东西。我已经彻底迷失了。");
     REQUIRE(i18n::get("actor_player.insane_title", "Insane!") == "疯狂！");
+    REQUIRE(
+        i18n::get(
+            "actor_start_turn.encumbered",
+            "I am carrying too much weight, walking will be slower.") == "负重过多，走路会更慢。");
+    REQUIRE(i18n::get("actor_start_turn.spot_prefix", "I spot ") == "我发现了");
+    REQUIRE(i18n::get("actor_start_turn.exclaim", "!") == "！");
+    REQUIRE(i18n::get("actor_start_turn.in_view_suffix", " is in my view.") == "在我的视野中。");
+    REQUIRE(
+        i18n::get(
+            "actor_start_turn.sanity_slipping",
+            "I feel my sanity slipping...") == "我感觉理智正在流失...");
     REQUIRE(i18n::get("actor_mon.cultist_phrase_apigami", "Apigami!") == "Apigami!");
     REQUIRE(i18n::get("actor_mon.cultist_phrase_bhuudesco_invisuu", "Bhuudesco invisuu!") == "Bhuudesco invisuu!");
     REQUIRE(i18n::get("actor_mon.cultist_phrase_bhuuesco_marana", "Bhuuesco marana!") == "Bhuuesco marana!");
