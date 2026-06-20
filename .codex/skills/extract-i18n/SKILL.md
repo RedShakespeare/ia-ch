@@ -60,7 +60,49 @@ Many strings are built by concatenating fragments with `+` (e.g.
 the existing `reload.*` and `game_commands.*` keys for the prefix/suffix
 convention (e.g. `*.period` for a trailing `"."`).
 
-## 2. Extract each string
+## 2. Choose a topic-sized workflow batch
+
+Each workflow pass should extract a coherent topic containing several related
+strings, not just the first 1-3 scanner hits found. Before editing, inspect the
+surrounding source and choose a batch that a reviewer can understand as one
+unit. Good batches usually include one of these:
+
+- all `name()` fragments for a related set of terrain classes, item classes, or
+  effect types
+- one UI/menu/popup flow, including title, body text, options, and prompt
+  suffixes
+- one gameplay subsystem's related log messages, sound messages, and history
+  entries
+- one item/effect family, such as potion metadata, curse messages, or weapon
+  proc text
+
+Aim to extract roughly 8-30 related keys in a normal pass when the local topic
+has that many strings. It is acceptable to extract fewer only when the selected
+topic is genuinely small, at the end of a file/module, or when a behavior risk
+requires a narrow commit. Do not stop after localizing one isolated string if
+adjacent code contains related player-facing literals that can be safely handled
+in the same topic.
+
+Keep each workflow commit focused on one logical topic. If the scanner reveals
+unrelated strings while working, leave them for a later workflow pass instead of
+mixing domains in one commit.
+
+Example terrain batches:
+
+- floor/wall/pillar names and article fragments
+- vegetation names: grass, shrubs, vines, trees, fungi, and burning/scorched
+  modifiers
+- container names: tomb/chest empty/open/material/name fragments
+- fountain names and fountain effect descriptors
+
+Example item batches:
+
+- potion real names and identified descriptions
+- unidentified potion appearance descriptors and potion name assembly
+- curse trigger, warning, effect, and description text
+- weapon proc messages for one item family
+
+## 3. Extract each string
 
 Replace the literal with an `i18n::get(key, english_fallback)` call:
 
@@ -91,14 +133,14 @@ Rules:
 - Keep keys alphabetically/logically grouped as neighboring keys are; don't
   reorder unrelated lines.
 
-## 3. Add or update tests
+## 4. Add or update tests
 
 Mirror the existing coverage in `test/test_cases/src/test_i18n.cpp`: add a
 `REQUIRE` asserting the new key resolves to its translation. For new text
 wrapping/measurement behavior, cover it in `test_text_formatting.cpp` and
 remember CJK glyphs are measured by pixel advance, not character count.
 
-## 4. Build and run the tests
+## 5. Build and run the tests
 
 Run the project test suite and confirm it passes:
 
@@ -142,7 +184,7 @@ If SDL/system dependencies are missing and block the build, report the exact
 command attempted and the missing dependency rather than silently skipping the
 run.
 
-## 5. Commit before finishing
+## 6. Commit before finishing
 
 If this workflow changes source, locale, or test files, commit those changes
 before giving the final response unless the user explicitly says not to commit.
