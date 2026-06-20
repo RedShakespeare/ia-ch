@@ -6655,7 +6655,7 @@ bool SpellTemporalEcho::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellSlow::name() const
 {
-    return "Slow";
+    return i18n::get("spells.slow.name", "Slow");
 }
 
 SpellId SpellSlow::id() const
@@ -6766,14 +6766,21 @@ std::vector<std::string> SpellSlow::descr_specific(
 
     std::vector<std::string> descr;
 
-    descr.emplace_back("Causes the spell's victims to move more slowly.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.slow.descr",
+            "Causes the spell's victims to move more slowly."));
 
     descr.emplace_back(not_alerting_mon_descr());
 
     descr.emplace_back(
         skill == SpellSkill::basic
-            ? "Affects one random visible hostile creature."
-            : "Affects all visible hostile creatures.");
+            ? i18n::get(
+                "spells.target.one_visible_hostile",
+                "Affects one random visible hostile creature.")
+            : i18n::get(
+                "spells.target.all_visible_hostile",
+                "Affects all visible hostile creatures."));
 
     descr.push_back(spell_duration_descr(duration_range(skill).str()));
 

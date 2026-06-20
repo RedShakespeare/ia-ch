@@ -1557,6 +1557,12 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "spells.temporal_echo.duration_suffix",
             "% of the damage taken during the effect is dealt again.") ==
         "%会再次结算。");
+    REQUIRE(i18n::get("spells.slow.name", "Slow") == "迟缓");
+    REQUIRE(
+        i18n::get(
+            "spells.slow.descr",
+            "Causes the spell's victims to move more slowly.") ==
+        "使法术的受害者移动得更慢。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
