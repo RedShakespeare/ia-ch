@@ -657,17 +657,24 @@ static void init_data_list()
 
     d.id = prop::Id::slowed;
     d.std_rnd_turns = Range(16, 24);
-    d.name = "Slowed";
-    d.name_short = "Slowed";
-    d.descr = "Moves slower.";
-    d.msg_start_player = "Everything around me seems to speed up.";
-    d.msg_start_mon = "{} slows down.";
-    d.msg_end_player = "Everything around me seems to slow down.";
-    d.msg_end_mon = "{} speeds up.";
-    d.msg_res_player = "I resist slowing.";
-    d.msg_res_mon = "{} resists slowing.";
-    d.historic_msg_start_permanent = "Became perpetually slowed";
-    d.historic_msg_end_permanent = "My slowness ceased";
+    d.name = i18n::get("property_data.slowed.name", "Slowed");
+    d.name_short = i18n::get("property_data.slowed.name_short", "Slowed");
+    d.descr = i18n::get("property_data.slowed.descr", "Moves slower.");
+    d.msg_start_player = i18n::get(
+        "property_data.slowed.msg_start_player",
+        "Everything around me seems to speed up.");
+    d.msg_start_mon = i18n::get("property_data.slowed.msg_start_mon", "{} slows down.");
+    d.msg_end_player = i18n::get(
+        "property_data.slowed.msg_end_player",
+        "Everything around me seems to slow down.");
+    d.msg_end_mon = i18n::get("property_data.slowed.msg_end_mon", "{} speeds up.");
+    d.msg_res_player = i18n::get("property_data.slowed.msg_res_player", "I resist slowing.");
+    d.msg_res_mon = i18n::get("property_data.slowed.msg_res_mon", "{} resists slowing.");
+    d.historic_msg_start_permanent = i18n::get(
+        "property_data.slowed.historic_msg_start_permanent",
+        "Became perpetually slowed");
+    d.historic_msg_end_permanent =
+        i18n::get("property_data.slowed.historic_msg_end_permanent", "My slowness ceased");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::bad;
@@ -675,15 +682,22 @@ static void init_data_list()
 
     d.id = prop::Id::hasted;
     d.std_rnd_turns = Range(12, 16);
-    d.name = "Hasted";
-    d.name_short = "Hasted";
-    d.descr = "Moves faster.";
-    d.msg_start_player = "Everything around me seems to slow down.";
-    d.msg_start_mon = "{} speeds up.";
-    d.msg_end_player = "Everything around me seems to speed up.";
-    d.msg_end_mon = "{} slows down.";
-    d.historic_msg_start_permanent = "Became perpetually hasted";
-    d.historic_msg_end_permanent = "My hastiness ceased";
+    d.name = i18n::get("property_data.hasted.name", "Hasted");
+    d.name_short = i18n::get("property_data.hasted.name_short", "Hasted");
+    d.descr = i18n::get("property_data.hasted.descr", "Moves faster.");
+    d.msg_start_player = i18n::get(
+        "property_data.hasted.msg_start_player",
+        "Everything around me seems to slow down.");
+    d.msg_start_mon = i18n::get("property_data.hasted.msg_start_mon", "{} speeds up.");
+    d.msg_end_player = i18n::get(
+        "property_data.hasted.msg_end_player",
+        "Everything around me seems to speed up.");
+    d.msg_end_mon = i18n::get("property_data.hasted.msg_end_mon", "{} slows down.");
+    d.historic_msg_start_permanent = i18n::get(
+        "property_data.hasted.historic_msg_start_permanent",
+        "Became perpetually hasted");
+    d.historic_msg_end_permanent =
+        i18n::get("property_data.hasted.historic_msg_end_permanent", "My hastiness ceased");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -691,11 +705,15 @@ static void init_data_list()
 
     d.id = prop::Id::extra_hasted;
     d.std_rnd_turns = Range(7, 11);
-    d.name = "Extra Hasted";
-    d.name_short = "Extra Hasted";
-    d.descr = "Moves very fast.";
-    d.msg_start_player = "Everything around me suddenly seems very still.";
-    d.msg_end_player = "Everything around me seems to speed up a lot.";
+    d.name = i18n::get("property_data.extra_hasted.name", "Extra Hasted");
+    d.name_short = i18n::get("property_data.extra_hasted.name_short", "Extra Hasted");
+    d.descr = i18n::get("property_data.extra_hasted.descr", "Moves very fast.");
+    d.msg_start_player = i18n::get(
+        "property_data.extra_hasted.msg_start_player",
+        "Everything around me suddenly seems very still.");
+    d.msg_end_player = i18n::get(
+        "property_data.extra_hasted.msg_end_player",
+        "Everything around me seems to speed up a lot.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -703,9 +721,10 @@ static void init_data_list()
 
     d.id = prop::Id::summoned;
     d.std_rnd_turns = Range(80, 120);
-    d.msg_end_mon = "{} suddenly disappears.";
-    d.name = "Summoned";
-    d.descr = "Was magically summoned here.";
+    d.msg_end_mon =
+        i18n::get("property_data.summoned.msg_end_mon", "{} suddenly disappears.");
+    d.name = i18n::get("property_data.summoned.name", "Summoned");
+    d.descr = i18n::get("property_data.summoned.descr", "Was magically summoned here.");
     d.alignment = prop::PropAlignment::neutral;
     add(d);
 
