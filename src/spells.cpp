@@ -7984,7 +7984,7 @@ int SpellBurn::mon_cooldown() const
 
 std::string SpellBurn::name() const
 {
-    return "Immolation";
+    return i18n::get("spells.immolation.name", "Immolation");
 }
 
 SpellId SpellBurn::id() const
