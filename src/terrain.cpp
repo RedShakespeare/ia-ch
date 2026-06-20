@@ -2505,9 +2505,12 @@ WasDestroyed Carpet::on_finished_burning()
 
 std::string Carpet::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "" : "the ";
+    const std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.carpet_article_a", "")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return str + "carpet";
+    return str + i18n::get("terrain.carpet", "carpet");
 }
 
 Color Carpet::color_default() const
@@ -2877,9 +2880,12 @@ void Grate::hit(
 
 std::string Grate::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "grate";
+    return a + i18n::get("terrain.grate", "grate");
 }
 
 Color Grate::color_default() const
@@ -3012,9 +3018,12 @@ bool Tree::is_fungi() const
 // -----------------------------------------------------------------------------
 std::string Brazier::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    const std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
-    return a + "brazier";
+    return a + i18n::get("terrain.brazier", "brazier");
 }
 
 bool Brazier::allow_player_melee_attack(
@@ -5040,13 +5049,16 @@ DidOpen Cabinet::open(actor::Actor* const actor_opening)
 
 std::string Cabinet::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     if (m_burn_state == BurnState::burning) {
-        str += "burning ";
+        str += i18n::get("terrain.fixture_burning_prefix", "burning ");
     }
 
-    return str + "cabinet";
+    return str + i18n::get("terrain.cabinet", "cabinet");
 }
 
 gfx::TileId Cabinet::tile() const
@@ -5222,13 +5234,16 @@ void Bookshelf::player_loot()
 
 std::string Bookshelf::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     if (m_burn_state == BurnState::burning) {
-        str += "burning ";
+        str += i18n::get("terrain.fixture_burning_prefix", "burning ");
     }
 
-    return str + "bookshelf";
+    return str + i18n::get("terrain.bookshelf", "bookshelf");
 }
 
 gfx::TileId Bookshelf::tile() const
@@ -5404,19 +5419,25 @@ void AlchemistBench::player_loot()
 
 std::string AlchemistBench::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "an " : "the ";
+    std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain.article_an_space", "an ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     std::string mod;
 
     if (m_burn_state == BurnState::burning) {
         if (article == Article::a) {
-            a = "a ";
+            a = i18n::get("terrain.article_a_space", "a ");
         }
 
-        mod = "burning ";
+        mod = i18n::get("terrain.fixture_burning_prefix", "burning ");
     }
 
-    return a + mod + "alchemist's workbench";
+    return a + mod +
+           i18n::get(
+               "terrain.alchemist_workbench",
+               "alchemist's workbench");
 }
 
 gfx::TileId AlchemistBench::tile() const
@@ -5674,13 +5695,16 @@ DidOpen Cocoon::open(actor::Actor* const actor_opening)
 
 std::string Cocoon::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     if (m_burn_state == BurnState::burning) {
-        str += "burning ";
+        str += i18n::get("terrain.fixture_burning_prefix", "burning ");
     }
 
-    return str + "cocoon";
+    return str + i18n::get("terrain.cocoon", "cocoon");
 }
 
 gfx::TileId Cocoon::tile() const

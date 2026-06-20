@@ -325,6 +325,18 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.urn_inscribed", "inscribed urn") == "刻文瓮");
     REQUIRE(i18n::get("terrain.urn", "urn") == "瓮");
     REQUIRE(i18n::get("terrain.stalagmite", "stalagmite") == "石笋");
+    REQUIRE(i18n::get("terrain.carpet_article_a", "") == "");
+    REQUIRE(i18n::get("terrain.carpet", "carpet") == "地毯");
+    REQUIRE(i18n::get("terrain.grate", "grate") == "栅格");
+    REQUIRE(i18n::get("terrain.brazier", "brazier") == "火盆");
+    REQUIRE(i18n::get("terrain.fixture_burning_prefix", "burning ") == "燃烧的");
+    REQUIRE(i18n::get("terrain.cabinet", "cabinet") == "柜子");
+    REQUIRE(i18n::get("terrain.bookshelf", "bookshelf") == "书架");
+    REQUIRE(
+        i18n::get(
+            "terrain.alchemist_workbench",
+            "alchemist's workbench") == "炼金术士的工作台");
+    REQUIRE(i18n::get("terrain.cocoon", "cocoon") == "茧");
     REQUIRE(i18n::get("terrain.downward_staircase", "downward staircase") == "向下的楼梯");
     REQUIRE(i18n::get("terrain.bridge", "bridge") == "桥");
     REQUIRE(i18n::get("terrain.water", "water") == "水");
