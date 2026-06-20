@@ -1184,6 +1184,20 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "spells.cataclysm.skill_descr",
             "Higher skill levels increases the magnitude of the destruction.") == "更高的技能等级会增强毁灭的规模。");
+    REQUIRE(i18n::get("spells.pestilence.name", "Pestilence") == "瘟疫");
+    REQUIRE(i18n::get("spells.pestilence.descr", "A pack of rats appear around the caster.") == "一群鼠类出现在施法者周围。");
+    REQUIRE(i18n::get("spells.pestilence.summons_prefix", "Summons ") == "召唤");
+    REQUIRE(i18n::get("spells.pestilence.summons_middle", " rats. They exist for ") == "只老鼠。它们存在");
+    REQUIRE(i18n::get("spells.pestilence.summons_suffix", " turns (their own turns).") == "回合（以它们自己的回合计）。");
+    REQUIRE(i18n::get("spells.pestilence.hasted_rats", "The rats are Hasted (moves faster).") == "这些老鼠获得加速（移动更快）。");
+    REQUIRE(
+        i18n::get(
+            "spells.pestilence.transcendent_rats",
+            "Some of the rats are ethereal "
+            "(much harder to hit, can move through solid objects), "
+            "are immune to magic, can cast spells, and have "
+            "extra hit points and damage.") ==
+        "其中一些老鼠是以太形态（更难命中，可以穿过实体物体），免疫魔法，可以施放法术，并拥有额外生命值和伤害。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

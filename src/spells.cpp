@@ -2783,7 +2783,7 @@ int SpellPestilence::mon_cooldown() const
 
 std::string SpellPestilence::name() const
 {
-    return "Pestilence";
+    return i18n::get("spells.pestilence.name", "Pestilence");
 }
 
 SpellId SpellPestilence::id() const
@@ -2955,7 +2955,9 @@ std::vector<std::string> SpellPestilence::descr_specific(
 {
     std::vector<std::string> descr;
 
-    descr.emplace_back("A pack of rats appear around the caster.");
+    descr.emplace_back(i18n::get(
+        "spells.pestilence.descr",
+        "A pack of rats appear around the caster."));
 
     if (skill < SpellSkill::transcendent) {
         // Normal description (basic/expert/master).
@@ -2965,24 +2967,32 @@ std::vector<std::string> SpellPestilence::descr_specific(
         const Range duration = duration_range(skill);
 
         descr.emplace_back(
-            "Summons " +
+            i18n::get("spells.pestilence.summons_prefix", "Summons ") +
             std::to_string(nr_mon) +
-            " rats. They exist for " +
+            i18n::get(
+                "spells.pestilence.summons_middle",
+                " rats. They exist for ") +
             duration.str() +
-            " turns (their own turns).");
+            i18n::get(
+                "spells.pestilence.summons_suffix",
+                " turns (their own turns)."));
 
         if (skill == SpellSkill::master) {
-            descr.emplace_back("The rats are Hasted (moves faster).");
+            descr.emplace_back(i18n::get(
+                "spells.pestilence.hasted_rats",
+                "The rats are Hasted (moves faster)."));
         }
     }
     else {
         // Transcendent description.
 
         descr.emplace_back(
-            "Some of the rats are ethereal "
-            "(much harder to hit, can move through solid objects), "
-            "are immune to magic, can cast spells, and have "
-            "extra hit points and damage.");
+            i18n::get(
+                "spells.pestilence.transcendent_rats",
+                "Some of the rats are ethereal "
+                "(much harder to hit, can move through solid objects), "
+                "are immune to magic, can cast spells, and have "
+                "extra hit points and damage."));
     }
 
     return descr;
