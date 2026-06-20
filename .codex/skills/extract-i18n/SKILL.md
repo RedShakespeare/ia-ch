@@ -1,6 +1,6 @@
 ---
 name: extract-i18n
-description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract them into locale text.ini via i18n::get lookups, build and run the test suite, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
+description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract a complete coherent class of related text into locale text.ini via i18n::get lookups, build and run the test suite, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
 ---
 
 # Extract raw text into the i18n layer
@@ -60,7 +60,61 @@ Many strings are built by concatenating fragments with `+` (e.g.
 the existing `reload.*` and `game_commands.*` keys for the prefix/suffix
 convention (e.g. `*.period` for a trailing `"."`).
 
-## 2. Extract each string
+## 2. Choose a class-sized workflow batch
+
+Each workflow pass should extract a complete coherent class of related text,
+not just one enum case, one menu entry, or the first few scanner hits. Before
+editing, inspect the surrounding source and choose the largest natural unit that
+a reviewer can still understand as one change. Good batches usually include one
+of these:
+
+- all `name()` fragments for a related set of terrain classes, item classes, or
+  effect types
+- all descriptions/titles for one UI category or enum family, such as every
+  player background description in `bg_descr(Bg)`
+- one UI/menu/popup flow, including title, body text, options, and prompt
+  suffixes
+- one gameplay subsystem's related log messages, sound messages, and history
+  entries
+- one item/effect family, such as potion metadata, curse messages, or weapon
+  proc text
+
+Prefer complete sibling sets over per-sibling commits. For example, extract all
+player background descriptions (Exorcist, Flagellant, Ghoul, Occultist, Rogue,
+and War Veteran) in one pass rather than committing one background at a time.
+Similarly, extract all potion metadata, all terrain container names, or all
+closely related trait descriptions together when they live in one local data
+block.
+
+Aim to extract roughly 20-80 related keys in a normal pass when the local class
+has that many strings. It is acceptable to extract fewer only when the complete
+class is genuinely small, at the end of a file/module, or when a behavior risk
+requires a narrow commit. Do not stop after localizing one isolated string if
+adjacent code contains sibling player-facing literals that can be safely handled
+in the same class.
+
+Keep each workflow commit focused on one logical class. If the scanner reveals
+unrelated strings while working, leave them for a later workflow pass instead of
+mixing domains in one commit. Split a large class only when the diff becomes too
+risky to review, the source requires separate behavior changes, or the tests
+would be hard to diagnose as one change.
+
+Example terrain batches:
+
+- floor/wall/pillar names and article fragments
+- vegetation names: grass, shrubs, vines, trees, fungi, and burning/scorched
+  modifiers
+- container names: tomb/chest empty/open/material/name fragments
+- fountain names and fountain effect descriptors
+
+Example item batches:
+
+- potion real names and identified descriptions
+- unidentified potion appearance descriptors and potion name assembly
+- curse trigger, warning, effect, and description text
+- weapon proc messages for one item family
+
+## 3. Extract each string
 
 Replace the literal with an `i18n::get(key, english_fallback)` call:
 
@@ -91,14 +145,14 @@ Rules:
 - Keep keys alphabetically/logically grouped as neighboring keys are; don't
   reorder unrelated lines.
 
-## 3. Add or update tests
+## 4. Add or update tests
 
 Mirror the existing coverage in `test/test_cases/src/test_i18n.cpp`: add a
 `REQUIRE` asserting the new key resolves to its translation. For new text
 wrapping/measurement behavior, cover it in `test_text_formatting.cpp` and
 remember CJK glyphs are measured by pixel advance, not character count.
 
-## 4. Build and run the tests
+## 5. Build and run the tests
 
 Run the project test suite and confirm it passes:
 
@@ -142,7 +196,7 @@ If SDL/system dependencies are missing and block the build, report the exact
 command attempted and the missing dependency rather than silently skipping the
 run.
 
-## 5. Commit before finishing
+## 6. Commit before finishing
 
 If this workflow changes source, locale, or test files, commit those changes
 before giving the final response unless the user explicitly says not to commit.
