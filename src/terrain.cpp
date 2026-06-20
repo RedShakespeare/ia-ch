@@ -2522,26 +2522,30 @@ std::string Grass::name(const Article article) const
 {
     std::string str;
 
+    if (article == Article::a) {
+        str += i18n::get("terrain.vegetation_article_a", "");
+    }
+
     if (article == Article::the) {
-        str += "the ";
+        str += i18n::get("terrain.article_the_space", "the ");
     }
 
     switch (m_burn_state) {
     case BurnState::not_burned:
         switch (m_type) {
         case GrassType::common:
-            return str + "grass";
+            return str + i18n::get("terrain.grass", "grass");
 
         case GrassType::withered:
-            return str + "withered grass";
+            return str + i18n::get("terrain.grass_withered", "withered grass");
         }
         break;
 
     case BurnState::burning:
-        return str + "burning grass";
+        return str + i18n::get("terrain.grass_burning", "burning grass");
 
     case BurnState::has_burned:
-        return str + "scorched ground";
+        return str + i18n::get("terrain.grass_scorched_ground", "scorched ground");
     }
 
     ASSERT("Failed to set name" && false);
@@ -2610,21 +2614,24 @@ WasDestroyed Bush::on_finished_burning()
 
 std::string Bush::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "a " : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     switch (m_burn_state) {
     case BurnState::not_burned:
         switch (m_type) {
         case GrassType::common:
-            return str + "shrub";
+            return str + i18n::get("terrain.shrub", "shrub");
 
         case GrassType::withered:
-            return str + "withered shrub";
+            return str + i18n::get("terrain.shrub_withered", "withered shrub");
         }
         break;
 
     case BurnState::burning:
-        return str + "burning shrub";
+        return str + i18n::get("terrain.shrub_burning", "burning shrub");
 
     case BurnState::has_burned:
         // Should not happen
@@ -2697,14 +2704,17 @@ WasDestroyed Vines::on_finished_burning()
 
 std::string Vines::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "" : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.vegetation_article_a", "")
+            : i18n::get("terrain.article_the_space", "the ");
 
     switch (m_burn_state) {
     case BurnState::not_burned:
-        return str + "hanging vines";
+        return str + i18n::get("terrain.vines_hanging", "hanging vines");
 
     case BurnState::burning:
-        return str + "burning vines";
+        return str + i18n::get("terrain.vines_burning", "burning vines");
 
     case BurnState::has_burned:
         // Should not happen
@@ -2920,26 +2930,29 @@ gfx::TileId Tree::tile() const
 
 std::string Tree::name(const Article article) const
 {
-    std::string result = (article == Article::a) ? "a " : "the ";
+    std::string result =
+        (article == Article::a)
+            ? i18n::get("terrain.article_a_space", "a ")
+            : i18n::get("terrain.article_the_space", "the ");
 
     switch (m_burn_state) {
     case BurnState::not_burned:
         break;
 
     case BurnState::burning:
-        result += "burning ";
+        result += i18n::get("terrain.vegetation_burning_prefix", "burning ");
         break;
 
     case BurnState::has_burned:
-        result += "scorched ";
+        result += i18n::get("terrain.vegetation_scorched_prefix", "scorched ");
         break;
     }
 
     if (is_fungi()) {
-        result += "giant fungi";
+        result += i18n::get("terrain.tree_giant_fungi", "giant fungi");
     }
     else {
-        result += "tree";
+        result += i18n::get("terrain.tree", "tree");
     }
 
     return result;
