@@ -1642,6 +1642,19 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.transmutation.weapon_chance_plus_two", "% chance for a +2 weapon, ") == "%，+3武器的几率为");
     REQUIRE(i18n::get("spells.transmutation.weapon_chance_plus_three", "% chance for a +3 weapon, etc.") == "%，依此类推。");
     REQUIRE(i18n::get("spells.space", " ") == "");
+    REQUIRE(i18n::get("spells.clairvoyance.name", "Clairvoyance") == "千里眼");
+    REQUIRE(
+        i18n::get(
+            "spells.clairvoyance.descr",
+            "Reveals the presence of doors, traps, stairs, and other "
+            "locations of interest in the surrounding area.") ==
+        "揭示周围区域中门、陷阱、楼梯和其他值得注意地点的存在。");
+    REQUIRE(i18n::get("spells.clairvoyance.reveals_items", "Also reveals items.") == "还会揭示物品。");
+    REQUIRE(
+        i18n::get(
+            "spells.clairvoyance.reveals_items_creatures",
+            "Also reveals items and creatures.") ==
+        "还会揭示物品和生物。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

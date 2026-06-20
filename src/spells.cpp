@@ -8510,7 +8510,7 @@ std::vector<std::string> SpellTransmut::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellClairvoyance::name() const
 {
-    return "Clairvoyance";
+    return i18n::get("spells.clairvoyance.name", "Clairvoyance");
 }
 
 SpellId SpellClairvoyance::id() const
@@ -8590,14 +8590,22 @@ std::vector<std::string> SpellClairvoyance::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Reveals the presence of doors, traps, stairs, and other "
-        "locations of interest in the surrounding area.");
+        i18n::get(
+            "spells.clairvoyance.descr",
+            "Reveals the presence of doors, traps, stairs, and other "
+            "locations of interest in the surrounding area."));
 
     if (skill == SpellSkill::expert) {
-        descr.emplace_back("Also reveals items.");
+        descr.emplace_back(
+            i18n::get(
+                "spells.clairvoyance.reveals_items",
+                "Also reveals items."));
     }
     else if (skill >= SpellSkill::master) {
-        descr.emplace_back("Also reveals items and creatures.");
+        descr.emplace_back(
+            i18n::get(
+                "spells.clairvoyance.reveals_items_creatures",
+                "Also reveals items and creatures."));
     }
 
     descr.push_back(spell_duration_descr(duration_range(skill).str()));
