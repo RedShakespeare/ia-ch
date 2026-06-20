@@ -695,17 +695,21 @@ static std::string auto_description_str(actor::Actor& actor)
     if (!looks) {
         text_format::append_with_space(
             str,
-            "They cannot visually detect other creatures");
+            i18n::get(
+                "view_actor_descr.cannot_visually_detect",
+                "They cannot visually detect other creatures"));
 
         const bool pursues =
             ai[(size_t)actor::AiId::moves_to_target_when_los] ||
             ai[(size_t)actor::AiId::paths_to_target_when_aware];
 
         if (pursues) {
-            str += " (but will pursue any threat once aware)";
+            str += i18n::get(
+                "view_actor_descr.pursues_once_aware_suffix",
+                " (but will pursue any threat once aware)");
         }
 
-        str += ".";
+        str += i18n::get("view_actor_descr.period", ".");
     }
 
     if (!actor.is_actor_my_leader(map::g_player)) {
@@ -793,7 +797,9 @@ static std::string temporary_properties_str(actor::Actor& actor)
         }
 
         str += entry.title.str;
-        str += "{color_reset}: ";
+        str += i18n::get(
+            "view_actor_descr.property_title_separator",
+            "{color_reset}: ");
         str += entry.descr;
     }
 

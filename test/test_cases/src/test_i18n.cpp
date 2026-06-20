@@ -320,6 +320,18 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "view_actor_descr.sneak_chance_suffix",
             " is currently{_}{COLOR_LIGHT_GREEN}") == "发现的几率当前为{_}{COLOR_LIGHT_GREEN}");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.cannot_visually_detect",
+            "They cannot visually detect other creatures") == "它们无法通过视觉侦测其他生物");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.pursues_once_aware_suffix",
+            " (but will pursue any threat once aware)") == "（但一旦察觉到威胁就会追击）");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.property_title_separator",
+            "{color_reset}: ") == "{color_reset}：");
     REQUIRE(i18n::get("game_over_summary.title", "Game summary") == "游戏总结");
     REQUIRE(i18n::get("inventory.slot.weapon", "Weapon") == "武器");
     REQUIRE(i18n::get("inventory.browsing_title", "Browsing inventory") == "浏览物品栏");
