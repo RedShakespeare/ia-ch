@@ -118,28 +118,94 @@ void init()
 
     // Init possible potion colors and fake names
     s_potion_appearances.assign(
-        {{"Golden", "a Golden", colors::yellow()},
-         {"Yellow", "a Yellow", colors::yellow()},
-         {"Dark", "a Dark", colors::gray()},
-         {"Black", "a Black", colors::gray()},
-         {"Oily", "an Oily", colors::gray()},
-         {"Smoky", "a Smoky", colors::white()},
-         {"Slimy", "a Slimy", colors::green()},
-         {"Green", "a Green", colors::light_green()},
-         {"Fiery", "a Fiery", colors::light_red()},
-         {"Murky", "a Murky", colors::dark_brown()},
-         {"Muddy", "a Muddy", colors::brown()},
-         {"Violet", "a Violet", colors::violet()},
-         {"Orange", "an Orange", colors::orange()},
-         {"Watery", "a Watery", colors::light_blue()},
-         {"Metallic", "a Metallic", colors::gray()},
-         {"Clear", "a Clear", colors::light_white()},
-         {"Misty", "a Misty", colors::light_white()},
-         {"Bloody", "a Bloody", colors::red()},
-         {"Magenta", "a Magenta", colors::magenta()},
-         {"Clotted", "a Clotted", colors::green()},
-         {"Moldy", "a Moldy", colors::brown()},
-         {"Frothy", "a Frothy", colors::white()}});
+        {{i18n::get("item_potion.appearance_golden", "Golden"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_golden", "Golden"),
+          colors::yellow()},
+         {i18n::get("item_potion.appearance_yellow", "Yellow"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_yellow", "Yellow"),
+          colors::yellow()},
+         {i18n::get("item_potion.appearance_dark", "Dark"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_dark", "Dark"),
+          colors::gray()},
+         {i18n::get("item_potion.appearance_black", "Black"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_black", "Black"),
+          colors::gray()},
+         {i18n::get("item_potion.appearance_oily", "Oily"),
+          i18n::get("item_potion.article_an_space", "an ") +
+              i18n::get("item_potion.appearance_oily", "Oily"),
+          colors::gray()},
+         {i18n::get("item_potion.appearance_smoky", "Smoky"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_smoky", "Smoky"),
+          colors::white()},
+         {i18n::get("item_potion.appearance_slimy", "Slimy"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_slimy", "Slimy"),
+          colors::green()},
+         {i18n::get("item_potion.appearance_green", "Green"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_green", "Green"),
+          colors::light_green()},
+         {i18n::get("item_potion.appearance_fiery", "Fiery"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_fiery", "Fiery"),
+          colors::light_red()},
+         {i18n::get("item_potion.appearance_murky", "Murky"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_murky", "Murky"),
+          colors::dark_brown()},
+         {i18n::get("item_potion.appearance_muddy", "Muddy"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_muddy", "Muddy"),
+          colors::brown()},
+         {i18n::get("item_potion.appearance_violet", "Violet"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_violet", "Violet"),
+          colors::violet()},
+         {i18n::get("item_potion.appearance_orange", "Orange"),
+          i18n::get("item_potion.article_an_space", "an ") +
+              i18n::get("item_potion.appearance_orange", "Orange"),
+          colors::orange()},
+         {i18n::get("item_potion.appearance_watery", "Watery"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_watery", "Watery"),
+          colors::light_blue()},
+         {i18n::get("item_potion.appearance_metallic", "Metallic"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_metallic", "Metallic"),
+          colors::gray()},
+         {i18n::get("item_potion.appearance_clear", "Clear"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_clear", "Clear"),
+          colors::light_white()},
+         {i18n::get("item_potion.appearance_misty", "Misty"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_misty", "Misty"),
+          colors::light_white()},
+         {i18n::get("item_potion.appearance_bloody", "Bloody"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_bloody", "Bloody"),
+          colors::red()},
+         {i18n::get("item_potion.appearance_magenta", "Magenta"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_magenta", "Magenta"),
+          colors::magenta()},
+         {i18n::get("item_potion.appearance_clotted", "Clotted"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_clotted", "Clotted"),
+          colors::green()},
+         {i18n::get("item_potion.appearance_moldy", "Moldy"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_moldy", "Moldy"),
+          colors::brown()},
+         {i18n::get("item_potion.appearance_frothy", "Frothy"),
+          i18n::get("item_potion.article_a_space", "a ") +
+              i18n::get("item_potion.appearance_frothy", "Frothy"),
+          colors::white()}});
 
     for (auto& d : item::g_data) {
         if (d.type != ItemType::potion) {
@@ -152,12 +218,16 @@ void init()
         auto& look = s_potion_appearances[idx];
 
         d.base_name_un_id.names[(size_t)ItemNameType::plain] =
-            look.name_plain + " Potion";
+            look.name_plain +
+            i18n::get("item_potion.unidentified_suffix", " Potion");
 
         d.base_name_un_id.names[(size_t)ItemNameType::plural] =
-            look.name_plain + " Potions";
+            look.name_plain +
+            i18n::get("item_potion.unidentified_plural_suffix", " Potions");
 
-        d.base_name_un_id.names[(size_t)ItemNameType::a] = look.name_a + " Potion";
+        d.base_name_un_id.names[(size_t)ItemNameType::a] =
+            look.name_a +
+            i18n::get("item_potion.unidentified_suffix", " Potion");
 
         d.color = look.color;
 
@@ -172,9 +242,15 @@ void init()
 
         delete potion;
 
-        const std::string real_name = "Potion of " + real_type_name;
-        const std::string real_name_plural = "Potions of " + real_type_name;
-        const std::string real_name_a = "a Potion of " + real_type_name;
+        const std::string real_name =
+            i18n::get("item_potion.real_name_prefix", "Potion of ") +
+            real_type_name;
+        const std::string real_name_plural =
+            i18n::get("item_potion.real_name_plural_prefix", "Potions of ") +
+            real_type_name;
+        const std::string real_name_a =
+            i18n::get("item_potion.real_name_a_prefix", "a Potion of ") +
+            real_type_name;
 
         d.base_name.names[(size_t)ItemNameType::plain] = real_name;
         d.base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
@@ -448,18 +524,20 @@ Color Potion::interface_color() const
 
 std::string Vitality::real_name() const
 {
-    return "Vitality";
+    return i18n::get("item_potion.vitality_name", "Vitality");
 }
 
 std::string Vitality::descr_identified() const
 {
     return (
-        "This elixir fully restores all hit points, heals all "
-        "wounds, and cures blindness, deafness, poisoning, "
-        "infections, disease and weakening. "
-        "Also, for some duration after consuming the potion, "
-        "+1 extra hit point is healed per turn, and there is "
-        "10% chance per turn to heal one wound.");
+        i18n::get(
+            "item_potion.vitality_descr",
+            "This elixir fully restores all hit points, heals all "
+            "wounds, and cures blindness, deafness, poisoning, "
+            "infections, disease and weakening. "
+            "Also, for some duration after consuming the potion, "
+            "+1 extra hit point is healed per turn, and there is "
+            "10% chance per turn to heal one wound."));
 }
 
 PotionAlignment Vitality::alignment() const
@@ -502,12 +580,12 @@ void Vitality::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Spirit::real_name() const
 {
-    return "Spirit";
+    return i18n::get("item_potion.spirit_name", "Spirit");
 }
 
 std::string Spirit::descr_identified() const
 {
-    return "Fully restores the spirit.";
+    return i18n::get("item_potion.spirit_descr", "Fully restores the spirit.");
 }
 
 PotionAlignment Spirit::alignment() const
@@ -540,12 +618,14 @@ void Spirit::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Blindness::real_name() const
 {
-    return "Blindness";
+    return i18n::get("item_potion.blindness_name", "Blindness");
 }
 
 std::string Blindness::descr_identified() const
 {
-    return "Causes temporary loss of vision.";
+    return i18n::get(
+        "item_potion.blindness_descr",
+        "Causes temporary loss of vision.");
 }
 
 PotionAlignment Blindness::alignment() const
@@ -573,12 +653,12 @@ void Blindness::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Paral::real_name() const
 {
-    return "Paralyzation";
+    return i18n::get("item_potion.paralyzation_name", "Paralyzation");
 }
 
 std::string Paral::descr_identified() const
 {
-    return "Causes paralysis.";
+    return i18n::get("item_potion.paralyzation_descr", "Causes paralysis.");
 }
 
 PotionAlignment Paral::alignment() const
@@ -606,12 +686,12 @@ void Paral::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Disease::real_name() const
 {
-    return "Disease";
+    return i18n::get("item_potion.disease_name", "Disease");
 }
 
 std::string Disease::descr_identified() const
 {
-    return "Causes disease.";
+    return i18n::get("item_potion.disease_descr", "Causes disease.");
 }
 
 PotionAlignment Disease::alignment() const
@@ -639,12 +719,12 @@ void Disease::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Conf::real_name() const
 {
-    return "Confusion";
+    return i18n::get("item_potion.confusion_name", "Confusion");
 }
 
 std::string Conf::descr_identified() const
 {
-    return "Causes confusion.";
+    return i18n::get("item_potion.confusion_descr", "Causes confusion.");
 }
 
 PotionAlignment Conf::alignment() const
@@ -672,12 +752,14 @@ void Conf::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Fortitude::real_name() const
 {
-    return "Fortitude";
+    return i18n::get("item_potion.fortitude_name", "Fortitude");
 }
 
 std::string Fortitude::descr_identified() const
 {
-    return "Gives the consumer complete peace and clarity of mind.";
+    return i18n::get(
+        "item_potion.fortitude_descr",
+        "Gives the consumer complete peace and clarity of mind.");
 }
 
 PotionAlignment Fortitude::alignment() const
@@ -707,7 +789,9 @@ void Fortitude::quaff_impl(actor::Actor& actor)
 
         map::g_player->restore_shock(999, false);
 
-        msg_log::add("I feel more at ease.");
+        msg_log::add(i18n::get(
+            "item_potion.feel_more_at_ease",
+            "I feel more at ease."));
     }
 
     if (actor::can_player_see_actor(actor)) {
@@ -726,12 +810,12 @@ void Fortitude::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Poison::real_name() const
 {
-    return "Poison";
+    return i18n::get("item_potion.poison_name", "Poison");
 }
 
 std::string Poison::descr_identified() const
 {
-    return "A sinister brew.";
+    return i18n::get("item_potion.poison_descr", "A sinister brew.");
 }
 
 PotionAlignment Poison::alignment() const
@@ -759,12 +843,14 @@ void Poison::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Insight::real_name() const
 {
-    return "Insight";
+    return i18n::get("item_potion.insight_name", "Insight");
 }
 
 std::string Insight::descr_identified() const
 {
-    return "This strange concoction causes a sudden flash of intuition.";
+    return i18n::get(
+        "item_potion.insight_descr",
+        "This strange concoction causes a sudden flash of intuition.");
 }
 
 PotionAlignment Insight::alignment() const
@@ -787,7 +873,9 @@ void Insight::quaff_impl(actor::Actor& actor)
 
     // Insight gives some extra XP, to avoid making the potion worthless if
     // the player identifies all items)
-    msg_log::add("I feel insightful.");
+    msg_log::add(i18n::get(
+        "item_potion.feel_insightful",
+        "I feel insightful."));
 
     game::incr_player_xp(g_xp_on_drink_insight_potion);
 
@@ -802,14 +890,16 @@ void Insight::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Curing::real_name() const
 {
-    return "Curing";
+    return i18n::get("item_potion.curing_name", "Curing");
 }
 
 std::string Curing::descr_identified() const
 {
     return (
-        "Restores 3 hit points, and cures blindness, deafness, "
-        "poisoning, infections, disease and weakening.");
+        i18n::get(
+            "item_potion.curing_descr",
+            "Restores 3 hit points, and cures blindness, deafness, "
+            "poisoning, infections, disease and weakening."));
 }
 
 PotionAlignment Curing::alignment() const
@@ -847,7 +937,7 @@ void Curing::quaff_impl(actor::Actor& actor)
     }
 
     if (!is_noticable && actor::is_player(&actor)) {
-        msg_log::add("I feel fine.");
+        msg_log::add(i18n::get("item_potion.feel_fine", "I feel fine."));
 
         is_noticable = true;
     }
@@ -869,14 +959,16 @@ void Curing::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Resistance::real_name() const
 {
-    return "Resistance";
+    return i18n::get("item_potion.resistance_name", "Resistance");
 }
 
 std::string Resistance::descr_identified() const
 {
     return (
-        "Completely protects the consumer from electricity, fire and poison - "
-        "and also prevents paralysis.");
+        i18n::get(
+            "item_potion.resistance_descr",
+            "Completely protects the consumer from electricity, fire and poison - "
+            "and also prevents paralysis."));
 }
 
 PotionAlignment Resistance::alignment() const
@@ -909,14 +1001,16 @@ void Resistance::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Descent::real_name() const
 {
-    return "Descent";
+    return i18n::get("item_potion.descent_name", "Descent");
 }
 
 std::string Descent::descr_identified() const
 {
     return (
-        "A bizarre liquid that causes the consumer to "
-        "dematerialize and sink through the ground.");
+        i18n::get(
+            "item_potion.descent_descr",
+            "A bizarre liquid that causes the consumer to "
+            "dematerialize and sink through the ground."));
 }
 
 PotionAlignment Descent::alignment() const
@@ -935,7 +1029,9 @@ void Descent::quaff_impl(actor::Actor& actor)
     }
     else {
         // Cannot bypass the boss level.
-        msg_log::add("I feel a faint sinking sensation, but it soon disappears...");
+        msg_log::add(i18n::get(
+            "item_potion.sinking_sensation_disappears",
+            "I feel a faint sinking sensation, but it soon disappears..."));
     }
 
     identify(Verbose::yes);
@@ -949,14 +1045,16 @@ void Descent::collide_hook(const P& pos, actor::Actor* const actor)
 
 std::string Skill::real_name() const
 {
-    return "Skill";
+    return i18n::get("item_potion.skill_name", "Skill");
 }
 
 std::string Skill::descr_identified() const
 {
     return (
-        "The consumer becomes more skillful "
-        "(+10% to hit chance, evasion, stealth, and searching).");
+        i18n::get(
+            "item_potion.skill_descr",
+            "The consumer becomes more skillful "
+            "(+10% to hit chance, evasion, stealth, and searching)."));
 }
 
 PotionAlignment Skill::alignment() const
@@ -984,17 +1082,19 @@ void Skill::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Carapace::real_name() const
 {
-    return "Carapace";
+    return i18n::get("item_potion.carapace_name", "Carapace");
 }
 
 std::string Carapace::descr_identified() const
 {
     return (
-        "Causes a tough carapace to grow over the consumer's skin "
-        "providing protection against physical attacks "
-        "(+3 armor points), "
-        "as well as some resistance against burning "
-        "(+25% chance to resist burning).");
+        i18n::get(
+            "item_potion.carapace_descr",
+            "Causes a tough carapace to grow over the consumer's skin "
+            "providing protection against physical attacks "
+            "(+3 armor points), "
+            "as well as some resistance against burning "
+            "(+25% chance to resist burning)."));
 }
 
 PotionAlignment Carapace::alignment() const
@@ -1022,15 +1122,17 @@ void Carapace::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Blinking::real_name() const
 {
-    return "Blinking";
+    return i18n::get("item_potion.blinking_name", "Blinking");
 }
 
 std::string Blinking::descr_identified() const
 {
     return (
-        "Causes the consumer to rapidly fade away from existence, "
-        "and reappear again at a nearby position "
-        "of their choosing.");
+        i18n::get(
+            "item_potion.blinking_descr",
+            "Causes the consumer to rapidly fade away from existence, "
+            "and reappear again at a nearby position "
+            "of their choosing."));
 }
 
 PotionAlignment Blinking::alignment() const
@@ -1041,7 +1143,9 @@ PotionAlignment Blinking::alignment() const
 void Blinking::quaff_impl(actor::Actor& actor)
 {
     if (actor::is_player(&actor)) {
-        msg_log::add("I fade out of existence and reappear.");
+        msg_log::add(i18n::get(
+            "item_potion.fade_out_and_reappear",
+            "I fade out of existence and reappear."));
     }
 
     const int max_dist = 4;
@@ -1064,15 +1168,17 @@ void Blinking::collide_hook(const P& pos, actor::Actor* actor)
 
 std::string Burrowing::real_name() const
 {
-    return "Burrowing";
+    return i18n::get("item_potion.burrowing_name", "Burrowing");
 }
 
 std::string Burrowing::descr_identified() const
 {
     return (
-        "Infused with the alchemically treated blood of Chthonians, "
-        "it grants the consumer the ability to burrow through earth and rock "
-        "(can burrow through walls and rubble).");
+        i18n::get(
+            "item_potion.burrowing_descr",
+            "Infused with the alchemically treated blood of Chthonians, "
+            "it grants the consumer the ability to burrow through earth and rock "
+            "(can burrow through walls and rubble)."));
 }
 
 PotionAlignment Burrowing::alignment() const

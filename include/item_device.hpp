@@ -107,11 +107,7 @@ public:
     ~SentryDrone() = default;
 
 private:
-    std::string descr_identified() const override
-    {
-        return "When activated, this device will \"come alive\" and "
-               "guard the user.";
-    }
+    std::string descr_identified() const override;
 
     ConsumeItem run_effect() override;
 };
