@@ -7873,7 +7873,7 @@ int SpellMiGoHypno::mon_cooldown() const
 
 std::string SpellMiGoHypno::name() const
 {
-    return "MiGo Hypnosis";
+    return i18n::get("spells.migo_hypnosis.name", "MiGo Hypnosis");
 }
 
 SpellId SpellMiGoHypno::id() const
