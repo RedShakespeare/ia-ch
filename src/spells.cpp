@@ -7272,7 +7272,7 @@ bool SpellDisease::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellBlind::name() const
 {
-    return "Blind";
+    return i18n::get("spells.blind.name", "Blind");
 }
 
 SpellId SpellBlind::id() const
