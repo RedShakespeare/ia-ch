@@ -1292,6 +1292,55 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "struck with ") == "施法者相邻的所有亡灵生物（无论是否可见）都会被击中，受到");
     REQUIRE(i18n::get("spells.purge.undead_struck_middle", " damage, and become terrified for ") == "点伤害，并恐惧");
     REQUIRE(i18n::get("spells.purge.undead_struck_suffix", " turns (unless they resist fear).") == "回合（除非它们抵抗恐惧）。");
+    REQUIRE(i18n::get("spells.frenzy.name", "Incite Frenzy") == "激怒狂乱");
+    REQUIRE(
+        i18n::get(
+            "spells.frenzy.descr",
+            "Incites a great rage in the caster, who will charge their "
+            "enemies with a terrible, uncontrollable fury.") ==
+        "激起施法者的极度愤怒，他们将以可怕的、无法控制的狂怒冲向敌人。");
+    REQUIRE(i18n::get("spells.bless.name", "Bless") == "祝福");
+    REQUIRE(
+        i18n::get(
+            "spells.bless.descr",
+            "The caster becomes more lucky "
+            "(+10% to hit chance, evasion, stealth, and searching).") ==
+        "施法者变得更加幸运（命中率、闪避、潜行和搜索各+10%）。");
+    REQUIRE(i18n::get("spells.cancellation.name", "Cancellation") == "消解");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_main",
+            "Cancels temporary effects on nearby creatures. "
+            "Pierces through and removes Spell Shield.") ==
+        "消解附近生物的临时效果。穿透并移除法术护盾。");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_vulnerable_prefix",
+            "Outer Beings, Undead or Summoned creatures also take ") ==
+        "外界存在、不死生物或被召唤生物还会受到");
+    REQUIRE(i18n::get("spells.cancellation.descr_vulnerable_suffix", " damage.") == "点伤害。");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_range_prefix",
+            "The spell has a maximum range of ") ==
+        "法术的最大范围为");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_range_suffix",
+            " steps, reaching through solid obstacles.") ==
+        "步，可穿透坚固障碍物。");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_enemies_prefix",
+            "Effects removed from enemies: All resistances, ") ==
+        "从敌人身上移除的效果：所有抗性、");
+    REQUIRE(i18n::get("spells.cancellation.descr_enemies_suffix", ".") == "。");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_allies_prefix",
+            "From caster/allies: ") ==
+        "从施法者/盟友身上移除：");
+    REQUIRE(i18n::get("spells.cancellation.descr_allies_suffix", ".") == "。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

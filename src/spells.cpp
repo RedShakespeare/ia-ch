@@ -3889,7 +3889,7 @@ std::vector<std::string> SpellPurge::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellFrenzy::name() const
 {
-    return "Incite Frenzy";
+    return i18n::get("spells.frenzy.name", "Incite Frenzy");
 }
 
 SpellId SpellFrenzy::id() const
@@ -3952,8 +3952,10 @@ std::vector<std::string> SpellFrenzy::descr_specific(
     (void)skill;
 
     return {
-        "Incites a great rage in the caster, who will charge their "
-        "enemies with a terrible, uncontrollable fury."};
+        i18n::get(
+            "spells.frenzy.descr",
+            "Incites a great rage in the caster, who will charge their "
+            "enemies with a terrible, uncontrollable fury.")};
 }
 
 // -----------------------------------------------------------------------------
@@ -3961,7 +3963,7 @@ std::vector<std::string> SpellFrenzy::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellBless::name() const
 {
-    return "Bless";
+    return i18n::get("spells.bless.name", "Bless");
 }
 
 SpellId SpellBless::id() const
@@ -4040,8 +4042,10 @@ std::vector<std::string> SpellBless::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "The caster becomes more lucky "
-        "(+10% to hit chance, evasion, stealth, and searching).");
+        i18n::get(
+            "spells.bless.descr",
+            "The caster becomes more lucky "
+            "(+10% to hit chance, evasion, stealth, and searching)."));
 
     if (skill == SpellSkill::transcendent) {
         descr.emplace_back(spell_indefinite_duration_descr());
@@ -4058,7 +4062,7 @@ std::vector<std::string> SpellBless::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellCancellation::name() const
 {
-    return "Cancellation";
+    return i18n::get("spells.cancellation.name", "Cancellation");
 }
 
 SpellId SpellCancellation::id() const
@@ -4297,18 +4301,28 @@ std::vector<std::string> SpellCancellation::descr_specific(
     const SpellSkill skill) const
 {
     std::vector<std::string> descr = {
-        "Cancels temporary effects on nearby creatures. "
-        "Pierces through and removes Spell Shield."};
+        i18n::get(
+            "spells.cancellation.descr_main",
+            "Cancels temporary effects on nearby creatures. "
+            "Pierces through and removes Spell Shield.")};
 
     descr.push_back(
-        "Outer Beings, Undead or Summoned creatures also take " +
+        i18n::get(
+            "spells.cancellation.descr_vulnerable_prefix",
+            "Outer Beings, Undead or Summoned creatures also take ") +
         damage_for_vulnerable_creatures().str() +
-        " damage.");
+        i18n::get(
+            "spells.cancellation.descr_vulnerable_suffix",
+            " damage."));
 
     descr.push_back(
-        "The spell has a maximum range of " +
+        i18n::get(
+            "spells.cancellation.descr_range_prefix",
+            "The spell has a maximum range of ") +
         std::to_string(max_dist(skill)) +
-        " steps, reaching through solid obstacles.");
+        i18n::get(
+            "spells.cancellation.descr_range_suffix",
+            " steps, reaching through solid obstacles."));
 
     auto to_names = [](const std::vector<CancelledPropData>& entries) {
         std::vector<std::string> names;
@@ -4329,14 +4343,22 @@ std::vector<std::string> SpellCancellation::descr_specific(
         to_names(positive_effect_types_cancelled());
 
     descr.push_back(
-        "Effects removed from enemies: All resistances, " +
+        i18n::get(
+            "spells.cancellation.descr_enemies_prefix",
+            "Effects removed from enemies: All resistances, ") +
         text_format::make_comma_and_str(positive_effect_names) +
-        ".");
+        i18n::get(
+            "spells.cancellation.descr_enemies_suffix",
+            "."));
 
     descr.push_back(
-        "From caster/allies: " +
+        i18n::get(
+            "spells.cancellation.descr_allies_prefix",
+            "From caster/allies: ") +
         text_format::make_comma_and_str(negative_effect_names) +
-        ".");
+        i18n::get(
+            "spells.cancellation.descr_allies_suffix",
+            "."));
 
     return descr;
 }
