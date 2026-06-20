@@ -1036,6 +1036,744 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("property.great_frenzy_sound", "A voice is stirring up a great frenzy!") == "有个声音正在煽动巨大的狂乱！");
     REQUIRE(i18n::get("property.stirs_up_great_frenzy_suffix", " stirs up a great frenzy!") == "激起了巨大的狂乱！");
     REQUIRE(i18n::get("property.calls_plague_of_locusts_suffix", " calls a plague of Locusts!") == "召唤了一场蝗灾！");
+    REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
+    REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
+    REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");
+    REQUIRE(i18n::get("spells.reflected", "The spell is reflected!") == "法术被反射了！");
+    REQUIRE(i18n::get("spells.projectile_hit_player_prefix", "I am") == "我");
+    REQUIRE(i18n::get("spells.projectile_hit_it", "It") == "它");
+    REQUIRE(i18n::get("spells.projectile_hit_mon_suffix", " is") == "");
+    REQUIRE(i18n::get("spells.projectile_hit_space", " ") == "");
+    REQUIRE(
+        i18n::get(
+            "spells.not_alerting_mon_descr",
+            "Casting this spell does not alert the victim to the caster's presence.") ==
+        "施放此法术不会让受害者察觉施法者的存在。");
+    REQUIRE(i18n::get("spells.duration_prefix", "The spell lasts ") == "法术持续");
+    REQUIRE(i18n::get("spells.duration_suffix", " turns.") == "回合。");
+    REQUIRE(i18n::get("spells.duration_indefinite", "The spell lasts indefinitely.") == "法术无限期持续。");
+    REQUIRE(
+        i18n::get(
+            "spells.cast_requires_sounds",
+            "Casting this spell requires making sounds.") == "施放此法术需要发出声音。");
+    REQUIRE(i18n::get("spells.cast_silently", "The spell can be cast silently.") == "此法术可以无声施放。");
+    REQUIRE(i18n::get("spells.skill_descr_prefix", "The spell can be cast at ") == "此法术可以以");
+    REQUIRE(i18n::get("spells.skill_descr_suffix", " level") == "等级施放");
+    REQUIRE(i18n::get("spells.skill.basic", "basic") == "基础");
+    REQUIRE(i18n::get("spells.skill.expert", "expert") == "专家");
+    REQUIRE(i18n::get("spells.skill.master", "master") == "大师");
+    REQUIRE(i18n::get("spells.skill.transcendent", "transcendent") == "超凡");
+    REQUIRE(i18n::get("spells.skill_bonus.manuscript", "manuscript") == "手稿");
+    REQUIRE(i18n::get("spells.skill_bonus.altar", "altar") == "祭坛");
+    REQUIRE(i18n::get("spells.skill_bonus.erudition", "erudition") == "博学");
+    REQUIRE(i18n::get("spells.skill_bonus.necronomicon", "necronomicon") == "死灵之书");
+    REQUIRE(
+        i18n::get(
+            "spells.forgotten_hint",
+            "Forgotten spells can be recalled by "
+            "studying inscribed objects "
+            "or by casting them from a manuscript.") == "遗忘的法术可以通过研究铭文物体或从手稿中施放来回忆。");
+    REQUIRE(
+        i18n::get(
+            "spells.forgotten_descr_prefix",
+            "Forgotten - this spell can no longer be "
+            "cast from memory. ") == "已遗忘 - 此法术不能再凭记忆施放。");
+    REQUIRE(
+        i18n::get(
+            "spells.tenebrous_descr_prefix",
+            "Tenebrous - this spell will be instantly "
+            "forgotten if cast from memory. ") == "晦暗 - 如果凭记忆施放，此法术会立刻被遗忘。");
+    REQUIRE(i18n::get("spells.domain_descr_prefix", "It belongs to the \"") == "它属于“");
+    REQUIRE(i18n::get("spells.domain_descr_suffix", "\" domain.") == "”领域。");
+    REQUIRE(i18n::get("spells.someone", "Someone") == "某人");
+    REQUIRE(i18n::get("spells.something", "Something") == "某物");
+    REQUIRE(i18n::get("spells.aura_of_decay.name", "Aura of Decay") == "腐朽光环");
+    REQUIRE(
+        i18n::get(
+            "spells.aura_of_decay.descr",
+            "The caster exudes death and decay. Creatures within a "
+            "distance of two steps take damage each standard turn.") ==
+        "施法者散发死亡与腐朽。两步距离内的生物每个标准回合都会受到伤害。");
+    REQUIRE(i18n::get("spells.aura_of_decay.dmg_prefix", "The spell deals ") == "法术造成");
+    REQUIRE(i18n::get("spells.aura_of_decay.dmg_suffix", " damage to each creature.") == "点伤害给每个生物。");
+    REQUIRE(
+        i18n::get(
+            "spells.aura_of_decay.instant_kill_descr",
+            "Any time a creature takes damage from the spell, "
+            "they may be destroyed immediately (2% chance).") ==
+        "每当一个生物受到此法术伤害时，它都可能立即被摧毁（2% 几率）。");
+    REQUIRE(i18n::get("spells.force_bolt.hit_msg_ending", "struck by a bolt!") == "被力能箭击中！");
+    REQUIRE(i18n::get("spells.force_bolt.name", "Force Bolt") == "力能箭");
+    REQUIRE(i18n::get("spells.darkbolt.hit_msg_ending", "struck by a blast!") == "被暗能冲击击中！");
+    REQUIRE(i18n::get("spells.darkbolt.name", "Darkbolt") == "暗能箭");
+    REQUIRE(
+        i18n::get(
+            "spells.darkbolt.descr",
+            "A bolt of siphoned energy is hurled towards a target "
+            "with great force. "
+            "The conjured bolt has some will on its own - "
+            "once released, it seeks creatures that pose a threat, "
+            "precise control is therefore not possible.") ==
+        "一支被汲取出的能量箭以强大力量射向目标。被召唤出的能量箭有一定自主意志——一旦释放，它会寻找构成威胁的生物，因此无法精确控制。");
+    REQUIRE(i18n::get("spells.darkbolt.impact_dmg_prefix", "The impact deals ") == "冲击造成");
+    REQUIRE(i18n::get("spells.darkbolt.impact_dmg_suffix", " damage.") == "点伤害。");
+    REQUIRE(i18n::get("spells.darkbolt.paralyze_burn", " The target is paralyzed and set aflame.") == "目标被麻痹并被点燃。");
+    REQUIRE(
+        i18n::get(
+            "spells.darkbolt.distant_explosion",
+            " If the target is sufficiently far away from "
+            "the caster, the bolt explodes on impact.") == "如果目标距离施法者足够远，能量箭会在命中时爆炸。");
+    REQUIRE(i18n::get("spells.darkbolt.paralyze", " The target is paralyzed.") == "目标被麻痹。");
+    REQUIRE(i18n::get("spells.gnawing_torrent.hit_msg_ending", "fed upon!") == "被吞噬生命！");
+    REQUIRE(i18n::get("spells.gnawing_torrent.name", "Gnawing Torrent") == "啃噬洪流");
+    REQUIRE(
+        i18n::get(
+            "spells.gnawing_torrent.descr",
+            "Unleashes a stream of devouring energy upon the caster's victims.") ==
+        "向施法者的受害者释放一股吞噬能量流。");
+    REQUIRE(
+        i18n::get(
+            "spells.gnawing_torrent.projectiles_prefix",
+            " projectiles are conjured, each dealing ") == "枚投射物被召唤，每枚造成");
+    REQUIRE(i18n::get("spells.gnawing_torrent.projectiles_suffix", " damage.") == "点伤害。");
+    REQUIRE(
+        i18n::get(
+            "spells.gnawing_torrent.life_feed_descr",
+            "Each impact feeds life force back to the caster, providing 1 hit point "
+            "(only against creatures of flesh and blood; "
+            "ethereal creatures cannot be fed upon for example).") ==
+        "每次命中都会把生命力反馈给施法者，提供 1 点生命值（仅对血肉生物有效；例如无法从以太生物身上吞噬生命）。");
+    REQUIRE(
+        i18n::get(
+            "spells.gnawing_torrent.above_max_hp_descr",
+            "Hit points can be raised above the normal maximum level.") == "生命值可以被提升到正常上限以上。");
+    REQUIRE(i18n::get("spells.aza_gaze.name", "Azathoth's Gaze") == "阿撒托斯凝视");
+    REQUIRE(i18n::get("spells.aza_gaze.player_hit_prefix", "I am") == "我");
+    REQUIRE(i18n::get("spells.aza_gaze.mon_hit_middle", " is") == "");
+    REQUIRE(i18n::get("spells.aza_gaze.wracked_by_chaos_suffix", " wracked by chaos.") == "被混沌折磨。");
+    REQUIRE(
+        i18n::get(
+            "spells.aza_gaze.descr",
+            "Channels the chaos of Azathoth unto all visible enemies. "
+            "The channel can only be opened for a fraction of a second, "
+            "but even this is enough to cause great physical and mental "
+            "devastation.") == "将阿撒托斯的混沌引向所有可见敌人。通道只能开启一瞬，但即便如此也足以造成巨大的肉体与精神毁灭。");
+    REQUIRE(i18n::get("spells.aza_gaze.dmg_prefix", "The spell deals ") == "法术造成");
+    REQUIRE(i18n::get("spells.aza_gaze.dmg_suffix", " damage to each creature.") == "点伤害给每个生物。");
+    REQUIRE(i18n::get("spells.aza_gaze.faint_prefix", "Causes the victims to faint for ") == "使受害者昏厥");
+    REQUIRE(i18n::get("spells.aza_gaze.faint_suffix", " turns, if they are susceptible.") == "回合，如果它们会受此影响。");
+    REQUIRE(i18n::get("spells.aza_gaze.conflict_prefix", "The victims become conflicted for ") == "受害者陷入冲突");
+    REQUIRE(
+        i18n::get(
+            "spells.aza_gaze.conflict_suffix",
+            " turns, causing them to view any creature as "
+            "their enemy.") == "回合，使它们把任何生物都视为敌人。");
+    REQUIRE(i18n::get("spells.cataclysm.name", "Cataclysm") == "大灾变");
+    REQUIRE(i18n::get("spells.cataclysm.descr", "Blasts the surrounding area with terrible force.") == "以可怕的力量轰击周围区域。");
+    REQUIRE(
+        i18n::get(
+            "spells.cataclysm.skill_descr",
+            "Higher skill levels increases the magnitude of the destruction.") == "更高的技能等级会增强毁灭的规模。");
+    REQUIRE(i18n::get("spells.pestilence.name", "Pestilence") == "瘟疫");
+    REQUIRE(i18n::get("spells.pestilence.descr", "A pack of rats appear around the caster.") == "一群鼠类出现在施法者周围。");
+    REQUIRE(i18n::get("spells.pestilence.summons_prefix", "Summons ") == "召唤");
+    REQUIRE(i18n::get("spells.pestilence.summons_middle", " rats. They exist for ") == "只老鼠。它们存在");
+    REQUIRE(i18n::get("spells.pestilence.summons_suffix", " turns (their own turns).") == "回合（以它们自己的回合计）。");
+    REQUIRE(i18n::get("spells.pestilence.hasted_rats", "The rats are Hasted (moves faster).") == "这些老鼠获得加速（移动更快）。");
+    REQUIRE(
+        i18n::get(
+            "spells.pestilence.transcendent_rats",
+            "Some of the rats are ethereal "
+            "(much harder to hit, can move through solid objects), "
+            "are immune to magic, can cast spells, and have "
+            "extra hit points and damage.") ==
+        "其中一些老鼠是以太形态（更难命中，可以穿过实体物体），免疫魔法，可以施放法术，并拥有额外生命值和伤害。");
+    REQUIRE(i18n::get("spells.mirror_images.name", "Mirror Images") == "镜像");
+    REQUIRE(
+        i18n::get(
+            "spells.mirror_images.descr",
+            "Conjures illusory duplicates of the caster "
+            "to mislead enemies and draw their attacks.") == "召唤施法者的幻象复制体，以误导敌人并吸引它们的攻击。");
+    REQUIRE(
+        i18n::get(
+            "spells.mirror_images.presence_descr",
+            "The mirror images project a powerful magical presence, "
+            "causing attackers to prefer them over the caster. "
+            "As magical apparitions rather than living creatures, "
+            "they are extremely difficult to strike with conventional attacks. "
+            "They are immune to elemental damage and largely unaffected by physical "
+            "or mental afflictions.") ==
+        "镜像散发强大的魔法存在感，使攻击者更倾向于攻击它们而不是施法者。它们是魔法幻影而非活物，常规攻击极难命中。它们免疫元素伤害，并且基本不受身体或精神异常影响。");
+    REQUIRE(i18n::get("spells.mirror_images.creates_prefix", "Creates ") == "创造");
+    REQUIRE(i18n::get("spells.mirror_images.creates_middle", " mirror images. They exist for ") == "个镜像。它们存在");
+    REQUIRE(i18n::get("spells.mirror_images.creates_suffix", " turns (their own turns).") == "回合（以它们自己的回合计）。");
+    REQUIRE(i18n::get("spells.projected_strike.name", "Projected Strike") == "投影打击");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.descr",
+            "Launches a psychic projection of the caster's carried melee weapons.") == "发射施法者携带的近战武器的灵能投影。");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.attack_prefix",
+            "Each projection attacks a visible enemy, using the caster's combat skill with +") ==
+        "每个投影攻击一个可见敌人，使用施法者的战斗技能并获得 +");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.attack_suffix",
+            "% hit chance bonus. "
+            "No enemy can be targeted more than once.") == "% 命中率加成。没有敌人会被选为目标超过一次。");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.unlimited_weapons",
+            "An unlimited number of weapons can be used for atacking.") == "可以使用无限数量的武器进行攻击。");
+    REQUIRE(i18n::get("spells.projected_strike.max_weapons_prefix", "A maximum of ") == "最多可使用");
+    REQUIRE(i18n::get("spells.projected_strike.max_weapons_middle", " ") == "");
+    REQUIRE(i18n::get("spells.projected_strike.weapon_singular", "weapon") == "件武器");
+    REQUIRE(i18n::get("spells.projected_strike.weapon_plural", "weapons") == "件武器");
+    REQUIRE(i18n::get("spells.projected_strike.max_weapons_suffix", " may be used for attacking.") == "进行攻击。");
+    REQUIRE(
+        i18n::get(
+            "spells.projected_strike.attacker_descr",
+            "The caster acts as attacker - all normal conditions that affect "
+            "hit chance or damage apply "
+            "(e.g. bonus damage from melee traits, or damage penalty from being weakened).") ==
+        "施法者被视为攻击者 - 所有影响命中率或伤害的常规条件都会生效（例如近战特质的额外伤害，或虚弱造成的伤害惩罚）。");
+    REQUIRE(i18n::get("spells.control_object.name", "Control Object") == "控制物体");
+    REQUIRE(
+        i18n::get(
+            "spells.control_object.descr",
+            "Opens doors, chests, tombs, or cabinets. "
+            "Closes or jams doors. "
+            "Strikes doors, braziers, or statues.") == "打开门、箱子、坟墓或柜子。关闭或堵住门。攻击门、火盆或雕像。");
+    REQUIRE(i18n::get("spells.control_object.walls_destroyed", " Walls can be destroyed.") == "墙壁可以被摧毁。");
+    REQUIRE(i18n::get("spells.control_object.max_distance_prefix", "Maximum control distance is ") == "最大控制距离为");
+    REQUIRE(i18n::get("spells.control_object.max_distance_suffix", ".") == "。");
+    REQUIRE(
+        i18n::get(
+            "spells.control_object.select_descr",
+            "When casting the spell, select a seen object to control "
+            "within the maximum distance.") == "施放法术时，在最大距离内选择一个已看见的物体来控制。");
+    REQUIRE(i18n::get("spells.cleansing_fire.name", "Cleansing Fire") == "净化之火");
+    REQUIRE(i18n::get("spells.cleansing_fire.burn_prefix", "Causes the spell's victims to burn for ") == "使法术受害者燃烧");
+    REQUIRE(
+        i18n::get(
+            "spells.cleansing_fire.burn_suffix",
+            " turns, and scorches the ground around them with fire "
+            "(be careful with hitting adjacent creatures).") == "回合，并用火焰灼烧它们周围的地面（小心击中相邻生物）。");
+    REQUIRE(i18n::get("spells.target.one_visible_hostile", "Affects one random visible hostile creature.") == "影响一个随机可见敌对生物。");
+    REQUIRE(i18n::get("spells.target.all_visible_hostile", "Affects all visible hostile creatures.") == "影响所有可见敌对生物。");
+    REQUIRE(i18n::get("spells.sanctuary.name", "Sanctuary") == "圣域");
+    REQUIRE(
+        i18n::get(
+            "spells.sanctuary.descr",
+            "The caster is ignored by all hostile creatures for the "
+            "duration of the spell. The effect is interrupted if the "
+            "caster moves or performs a melee or ranged attack.") == "在法术持续期间，所有敌对生物都会忽视施法者。如果施法者移动或进行近战或远程攻击，效果会被中断。");
+    REQUIRE(i18n::get("spells.purge.name", "Purge") == "肃清");
+    REQUIRE(
+        i18n::get(
+            "spells.purge.destroy_adjacent_descr",
+            "Destroys any altars, monoliths, gongs, or mirrors adjacent to the caster.") ==
+        "摧毁施法者相邻的任何祭坛、巨石、铜锣或镜子。");
+    REQUIRE(
+        i18n::get(
+            "spells.purge.undead_struck_prefix",
+            "All Undead creatures adjacent to the caster (seen or not) are "
+            "struck with ") == "施法者相邻的所有亡灵生物（无论是否可见）都会被击中，受到");
+    REQUIRE(i18n::get("spells.purge.undead_struck_middle", " damage, and become terrified for ") == "点伤害，并恐惧");
+    REQUIRE(i18n::get("spells.purge.undead_struck_suffix", " turns (unless they resist fear).") == "回合（除非它们抵抗恐惧）。");
+    REQUIRE(i18n::get("spells.frenzy.name", "Incite Frenzy") == "激怒狂乱");
+    REQUIRE(
+        i18n::get(
+            "spells.frenzy.descr",
+            "Incites a great rage in the caster, who will charge their "
+            "enemies with a terrible, uncontrollable fury.") ==
+        "激起施法者的极度愤怒，他们将以可怕的、无法控制的狂怒冲向敌人。");
+    REQUIRE(i18n::get("spells.bless.name", "Bless") == "祝福");
+    REQUIRE(
+        i18n::get(
+            "spells.bless.descr",
+            "The caster becomes more lucky "
+            "(+10% to hit chance, evasion, stealth, and searching).") ==
+        "施法者变得更加幸运（命中率、闪避、潜行和搜索各+10%）。");
+    REQUIRE(i18n::get("spells.cancellation.name", "Cancellation") == "消解");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_main",
+            "Cancels temporary effects on nearby creatures. "
+            "Pierces through and removes Spell Shield.") ==
+        "消解附近生物的临时效果。穿透并移除法术护盾。");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_vulnerable_prefix",
+            "Outer Beings, Undead or Summoned creatures also take ") ==
+        "外界存在、不死生物或被召唤生物还会受到");
+    REQUIRE(i18n::get("spells.cancellation.descr_vulnerable_suffix", " damage.") == "点伤害。");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_range_prefix",
+            "The spell has a maximum range of ") ==
+        "法术的最大范围为");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_range_suffix",
+            " steps, reaching through solid obstacles.") ==
+        "步，可穿透坚固障碍物。");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_enemies_prefix",
+            "Effects removed from enemies: All resistances, ") ==
+        "从敌人身上移除的效果：所有抗性、");
+    REQUIRE(i18n::get("spells.cancellation.descr_enemies_suffix", ".") == "。");
+    REQUIRE(
+        i18n::get(
+            "spells.cancellation.descr_allies_prefix",
+            "From caster/allies: ") ==
+        "从施法者/盟友身上移除：");
+    REQUIRE(i18n::get("spells.cancellation.descr_allies_suffix", ".") == "。");
+    REQUIRE(i18n::get("spells.boundary_sigil.name", "Inscribe Boundary Sigil") == "铭刻边界印记");
+    REQUIRE(
+        i18n::get(
+            "spells.boundary_sigil.descr_main",
+            "Inscribes a magical sigil upon the ground, "
+            "preventing Outer Beings, Undead and Summoned creatures "
+            "from entering it or making melee attacks across its boundary.") ==
+        "在地面上铭刻一道魔法印记，阻止外界存在、不死生物和被召唤生物进入其中，或隔着其边界进行近战攻击。");
+    REQUIRE(
+        i18n::get(
+            "spells.boundary_sigil.descr_actions_prefix",
+            "The sigil can prevent ") ==
+        "该印记可阻止");
+    REQUIRE(
+        i18n::get(
+            "spells.boundary_sigil.descr_actions_suffix",
+            " actions before it fades, "
+            "though it also has a small chance to fade each turn.") ==
+        "次行动后消散，但每回合也有很小几率自行消退。");
+    REQUIRE(
+        i18n::get(
+            "spells.boundary_sigil.descr_floor_only",
+            "Can only be inscribed on floor, but may overwrite an existing sigil.") ==
+        "只能铭刻在地板上，但可以覆盖已有的印记。");
+    REQUIRE(i18n::get("spells.light.name", "Light") == "光明");
+    REQUIRE(
+        i18n::get(
+            "spells.light.descr_main",
+            "Illuminates the area around the caster.") ==
+        "照亮施法者周围的区域。");
+    REQUIRE(
+        i18n::get(
+            "spells.light.descr_blind_prefix",
+            "On casting, causes a blinding flash centered on the "
+            "caster (but not affecting the caster itself). "
+            "The blinding effect lasts ") ==
+        "施放时，会以施法者为中心产生一道致盲闪光（但不会影响施法者自身）。致盲效果持续");
+    REQUIRE(i18n::get("spells.light.descr_blind_suffix", " turns.") == "回合。");
+    REQUIRE(
+        i18n::get(
+            "spells.light.descr_burn_prefix",
+            "The flash is so intense that any victim caught in it "
+            "will also burn for ") ==
+        "闪光强烈到使任何被其波及的受害者还会燃烧");
+    REQUIRE(i18n::get("spells.light.descr_burn_suffix", " turns.") == "回合。");
+    REQUIRE(i18n::get("spells.invisibility.name", "Invisibility") == "隐形");
+    REQUIRE(
+        i18n::get(
+            "spells.invisibility.descr_main",
+            "Makes the caster invisible to normal vision for a "
+            "brief time.") ==
+        "使施法者暂时对普通视觉隐形。");
+    REQUIRE(
+        i18n::get(
+            "spells.invisibility.descr_basic",
+            "Attacking or casting spells reveals the caster.") ==
+        "攻击或施放法术会暴露施法者。");
+    REQUIRE(
+        i18n::get(
+            "spells.invisibility.descr_advanced",
+            "The caster is truly invisible for the duration of "
+            "the the spell, and can freely attack or cast "
+            "spells without breaking the invisibility.") ==
+        "在法术持续期间，施法者将真正隐形，可以自由攻击或施放法术而不会打破隐形。");
+    REQUIRE(i18n::get("spells.see_invisible.name", "See Invisible") == "看见隐形");
+    REQUIRE(
+        i18n::get(
+            "spells.see_invisible.descr",
+            "Grants the caster the ability to see the invisible.") ==
+        "赋予施法者看见隐形之物的能力。");
+    REQUIRE(i18n::get("spells.spell_shield.name", "Spell Shield") == "法术护盾");
+    REQUIRE(
+        i18n::get(
+            "spells.spell_shield.descr",
+            "Grants protection against harmful spells. The effect lasts "
+            "until a spell is blocked.") ==
+        "赋予对有害法术的防护。效果会持续到有一个法术被阻挡为止。");
+    REQUIRE(i18n::get("spells.haste.name", "Haste") == "加速");
+    REQUIRE(
+        i18n::get(
+            "spells.haste.descr",
+            "The caster moves faster relative to the world around them.") ==
+        "施法者相对于周围世界移动得更快。");
+    REQUIRE(i18n::get("spells.premonition.name", "Premonition") == "预感");
+    REQUIRE(
+        i18n::get(
+            "spells.premonition.descr",
+            "Grants foresight of attacks against the caster, "
+            "making it extremely difficult for assailants to achieve a "
+            "succesful hit.") ==
+        "赋予施法者对针对自身攻击的预知，使袭击者极难成功命中。");
+    REQUIRE(i18n::get("spells.erudition.name", "Erudition") == "博学");
+    REQUIRE(
+        i18n::get(
+            "spells.erudition.descr_main",
+            "Temporarily bestows the caster with an expanded understanding "
+            "of the esoteric mechanisms behind magical practice. "
+            "The caster's skill is improved by one level for all spells.") ==
+        "暂时赋予施法者对魔法实践背后神秘机制的更深理解。施法者所有法术的技能等级都会提高一级。");
+    REQUIRE(i18n::get("spells.erudition.duration_prefix", "The spell lasts ") == "法术持续");
+    REQUIRE(i18n::get("spells.erudition.duration_turns", " turns") == "回合");
+    REQUIRE(
+        i18n::get(
+            "spells.erudition.duration_transcendent_suffix",
+            ". The effect does not end when casting spells, "
+            "only when the duration expires.") ==
+        "。施放法术时效果不会结束，只有在持续时间到期时才会结束。");
+    REQUIRE(
+        i18n::get(
+            "spells.erudition.duration_normal_suffix",
+            ", or until a spell is cast (either from a Manuscript "
+            "or from memory).") ==
+        "，或者直到施放一个法术为止（无论来自手稿还是记忆）。");
+    REQUIRE(i18n::get("spells.identify.name", "Identify") == "鉴定");
+    REQUIRE(
+        i18n::get(
+            "spells.identify.descr_all_items",
+            "Immediately identifies all carried items.") ==
+        "立即鉴定所有携带中的物品。");
+    REQUIRE(
+        i18n::get(
+            "spells.identify.descr_one_item",
+            "Identifies one carried item.") ==
+        "鉴定一件携带中的物品。");
+    REQUIRE(i18n::get("spells.identify.allowed_prefix", "The spell can identify ") == "该法术可以鉴定");
+    REQUIRE(i18n::get("spells.identify.allowed_basic", "Manuscripts") == "手稿");
+    REQUIRE(i18n::get("spells.identify.allowed_expert", "Manuscripts and Potions") == "手稿和药水");
+    REQUIRE(i18n::get("spells.identify.allowed_master", "all items") == "所有物品");
+    REQUIRE(i18n::get("spells.identify.allowed_suffix", ".") == "。");
+    REQUIRE(i18n::get("spells.teleport.name", "Teleport") == "传送");
+    REQUIRE(
+        i18n::get(
+            "spells.teleport.descr_main",
+            "Instantly moves the caster to a different position.") ==
+        "立即将施法者移动到另一个位置。");
+    REQUIRE(
+        i18n::get(
+            "spells.teleport.max_dist_prefix",
+            "Maximum teleport distance is ") ==
+        "最大传送距离为");
+    REQUIRE(i18n::get("spells.teleport.max_dist_suffix", ".") == "。");
+    REQUIRE(
+        i18n::get(
+            "spells.teleport.invis_prefix",
+            "On teleporting, the caster is invisible for ") ==
+        "传送后，施法者会隐形");
+    REQUIRE(i18n::get("spells.teleport.invis_suffix", " turns.") == "回合。");
+    REQUIRE(i18n::get("spells.expulsion.name", "Expulsion") == "驱逐");
+    REQUIRE(
+        i18n::get(
+            "spells.expulsion.descr_all",
+            "All visible hostile creatures are teleported away.") ==
+        "所有可见敌对生物都会被传送走。");
+    REQUIRE(
+        i18n::get(
+            "spells.expulsion.descr_one",
+            "One random visible hostile creature is teleported away.") ==
+        "一个随机可见敌对生物会被传送走。");
+    REQUIRE(i18n::get("spells.expulsion.max_dist_prefix", "Max distance is ") == "最大距离为");
+    REQUIRE(i18n::get("spells.expulsion.max_dist_suffix", " steps.") == "步。");
+    REQUIRE(
+        i18n::get(
+            "spells.expulsion.forced",
+            "The teleportation is forced; the target can never control it.") ==
+        "这是强制传送；目标永远无法控制它。");
+    REQUIRE(i18n::get("spells.curse.name", "Curse") == "诅咒");
+    REQUIRE(
+        i18n::get(
+            "spells.curse.victims_prefix",
+            "The spell's victims are ") ==
+        "法术的受害者会变成");
+    REQUIRE(i18n::get("spells.curse.prop_open_paren", " (") == "（");
+    REQUIRE(i18n::get("spells.curse.close_paren", ")") == "）");
+    REQUIRE(
+        i18n::get(
+            "spells.curse.doom_chance_prefix",
+            "With ") ==
+        "有");
+    REQUIRE(
+        i18n::get(
+            "spells.curse.doom_chance_middle",
+            "% chance, the victims instead become ") ==
+        "%几率，受害者会转而变成");
+    REQUIRE(i18n::get("spells.poison.name", "Poison") == "中毒");
+    REQUIRE(
+        i18n::get(
+            "spells.poison.victims_prefix",
+            "The spell's victims are ") ==
+        "法术的受害者会变成");
+    REQUIRE(i18n::get("spells.poison.prop_open_paren", " (") == "（");
+    REQUIRE(i18n::get("spells.poison.close_paren", ")") == "）");
+    REQUIRE(i18n::get("spells.enfeeble.name", "Enfeeble") == "虚弱");
+    REQUIRE(
+        i18n::get(
+            "spells.enfeeble.descr",
+            "Physically enfeebles the spell's victims, causing them to "
+            "only do half damage in melee combat.") ==
+        "从肉体上削弱法术的受害者，使其在近战中只能造成一半伤害。");
+    REQUIRE(i18n::get("spells.temporal_echo.name", "Temporal Echo") == "时间回响");
+    REQUIRE(
+        i18n::get(
+            "spells.temporal_echo.descr_main",
+            "For all visible enemies, time is manipulated so that damage taken during a "
+            "brief period will recur when the effect ends.") ==
+        "对于所有可见敌人，时间会被操纵，使其在短暂期间内受到的伤害在效果结束时再次重现。");
+    REQUIRE(i18n::get("spells.temporal_echo.duration_prefix", "The effect lasts for ") == "效果持续");
+    REQUIRE(
+        i18n::get(
+            "spells.temporal_echo.duration_middle",
+            " turns (their turns). ") ==
+        "回合（按它们自己的回合计）。期间受到的伤害中有");
+    REQUIRE(
+        i18n::get(
+            "spells.temporal_echo.duration_suffix",
+            "% of the damage taken during the effect is dealt again.") ==
+        "%会再次结算。");
+    REQUIRE(i18n::get("spells.slow.name", "Slow") == "迟缓");
+    REQUIRE(
+        i18n::get(
+            "spells.slow.descr",
+            "Causes the spell's victims to move more slowly.") ==
+        "使法术的受害者移动得更慢。");
+    REQUIRE(i18n::get("spells.terrify.name", "Terrify") == "恐惧");
+    REQUIRE(
+        i18n::get(
+            "spells.terrify.descr",
+            "Inflicts a nightmare illusion that overwhelms its victims with dread.") ==
+        "施加一场噩梦般的幻象，使受害者被恐惧淹没。");
+    REQUIRE(
+        i18n::get(
+            "spells.terrify.descr_transcendent",
+            "Affected creatures also faint.") ==
+        "受影响的生物还会昏厥。");
+    REQUIRE(i18n::get("spells.terrify.creature_singular", "creature") == "生物");
+    REQUIRE(i18n::get("spells.terrify.creature_plural", "creatures") == "生物");
+    REQUIRE(i18n::get("spells.terrify.faint_chance_prefix", "Has a ") == "有");
+    REQUIRE(
+        i18n::get(
+            "spells.terrify.faint_chance_middle",
+            "% chance to also make affected ") ==
+        "%几率让受影响的");
+    REQUIRE(i18n::get("spells.terrify.faint_chance_suffix", " faint.") == "昏厥。");
+    REQUIRE(i18n::get("spells.threat_projection.name", "Threat Projection") == "威胁投射");
+    REQUIRE(
+        i18n::get(
+            "spells.threat_projection.descr",
+            "Distorts the perception of the spell's victims, causing "
+            "all other creatures to be misidentified as enemies.") ==
+        "扭曲法术受害者的感知，使其把所有其他生物都误认为敌人。");
+    REQUIRE(
+        i18n::get(
+            "spells.summon_tentacles.appear_msg",
+            "Monstrous tentacles rise up from the ground!") == "巨大的触手从地面升起！");
+    REQUIRE(i18n::get("spells.disease.name", "Disease") == "疾病");
+    REQUIRE(
+        i18n::get(
+            "spells.disease.afflict_prefix",
+            "A horrible disease is starting to afflict ") ==
+        "一种可怕的疾病开始折磨");
+    REQUIRE(i18n::get("spells.blind.name", "Blind") == "致盲");
+    REQUIRE(i18n::get("spells.knockback.name", "Knockback") == "击退");
+    REQUIRE(i18n::get("spells.healing.name", "Healing") == "治疗");
+    REQUIRE(i18n::get("spells.heal_others.name", "Heal Others") == "治疗他者");
+    REQUIRE(i18n::get("spells.healing.restore_prefix", "Restores ") == "恢复");
+    REQUIRE(i18n::get("spells.healing.restore_suffix", " hit points.") == "点生命值。");
+    REQUIRE(i18n::get("spells.healing.cures_basic", "Cures weakening and poisoning.") == "治愈虚弱和中毒。");
+    REQUIRE(
+        i18n::get(
+            "spells.healing.cures_master",
+            "Cures weakening, poisoning, infections, disease, blindness and deafness.") ==
+        "治愈虚弱、中毒、感染、疾病、失明和失聪。");
+    REQUIRE(i18n::get("spells.healing.heals_wound", "Heals one wound.") == "治疗一个伤口。");
+    REQUIRE(
+        i18n::get(
+            "spells.healing.regen_prefix",
+            "+1 hit point regenerated per turn, for ") ==
+        "每回合恢复+1生命值，持续");
+    REQUIRE(i18n::get("spells.healing.regen_suffix", " turns.") == "回合。");
+    REQUIRE(i18n::get("spells.migo_hypnosis.name", "MiGo Hypnosis") == "米戈催眠");
+    REQUIRE(i18n::get("spells.immolation.name", "Immolation") == "焚烧");
+    REQUIRE(i18n::get("spells.deafen.name", "Deafen") == "致聋");
+    REQUIRE(i18n::get("spells.transmutation.name", "Transmutation") == "变形术");
+    REQUIRE(i18n::get("spells.transmutation.item_before_prefix", "The ") == "");
+    REQUIRE(i18n::get("spells.transmutation.disappears_singular", "disappears") == "消失了");
+    REQUIRE(i18n::get("spells.transmutation.disappears_plural", "disappear") == "消失了");
+    REQUIRE(i18n::get("spells.transmutation.appears_singular", "appears") == "出现了");
+    REQUIRE(i18n::get("spells.transmutation.appears_plural", "appear") == "出现了");
+    REQUIRE(
+        i18n::get(
+            "spells.transmutation.descr_main",
+            "Attempts to convert items (stand over an item when casting). "
+            "On failure, the item is destroyed.") ==
+        "尝试转化物品（施法时站在物品上）。失败时，该物品会被摧毁。");
+    REQUIRE(i18n::get("spells.transmutation.potion_chance_prefix", "Converts Potions with ") == "以");
+    REQUIRE(i18n::get("spells.transmutation.manuscript_chance_prefix", "Converts Manuscripts with ") == "以");
+    REQUIRE(i18n::get("spells.transmutation.chance_suffix", "% chance.") == "%几率转化药水或手稿。");
+    REQUIRE(
+        i18n::get(
+            "spells.transmutation.weapon_chance_prefix",
+            "Melee weapons with at least +1 damage (not counting any "
+            "damage bonus from skills) are converted to a Potion or "
+            "Manuscript, with ") ==
+        "至少有+1伤害的近战武器（不包括技能带来的伤害加成）会被转化为药水或手稿，+1武器的几率为");
+    REQUIRE(i18n::get("spells.transmutation.weapon_chance_plus_one", "% chance for a +1 weapon, ") == "%，+2武器的几率为");
+    REQUIRE(i18n::get("spells.transmutation.weapon_chance_plus_two", "% chance for a +2 weapon, ") == "%，+3武器的几率为");
+    REQUIRE(i18n::get("spells.transmutation.weapon_chance_plus_three", "% chance for a +3 weapon, etc.") == "%，依此类推。");
+    REQUIRE(i18n::get("spells.space", " ") == "");
+    REQUIRE(i18n::get("spells.clairvoyance.name", "Clairvoyance") == "千里眼");
+    REQUIRE(
+        i18n::get(
+            "spells.clairvoyance.descr",
+            "Reveals the presence of doors, traps, stairs, and other "
+            "locations of interest in the surrounding area.") ==
+        "揭示周围区域中门、陷阱、楼梯和其他值得注意地点的存在。");
+    REQUIRE(i18n::get("spells.clairvoyance.reveals_items", "Also reveals items.") == "还会揭示物品。");
+    REQUIRE(
+        i18n::get(
+            "spells.clairvoyance.reveals_items_creatures",
+            "Also reveals items and creatures.") ==
+        "还会揭示物品和生物。");
+    REQUIRE(i18n::get("spells.blood_tempering.name", "Blood Tempering") == "鲜血淬炼");
+    REQUIRE(
+        i18n::get(
+            "spells.blood_tempering.descr",
+            "Through ardous suffering, the caster tempers their body to "
+            "resist physical force (cannot be harmed by normal attacks, "
+            "however other forms of damage such as fire is still "
+            "harmful).") ==
+        "通过艰苦的痛苦，施法者淬炼自己的身体以抵抗物理力量（不会被普通攻击伤害，但火焰等其他形式的伤害仍然有害）。");
+    REQUIRE(i18n::get("spells.thorns.name", "Thorns") == "荆棘");
+    REQUIRE(i18n::get("spells.thorns.return_damage_prefix", "The spell returns ") == "该法术会向攻击者反弹");
+    REQUIRE(i18n::get("spells.thorns.return_damage_suffix", " damage to the attacker.") == "点伤害。");
+    REQUIRE(i18n::get("spells.crimson_passage.name", "Crimson Passage") == "猩红通道");
+    REQUIRE(
+        i18n::get(
+            "spells.crimson_passage.infinite_steps",
+            "An infinite number of steps may be taken, the spell "
+            "is only limited by the number of hit points.") ==
+        "可以踏出无限步数，该法术只受生命值数量限制。");
+    REQUIRE(
+        i18n::get(
+            "spells.crimson_passage.steps_suffix",
+            " steps may be taken before the effect ends.") ==
+        "步后效果结束。");
+    REQUIRE(
+        i18n::get(
+            "spells.crimson_passage.recast_cancels",
+            "Casting the spell again while it is already active cancels "
+            "the effect (this does not drain hit points or cause shock).") ==
+        "在效果已激活时再次施放该法术会取消效果（这不会消耗生命值，也不会造成震撼）。");
+    REQUIRE(i18n::get("spells.sacrifice_life.name", "Sacrifice Life") == "牺牲生命");
+    REQUIRE(
+        i18n::get(
+            "spells.sacrifice_life.descr",
+            "Sacrifices the life force of the caster in order to restore "
+            "the spirit. The amount restored is proportional to the life "
+            "lost. A maximum of 8 hit points may be sacrificed.") ==
+        "牺牲施法者的生命力以恢复精神。恢复量与失去的生命成正比。最多可以牺牲8点生命值。");
+    REQUIRE(
+        i18n::get(
+            "spells.sacrifice_life.spirit_point_prefix",
+            "For each hit point sacrificed, ") ==
+        "每牺牲1点生命值，就获得");
+    REQUIRE(
+        i18n::get(
+            "spells.sacrifice_life.spirit_point_singular_suffix",
+            " spirit point is gained.") ==
+        "点精神。");
+    REQUIRE(
+        i18n::get(
+            "spells.sacrifice_life.spirit_point_plural_suffix",
+            " spirit points are gained.") ==
+        "点精神。");
+    REQUIRE(i18n::get("spells.shed_impurity.name", "Shed Impurity") == "蜕除污秽");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.descr",
+            "Purifies the caster by carving away all that is extraneous, "
+            "revealing the essential core of their being.") ==
+        "通过剜除一切多余之物净化施法者，显露其存在的本质核心。");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.moribund_prefix",
+            "Hit points are lowered to the limit where the Moribund effect is activated "
+            "(bonuses for having low hit points). "
+            "This limit is at ") == "生命值会降至触发濒死效果的阈值（低生命值加成）。该阈值为");
+    REQUIRE(i18n::get("spells.shed_impurity.moribund_suffix", " hit points.") == "点生命值。");
+    REQUIRE(i18n::get("spells.shed_impurity.bonus_prefix", "If at least ") == "如果至少失去");
+    REQUIRE(i18n::get("spells.shed_impurity.bonus_middle", " hit points are lost, then ") == "点生命值，则");
+    REQUIRE(i18n::get("spells.shed_impurity.cures_basic", "weakening and poisoning are cured.") == "治愈虚弱和中毒。");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.cures_expert",
+            "weakening, poisoning, infection and disease are cured.") ==
+        "治愈虚弱、中毒、感染和疾病。");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.cures_master",
+            "weakening, poisoning, infection, disease and slowing are cured.") ==
+        "治愈虚弱、中毒、感染、疾病和迟缓。");
+    REQUIRE(
+        i18n::get(
+            "spells.shed_impurity.cures_transcendent_prefix",
+            "weakening, poisoning, infection, disease and slowing are cured. "
+            "The caster is also blessed for ") == "治愈虚弱、中毒、感染、疾病和迟缓。施法者还会获得祝福，持续");
+    REQUIRE(i18n::get("spells.shed_impurity.cures_transcendent_suffix", " turns.") == "回合。");
+    REQUIRE(i18n::get("spells.shed_impurity.current_removed_prefix", " Currently ") == "当前会移除");
+    REQUIRE(i18n::get("spells.shed_impurity.current_removed_suffix", " hit points would be removed.") == "点生命值。");
+    REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
+    REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
+    REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
+    REQUIRE(i18n::get("spells.impact_sound", "I hear an impact.") == "我听到一声撞击。");
+    REQUIRE(i18n::get("spells.aza_gaze_sound", "An insane cacophony resounds through the air!") == "疯狂的刺耳巨响在空中回荡！");
+    REQUIRE(i18n::get("spells.me", "me") == "我");
+    REQUIRE(i18n::get("spells.destruction_rages_prefix", "Destruction rages around ") == "毁灭在");
+    REQUIRE(i18n::get("spells.destruction_rages_suffix", "!") == "周围肆虐！");
+    REQUIRE(i18n::get("spells.explosion_sound", "I hear an explosion!") == "我听到一声爆炸！");
+    REQUIRE(i18n::get("spells.rats_appear", "Rats appear!") == "鼠群出现了！");
+    REQUIRE(i18n::get("spells.images_appear", "Images appear!") == "影像出现了！");
+    REQUIRE(i18n::get("spells.weapon_visions", "Visions of hacking, crushing and stabbing fill my mind.") == "劈砍、碾碎与穿刺的景象充满了我的脑海。");
+    REQUIRE(i18n::get("spells.is_struck_suffix", " is struck.") == "被击中了。");
+    REQUIRE(i18n::get("spells.unravels_suffix", " unravels.") == "解体了。");
+    REQUIRE(i18n::get("spells.symbol_fails_to_bind", "A symbol flickers briefly, but fails to bind here.") == "一个符号短暂闪烁，但未能在此处绑定。");
+    REQUIRE(i18n::get("spells.sense_sigil_failed_to_bind", "I sense that the sigil failed to bind here.") == "我感觉印记未能在此处绑定。");
+    REQUIRE(i18n::get("spells.momentary_void", "A momentary void opens and closes.") == "一个瞬间的虚空开启又闭合。");
+    REQUIRE(i18n::get("spells.force_pushes_prefix", "A force pushes ") == "一股力量推着");
+    REQUIRE(i18n::get("spells.force_pushes_suffix", "!") == "！");
+    REQUIRE(i18n::get("spells.bugs_move_feebly", "The bugs on the ground suddenly move very feebly.") == "地上的虫子突然动得非常无力。");
+    REQUIRE(i18n::get("spells.faint_stutter_in_time", "There is a faint stutter in time.") == "时间出现了一阵微弱的停顿。");
+    REQUIRE(i18n::get("spells.bugs_move_slowly", "The bugs on the ground suddenly move very slowly.") == "地上的虫子突然动得非常缓慢。");
+    REQUIRE(i18n::get("spells.bugs_scatter_away", "The bugs on the ground suddenly scatter away.") == "地上的虫子突然四散逃开。");
+    REQUIRE(i18n::get("spells.bugs_attack_each_other", "The bugs on the ground all start to attack each other.") == "地上的虫子突然全都开始互相攻击。");
+    REQUIRE(i18n::get("spells.scales_grow_over_my_eyes", "Scales grow over my eyes!") == "鳞片长满了我的眼睛！");
+    REQUIRE(i18n::get("spells.scales_grow_over_eyes_prefix", "Scales grow over the eyes of ") == "鳞片长满了");
+    REQUIRE(i18n::get("spells.period", ".") == "。");
+    REQUIRE(i18n::get("spells.sharp_droning", "There is a sharp droning in my head!") == "我的脑中响起尖锐的嗡鸣！");
+    REQUIRE(i18n::get("spells.feel_dizzy", "I feel dizzy.") == "我感到头晕。");
+    REQUIRE(i18n::get("spells.flames_rising_prefix", "Flames are rising around ") == "火焰在");
+    REQUIRE(i18n::get("spells.flames_rising_suffix", "!") == "周围升起！");
+    REQUIRE(i18n::get("spells.vague_change_in_air", "There is a vague change in the air.") == "空气中有一阵模糊的变化。");
+    REQUIRE(i18n::get("spells.nothing_appears", "Nothing appears.") == "什么也没有出现。");
+    REQUIRE(i18n::get("spells.little_to_offer", "I feel like I have very little to offer.") == "我觉得自己几乎无物可献。");
+    REQUIRE(i18n::get("spells.nothing_more_to_shed", "There is nothing more to shed.") == "已经没有更多可以舍弃的了。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");
