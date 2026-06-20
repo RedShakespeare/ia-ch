@@ -81,28 +81,28 @@ static void print_mon_melee_miss_actor_msg(const MeleeAttData& att_data)
         attacker_name = text_format::first_to_upper(actor::name_the(*att_data.attacker));
     }
     else {
-        attacker_name = "It";
+        attacker_name = i18n::get("attack_melee.it_upper", "It");
     }
 
     std::string defender_name;
 
     if (actor::is_player(att_data.defender)) {
-        defender_name = "me";
+        defender_name = i18n::get("attack_melee.me", "me");
     }
     else {
         if (is_player_seeing_defender) {
             defender_name = actor::name_the(*att_data.defender);
         }
         else {
-            defender_name = "it";
+            defender_name = i18n::get("attack_melee.it_lower", "it");
         }
     }
 
     const std::string msg =
         attacker_name +
-        " misses " +
+        i18n::get("attack_melee.misses", " misses ") +
         defender_name +
-        ".";
+        i18n::get("attack_melee.period", ".");
 
     const auto interrupt =
         actor::is_player(att_data.defender)
@@ -125,19 +125,22 @@ static void print_player_melee_hit_actor_msg(
     }
     else {
         // Player cannot see defender
-        other_name = "it";
+        other_name = i18n::get("attack_melee.it_lower", "it");
     }
 
     const std::string dmg_punct = hit_size_punctuation_str(attack::relative_hit_size(dmg));
 
     if (att_data.is_intrinsic_att) {
-        const std::string att_mod_str = att_data.is_weak_attack ? " feebly" : "";
+        const std::string att_mod_str =
+            att_data.is_weak_attack
+            ? i18n::get("attack_melee.weak_intrinsic_suffix", " feebly")
+            : "";
 
         msg_log::add(
             std::string(
-                "I " +
+                i18n::get("attack_melee.player_prefix", "I ") +
                 wpn_verb +
-                " " +
+                i18n::get("attack_melee.word_separator", " ") +
                 other_name +
                 att_mod_str +
                 dmg_punct),
@@ -148,10 +151,10 @@ static void print_player_melee_hit_actor_msg(
         std::string att_mod_str;
 
         if (att_data.is_weak_attack) {
-            att_mod_str = "feebly ";
+            att_mod_str = i18n::get("attack_melee.weak_prefix", "feebly ");
         }
         else if (att_data.is_backstab) {
-            att_mod_str = "covertly ";
+            att_mod_str = i18n::get("attack_melee.backstab_prefix", "covertly ");
         }
 
         const Color color =
@@ -164,13 +167,13 @@ static void print_player_melee_hit_actor_msg(
 
         msg_log::add(
             std::string(
-                "I " +
+                i18n::get("attack_melee.player_prefix", "I ") +
                 wpn_verb +
-                " " +
+                i18n::get("attack_melee.word_separator", " ") +
                 other_name +
-                " " +
+                i18n::get("attack_melee.word_separator", " ") +
                 att_mod_str +
-                "with " +
+                i18n::get("attack_melee.with_prefix", "with ") +
                 wpn_name_a +
                 dmg_punct),
             color);
@@ -206,7 +209,7 @@ static void print_mon_melee_hit_actor_msg(const int dmg, const MeleeAttData& att
                 actor::name_the(*att_data.attacker));
     }
     else {
-        attacker_name = "It";
+        attacker_name = i18n::get("attack_melee.it_upper", "It");
     }
 
     std::string wpn_verb = att_data.att_item->data().melee.attack_msgs.other;
@@ -214,14 +217,14 @@ static void print_mon_melee_hit_actor_msg(const int dmg, const MeleeAttData& att
     std::string defender_name;
 
     if (actor::is_player(att_data.defender)) {
-        defender_name = "me";
+        defender_name = i18n::get("attack_melee.me", "me");
     }
     else {
         if (is_player_seeing_defender) {
             defender_name = actor::name_the(*att_data.defender);
         }
         else {
-            defender_name = "it";
+            defender_name = i18n::get("attack_melee.it_lower", "it");
         }
     }
 
@@ -236,14 +239,16 @@ static void print_mon_melee_hit_actor_msg(const int dmg, const MeleeAttData& att
                 ItemNameInfo::none,
                 ItemNameAttackInfo::none);
 
-        used_wpn_str = " with " + wpn_name_a;
+        used_wpn_str =
+            i18n::get("attack_melee.with_spaced", " with ") +
+            wpn_name_a;
     }
 
     const std::string msg =
         attacker_name +
-        " " +
+        i18n::get("attack_melee.word_separator", " ") +
         wpn_verb +
-        " " +
+        i18n::get("attack_melee.word_separator", " ") +
         defender_name +
         used_wpn_str +
         dmg_punct;
@@ -288,7 +293,9 @@ static void print_no_attacker_hit_mon_melee_msg(
     const std::string dmg_punct = hit_size_punctuation_str(attack::relative_hit_size(dmg));
 
     msg_log::add(
-        other_name + " is hit" + dmg_punct,
+        other_name +
+            i18n::get("attack_melee.is_hit_suffix", " is hit") +
+            dmg_punct,
         msg_color,
         MsgInterruptPlayer::yes);
 }
@@ -840,7 +847,7 @@ static bool handle_boundary_sigil_stops_attack(
         const std::string name =
             actor::can_player_see_actor(*attacker)
             ? text_format::first_to_upper(actor::name_the(*attacker))
-            : "It";
+            : i18n::get("attack_melee.it_upper", "It");
 
         msg_log::add(
             name +
