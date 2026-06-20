@@ -98,7 +98,7 @@ void Mirror::hit(
         if (map::g_seen.at(m_pos)) {
             msg_log::add(
                 text_format::first_to_upper(name(Article::the)) +
-                " is destroyed.");
+                i18n::get("terrain_mirror.destroyed_suffix", " is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));
@@ -129,9 +129,12 @@ void Mirror::hit(
 
 std::string Mirror::name(const Article article) const
 {
-    const std::string str = article == Article::a ? "a " : "the ";
+    const std::string str =
+        article == Article::a
+            ? i18n::get("terrain_mirror.article_a", "a ")
+            : i18n::get("terrain_mirror.article_the", "the ");
 
-    return str + "hazy mirror";
+    return str + i18n::get("terrain_mirror.hazy_mirror", "hazy mirror");
 }
 
 Color Mirror::color_default() const
