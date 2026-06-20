@@ -1411,6 +1411,13 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "spells.see_invisible.descr",
             "Grants the caster the ability to see the invisible.") ==
         "赋予施法者看见隐形之物的能力。");
+    REQUIRE(i18n::get("spells.spell_shield.name", "Spell Shield") == "法术护盾");
+    REQUIRE(
+        i18n::get(
+            "spells.spell_shield.descr",
+            "Grants protection against harmful spells. The effect lasts "
+            "until a spell is blocked.") ==
+        "赋予对有害法术的防护。效果会持续到有一个法术被阻挡为止。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

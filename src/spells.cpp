@@ -4920,7 +4920,7 @@ int SpellSpellShield::mon_cooldown() const
 
 std::string SpellSpellShield::name() const
 {
-    return "Spell Shield";
+    return i18n::get("spells.spell_shield.name", "Spell Shield");
 }
 
 SpellId SpellSpellShield::id() const
@@ -4982,8 +4982,10 @@ std::vector<std::string> SpellSpellShield::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Grants protection against harmful spells. The effect lasts "
-        "until a spell is blocked.");
+        i18n::get(
+            "spells.spell_shield.descr",
+            "Grants protection against harmful spells. The effect lasts "
+            "until a spell is blocked."));
 
     return descr;
 }
