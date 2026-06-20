@@ -1090,6 +1090,10 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");
     REQUIRE(i18n::get("spells.reflected", "The spell is reflected!") == "法术被反射了！");
+    REQUIRE(i18n::get("spells.projectile_hit_player_prefix", "I am") == "我");
+    REQUIRE(i18n::get("spells.projectile_hit_it", "It") == "它");
+    REQUIRE(i18n::get("spells.projectile_hit_mon_suffix", " is") == "");
+    REQUIRE(i18n::get("spells.projectile_hit_space", " ") == "");
     REQUIRE(
         i18n::get(
             "spells.not_alerting_mon_descr",

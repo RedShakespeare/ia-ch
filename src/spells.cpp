@@ -1842,7 +1842,9 @@ void SpellBolt::run_bolt_on_target(
 
         Color msg_clr = colors::msg_good();
 
-        std::string str_begin = "I am";
+        std::string str_begin = i18n::get(
+            "spells.projectile_hit_player_prefix",
+            "I am");
 
         if (actor::is_player(&target)) {
             msg_clr = colors::msg_bad();
@@ -1852,16 +1854,21 @@ void SpellBolt::run_bolt_on_target(
             const std::string name_the =
                 player_see_tgt
                 ? text_format::first_to_upper(actor::name_the(target))
-                : "It";
+                : i18n::get("spells.projectile_hit_it", "It");
 
-            str_begin = name_the + " is";
+            str_begin =
+                name_the +
+                i18n::get("spells.projectile_hit_mon_suffix", " is");
 
             if (map::g_player->is_leader_of(&target)) {
                 msg_clr = colors::white();
             }
         }
 
-        const std::string hit_msg = str_begin + " " + m_impl->hit_msg_ending();
+        const std::string hit_msg =
+            str_begin +
+            i18n::get("spells.projectile_hit_space", " ") +
+            m_impl->hit_msg_ending();
 
         msg_log::add(hit_msg, msg_clr);
     }
