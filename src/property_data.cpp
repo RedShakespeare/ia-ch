@@ -932,13 +932,19 @@ static void init_data_list()
 
     d.id = prop::Id::extra_skill;
     d.std_rnd_turns = Range(200, 300);
-    d.name = "Heightened Skill";
-    d.name_short = "Skill";
-    d.descr = "+10% to hit chance, evasion, stealth, and searching.";
-    d.msg_start_player = "I feel more skillful.";
-    d.msg_start_mon = "{} looks more skillful.";
-    d.msg_end_player = "I feel less skillful.";
-    d.msg_end_mon = "{} looks less skillful.";
+    d.name = i18n::get("property_data.extra_skill.name", "Heightened Skill");
+    d.name_short = i18n::get("property_data.extra_skill.name_short", "Skill");
+    d.descr = i18n::get(
+        "property_data.extra_skill.descr",
+        "+10% to hit chance, evasion, stealth, and searching.");
+    d.msg_start_player =
+        i18n::get("property_data.extra_skill.msg_start_player", "I feel more skillful.");
+    d.msg_start_mon =
+        i18n::get("property_data.extra_skill.msg_start_mon", "{} looks more skillful.");
+    d.msg_end_player =
+        i18n::get("property_data.extra_skill.msg_end_player", "I feel less skillful.");
+    d.msg_end_mon =
+        i18n::get("property_data.extra_skill.msg_end_mon", "{} looks less skillful.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -946,13 +952,22 @@ static void init_data_list()
 
     d.id = prop::Id::magic_carapace;
     d.std_rnd_turns = Range(25, 50);
-    d.name = "Carapace";
-    d.name_short = "Carapace";
-    d.descr = "+3 armor points, +25% chance to resist burning.";
-    d.msg_start_player = "A protective carapace forms around me.";
-    d.msg_start_mon = "{} is enveloped by a protective carapace.";
-    d.msg_end_player = "My carapace cracks and crumbles away.";
-    d.msg_end_mon = "{} sheds a carapace.";
+    d.name = i18n::get("property_data.magic_carapace.name", "Carapace");
+    d.name_short = i18n::get("property_data.magic_carapace.name_short", "Carapace");
+    d.descr = i18n::get(
+        "property_data.magic_carapace.descr",
+        "+3 armor points, +25% chance to resist burning.");
+    d.msg_start_player = i18n::get(
+        "property_data.magic_carapace.msg_start_player",
+        "A protective carapace forms around me.");
+    d.msg_start_mon = i18n::get(
+        "property_data.magic_carapace.msg_start_mon",
+        "{} is enveloped by a protective carapace.");
+    d.msg_end_player = i18n::get(
+        "property_data.magic_carapace.msg_end_player",
+        "My carapace cracks and crumbles away.");
+    d.msg_end_mon =
+        i18n::get("property_data.magic_carapace.msg_end_mon", "{} sheds a carapace.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
@@ -960,35 +975,48 @@ static void init_data_list()
 
     d.id = prop::Id::premonition;
     d.std_rnd_turns = Range(5, 9);
-    d.name = "Premonition";
-    d.name_short = "Premonition";
-    d.descr = "+75% chance to evade attacks.";
-    d.msg_start_player = "I feel unassailable.";
-    d.msg_start_mon = "{} looks unassailable.";
-    d.msg_end_player = "I feel more vulnerable.";
-    d.msg_end_mon = "{} looks like an easier target now.";
+    d.name = i18n::get("property_data.premonition.name", "Premonition");
+    d.name_short = i18n::get("property_data.premonition.name_short", "Premonition");
+    d.descr = i18n::get("property_data.premonition.descr", "+75% chance to evade attacks.");
+    d.msg_start_player =
+        i18n::get("property_data.premonition.msg_start_player", "I feel unassailable.");
+    d.msg_start_mon =
+        i18n::get("property_data.premonition.msg_start_mon", "{} looks unassailable.");
+    d.msg_end_player =
+        i18n::get("property_data.premonition.msg_end_player", "I feel more vulnerable.");
+    d.msg_end_mon = i18n::get(
+        "property_data.premonition.msg_end_mon",
+        "{} looks like an easier target now.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
     add(d);
 
     d.id = prop::Id::erudition;
-    d.name = "Erudition";
-    d.name_short = "Erudition";
-    d.descr = "Spell skill is improved by one level.";
-    d.msg_start_player = "Mystic secrets are revealed to me!";
-    d.msg_end_player = "I feel ignorant.";
+    d.name = i18n::get("property_data.erudition.name", "Erudition");
+    d.name_short = i18n::get("property_data.erudition.name_short", "Erudition");
+    d.descr =
+        i18n::get("property_data.erudition.descr", "Spell skill is improved by one level.");
+    d.msg_start_player =
+        i18n::get("property_data.erudition.msg_start_player", "Mystic secrets are revealed to me!");
+    d.msg_end_player = i18n::get("property_data.erudition.msg_end_player", "I feel ignorant.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
     add(d);
 
     d.id = prop::Id::clairvoyance;
-    d.name = "Clairvoyance";
-    d.name_short = "Clairvoyance";
-    d.descr = "Magically reveals things in the surrounding area.";
-    d.msg_start_player = "Hidden secrets are revealed to me.";
-    d.msg_end_player = "I can no longer see hidden things.";
+    d.name = i18n::get("property_data.clairvoyance.name", "Clairvoyance");
+    d.name_short = i18n::get("property_data.clairvoyance.name_short", "Clairvoyance");
+    d.descr = i18n::get(
+        "property_data.clairvoyance.descr",
+        "Magically reveals things in the surrounding area.");
+    d.msg_start_player = i18n::get(
+        "property_data.clairvoyance.msg_start_player",
+        "Hidden secrets are revealed to me.");
+    d.msg_end_player = i18n::get(
+        "property_data.clairvoyance.msg_end_player",
+        "I can no longer see hidden things.");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
