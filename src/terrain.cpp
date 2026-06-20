@@ -4498,7 +4498,8 @@ std::string Fountain::name(const Article article) const
 {
     std::string type_str;
 
-    std::string indefinite_article = "a";
+    std::string indefinite_article =
+        i18n::get("terrain.article_a_space", "a ");
 
     if (m_has_drinks_left) {
         if (m_is_tried) {
@@ -4508,19 +4509,21 @@ std::string Fountain::name(const Article article) const
         }
     }
     else {
-        type_str = "dried-up";
+        type_str = i18n::get("terrain.fountain_dried_up_name", "dried-up");
     }
 
     const std::string a =
         (article == Article::a)
         ? indefinite_article
-        : "the";
+        : i18n::get("terrain.article_the_space", "the ");
 
-    if (!type_str.empty()) {
-        type_str = " " + type_str;
-    }
+    const std::string type_separator =
+        type_str.empty()
+            ? ""
+            : i18n::get("terrain.fountain_type_separator", " ");
 
-    return a + type_str + " fountain";
+    return a + type_str + type_separator +
+           i18n::get("terrain.fountain", "fountain");
 }
 
 void Fountain::bump(actor::Actor& actor_bumping)
@@ -4772,39 +4775,41 @@ std::string Fountain::type_name() const
 {
     switch (m_fountain_effect) {
     case FountainEffect::refreshing:
-        return "refreshing";
+        return i18n::get("terrain.fountain_refreshing", "refreshing");
         break;
 
     case FountainEffect::xp:
-        return "exalting";
+        return i18n::get("terrain.fountain_exalting", "exalting");
         break;
 
     case FountainEffect::curse:
-        return "cursed";
+        return i18n::get("terrain.fountain_cursed", "cursed");
         break;
 
     case FountainEffect::disease:
-        return "diseased";
+        return i18n::get("terrain.fountain_diseased", "diseased");
         break;
 
     case FountainEffect::poison:
-        return "poisonous";
+        return i18n::get("terrain.fountain_poisonous", "poisonous");
         break;
 
     case FountainEffect::frenzy:
-        return "enraging";
+        return i18n::get("terrain.fountain_enraging", "enraging");
         break;
 
     case FountainEffect::paralyze:
-        return "paralyzing";
+        return i18n::get("terrain.fountain_paralyzing", "paralyzing");
         break;
 
     case FountainEffect::blind:
-        return "blinding";
+        return i18n::get("terrain.fountain_blinding", "blinding");
         break;
 
     case FountainEffect::faint:
-        return "sleep-inducing";
+        return i18n::get(
+            "terrain.fountain_sleep_inducing",
+            "sleep-inducing");
         break;
 
     case FountainEffect::START_OF_BAD_EFFECTS:
@@ -4821,39 +4826,39 @@ std::string Fountain::type_indefinite_article() const
 {
     switch (m_fountain_effect) {
     case FountainEffect::refreshing:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::xp:
-        return "an";
+        return i18n::get("terrain.article_an_space", "an ");
         break;
 
     case FountainEffect::curse:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::disease:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::poison:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::frenzy:
-        return "an";
+        return i18n::get("terrain.article_an_space", "an ");
         break;
 
     case FountainEffect::paralyze:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::blind:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::faint:
-        return "a";
+        return i18n::get("terrain.article_a_space", "a ");
         break;
 
     case FountainEffect::START_OF_BAD_EFFECTS:

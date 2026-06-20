@@ -348,6 +348,18 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.chest_open_prefix", "open ") == "打开的");
     REQUIRE(i18n::get("terrain.chest_locked_prefix", "locked ") == "锁住的");
     REQUIRE(i18n::get("terrain.chest", "chest") == "箱子");
+    REQUIRE(i18n::get("terrain.fountain_dried_up_name", "dried-up") == "干涸的");
+    REQUIRE(i18n::get("terrain.fountain_type_separator", " ") == "");
+    REQUIRE(i18n::get("terrain.fountain", "fountain") == "喷泉");
+    REQUIRE(i18n::get("terrain.fountain_refreshing", "refreshing") == "清爽的");
+    REQUIRE(i18n::get("terrain.fountain_exalting", "exalting") == "振奋的");
+    REQUIRE(i18n::get("terrain.fountain_cursed", "cursed") == "受诅咒的");
+    REQUIRE(i18n::get("terrain.fountain_diseased", "diseased") == "染病的");
+    REQUIRE(i18n::get("terrain.fountain_poisonous", "poisonous") == "有毒的");
+    REQUIRE(i18n::get("terrain.fountain_enraging", "enraging") == "激怒的");
+    REQUIRE(i18n::get("terrain.fountain_paralyzing", "paralyzing") == "麻痹的");
+    REQUIRE(i18n::get("terrain.fountain_blinding", "blinding") == "致盲的");
+    REQUIRE(i18n::get("terrain.fountain_sleep_inducing", "sleep-inducing") == "催眠的");
     REQUIRE(i18n::get("terrain.downward_staircase", "downward staircase") == "向下的楼梯");
     REQUIRE(i18n::get("terrain.bridge", "bridge") == "桥");
     REQUIRE(i18n::get("terrain.water", "water") == "水");
