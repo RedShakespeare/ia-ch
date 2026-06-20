@@ -4531,7 +4531,7 @@ std::vector<std::string> SpellInscribeBoundarySigil::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellLight::name() const
 {
-    return "Light";
+    return i18n::get("spells.light.name", "Light");
 }
 
 SpellId SpellLight::id() const
@@ -4652,25 +4652,36 @@ std::vector<std::string> SpellLight::descr_specific(
 {
     std::vector<std::string> descr;
 
-    descr.emplace_back("Illuminates the area around the caster.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.light.descr_main",
+            "Illuminates the area around the caster."));
 
     descr.push_back(spell_duration_descr(light_duration_range(skill).str()));
 
     if (skill >= SpellSkill::master) {
         descr.push_back(
-            "On casting, causes a blinding flash centered on the "
-            "caster (but not affecting the caster itself). "
-            "The blinding effect lasts " +
+            i18n::get(
+                "spells.light.descr_blind_prefix",
+                "On casting, causes a blinding flash centered on the "
+                "caster (but not affecting the caster itself). "
+                "The blinding effect lasts ") +
             blind_duration_range(skill).str() +
-            " turns.");
+            i18n::get(
+                "spells.light.descr_blind_suffix",
+                " turns."));
     }
 
     if (skill == SpellSkill::transcendent) {
         descr.push_back(
-            "The flash is so intense that any victim caught in it "
-            "will also burn for " +
+            i18n::get(
+                "spells.light.descr_burn_prefix",
+                "The flash is so intense that any victim caught in it "
+                "will also burn for ") +
             burning_duration_range().str() +
-            " turns.");
+            i18n::get(
+                "spells.light.descr_burn_suffix",
+                " turns."));
     }
 
     return descr;

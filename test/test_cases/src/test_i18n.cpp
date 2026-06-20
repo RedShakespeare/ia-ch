@@ -1365,6 +1365,27 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "spells.boundary_sigil.descr_floor_only",
             "Can only be inscribed on floor, but may overwrite an existing sigil.") ==
         "只能铭刻在地板上，但可以覆盖已有的印记。");
+    REQUIRE(i18n::get("spells.light.name", "Light") == "光明");
+    REQUIRE(
+        i18n::get(
+            "spells.light.descr_main",
+            "Illuminates the area around the caster.") ==
+        "照亮施法者周围的区域。");
+    REQUIRE(
+        i18n::get(
+            "spells.light.descr_blind_prefix",
+            "On casting, causes a blinding flash centered on the "
+            "caster (but not affecting the caster itself). "
+            "The blinding effect lasts ") ==
+        "施放时，会以施法者为中心产生一道致盲闪光（但不会影响施法者自身）。致盲效果持续");
+    REQUIRE(i18n::get("spells.light.descr_blind_suffix", " turns.") == "回合。");
+    REQUIRE(
+        i18n::get(
+            "spells.light.descr_burn_prefix",
+            "The flash is so intense that any victim caught in it "
+            "will also burn for ") ==
+        "闪光强烈到使任何被其波及的受害者还会燃烧");
+    REQUIRE(i18n::get("spells.light.descr_burn_suffix", " turns.") == "回合。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
