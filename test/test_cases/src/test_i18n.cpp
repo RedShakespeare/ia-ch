@@ -423,288 +423,6 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "All your melee attacks are silent (regardless of the weapon), "
             "and creatures are not alerted when you open or close doors, "
             "or wade through water") == "你的所有近战攻击都是无声的（无论使用什么武器），打开或关闭门、涉水而过时也不会惊动生物");
-    REQUIRE(i18n::get("player_bon.trait.vigilant.title", "Vigilant") == "警觉");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.vigilant.descr",
-            "You are always aware of nearby creatures") == "你总能察觉附近的生物");
-    REQUIRE(i18n::get("player_bon.trait.treasure_hunter.title", "Treasure Hunter") == "寻宝者");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.treasure_hunter.descr",
-            "You tend to find more items") == "你往往会找到更多物品");
-    REQUIRE(i18n::get("player_bon.trait.self_aware.title", "Self-aware") == "自知");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.self_aware.descr",
-            "You cannot become confused, the number of remaining turns "
-            "for status effects are displayed") == "你不会变得混乱，并会显示状态效果的剩余回合数");
-    REQUIRE(i18n::get("player_bon.trait.healer.title", "Healer") == "治疗者");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.healer.descr",
-            "Using medical equipment requires only half the normal time "
-            "and resources") == "使用医疗器械只需要一半的正常时间和资源");
-    REQUIRE(i18n::get("player_bon.trait.rapid_recoverer.title", "Rapid Recoverer") == "快速恢复者");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.rapid_recoverer.descr",
-            "You regenerate 1 hit point every third turn") == "你每三个回合恢复1点生命值");
-    REQUIRE(i18n::get("player_bon.trait.survivalist.title", "Survivalist") == "生存专家");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.survivalist.descr",
-            "You cannot become diseased, "
-            "only half your wounds count, "
-            "rounded down "
-            "(i.e. number of wounds are halved when calculating "
-            "combat, hit point and regeneration penalties, "
-            "slower walking speed happens at 6 wounds instead of 3, "
-            "and you die from 10 wounds instead of 5)") ==
-        "你不会患病，并且只有一半伤口数计入惩罚（向下取整；也就是计算战斗、生命值和再生惩罚时伤口数减半，行走变慢从6处伤口而不是3处开始，死亡从10处伤口而不是5处开始）");
-    REQUIRE(i18n::get("player_bon.trait.stout_spirit.title", "Stout Spirit") == "坚定精神");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.stout_spirit.descr",
-            "+2 spirit points, increased spirit regeneration rate, you "
-            "can defy harmful spells (it takes 125-150 turns to regain "
-            "spell resistance after a spell is blocked)") == "+2点精神，精神再生速度提高，你可以抵抗有害法术（阻挡一个法术后需要125-150回合恢复法术抗性）");
-    REQUIRE(i18n::get("player_bon.trait.strong_spirit.title", "Strong Spirit") == "强韧精神");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.strong_spirit.descr",
-            "+2 spirit points, increased spirit regeneration rate, it "
-            "takes 75-100 turns to regain spell resistance after a spell "
-            "is blocked") == "+2点精神，精神再生速度提高，阻挡一个法术后需要75-100回合恢复法术抗性");
-    REQUIRE(i18n::get("player_bon.trait.mighty_spirit.title", "Mighty Spirit") == "强大精神");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.mighty_spirit.descr",
-            "+2 spirit points, increased spirit regeneration rate, it "
-            "takes 25-50 turns to regain spell resistance after a spell "
-            "is blocked") == "+2点精神，精神再生速度提高，阻挡一个法术后需要25-50回合恢复法术抗性");
-    REQUIRE(i18n::get("player_bon.trait.meditative.title", "Meditative") == "冥想者");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.meditative.descr",
-            "Applies a focused state which allows the next spell to be "
-            "cast without spending a turn, and with the casting cost "
-            "reduced by 1 point - it takes 125-150 turns to regain this "
-            "state after a spell is cast") == "施加专注状态，使下一个法术无需花费回合即可施放，且施法消耗减少1点；施放一个法术后需要125-150回合恢复此状态");
-    REQUIRE(i18n::get("player_bon.trait.sage.title", "Sage") == "贤者");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.sage.descr",
-            "When focused, spells are cast without spending spirit points, "
-            "and the duration to regain the focused state is reduced to "
-            "75-100 turns") == "专注时，施放法术不消耗精神点，且恢复专注状态的时间缩短为75-100回合");
-    REQUIRE(i18n::get("player_bon.trait.absorption.title", "Absorption") == "吸收");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.absorption.descr",
-            "1-6 spirit points are restored each time Spell Shield is ended "
-            "by a hostile spell "
-            "(Spell Shield is granted by spirit traits or the Spell Shield spell)") == "每当法术护盾被敌对法术终止时，恢复1-6点精神（法术护盾由精神特质或法术护盾法术赋予）");
-    REQUIRE(i18n::get("player_bon.trait.tough.title", "Tough") == "坚韧");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.tough.descr",
-            "+6 hit points, "
-            "+10% chance to resist burning, poisoning and paralysis, "
-            "less likely to sprain when kicking, more likely to "
-            "succeed with object interactions requiring strength (e.g. "
-            "bashing things open)") ==
-        "+6点生命值，+10%抵抗燃烧、中毒和麻痹的几率，踢击时更不容易扭伤，更容易成功完成需要力量的物体互动（例如撞开东西）");
-    REQUIRE(i18n::get("player_bon.trait.rugged.title", "Rugged") == "强健");
-    REQUIRE(i18n::get("player_bon.trait.unbreakable.title", "Unbreakable") == "不屈");
-    REQUIRE(i18n::get("player_bon.trait.thick_skinned.title", "Thick Skinned") == "厚皮");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.thick_skinned.descr",
-            "+1 armor point (physical damage reduced by 1 point)") == "+1点护甲（物理伤害减少1点）");
-    REQUIRE(i18n::get("player_bon.trait.callous.title", "Callous") == "冷硬");
-    REQUIRE(i18n::get("player_bon.trait.resistant.title", "Resistant") == "抗性");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.resistant.descr",
-            "+25% chance to resist burning, poisoning and paralysis - "
-            "and the duration of those effects is halved") == "+25%抵抗燃烧、中毒和麻痹的几率，并且这些效果的持续时间减半");
-    REQUIRE(i18n::get("player_bon.trait.strong_backed.title", "Strong-backed") == "强壮背负");
-    REQUIRE(i18n::get("player_bon.trait.strong_backed.descr", "+50% carry weight limit") == "+50%负重上限");
-    REQUIRE(i18n::get("player_bon.trait.undead_bane.title", "Bane of the Undead") == "亡灵克星");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.undead_bane.descr",
-            "+2 melee and ranged attack damage against all undead "
-            "monsters, +50% hit chance against ethereal undead monsters") ==
-        "对所有亡灵怪物的近战和远程攻击伤害+2，对以太亡灵怪物的命中率+50%");
-    REQUIRE(i18n::get("player_bon.trait.elec_incl.title", "Electrically Inclined") == "电气亲和");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.elec_incl.descr",
-            "Rods recharge twice as fast, strange devices are less likely "
-            "to malfunction or break, electric lanterns last twice as "
-            "long, +1 damage with electricity weapons") == "魔杖充能速度加倍，奇异装置更不容易故障或损坏，电提灯持续时间加倍，电击武器伤害+1");
-    REQUIRE(i18n::get("player_bon.trait.adept_of_channeling.title", "Adept of Channeling") == "导能熟手");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.adept_of_channeling.descr",
-            "Specialize in the channeling of violent energy. "
-            "Channeling spells are cast at a higher skill level.") == "专精于暴烈能量的导引。导能法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.master_of_channeling.title", "Master of Channeling") == "导能大师");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.master_of_channeling.descr",
-            "Attain mastery over the channeling of violent energy. "
-            "Channeling spells are cast at a higher skill level.") == "掌握暴烈能量的导引。导能法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.adept_of_corruption.title", "Adept of Corruption") == "腐化熟手");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.adept_of_corruption.descr",
-            "Specialize in corruption and withering. "
-            "Corruption spells are cast at a higher skill level.") == "专精于腐化和枯萎。腐化法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.master_of_corruption.title", "Master of Corruption") == "腐化大师");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.master_of_corruption.descr",
-            "Attain mastery over corruption and withering. "
-            "Corruption spells are cast at a higher skill level.") == "掌握腐化和枯萎。腐化法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.adept_of_illusion.title", "Adept of Illusion") == "幻象熟手");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.adept_of_illusion.descr",
-            "Specialize in the casting of illusions. "
-            "Illusion spells are cast at a higher skill level.") == "专精于施放幻象。幻象法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.master_of_illusion.title", "Master of Illusion") == "幻象大师");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.master_of_illusion.descr",
-            "Attain mastery over the casting of illusions. "
-            "Illusion spells are cast at a higher skill level.") == "掌握幻象的施放。幻象法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.adept_of_the_mind.title", "Adept of the Mind") == "心灵熟手");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.adept_of_the_mind.descr",
-            "Specialize in knowledge, foresight, and will. "
-            "Mind spells are cast at a higher skill level.") == "专精于知识、预见和意志。心灵法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.master_of_the_mind.title", "Master of the Mind") == "心灵大师");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.master_of_the_mind.descr",
-            "Attain mastery over knowledge, foresight, and will. "
-            "Mind spells are cast at a higher skill level, "
-            "and you also sense items and creatures.") == "掌握知识、预见和意志。心灵法术以更高技能等级施放，并且你还能感知物品和生物。");
-    REQUIRE(i18n::get("player_bon.trait.adept_of_time.title", "Adept of Time") == "时间熟手");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.adept_of_time.descr",
-            "Specialize in the manipulation of time and causality. "
-            "Time spells are cast at a higher skill level.") == "专精于时间和因果的操纵。时间法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.master_of_time.title", "Master of Time") == "时间大师");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.master_of_time.descr",
-            "Attain mastery over the manipulation of time and causality. "
-            "Time spells are cast at a higher skill level.") == "掌握时间和因果的操纵。时间法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.adept_of_warding.title", "Adept of Warding") == "守护熟手");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.adept_of_warding.descr",
-            "Specialize in protective magic. "
-            "Warding spells are cast at a higher skill level.") == "专精于防护魔法。守护法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.master_of_warding.title", "Master of Warding") == "守护大师");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.master_of_warding.descr",
-            "Attain mastery over protective magic. "
-            "Warding spells are cast at a higher skill level.") == "掌握防护魔法。守护法术以更高技能等级施放。");
-    REQUIRE(i18n::get("player_bon.trait.gain_cast_prefix", "Gain the ability to cast \"") == "获得施放“");
-    REQUIRE(i18n::get("player_bon.trait.gain_cast_suffix", "\"") == "”的能力");
-    REQUIRE(i18n::get("player_bon.trait.gain_cast_skill_prefix", " at ") == "，以");
-    REQUIRE(i18n::get("player_bon.trait.gain_cast_skill_suffix", " level") == "等级");
-    REQUIRE(i18n::get("player_bon.trait.gain_cast_descr_separator", " -") == "；");
-    REQUIRE(i18n::get("player_bon.trait.gain_cast_line_separator", " ") == "");
-    REQUIRE(i18n::get("player_bon.trait.gain_cast_cost_prefix", " This spell costs ") == "此法术消耗");
-    REQUIRE(i18n::get("player_bon.trait.gain_cast_cost_suffix", " spirit to cast.") == "点精神施放。");
-    REQUIRE(i18n::get("player_bon.trait.available_sp_prefix", "You currently have ") == "你当前有");
-    REQUIRE(i18n::get("player_bon.trait.available_sp_suffix", " spirit") == "点精神");
-    REQUIRE(i18n::get("player_bon.trait.available_fp_prefix", " and ") == "和");
-    REQUIRE(i18n::get("player_bon.trait.available_fp_suffix", " fervor") == "点热忱");
-    REQUIRE(i18n::get("player_bon.trait.available_sp_period", ".") == "。");
-    REQUIRE(i18n::get("player_bon.trait.cast_bless_i.title", "Cast Bless") == "施放祝福");
-    REQUIRE(i18n::get("player_bon.trait.cast_bless_ii.title", "Cast Bless II") == "施放祝福 II");
-    REQUIRE(i18n::get("player_bon.trait.cast_cleansing_fire_i.title", "Cast Cleansing Fire") == "施放净化之火");
-    REQUIRE(i18n::get("player_bon.trait.cast_cleansing_fire_ii.title", "Cast Cleansing Fire II") == "施放净化之火 II");
-    REQUIRE(i18n::get("player_bon.trait.cast_heal_i.title", "Cast Heal") == "施放治疗");
-    REQUIRE(i18n::get("player_bon.trait.cast_heal_ii.title", "Cast Heal II") == "施放治疗 II");
-    REQUIRE(i18n::get("player_bon.trait.cast_light_i.title", "Cast Light") == "施放光亮");
-    REQUIRE(i18n::get("player_bon.trait.cast_light_ii.title", "Cast Light II") == "施放光亮 II");
-    REQUIRE(i18n::get("player_bon.trait.cast_sanctuary_i.title", "Cast Sanctuary") == "施放庇护");
-    REQUIRE(i18n::get("player_bon.trait.cast_sanctuary_ii.title", "Cast Sanctuary II") == "施放庇护 II");
-    REQUIRE(i18n::get("player_bon.trait.cast_see_invisible_i.title", "Cast See Invisible") == "施放识破隐形");
-    REQUIRE(i18n::get("player_bon.trait.cast_see_invisible_ii.title", "Cast See Invisible II") == "施放识破隐形 II");
-    REQUIRE(i18n::get("player_bon.trait.prolonged_life.title", "Prolonged Life") == "延续生命");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.prolonged_life.descr",
-            "Any fatal damage received is instead drained from your fervor points") == "受到任何致命伤害时改为消耗你的热忱点数");
-    REQUIRE(i18n::get("player_bon.trait.ravenous.title", "Ravenous") == "贪食");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.ravenous.descr",
-            "You occasionally feed on living victims when attacking with claws") == "用爪攻击时，你偶尔会吞食活体受害者");
-    REQUIRE(i18n::get("player_bon.trait.foul.title", "Foul") == "污秽");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.foul.descr",
-            "+1 claw damage, when attacking with claws, vicious worms "
-            "occasionally burst out from the corpses of your victims to "
-            "attack your enemies") == "+1爪击伤害，用爪攻击时，恶毒蠕虫偶尔会从受害者尸体中爆出并攻击你的敌人");
-    REQUIRE(i18n::get("player_bon.trait.toxic.title", "Toxic") == "剧毒");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.toxic.descr",
-            "+1 claw damage, you are immune to poison, and attacks with "
-            "your claws often poisons your victims") == "+1爪击伤害，你免疫中毒，并且用爪攻击经常会使受害者中毒");
-    REQUIRE(i18n::get("player_bon.trait.indomitable_fury.title", "Indomitable Fury") == "不屈狂怒");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.indomitable_fury.descr",
-            "While frenzied, you are immune to wounds, and your claw attacks cause fear") == "狂暴时，你免疫伤口，爪击会造成恐惧");
-    REQUIRE(i18n::get("player_bon.trait.elusive.title", "Elusive") == "难以捉摸");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.elusive.descr",
-            "Creatures only remember you for half the normal duration (rounded up).") == "生物记住你的时间只有正常持续时间的一半（向上取整）。");
-    REQUIRE(i18n::get("player_bon.trait.vicious.title", "Vicious") == "凶狠");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.vicious.descr",
-            "+100% backstab damage (in addition to the normal +50%)") == "+100%背刺伤害（在普通+50%之外）");
-    REQUIRE(i18n::get("player_bon.trait.ruthless.title", "Ruthless") == "无情");
-    REQUIRE(i18n::get("player_bon.trait.ruthless.descr", "+100% backstab damage") == "+100%背刺伤害");
-    REQUIRE(i18n::get("player_bon.trait.steady_aimer.title", "Steady Aimer") == "稳定瞄准");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.steady_aimer.descr",
-            "Standing still gives ranged attacks maximum damage and +10% "
-            "hit chance on the following turn, unless damage is taken") == "站立不动会让下一回合的远程攻击造成最大伤害并+10%命中率，除非受到伤害");
-    REQUIRE(i18n::get("player_bon.trait.galvanization.title", "Galvanization") == "激发");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.galvanization.descr",
-            "Casting any spell from the Blood domain grants "
-            "Regeneration for 4-6 turns "
-            "(+1 extra hit point regenerated per turn), if "
-            "hit points are lost from casting the spell") == "施放任何鲜血领域法术会赋予再生4-6回合（每回合额外再生+1生命值），前提是施法损失了生命值");
-    REQUIRE(i18n::get("player_bon.trait.enthusiasm.title", "Enthusiasm") == "狂热");
-    REQUIRE(i18n::get("player_bon.trait.enthusiasm.descr", "Doubles all bonuses for the moribund effect") == "使濒死效果的所有加成翻倍");
-    REQUIRE(i18n::get("player_bon.trait.memento_mori.title", "Memento Mori") == "记住死亡");
-    REQUIRE(
-        i18n::get(
-            "player_bon.trait.memento_mori.descr",
-            "Raises the threshold of the moribund status to 8 hit points, "
-            "and increases the duration of the effect by 50% (rounded down)") == "将濒死状态阈值提高到8点生命值，并将效果持续时间增加50%（向下取整）");
     REQUIRE(
         i18n::get(
             "property.mon_struggles_tear_free_suffix",
@@ -1264,6 +982,60 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(
         i18n::get("attack_melee.stopped_at_boundary_suffix", " is stopped at the boundary.") ==
         "被挡在边界处。");
+    REQUIRE(i18n::get("property.wounded_open", "Wounded(") == "受伤（");
+    REQUIRE(i18n::get("property.close_paren", ")") == "）");
+    REQUIRE(i18n::get("property.rises_again_suffix", " rises again!!") == "再次站了起来！！");
+    REQUIRE(i18n::get("property.crimson_passage_infinite", "INF") == "无限");
+    REQUIRE(i18n::get("property.crimson_passage_short_open", "Crims Psg(") == "猩红通道（");
+    REQUIRE(i18n::get("property.stopped_at_boundary_suffix", " is stopped at the boundary.") == "被挡在边界处。");
+    REQUIRE(i18n::get("property.possessed_by_middle", " was possessed by ") == "被");
+    REQUIRE(i18n::get("property.possessed_by_suffix", "!") == "附身了！");
+    REQUIRE(i18n::get("property.changes_shape", "It changes shape!") == "它改变了形态！");
+    REQUIRE(i18n::get("property.stops_and_gropes_suffix", " stops and gropes about.") == "停下来摸索着。");
+    REQUIRE(i18n::get("property.poison_player", "I am suffering from the poison!") == "我正遭受毒素折磨！");
+    REQUIRE(i18n::get("property.suffers_from_poisoning_suffix", " suffers from poisoning!") == "中毒受苦！");
+    REQUIRE(i18n::get("property.tears_out_spike_suffix", " tears out a spike!") == "扯出了一根钉子！");
+    REQUIRE(i18n::get("property.pulls_me_suffix", " pulls me!") == "拉扯着我！");
+    REQUIRE(i18n::get("property.splits_suffix", " splits.") == "分裂了。");
+    REQUIRE(i18n::get("property.is_spawned_suffix", " is spawned.") == "出现了。");
+    REQUIRE(i18n::get("property.zombie_part_hand_prefix", "The hand of ") == "");
+    REQUIRE(
+        i18n::get(
+            "property.zombie_part_hand_suffix",
+            " comes off and starts crawling around!") == "的一只手脱落下来，开始四处爬行！");
+    REQUIRE(i18n::get("property.zombie_part_intestines_prefix", "The intestines of ") == "");
+    REQUIRE(
+        i18n::get(
+            "property.zombie_part_intestines_suffix",
+            " starts crawling around!") == "的肠子开始四处爬行！");
+    REQUIRE(i18n::get("property.zombie_part_head_prefix", "The head of ") == "");
+    REQUIRE(
+        i18n::get(
+            "property.zombie_part_head_suffix",
+            " starts floating around!") == "的头颅开始四处漂浮！");
+    REQUIRE(i18n::get("property.spews_ooze_suffix", " spews ooze.") == "喷出了软泥。");
+    REQUIRE(i18n::get("property.bewilders_me_suffix", " bewilders me.") == "使我困惑。");
+    REQUIRE(i18n::get("property.is_taunting_me_suffix", " is taunting me!") == "正在嘲弄我！");
+    REQUIRE(i18n::get("property.collapses_suffix", " collapses!") == "倒塌了！");
+    REQUIRE(i18n::get("property.thorns_it", "it") == "它");
+    REQUIRE(i18n::get("property.thorns_it_upper", "It") == "它");
+    REQUIRE(i18n::get("property.thorns_player_retaliate_prefix", "I retaliate upon ") == "我反击了");
+    REQUIRE(i18n::get("property.exclaim", "!") == "！");
+    REQUIRE(i18n::get("property.thorns_mon_retaliate_player_prefix", "My attack upon ") == "我对");
+    REQUIRE(
+        i18n::get(
+            "property.thorns_mon_retaliate_player_suffix",
+            " is retaliated by a magic aura!") == "的攻击被一道魔法灵光反击了！");
+    REQUIRE(i18n::get("property.thorns_mon_retaliate_mon_middle", "retaliates upon ") == "以魔法灵光反击了");
+    REQUIRE(i18n::get("property.thorns_mon_retaliate_mon_suffix", " by a magic aura!") == "！");
+    REQUIRE(i18n::get("property.tomb_legions_sound", "A voice is calling forth Tomb-Legions!") == "有个声音正在召唤坟墓军团！");
+    REQUIRE(i18n::get("property.their", "their") == "其");
+    REQUIRE(i18n::get("property.its", "its") == "它的");
+    REQUIRE(i18n::get("property.recognizes_me_as_middle", " recognizes me as ") == "承认我是");
+    REQUIRE(i18n::get("property.leader_suffix", " leader.") == "领袖。");
+    REQUIRE(i18n::get("property.great_frenzy_sound", "A voice is stirring up a great frenzy!") == "有个声音正在煽动巨大的狂乱！");
+    REQUIRE(i18n::get("property.stirs_up_great_frenzy_suffix", " stirs up a great frenzy!") == "激起了巨大的狂乱！");
+    REQUIRE(i18n::get("property.calls_plague_of_locusts_suffix", " calls a plague of Locusts!") == "召唤了一场蝗灾！");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("i18n.missing_key", "fallback") == "fallback");

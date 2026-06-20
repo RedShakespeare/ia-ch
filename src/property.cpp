@@ -137,7 +137,11 @@ static void affect_move_dir_affected_by_boundary_sigils(const actor::Actor& acto
     if (actor::can_player_see_actor(actor)) {
         const std::string name = text_format::first_to_upper(actor::name_the(actor));
 
-        msg_log::add(name + " is stopped at the boundary.");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.stopped_at_boundary_suffix",
+                " is stopped at the boundary."));
     }
 
     trap->strain();
@@ -523,7 +527,10 @@ PropEnded Entangled::affect_move_dir(Dir& dir)
                     actor::name_the(*m_owner));
 
             msg_log::add(
-                actor_name_the + " struggles to tear free.",
+                actor_name_the +
+                i18n::get(
+                    "property.mon_struggles_tear_free_suffix",
+                    " struggles to tear free."),
                 colors::msg_good());
         }
     }
@@ -606,7 +613,10 @@ PropEnded Stuck::affect_move_dir(Dir& dir)
                     actor::name_the(*m_owner));
 
             msg_log::add(
-                actor_name_the + " struggles to pull free.",
+                actor_name_the +
+                i18n::get(
+                    "property.mon_struggles_pull_free_suffix",
+                    " struggles to pull free."),
                 colors::msg_good());
         }
     }
@@ -695,7 +705,9 @@ PropEnded Infected::on_actor_turn()
             !has_warned &&
             rnd::coin_toss()) {
             msg_log::add(
-                "My infection is getting worse!",
+                i18n::get(
+                    "property.infection_getting_worse",
+                    "My infection is getting worse!"),
                 colors::msg_note(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
@@ -818,7 +830,13 @@ void PossessedByZuul::on_death()
 
         const std::string& name2 = actor::g_data["MON_ZUUL"].name_the;
 
-        msg_log::add(name1 + " was possessed by " + name2 + "!");
+        msg_log::add(
+            name1 +
+            i18n::get(
+                "property.possessed_by_middle",
+                " was possessed by ") +
+            name2 +
+            i18n::get("property.possessed_by_suffix", "!"));
     }
 
     m_owner->m_state = ActorState::destroyed;
@@ -984,7 +1002,9 @@ void Shapeshifts::shapeshift(const Verbose verbose) const
     const bool can_player_see_mon = actor::can_player_see_actor(*m_owner);
 
     if ((verbose == Verbose::yes) && can_player_see_mon) {
-        msg_log::add("It changes shape!");
+        msg_log::add(i18n::get(
+            "property.changes_shape",
+            "It changes shape!"));
 
         draw_blast_at_cells({m_owner->m_pos}, colors::yellow());
     }
@@ -1068,7 +1088,11 @@ PropEnded ZealotStop::affect_move_dir(Dir& dir)
     if (actor::can_player_see_actor(*m_owner)) {
         const auto name = text_format::first_to_upper(actor::name_the(*m_owner));
 
-        msg_log::add(name + " stops and gropes about.");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.stops_and_gropes_suffix",
+                " stops and gropes about."));
     }
 
     dir = Dir::center;
@@ -1135,7 +1159,9 @@ void Poisoned::handle_damage() const
 
     if (actor::is_player(m_owner)) {
         msg_log::add(
-            "I am suffering from the poison!",
+            i18n::get(
+                "property.poison_player",
+                "I am suffering from the poison!"),
             colors::msg_bad(),
             MsgInterruptPlayer::yes);
     }
@@ -1145,7 +1171,11 @@ void Poisoned::handle_damage() const
             text_format::first_to_upper(
                 actor::name_the(*m_owner));
 
-        msg_log::add(actor_name_the + " suffers from poisoning!");
+        msg_log::add(
+            actor_name_the +
+            i18n::get(
+                "property.suffers_from_poisoning_suffix",
+                " suffers from poisoning!"));
     }
 
     actor::hit(*m_owner, dmg, DmgType::pure, nullptr);
@@ -1276,7 +1306,9 @@ PropEnded Nailed::affect_move_dir(Dir& dir)
 
     if (actor::is_player(m_owner)) {
         msg_log::add(
-            "I struggle to tear out the spike!",
+            i18n::get(
+                "property.struggle_tear_out_spike",
+                "I struggle to tear out the spike!"),
             colors::msg_bad());
     }
     else {
@@ -1287,7 +1319,10 @@ PropEnded Nailed::affect_move_dir(Dir& dir)
                     actor::name_the(*m_owner));
 
             msg_log::add(
-                actor_name_the + " struggles in pain!",
+                actor_name_the +
+                i18n::get(
+                    "property.mon_struggles_in_pain_suffix",
+                    " struggles in pain!"),
                 colors::msg_good());
         }
     }
@@ -1309,7 +1344,11 @@ PropEnded Nailed::affect_move_dir(Dir& dir)
                 text_format::first_to_upper(
                     actor::name_the(*m_owner));
 
-            msg_log::add(actor_name_the + " tears out a spike!");
+            msg_log::add(
+                actor_name_the +
+                i18n::get(
+                    "property.tears_out_spike_suffix",
+                    " tears out a spike!"));
         }
     }
 
@@ -1345,7 +1384,9 @@ void Wound::load()
 
 std::string Wound::name_short() const
 {
-    return "Wounded(" + std::to_string(m_nr_wounds) + ")";
+    return i18n::get("property.wounded_open", "Wounded(") +
+           std::to_string(m_nr_wounds) +
+           i18n::get("property.close_paren", ")");
 }
 
 int Wound::ability_mod(const AbilityId ability) const
@@ -1386,12 +1427,12 @@ int Wound::max_hp_pct_mod() const
 
 std::string Wound::get_one_wound_heal_str() const
 {
-    return "A wound is healed.";
+    return i18n::get("property.one_wound_healed", "A wound is healed.");
 }
 
 std::string Wound::get_all_wounds_heal_str() const
 {
-    return "All my wounds are healed!";
+    return i18n::get("property.all_wounds_healed", "All my wounds are healed!");
 }
 
 std::string Wound::msg_end_player() const
@@ -1771,7 +1812,9 @@ void AstralOpiumAddict::on_std_turn()
 
         if (m_nr_turns_to_penalty == 0) {
             msg_log::add(
-                "I crave Astral Opium!!",
+                i18n::get(
+                    "property.crave_astral_opium",
+                    "I crave Astral Opium!!"),
                 colors::msg_note(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
@@ -2241,9 +2284,13 @@ DmgResistData RElec::is_resisting_dmg(const DmgType dmg_type) const
 
     d.is_resisted = (dmg_type == DmgType::electric);
 
-    d.msg_resist_player = "I feel a faint tingle.";
+    d.msg_resist_player = i18n::get(
+        "property.resist_electric_player",
+        "I feel a faint tingle.");
 
-    d.msg_resist_mon = "{} seems unaffected.";
+    d.msg_resist_mon = i18n::get(
+        "property.resist_seems_unaffected",
+        "{} seems unaffected.");
 
     return d;
 }
@@ -2304,9 +2351,13 @@ DmgResistData RPhys::is_resisting_dmg(const DmgType dmg_type) const
 
     d.is_resisted = is_physical_dmg_type(dmg_type);
 
-    d.msg_resist_player = "I resist harm.";
+    d.msg_resist_player = i18n::get(
+        "property.resist_physical_player",
+        "I resist harm.");
 
-    d.msg_resist_mon = "{} seems unharmed.";
+    d.msg_resist_mon = i18n::get(
+        "property.resist_seems_unharmed",
+        "{} seems unharmed.");
 
     return d;
 }
@@ -2332,9 +2383,13 @@ DmgResistData RFire::is_resisting_dmg(const DmgType dmg_type) const
 
     d.is_resisted = (dmg_type == DmgType::fire);
 
-    d.msg_resist_player = "I feel warm.";
+    d.msg_resist_player = i18n::get(
+        "property.resist_fire_player",
+        "I feel warm.");
 
-    d.msg_resist_mon = "{} seems unaffected.";
+    d.msg_resist_mon = i18n::get(
+        "property.resist_seems_unaffected",
+        "{} seems unaffected.");
 
     return d;
 }
@@ -2548,7 +2603,9 @@ PropActResult Vortex::on_act()
         const auto name_the = text_format::first_to_upper(
             actor::name_the(*m_owner));
 
-        msg_log::add(name_the + " pulls me!");
+        msg_log::add(
+            name_the +
+            i18n::get("property.pulls_me_suffix", " pulls me!"));
     }
     else {
         msg_log::add(i18n::get("property.powerful_wind_pulling", "A powerful wind is pulling me!"));
@@ -2631,7 +2688,9 @@ void SplitsOnDeath::on_death()
             text_format::first_to_upper(
                 actor::name_the(*m_owner));
 
-        msg_log::add(name + " splits.");
+        msg_log::add(
+            name +
+            i18n::get("property.splits_suffix", " splits."));
     }
 
     actor::Actor* const leader = m_owner->m_leader;
@@ -2877,7 +2936,7 @@ PropActResult CorpseRises::on_act()
                 m_owner->m_data->corpse_name_the);
 
         msg_log::add(
-            name + " rises again!!",
+            name + i18n::get("property.rises_again_suffix", " rises again!!"),
             colors::text(),
             MsgInterruptPlayer::yes);
 
@@ -2964,27 +3023,35 @@ void SpawnsZombiePartsOnDestroyed::try_spawn_zombie_parts() const
         id_to_spawn = "MON_CRAWLING_HAND";
 
         spawn_msg =
-            "The hand of " +
+            i18n::get("property.zombie_part_hand_prefix", "The hand of ") +
             my_name +
-            " comes off and starts crawling around!";
+            i18n::get(
+                "property.zombie_part_hand_suffix",
+                " comes off and starts crawling around!");
         break;
 
     case 1:
         id_to_spawn = "MON_INTESTINAL_MASS";
 
         spawn_msg =
-            "The intestines of " +
+            i18n::get(
+                "property.zombie_part_intestines_prefix",
+                "The intestines of ") +
             my_name +
-            " starts crawling around!";
+            i18n::get(
+                "property.zombie_part_intestines_suffix",
+                " starts crawling around!");
         break;
 
     case 2:
         id_to_spawn = "MON_FLOATING_SKULL";
 
         spawn_msg =
-            "The head of " +
+            i18n::get("property.zombie_part_head_prefix", "The head of ") +
             my_name +
-            " starts floating around!";
+            i18n::get(
+                "property.zombie_part_head_suffix",
+                " starts floating around!");
         break;
 
     default:
@@ -3102,7 +3169,9 @@ void BreedsBase::on_std_turn()
                     text_format::first_to_upper(
                         actor::name_a(*spawned_mon));
 
-                msg_log::add(name + " is spawned.");
+                msg_log::add(
+                    name +
+                    i18n::get("property.is_spawned_suffix", " is spawned."));
             }
         });
 
@@ -3184,7 +3253,9 @@ void VomitsOoze::on_std_turn()
             text_format::first_to_upper(
                 actor::name_the(*m_owner));
 
-        msg_log::add(parent_name + " spews ooze.");
+        msg_log::add(
+            parent_name +
+            i18n::get("property.spews_ooze_suffix", " spews ooze."));
     }
 
     std::string id_to_spawn = rnd::element(id_bucket);
@@ -3231,7 +3302,9 @@ void ConfusesAdjacent::on_std_turn()
     if (!map::g_player->m_properties.has(prop::Id::confused)) {
         const std::string msg =
             text_format::first_to_upper(actor::name_the(*m_owner)) +
-            " bewilders me.";
+            i18n::get(
+                "property.bewilders_me_suffix",
+                " bewilders me.");
 
         msg_log::add(msg);
     }
@@ -3253,7 +3326,11 @@ void FrenzyPlayerOnSeen::on_player_see()
         rnd::one_in(taunt_on_in_n)) {
         const std::string name = text_format::first_to_upper(actor::name_the(*m_owner));
 
-        msg_log::add(name + " is taunting me!");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.is_taunting_me_suffix",
+                " is taunting me!"));
 
         Prop* const frenzy = prop::make(prop::Id::frenzied);
 
@@ -3372,7 +3449,9 @@ void AuraOfDecay::run_effect_on_env_at(const P& p) const
                     text_format::first_to_upper(
                         terrain->name(Article::the));
 
-                msg_log::add(name + " collapses!");
+                msg_log::add(
+                    name +
+                    i18n::get("property.collapses_suffix", " collapses!"));
 
                 msg_log::more_prompt();
             }
@@ -3403,7 +3482,9 @@ PropActResult MajorClaphamSummon::on_act()
     }
 
     Snd snd(
-        "A voice is calling forth Tomb-Legions!",
+        i18n::get(
+            "property.tomb_legions_sound",
+            "A voice is calling forth Tomb-Legions!"),
         audio::SfxId::END,
         IgnoreMsgIfOriginSeen::yes,
         m_owner->m_pos,
@@ -3510,10 +3591,16 @@ PropActResult AlliesPlayerGhoul::on_act()
 
             const std::string pronoun =
                 actor->m_data->is_unique
-                ? "their"
-                : "its";
+                ? i18n::get("property.their", "their")
+                : i18n::get("property.its", "its");
 
-            msg_log::add(actor_name + " recognizes me as " + pronoun + " leader.");
+            msg_log::add(
+                actor_name +
+                i18n::get(
+                    "property.recognizes_me_as_middle",
+                    " recognizes me as ") +
+                pronoun +
+                i18n::get("property.leader_suffix", " leader."));
         }
 
         actor::unset_actor_as_leader_and_target_for_all_mon(actor);
@@ -3731,7 +3818,9 @@ PropActResult FrenziesFollowers::on_act()
     actors_to_frenzy.push_back(m_owner);
 
     Snd snd(
-        "A voice is stirring up a great frenzy!",
+        i18n::get(
+            "property.great_frenzy_sound",
+            "A voice is stirring up a great frenzy!"),
         audio::SfxId::END,
         IgnoreMsgIfOriginSeen::yes,
         m_owner->m_pos,
@@ -3744,7 +3833,11 @@ PropActResult FrenziesFollowers::on_act()
     if (actor::can_player_see_actor(*m_owner)) {
         const std::string name = text_format::first_to_upper(actor::name_the(*m_owner));
 
-        msg_log::add(name + " stirs up a great frenzy!");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.stirs_up_great_frenzy_suffix",
+                " stirs up a great frenzy!"));
     }
 
     const int duration = rnd::range(10, 30);
@@ -3789,7 +3882,11 @@ PropActResult SummonsLocusts::on_act()
     if (actor::can_player_see_actor(*m_owner)) {
         const std::string name = text_format::first_to_upper(actor::name_the(*m_owner));
 
-        msg_log::add(name + " calls a plague of Locusts!");
+        msg_log::add(
+            name +
+            i18n::get(
+                "property.calls_plague_of_locusts_suffix",
+                " calls a plague of Locusts!"));
 
         map::g_player->incr_shock(12.0, ShockSrc::misc);
     }
@@ -3923,10 +4020,13 @@ void Thorns::print_msg_player_retaliate_mon(
         target_name = actor::name_the(target);
     }
     else {
-        target_name = "it";
+        target_name = i18n::get("property.thorns_it", "it");
     }
 
-    const std::string msg = "I retaliate upon " + target_name + "!";
+    const std::string msg =
+        i18n::get("property.thorns_player_retaliate_prefix", "I retaliate upon ") +
+        target_name +
+        i18n::get("property.exclaim", "!");
 
     msg_log::add(msg, colors::msg_good());
 }
@@ -3942,13 +4042,15 @@ void Thorns::print_msg_mon_retaliate_player() const
         retaliator_name = actor::name_the(*m_owner);
     }
     else {
-        retaliator_name = "it";
+        retaliator_name = i18n::get("property.thorns_it", "it");
     }
 
     const std::string msg =
-        "My attack upon " +
+        i18n::get("property.thorns_mon_retaliate_player_prefix", "My attack upon ") +
         retaliator_name +
-        " is retaliated by a magic aura!";
+        i18n::get(
+            "property.thorns_mon_retaliate_player_suffix",
+            " is retaliated by a magic aura!");
 
     msg_log::add(msg, colors::msg_bad());
 }
@@ -3971,21 +4073,23 @@ void Thorns::print_msg_mon_retaliate_mon(
                 actor::name_the(*m_owner));
     }
     else {
-        retaliator_name = "It";
+        retaliator_name = i18n::get("property.thorns_it_upper", "It");
     }
 
     if (player_see_target) {
         target_name = actor::name_the(target);
     }
     else {
-        target_name = "it";
+        target_name = i18n::get("property.thorns_it", "it");
     }
 
     const std::string msg =
         retaliator_name +
-        "retaliates upon " +
+        i18n::get(
+            "property.thorns_mon_retaliate_mon_middle",
+            "retaliates upon ") +
         target_name +
-        " by a magic aura!";
+        i18n::get("property.thorns_mon_retaliate_mon_suffix", " by a magic aura!");
 
     msg_log::add(msg);
 }
@@ -4014,9 +4118,11 @@ std::string CrimsonPassage::name_short() const
     std::string nr_str =
         (m_nr_steps_allowed >= 0)
         ? std::to_string(m_nr_steps_allowed - m_nr_steps_taken)
-        : "INF";
+        : i18n::get("property.crimson_passage_infinite", "INF");
 
-    return "Crims Psg(" + nr_str + ")";
+    return i18n::get("property.crimson_passage_short_open", "Crims Psg(") +
+           nr_str +
+           i18n::get("property.close_paren", ")");
 }
 
 int CrimsonPassage::dmg_per_step()
