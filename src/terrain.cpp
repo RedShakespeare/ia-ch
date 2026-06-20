@@ -1050,7 +1050,8 @@ std::optional<map::MinimapAppearance> Pillar::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Inscribed Object";
+    appearance.legend_text =
+        i18n::get("terrain.legend_inscribed_object", "Inscribed Object");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -1161,7 +1162,8 @@ std::optional<map::MinimapAppearance> Petroglyph::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Inscribed Object";
+    appearance.legend_text =
+        i18n::get("terrain.legend_inscribed_object", "Inscribed Object");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -1689,7 +1691,8 @@ std::optional<map::MinimapAppearance> Urn::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Inscribed Object";
+    appearance.legend_text =
+        i18n::get("terrain.legend_inscribed_object", "Inscribed Object");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -1867,7 +1870,7 @@ std::optional<map::MinimapAppearance> Stairs::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Stairs";
+    appearance.legend_text = i18n::get("terrain.legend_stairs", "Stairs");
     appearance.symbol = map::MinimapSymbol::rectangle_filled;
 
     return appearance;
@@ -2190,7 +2193,8 @@ std::optional<map::MinimapAppearance> CrystalKey::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Gleaming Crystal";
+    appearance.legend_text =
+        i18n::get("terrain.legend_gleaming_crystal", "Gleaming Crystal");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -2392,7 +2396,7 @@ std::optional<map::MinimapAppearance> Altar::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Altar";
+    appearance.legend_text = i18n::get("terrain.legend_altar", "Altar");
     appearance.symbol = map::MinimapSymbol::rectangle_filled;
 
     return appearance;

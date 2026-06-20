@@ -268,6 +268,10 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.wade_through_water", "I wade slowly through the knee high water.") == "我缓慢涉过齐膝深的水。");
     REQUIRE(i18n::get("terrain.trudge_through_mud", "I trudge slowly through the knee high mud.") == "我缓慢跋涉过齐膝深的泥泞。");
     REQUIRE(i18n::get("terrain.hear_splash", "I hear a splash.") == "我听到水花声。");
+    REQUIRE(i18n::get("terrain.legend_inscribed_object", "Inscribed Object") == "铭文物体");
+    REQUIRE(i18n::get("terrain.legend_stairs", "Stairs") == "楼梯");
+    REQUIRE(i18n::get("terrain.legend_gleaming_crystal", "Gleaming Crystal") == "闪光水晶");
+    REQUIRE(i18n::get("terrain.legend_altar", "Altar") == "祭坛");
     REQUIRE(i18n::get("terrain.topples_prefix", "The ") == "");
     REQUIRE(i18n::get("terrain.topples_suffix", " topples over.") == "倒下了。");
     REQUIRE(i18n::get("text_format.and_separator", " and ") == "和");
