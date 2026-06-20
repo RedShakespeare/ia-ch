@@ -8197,7 +8197,7 @@ bool SpellDeafen::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellTransmut::name() const
 {
-    return "Transmutation";
+    return i18n::get("spells.transmutation.name", "Transmutation");
 }
 
 SpellId SpellTransmut::id() const
@@ -8299,7 +8299,8 @@ void SpellTransmut::run_effect(
 
     const auto id_before = item_before->id();
 
-    std::string item_name_before = "The ";
+    std::string item_name_before =
+        i18n::get("spells.transmutation.item_before_prefix", "The ");
 
     if (nr_items_before > 1) {
         item_name_before += item_before->name(ItemNameType::plural);
@@ -8316,11 +8317,14 @@ void SpellTransmut::run_effect(
     if (map::g_seen.at(p)) {
         std::string disappear_str =
             (nr_items_before == 1)
-            ? "disappears"
-            : "disappear";
+            ? i18n::get("spells.transmutation.disappears_singular", "disappears")
+            : i18n::get("spells.transmutation.disappears_plural", "disappear");
 
         msg_log::add(
-            item_name_before + " " + disappear_str + ".",
+            item_name_before +
+                i18n::get("spells.space", " ") +
+                disappear_str +
+                i18n::get("spells.period", "."),
             colors::text(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::yes);
@@ -8435,10 +8439,14 @@ void SpellTransmut::run_effect(
     if (map::g_seen.at(p)) {
         std::string appear_str =
             (nr_items_new == 1)
-            ? "appears"
-            : "appear";
+            ? i18n::get("spells.transmutation.appears_singular", "appears")
+            : i18n::get("spells.transmutation.appears_plural", "appear");
 
-        msg_log::add(item_name_new + " " + appear_str + ".");
+        msg_log::add(
+            item_name_new +
+            i18n::get("spells.space", " ") +
+            appear_str +
+            i18n::get("spells.period", "."));
     }
 
     // NOTE: This will possibly make the player "discover" the item, so it
@@ -8452,29 +8460,47 @@ std::vector<std::string> SpellTransmut::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Attempts to convert items (stand over an item when casting). "
-        "On failure, the item is destroyed.");
+        i18n::get(
+            "spells.transmutation.descr_main",
+            "Attempts to convert items (stand over an item when casting). "
+            "On failure, the item is destroyed."));
 
     descr.push_back(
-        "Converts Potions with " +
+        i18n::get(
+            "spells.transmutation.potion_chance_prefix",
+            "Converts Potions with ") +
         std::to_string(chance_potion(skill)) +
-        "% chance.");
+        i18n::get(
+            "spells.transmutation.chance_suffix",
+            "% chance."));
 
     descr.push_back(
-        "Converts Manuscripts with " +
+        i18n::get(
+            "spells.transmutation.manuscript_chance_prefix",
+            "Converts Manuscripts with ") +
         std::to_string(chance_scroll(skill)) +
-        "% chance.");
+        i18n::get(
+            "spells.transmutation.chance_suffix",
+            "% chance."));
 
     descr.push_back(
-        "Melee weapons with at least +1 damage (not counting any "
-        "damage bonus from skills) are converted to a Potion or "
-        "Manuscript, with " +
+        i18n::get(
+            "spells.transmutation.weapon_chance_prefix",
+            "Melee weapons with at least +1 damage (not counting any "
+            "damage bonus from skills) are converted to a Potion or "
+            "Manuscript, with ") +
         std::to_string(chance_weapon(skill, 1)) +
-        "% chance for a +1 weapon, " +
+        i18n::get(
+            "spells.transmutation.weapon_chance_plus_one",
+            "% chance for a +1 weapon, ") +
         std::to_string(chance_weapon(skill, 2)) +
-        "% chance for a +2 weapon, " +
+        i18n::get(
+            "spells.transmutation.weapon_chance_plus_two",
+            "% chance for a +2 weapon, ") +
         std::to_string(chance_weapon(skill, 3)) +
-        "% chance for a +3 weapon, etc.");
+        i18n::get(
+            "spells.transmutation.weapon_chance_plus_three",
+            "% chance for a +3 weapon, etc."));
 
     return descr;
 }

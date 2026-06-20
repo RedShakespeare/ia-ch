@@ -1616,6 +1616,32 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.migo_hypnosis.name", "MiGo Hypnosis") == "米戈催眠");
     REQUIRE(i18n::get("spells.immolation.name", "Immolation") == "焚烧");
     REQUIRE(i18n::get("spells.deafen.name", "Deafen") == "致聋");
+    REQUIRE(i18n::get("spells.transmutation.name", "Transmutation") == "变形术");
+    REQUIRE(i18n::get("spells.transmutation.item_before_prefix", "The ") == "");
+    REQUIRE(i18n::get("spells.transmutation.disappears_singular", "disappears") == "消失了");
+    REQUIRE(i18n::get("spells.transmutation.disappears_plural", "disappear") == "消失了");
+    REQUIRE(i18n::get("spells.transmutation.appears_singular", "appears") == "出现了");
+    REQUIRE(i18n::get("spells.transmutation.appears_plural", "appear") == "出现了");
+    REQUIRE(
+        i18n::get(
+            "spells.transmutation.descr_main",
+            "Attempts to convert items (stand over an item when casting). "
+            "On failure, the item is destroyed.") ==
+        "尝试转化物品（施法时站在物品上）。失败时，该物品会被摧毁。");
+    REQUIRE(i18n::get("spells.transmutation.potion_chance_prefix", "Converts Potions with ") == "以");
+    REQUIRE(i18n::get("spells.transmutation.manuscript_chance_prefix", "Converts Manuscripts with ") == "以");
+    REQUIRE(i18n::get("spells.transmutation.chance_suffix", "% chance.") == "%几率转化药水或手稿。");
+    REQUIRE(
+        i18n::get(
+            "spells.transmutation.weapon_chance_prefix",
+            "Melee weapons with at least +1 damage (not counting any "
+            "damage bonus from skills) are converted to a Potion or "
+            "Manuscript, with ") ==
+        "至少有+1伤害的近战武器（不包括技能带来的伤害加成）会被转化为药水或手稿，+1武器的几率为");
+    REQUIRE(i18n::get("spells.transmutation.weapon_chance_plus_one", "% chance for a +1 weapon, ") == "%，+2武器的几率为");
+    REQUIRE(i18n::get("spells.transmutation.weapon_chance_plus_two", "% chance for a +2 weapon, ") == "%，+3武器的几率为");
+    REQUIRE(i18n::get("spells.transmutation.weapon_chance_plus_three", "% chance for a +3 weapon, etc.") == "%，依此类推。");
+    REQUIRE(i18n::get("spells.space", " ") == "");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
