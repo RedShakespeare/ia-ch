@@ -36,7 +36,152 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::current_language() == "zh_CN");
     REQUIRE(i18n::get("main_menu.options", "(O)Options") == "(O)选项");
     REQUIRE(common_text::g_screen_exit_hint == "[space, esc] 退出");
+    REQUIRE(i18n::get("hints.title_prefix", "Hint: ") == "提示：");
+    REQUIRE(i18n::get("hints.altars.title", "Altars") == "祭坛");
+    REQUIRE(
+        i18n::get(
+            "hints.altars.body",
+            "All spells are cast at a higher level when standing "
+            "at an altar - this includes both spells cast from "
+            "manuscripts and from memory.") ==
+        "站在祭坛上时，所有法术都会以更高等级施放——这包括从手稿和记忆中施放的法术。");
+    REQUIRE(i18n::get("hints.fountains.title", "Fountains") == "喷泉");
+    REQUIRE(
+        i18n::get(
+            "hints.fountains.body",
+            "Drinking from a fountain usually restores a bit of "
+            "health, spirit, and mental shock (but they can sometimes "
+            "have other effects, both good and bad!). Fountains "
+            "can be drunk from several times, but each time there "
+            "is a chance that it will dry up permanently.") ==
+        "从喷泉饮水通常会恢复少量生命、精神和震惊值（但它们有时也会产生其他效果，有好有坏！）。喷泉可以饮用多次，但每次都有机会永久干涸。");
+    REQUIRE(i18n::get("hints.destroying_corpses.title", "Destroying corpses") == "摧毁尸体");
+    REQUIRE(
+        i18n::get(
+            "hints.destroying_corpses.body",
+            "Corpses can be destroyed by pressing [k] or [w]. This "
+            "can be very useful against certain types of monsters. "
+            "Some weapons, such as Machetes, makes it easier to "
+            "destroy corpses - check the item description to see "
+            "if a weapon has such a bonus. Also, a well-placed "
+            "stick of dynamite or Molotov Cocktail is usually an "
+            "effective way of stopping persistent monsters.") ==
+        "可以按 [k] 或 [w] 摧毁尸体。这在对付某些类型的怪物时非常有用。有些武器，例如砍刀，会让摧毁尸体更容易——查看物品描述即可知道武器是否有这种加成。此外，一根位置合适的炸药或燃烧瓶通常也是阻止顽固怪物的有效方法。");
+    REQUIRE(i18n::get("hints.unload_weapons.title", "Unloading weapons") == "卸下武器");
+    REQUIRE(
+        i18n::get(
+            "hints.unload_weapons.body",
+            "Ammunition can be unloaded from firearms on the "
+            "ground by pressing [u] or [G].") == "可以按 [u] 或 [G] 卸下地上火器中的弹药。");
+    REQUIRE(i18n::get("hints.infected.title", "Infected") == "感染");
+    REQUIRE(
+        i18n::get(
+            "hints.infected.body",
+            "Infections should be treated as soon as possible. "
+            "The common way of doing this is by using the "
+            "Medical Bag. It only requires a small number of turns "
+            "and resources, but if the work is interrupted, the "
+            "effort is wasted (no medical resources are lost "
+            "on interruption however)."
+            "\n\nAn untreated infection will eventually turn into a "
+            "disease (50% maximum hit points), "
+            "which can only be removed through special means such as "
+            "drinking certain potions.") ==
+        "感染应尽快治疗。常见做法是使用医疗包。这只需要少量回合和资源，但如果操作被打断，努力就会白费（不过打断时不会损失医疗资源）。"
+        "\n\n未经治疗的感染最终会变成疾病（最大生命值降低 50%），只能通过特殊手段移除，例如饮用某些药水。");
+    REQUIRE(i18n::get("hints.overburdened.title", "Overburdened") == "负重过重");
+    REQUIRE(
+        i18n::get(
+            "hints.overburdened.body",
+            "Carrying too much weight makes movement take twice "
+            "as much time. This is a very dangerous and "
+            "detrimental situation.") == "携带过多重量会让移动耗时加倍。这是非常危险且不利的情况。");
+    REQUIRE(i18n::get("hints.high_shock.title", "High shock") == "高度震惊");
+    REQUIRE(
+        i18n::get(
+            "hints.high_shock.body",
+            "Being in a state of extreme mental shock (stress, paranoia) "
+            "will cause a sanity hit. One way to reduce shock, "
+            "and thereby avoiding or prolonging the sanity hit, "
+            "is to find a source of light - for example through "
+            "activating an Electric Lantern or igniting a Flare.") ==
+        "处于极端精神震惊（压力、偏执）状态会导致理智受损。降低震惊的一种方式是寻找光源，例如激活电提灯或点燃照明棒，这可以避免或延缓理智受损。");
+    REQUIRE(i18n::get("hints.status_effects.title", "Status effects") == "状态效果");
+    REQUIRE(
+        i18n::get(
+            "hints.status_effects.body",
+            "A status effect has been applied. "
+            "Status effects are various positive, negative or neutral effects "
+            "applied on a creature. "
+            "Some examples are confusion, burning, invisibility, or "
+            "electricity resistance. "
+            "A simple list of active status effects is shown in the normal "
+            "game screen. "
+            "\n\nIn the character screen (accessed by pressing [C] or [@]), a more "
+            "detailed list can be seen, including a description of each effect. "
+            "\n\nStatus effects shown with CAPITAL LETTERS are \"permanent\", "
+            "and are only removed if some special action is taken, for example "
+            "using the medical bag to treat a wound.") ==
+        "一个状态效果已经生效。状态效果是施加在生物身上的各种正面、负面或中性效果。例如混乱、燃烧、隐形或电击抗性。普通游戏画面会显示一份简略的活动状态效果列表。"
+        "\n\n在角色画面中（按 [C] 或 [@] 进入），可以看到更详细的列表，包括每个效果的描述。"
+        "\n\n以大写字母显示的状态效果是“永久”的，只有采取某些特殊行动才会移除，例如使用医疗包治疗伤口。");
+    REQUIRE(i18n::get("hints.study_inscription.title", "Inscriptions") == "铭文");
+    REQUIRE(
+        i18n::get(
+            "hints.study_inscription.body",
+            "There is an inscription here, studying it will yield some experience."
+            "\n\nIt may also recall a spell that you have forgotten, "
+            "or reveal something about carried manuscripts or potions. "
+            "The chance to reveal information about such items is higher with "
+            "more unknown items carried.") ==
+        "这里有一段铭文，研究它会获得一些经验。"
+        "\n\n它也可能让你回忆起遗忘的法术，或揭示携带的手稿或药水的信息。携带的未知物品越多，揭示这些物品信息的机会越高。");
+    REQUIRE(i18n::get("hints.kick_brazier.title", "Kicking braziers") == "踢倒火盆");
+    REQUIRE(
+        i18n::get(
+            "hints.kick_brazier.body",
+            "Braziers can be kicked over to set creatures on fire "
+            "in a small area.") == "可以踢倒火盆，在小范围内点燃生物。");
+    REQUIRE(i18n::get("hints.kick_statue.title", "Kicking statues") == "踢倒雕像");
+    REQUIRE(
+        i18n::get(
+            "hints.kick_statue.body",
+            "Statues can be kicked over to "
+            "damage and stun a creature on the other side.") == "可以踢倒雕像，伤害并击晕另一侧的生物。");
+    REQUIRE(
+        i18n::get(
+            "hints.temporary_and_permanent_shock.title",
+            "Temporary and permanent mental shock") == "临时和永久精神震惊");
+    REQUIRE(
+        i18n::get(
+            "hints.temporary_and_permanent_shock.body",
+            "Some situations cause \"temporary\" mental shock, "
+            "which is removed when the situation changes. "
+            "Entering a dark area or standing next to bloodsplatter will "
+            "cause your shock to spike until you move away, for example."
+            "\n\nStanding in bright light will similarly reduce your shock "
+            "until you return to the ambient subterranean gloom."
+            "\n\nSeeing monsters, casting spells, spending time, etc cause "
+            "\"permanent\" shock, which will not go away until "
+            "the next floor is reached, insanity rises (due to shock at 100%), "
+            "or the shock is cured somehow.") ==
+        "有些情况会造成“临时”精神震惊，当情况改变时它会被移除。例如进入黑暗区域或站在血迹旁边会让你的震惊值飙升，直到你离开。"
+        "\n\n站在明亮光线中同样会降低你的震惊值，直到你回到地下环境的昏暗之中。"
+        "\n\n看见怪物、施放法术、花费时间等会造成“永久”震惊，它不会消失，直到抵达下一层、震惊达到 100% 导致疯狂上升，或通过某种方式治愈震惊。");
     REQUIRE(i18n::get("create_character.background_title", "What is your background?") == "你的背景是什么？");
+    REQUIRE(i18n::get("spells.domain.channeling", "Channeling") == "导能");
+    REQUIRE(i18n::get("spells.domain.corruption", "Corruption") == "腐化");
+    REQUIRE(i18n::get("spells.domain.illusion", "Illusion") == "幻象");
+    REQUIRE(i18n::get("spells.domain.mind", "Mind") == "心灵");
+    REQUIRE(i18n::get("spells.domain.time", "Time") == "时间");
+    REQUIRE(i18n::get("spells.domain.warding", "Warding") == "守护");
+    REQUIRE(i18n::get("spells.domain.blood", "Blood") == "鲜血");
+    REQUIRE(i18n::get("player_bon.background.exorcist.title", "Exorcist") == "驱魔者");
+    REQUIRE(i18n::get("player_bon.background.flagellant.title", "Flagellant") == "鞭笞者");
+    REQUIRE(i18n::get("player_bon.background.ghoul.title", "Ghoul") == "食尸鬼");
+    REQUIRE(i18n::get("player_bon.background.occultist.title", "Occultist") == "神秘学者");
+    REQUIRE(i18n::get("player_bon.background.rogue.title", "Rogue") == "盗贼");
+    REQUIRE(i18n::get("player_bon.background.war_vet.title", "War Veteran") == "战争老兵");
     REQUIRE(i18n::get("highscore.browsing_title", "Browsing high scores") == "浏览高分记录");
     REQUIRE(i18n::get("manual.browsing_title", "Browsing manual") == "浏览手册");
     REQUIRE(i18n::get("character_descr.title", "Character description") == "角色描述");
