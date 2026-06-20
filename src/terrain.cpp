@@ -710,31 +710,34 @@ gfx::TileId Floor::tile() const
 
 std::string Floor::name(const Article article) const
 {
-    std::string str = (article == Article::a) ? "" : "the ";
+    std::string str =
+        (article == Article::a)
+            ? i18n::get("terrain.floor_article_a", "")
+            : i18n::get("terrain.article_the_space", "the ");
 
     if (m_burn_state == BurnState::burning) {
-        str += "flames";
+        str += i18n::get("terrain.floor_flames", "flames");
     }
     else {
         if (m_burn_state == BurnState::has_burned) {
-            str += "scorched ";
+            str += i18n::get("terrain.floor_scorched_prefix", "scorched ");
         }
 
         switch (m_type) {
         case FloorType::common:
-            str += "stone floor";
+            str += i18n::get("terrain.floor_stone_floor", "stone floor");
             break;
 
         case FloorType::cave:
-            str += "cavern floor";
+            str += i18n::get("terrain.floor_cavern_floor", "cavern floor");
             break;
 
         case FloorType::stone_path:
             if (article == Article::a) {
-                str.insert(0, "a ");
+                str.insert(0, i18n::get("terrain.article_a_space", "a "));
             }
 
-            str += "stone path";
+            str += i18n::get("terrain.floor_stone_path", "stone path");
             break;
         }
     }
@@ -824,36 +827,38 @@ std::string Wall::name(const Article article) const
     case WallType::common_alt:
     case WallType::leng_monestary:
     case WallType::egypt:
-        article_str = "a";
-        name_str = "stone wall";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.wall_stone", "stone wall");
         break;
 
     case WallType::mi_go:
-        article_str = "an";
-        name_str = "alien wall";
+        article_str = i18n::get("terrain.article_an_space", "an ");
+        name_str = i18n::get("terrain.wall_alien", "alien wall");
         break;
 
     case WallType::cave:
-        article_str = "a";
-        name_str = "cavern wall";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.wall_cavern", "cavern wall");
         break;
 
     case WallType::cliff:
-        article_str = "a";
-        name_str = "cliff";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.wall_cliff", "cliff");
         break;
     }
 
     if (m_is_mossy) {
-        article_str = "a";
-        name_str = "moss-grown " + name_str;
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str =
+            i18n::get("terrain.wall_moss_grown_prefix", "moss-grown ") +
+            name_str;
     }
 
     if (article == Article::the) {
-        article_str = "the";
+        article_str = i18n::get("terrain.article_the_space", "the ");
     }
 
-    return article_str + " " + name_str;
+    return article_str + name_str;
 }
 
 Color Wall::color_default() const
@@ -1014,23 +1019,23 @@ std::string Pillar::name(const Article article) const
     std::string name_str;
 
     if (m_is_broken) {
-        article_str = "a";
-        name_str = "broken pillar";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.pillar_broken", "broken pillar");
     }
     else if (m_is_inscribed) {
-        article_str = "an";
-        name_str = "inscribed pillar";
+        article_str = i18n::get("terrain.article_an_space", "an ");
+        name_str = i18n::get("terrain.pillar_inscribed", "inscribed pillar");
     }
     else {
-        article_str = "a";
-        name_str = "pillar";
+        article_str = i18n::get("terrain.article_a_space", "a ");
+        name_str = i18n::get("terrain.pillar", "pillar");
     }
 
     if (article == Article::the) {
-        article_str = "the";
+        article_str = i18n::get("terrain.article_the_space", "the ");
     }
 
-    return article_str + " " + name_str;
+    return article_str + name_str;
 }
 
 Color Pillar::color_default() const
