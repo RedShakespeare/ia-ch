@@ -1667,6 +1667,24 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.thorns.name", "Thorns") == "荆棘");
     REQUIRE(i18n::get("spells.thorns.return_damage_prefix", "The spell returns ") == "该法术会向攻击者反弹");
     REQUIRE(i18n::get("spells.thorns.return_damage_suffix", " damage to the attacker.") == "点伤害。");
+    REQUIRE(i18n::get("spells.crimson_passage.name", "Crimson Passage") == "猩红通道");
+    REQUIRE(
+        i18n::get(
+            "spells.crimson_passage.infinite_steps",
+            "An infinite number of steps may be taken, the spell "
+            "is only limited by the number of hit points.") ==
+        "可以踏出无限步数，该法术只受生命值数量限制。");
+    REQUIRE(
+        i18n::get(
+            "spells.crimson_passage.steps_suffix",
+            " steps may be taken before the effect ends.") ==
+        "步后效果结束。");
+    REQUIRE(
+        i18n::get(
+            "spells.crimson_passage.recast_cancels",
+            "Casting the spell again while it is already active cancels "
+            "the effect (this does not drain hit points or cause shock).") ==
+        "在效果已激活时再次施放该法术会取消效果（这不会消耗生命值，也不会造成震撼）。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

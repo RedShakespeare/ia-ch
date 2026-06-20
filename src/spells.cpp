@@ -8822,7 +8822,7 @@ std::vector<std::string> SpellThorns::descr_specific(SpellSkill skill) const
 // -----------------------------------------------------------------------------
 std::string SpellCrimsonPassage::name() const
 {
-    return "Crimson Passage";
+    return i18n::get("spells.crimson_passage.name", "Crimson Passage");
 }
 
 SpellId SpellCrimsonPassage::id() const
@@ -8918,18 +8918,24 @@ std::vector<std::string> SpellCrimsonPassage::descr_specific(
 
     if (nr_steps == -1) {
         descr.emplace_back(
-            "An infinite number of steps may be taken, the spell "
-            "is only limited by the number of hit points.");
+            i18n::get(
+                "spells.crimson_passage.infinite_steps",
+                "An infinite number of steps may be taken, the spell "
+                "is only limited by the number of hit points."));
     }
     else {
         descr.emplace_back(
             std::to_string(nr_steps_allowed(skill)) +
-            " steps may be taken before the effect ends.");
+            i18n::get(
+                "spells.crimson_passage.steps_suffix",
+                " steps may be taken before the effect ends."));
     }
 
     descr.emplace_back(
-        "Casting the spell again while it is already active cancels "
-        "the effect (this does not drain hit points or cause shock).");
+        i18n::get(
+            "spells.crimson_passage.recast_cancels",
+            "Casting the spell again while it is already active cancels "
+            "the effect (this does not drain hit points or cause shock)."));
 
     return descr;
 }
