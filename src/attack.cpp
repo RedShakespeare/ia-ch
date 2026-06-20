@@ -14,6 +14,7 @@
 #include "attack_internal.hpp"
 #include "common_text.hpp"
 #include "game_time.hpp"
+#include "i18n.hpp"
 #include "item.hpp"
 #include "item_att_property.hpp"
 #include "item_weapon.hpp"
@@ -103,14 +104,18 @@ BinaryAnswer query_player_attack_mon_with_ranged_wpn(
 
     const bool can_see_mon = can_player_see_actor(mon);
 
-    const std::string mon_name = can_see_mon ? actor::name_the(mon) : "it";
+    const std::string mon_name =
+        can_see_mon
+            ? actor::name_the(mon)
+            : i18n::get("attack.it", "it");
 
     const std::string msg =
-        "Attack " +
+        i18n::get("attack.attack_prefix", "Attack ") +
         mon_name +
-        " with " +
+        i18n::get("attack.with", " with ") +
         wpn_name +
-        "? " +
+        i18n::get("attack.query_suffix", "?") +
+        " " +
         common_text::g_yes_or_no_hint;
 
     msg_log::add(

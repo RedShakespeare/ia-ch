@@ -416,6 +416,10 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("actor_move.seeps_prefix", " seeps ") == "渗");
     REQUIRE(i18n::get("actor_move.space", " ") == "");
     REQUIRE(i18n::get("actor_move.squirms_through", " squirms through ") == "钻过");
+    REQUIRE(i18n::get("attack.it", "it") == "它");
+    REQUIRE(i18n::get("attack.attack_prefix", "Attack ") == "攻击");
+    REQUIRE(i18n::get("attack.with", " with ") == "，使用");
+    REQUIRE(i18n::get("attack.query_suffix", "?") == "？");
     REQUIRE(i18n::get("attack_melee.player_miss", "I miss.") == "我没打中。");
     REQUIRE(i18n::get("attack_melee.i_am_hit", "I am hit") == "我被击中了");
     REQUIRE(i18n::get("attack_melee.hear_fighting", "I hear fighting.") == "我听到打斗声。");
