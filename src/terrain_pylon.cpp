@@ -100,7 +100,7 @@ static std::string get_fake_name(
         return appearance.name_a;
     }
     else {
-        return "the " + appearance.name_plain;
+        return i18n::get("terrain_pylon.the", "the ") + appearance.name_plain;
     }
 }
 
@@ -119,28 +119,28 @@ void init()
     TRACE_FUNC_BEGIN;
 
     std::vector<PylonAppearance> appearances {
-        {"Angled Pylon",
-         "an Angled Pylon",
+        {i18n::get("terrain_pylon.angled_pylon", "Angled Pylon"),
+         i18n::get("terrain_pylon.an_angled_pylon", "an Angled Pylon"),
          colors::light_sepia(),
          gfx::TileId::pylon_angled},
-        {"Arched Pylon",
-         "an Arched Pylon",
+        {i18n::get("terrain_pylon.arched_pylon", "Arched Pylon"),
+         i18n::get("terrain_pylon.an_arched_pylon", "an Arched Pylon"),
          colors::light_sepia(),
          gfx::TileId::pylon_arched},
-        {"Coiled Pylon",
-         "a Coiled Pylon",
+        {i18n::get("terrain_pylon.coiled_pylon", "Coiled Pylon"),
+         i18n::get("terrain_pylon.a_coiled_pylon", "a Coiled Pylon"),
          colors::light_sepia(),
          gfx::TileId::pylon_coiled},
-        {"A Serrated Pylon",
-         "a Serrated Pylon",
+        {i18n::get("terrain_pylon.serrated_pylon", "A Serrated Pylon"),
+         i18n::get("terrain_pylon.a_serrated_pylon", "a Serrated Pylon"),
          colors::light_sepia(),
          gfx::TileId::pylon_serrated},
-        {"Star-crowned Pylon",
-         "a Star-crowned Pylon",
+        {i18n::get("terrain_pylon.star_crowned_pylon", "Star-crowned Pylon"),
+         i18n::get("terrain_pylon.a_star_crowned_pylon", "a Star-crowned Pylon"),
          colors::light_sepia(),
          gfx::TileId::pylon_star_crowned},
-        {"Two-pronged Pylon",
-         "a Two-pronged Pylon",
+        {i18n::get("terrain_pylon.two_pronged_pylon", "Two-pronged Pylon"),
+         i18n::get("terrain_pylon.a_two_pronged_pylon", "a Two-pronged Pylon"),
          colors::light_sepia(),
          gfx::TileId::pylon_two_pronged}};
 
@@ -246,18 +246,20 @@ std::string PylonInvis::name(Article article) const
     std::string str;
 
     if (article == Article::a) {
-        str = "a";
+        str = i18n::get("terrain_pylon.article_a", "a");
     }
     else {
-        str = "the";
+        str = i18n::get("terrain_pylon.article_the", "the");
     }
 
-    return str + " Cloaking Pylon";
+    return str + i18n::get("terrain_pylon.cloaking_pylon_name", " Cloaking Pylon");
 }
 
 std::string PylonInvis::effect_descr() const
 {
-    return "turns creatures invisible";
+    return i18n::get(
+        "terrain_pylon.cloaking_pylon_effect",
+        "turns creatures invisible");
 }
 
 void PylonInvis::on_new_turn()
@@ -287,18 +289,18 @@ std::string PylonSlow::name(Article article) const
     std::string str;
 
     if (article == Article::a) {
-        str = "a";
+        str = i18n::get("terrain_pylon.article_a", "a");
     }
     else {
-        str = "the";
+        str = i18n::get("terrain_pylon.article_the", "the");
     }
 
-    return str + " Slowing Pylon";
+    return str + i18n::get("terrain_pylon.slowing_pylon_name", " Slowing Pylon");
 }
 
 std::string PylonSlow::effect_descr() const
 {
-    return "slows creatures";
+    return i18n::get("terrain_pylon.slowing_pylon_effect", "slows creatures");
 }
 
 void PylonSlow::on_new_turn()
@@ -327,18 +329,21 @@ std::string PylonHaste::name(Article article) const
     std::string str;
 
     if (article == Article::a) {
-        str = "an";
+        str = i18n::get("terrain_pylon.article_an", "an");
     }
     else {
-        str = "the";
+        str = i18n::get("terrain_pylon.article_the", "the");
     }
 
-    return str + " Accelerating Pylon";
+    return str +
+           i18n::get("terrain_pylon.accelerating_pylon_name", " Accelerating Pylon");
 }
 
 std::string PylonHaste::effect_descr() const
 {
-    return "accelerates creatures";
+    return i18n::get(
+        "terrain_pylon.accelerating_pylon_effect",
+        "accelerates creatures");
 }
 
 void PylonHaste::on_new_turn()
@@ -367,18 +372,19 @@ std::string PylonKnockback::name(Article article) const
     std::string str;
 
     if (article == Article::a) {
-        str = "a";
+        str = i18n::get("terrain_pylon.article_a", "a");
     }
     else {
-        str = "the";
+        str = i18n::get("terrain_pylon.article_the", "the");
     }
 
-    return str + " Repelling Pylon";
+    return str +
+           i18n::get("terrain_pylon.repelling_pylon_name", " Repelling Pylon");
 }
 
 std::string PylonKnockback::effect_descr() const
 {
-    return "repels creatures";
+    return i18n::get("terrain_pylon.repelling_pylon_effect", "repels creatures");
 }
 
 void PylonKnockback::on_new_turn()
@@ -430,18 +436,21 @@ std::string PylonTeleport::name(Article article) const
     std::string str;
 
     if (article == Article::a) {
-        str = "a";
+        str = i18n::get("terrain_pylon.article_a", "a");
     }
     else {
-        str = "the";
+        str = i18n::get("terrain_pylon.article_the", "the");
     }
 
-    return str + " Teleporting Pylon";
+    return str +
+           i18n::get("terrain_pylon.teleporting_pylon_name", " Teleporting Pylon");
 }
 
 std::string PylonTeleport::effect_descr() const
 {
-    return "teleports creatures";
+    return i18n::get(
+        "terrain_pylon.teleporting_pylon_effect",
+        "teleports creatures");
 }
 
 void PylonTeleport::on_new_turn()
@@ -475,18 +484,18 @@ std::string PylonTerrify::name(Article article) const
     std::string str;
 
     if (article == Article::a) {
-        str = "a";
+        str = i18n::get("terrain_pylon.article_a", "a");
     }
     else {
-        str = "the";
+        str = i18n::get("terrain_pylon.article_the", "the");
     }
 
-    return str + " Terror Pylon";
+    return str + i18n::get("terrain_pylon.terror_pylon_name", " Terror Pylon");
 }
 
 std::string PylonTerrify::effect_descr() const
 {
-    return "causes fear";
+    return i18n::get("terrain_pylon.terror_pylon_effect", "causes fear");
 }
 
 void PylonTerrify::on_new_turn()
