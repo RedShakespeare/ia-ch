@@ -1559,7 +1559,7 @@ int Spell::shock_value() const
 // -----------------------------------------------------------------------------
 std::string SpellAuraOfDecay::name() const
 {
-    return "Aura of Decay";
+    return i18n::get("spells.aura_of_decay.name", "Aura of Decay");
 }
 
 SpellId SpellAuraOfDecay::id() const
@@ -1647,18 +1647,24 @@ std::vector<std::string> SpellAuraOfDecay::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "The caster exudes death and decay. Creatures within a "
-        "distance of two steps take damage each standard turn.");
+        i18n::get(
+            "spells.aura_of_decay.descr",
+            "The caster exudes death and decay. Creatures within a "
+            "distance of two steps take damage each standard turn."));
 
     descr.push_back(
-        "The spell deals " +
+        i18n::get("spells.aura_of_decay.dmg_prefix", "The spell deals ") +
         dmg_range(skill).str() +
-        " damage to each creature.");
+        i18n::get(
+            "spells.aura_of_decay.dmg_suffix",
+            " damage to each creature."));
 
     if (skill == SpellSkill::transcendent) {
         descr.emplace_back(
-            "Any time a creature takes damage from the spell, "
-            "they may be destroyed immediately (2% chance).");
+            i18n::get(
+                "spells.aura_of_decay.instant_kill_descr",
+                "Any time a creature takes damage from the spell, "
+                "they may be destroyed immediately (2% chance)."));
     }
 
     descr.push_back(spell_duration_descr(duration_range(skill).str()));

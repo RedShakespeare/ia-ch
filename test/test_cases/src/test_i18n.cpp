@@ -1097,6 +1097,21 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.domain_descr_suffix", "\" domain.") == "”领域。");
     REQUIRE(i18n::get("spells.someone", "Someone") == "某人");
     REQUIRE(i18n::get("spells.something", "Something") == "某物");
+    REQUIRE(i18n::get("spells.aura_of_decay.name", "Aura of Decay") == "腐朽光环");
+    REQUIRE(
+        i18n::get(
+            "spells.aura_of_decay.descr",
+            "The caster exudes death and decay. Creatures within a "
+            "distance of two steps take damage each standard turn.") ==
+        "施法者散发死亡与腐朽。两步距离内的生物每个标准回合都会受到伤害。");
+    REQUIRE(i18n::get("spells.aura_of_decay.dmg_prefix", "The spell deals ") == "法术造成");
+    REQUIRE(i18n::get("spells.aura_of_decay.dmg_suffix", " damage to each creature.") == "点伤害给每个生物。");
+    REQUIRE(
+        i18n::get(
+            "spells.aura_of_decay.instant_kill_descr",
+            "Any time a creature takes damage from the spell, "
+            "they may be destroyed immediately (2% chance).") ==
+        "每当一个生物受到此法术伤害时，它都可能立即被摧毁（2% 几率）。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
