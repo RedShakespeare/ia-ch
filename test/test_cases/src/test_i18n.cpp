@@ -464,6 +464,10 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.lid_comes_off", "The lid comes off.") == "盖子脱落了。");
     REQUIRE(i18n::get("terrain.something_inside", "There is something inside.") == "里面有东西。");
     REQUIRE(i18n::get("terrain.gas_burst", "I hear a burst of gas.") == "我听到一阵气体喷出声。");
+    REQUIRE(i18n::get("terrain.tomb_air_colder", "The air suddenly feels colder.") == "空气突然变冷了。");
+    REQUIRE(i18n::get("terrain.tomb_repulsive_creeps_up", "Something repulsive creeps up from the tomb!") == "有什么令人作呕的东西从坟墓里爬了出来！");
+    REQUIRE(i18n::get("terrain.tomb_something_rises", "Something rises from the tomb!") == "有什么东西从坟墓中升起！");
+    REQUIRE(i18n::get("terrain.tomb_fumes_burst", "Fumes burst out from the tomb!") == "烟气从坟墓中喷涌而出！");
     REQUIRE(i18n::get("terrain.chest_here", "There is a chest here.") == "这里有一个箱子。");
     REQUIRE(i18n::get("terrain.chest_on_fire", "The chest is on fire.") == "箱子着火了。");
     REQUIRE(i18n::get("terrain.chest_empty", "The chest is empty.") == "箱子是空的。");

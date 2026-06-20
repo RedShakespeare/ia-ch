@@ -3917,15 +3917,21 @@ std::string Tomb::get_mon_appear_msg(const std::string& mon_id) const
     // ...) if such an inheritance system is implemented.
 
     if (d.is_ghost) {
-        return "The air suddenly feels colder.";
+        return i18n::get(
+            "terrain.tomb_air_colder",
+            "The air suddenly feels colder.");
     }
 
     if (d.natural_props[(size_t)prop::Id::ooze]) {
-        return "Something repulsive creeps up from the tomb!";
+        return i18n::get(
+            "terrain.tomb_repulsive_creeps_up",
+            "Something repulsive creeps up from the tomb!");
     }
 
     // Standard message.
-    return "Something rises from the tomb!";
+    return i18n::get(
+        "terrain.tomb_something_rises",
+        "Something rises from the tomb!");
 }
 
 void Tomb::trigger_trap_fumes() const
@@ -3934,7 +3940,9 @@ void Tomb::trigger_trap_fumes() const
 
     if (is_seen) {
         msg_log::add(
-            "Fumes burst out from the tomb!",
+            i18n::get(
+                "terrain.tomb_fumes_burst",
+                "Fumes burst out from the tomb!"),
             colors::white(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::yes);
