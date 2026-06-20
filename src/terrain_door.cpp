@@ -271,7 +271,9 @@ static void communicate_mon_bash_success(
     const std::string snd_msg =
         (is_actor_seen || is_door_seen)
         ? ""
-        : "I hear a door crashing open!";
+        : i18n::get(
+              "terrain_door.hear_door_crashing_open",
+              "I hear a door crashing open!");
 
     // NOTE: When it's a monster bashing down the door, we make the
     // sound alert other monsters since this causes nicer AI
@@ -538,9 +540,11 @@ static void communicate_mon_fail_open_blind(
 
         msg_log::add(
             actor_name_the +
-            " fumbles blindly, and fails to open a " +
+            i18n::get(
+                "terrain_door.fumbles_blindly_fail_open_a",
+                " fumbles blindly, and fails to open a ") +
             door_name +
-            ".");
+            i18n::get("terrain_door.period", "."));
     }
 }
 
@@ -608,9 +612,13 @@ static void communicate_player_fail_close_blind(
     snd.run();
 
     msg_log::add(
-        "I fumble blindly with a " +
+        i18n::get(
+            "terrain_door.fumble_blindly_close_prefix",
+            "I fumble blindly with a ") +
         door_name +
-        ", and fail to close it.");
+        i18n::get(
+            "terrain_door.fail_close_suffix",
+            ", and fail to close it."));
 }
 
 static std::vector<std::string> get_warded_door_summon_bucket_for_dlvl_range(

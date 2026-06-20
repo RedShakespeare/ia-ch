@@ -320,6 +320,19 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "terrain_door.shotgun_blown_to_pieces_suffix",
             " is blown to pieces!") == "被轰成碎片！");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.hear_door_crashing_open",
+            "I hear a door crashing open!") == "我听到一扇门被撞开！");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.fumbles_blindly_fail_open_a",
+            " fumbles blindly, and fails to open a ") == "盲目地摸索着，但没能打开一扇");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.fumble_blindly_close_prefix",
+            "I fumble blindly with a ") == "我盲目地摸索着一扇");
+    REQUIRE(i18n::get("terrain_door.fail_close_suffix", ", and fail to close it.") == "，但没能关上。");
     REQUIRE(i18n::get("terrain_door.open_prefix", "I open the ") == "我打开了");
     REQUIRE(i18n::get("terrain_door.close_prefix", "I close the ") == "我关上了");
     REQUIRE(i18n::get("terrain_door.period", ".") == "。");
