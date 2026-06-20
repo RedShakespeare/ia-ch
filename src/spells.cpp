@@ -6049,8 +6049,12 @@ std::vector<std::string> SpellCurse::descr_specific(SpellSkill skill) const
 
     descr.emplace_back(
         skill == SpellSkill::basic
-            ? "Affects one random visible hostile creature."
-            : "Affects all visible hostile creatures.");
+            ? i18n::get(
+                  "spells.target.one_visible_hostile",
+                  "Affects one random visible hostile creature.")
+            : i18n::get(
+                  "spells.target.all_visible_hostile",
+                  "Affects all visible hostile creatures."));
 
     descr.emplace_back(spell_duration_descr(duration_range(skill).str()));
 
@@ -6205,8 +6209,12 @@ std::vector<std::string> SpellPoison::descr_specific(SpellSkill skill) const
 
     descr.emplace_back(
         skill == SpellSkill::basic
-            ? "Affects one random visible hostile creature."
-            : "Affects all visible hostile creatures.");
+            ? i18n::get(
+                  "spells.target.one_visible_hostile",
+                  "Affects one random visible hostile creature.")
+            : i18n::get(
+                  "spells.target.all_visible_hostile",
+                  "Affects all visible hostile creatures."));
 
     descr.push_back(spell_duration_descr(duration_range(skill).str()));
 
@@ -6480,8 +6488,12 @@ std::vector<std::string> SpellEnfeeble::descr_specific(
 
     descr.emplace_back(
         skill == SpellSkill::basic
-            ? "Affects one random visible hostile creature."
-            : "Affects all visible hostile creatures.");
+            ? i18n::get(
+                  "spells.target.one_visible_hostile",
+                  "Affects one random visible hostile creature.")
+            : i18n::get(
+                  "spells.target.all_visible_hostile",
+                  "Affects all visible hostile creatures."));
 
     descr.push_back(spell_duration_descr(duration_range(skill).str()));
 
