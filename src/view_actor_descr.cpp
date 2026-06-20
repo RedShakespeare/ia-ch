@@ -23,6 +23,7 @@
 #include "colors.hpp"
 #include "debug.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
 #include "item.hpp"
@@ -197,17 +198,27 @@ static std::string get_mon_memory_turns_descr(
             std::to_string(nr_turns_aware);
 
         return name_a +
-            " will remember hostile creatures for at least "
-            "{COLOR_DARK_YELLOW}" +
+            i18n::get(
+                "view_actor_descr.remember_for_at_least",
+                " will remember hostile creatures for at least ") +
+            i18n::get(
+                "view_actor_descr.color_dark_yellow",
+                "{COLOR_DARK_YELLOW}") +
             nr_turns_aware_str +
-            "{_}turns{reset_color}.";
+            i18n::get(
+                "view_actor_descr.turns_suffix",
+                "{_}turns{reset_color}.");
     }
     else {
         // Very high number of turns awareness
         return (
             name_a +
-            " remembers hostile creatures for a "
-            "{COLOR_DARK_YELLOW}very long time{reset_color}.");
+            i18n::get(
+                "view_actor_descr.remembers_for_a",
+                " remembers hostile creatures for a ") +
+            i18n::get(
+                "view_actor_descr.very_long_time",
+                "{COLOR_DARK_YELLOW}very long time{reset_color}."));
     }
 }
 
@@ -215,16 +226,16 @@ static std::string mon_speed_type_to_str(const actor::Speed speed)
 {
     switch (speed) {
     case actor::Speed::slow:
-        return "slowly";
+        return i18n::get("view_actor_descr.speed_slowly", "slowly");
 
     case actor::Speed::normal:
         return "";
 
     case actor::Speed::fast:
-        return "fast";
+        return i18n::get("view_actor_descr.speed_fast", "fast");
 
     case actor::Speed::very_fast:
-        return "very swiftly";
+        return i18n::get("view_actor_descr.speed_very_swiftly", "very swiftly");
     }
 
     ASSERT(false);
@@ -245,15 +256,19 @@ static std::string get_mon_speed_descr(
     if (actor_data.is_unique) {
         return (
             actor::name_the(actor) +
-            " appears to move{_}" +
+            i18n::get(
+                "view_actor_descr.appears_to_move_suffix",
+                " appears to move{_}") +
             speed_type_str +
-            ".");
+            i18n::get("view_actor_descr.period", "."));
     }
     else {
         return (
-            "They appear to move{_}" +
+            i18n::get(
+                "view_actor_descr.they_appear_to_move",
+                "They appear to move{_}") +
             speed_type_str +
-            ".");
+            i18n::get("view_actor_descr.period", "."));
     }
 }
 
@@ -264,25 +279,31 @@ static MonShockStrings mon_shock_lvl_to_strings(const MonShockLvl shock_lvl)
     switch (shock_lvl) {
     case MonShockLvl::unsettling:
         result.color_fmt_str = "{COLOR_DARK_BROWN}";
-        result.shock_str = "unsettling";
+        result.shock_str = i18n::get(
+            "view_actor_descr.shock_unsettling",
+            "unsettling");
         result.punct_str = ".";
         break;
 
     case MonShockLvl::frightening:
         result.color_fmt_str = "{COLOR_GRAY}";
-        result.shock_str = "frightening";
+        result.shock_str = i18n::get(
+            "view_actor_descr.shock_frightening",
+            "frightening");
         result.punct_str = ".";
         break;
 
     case MonShockLvl::terrifying:
         result.color_fmt_str = "{COLOR_RED}";
-        result.shock_str = "terrifying";
+        result.shock_str = i18n::get("view_actor_descr.shock_terrifying", "terrifying");
         result.punct_str = "!";
         break;
 
     case MonShockLvl::mind_shattering:
         result.color_fmt_str = "{COLOR_LIGHT_RED}";
-        result.shock_str = "mind shattering";
+        result.shock_str = i18n::get(
+            "view_actor_descr.shock_mind_shattering",
+            "mind shattering");
         result.punct_str = "!";
         break;
 
@@ -306,16 +327,17 @@ static std::string get_mon_shock_descr(
 
     const std::string prefix_str =
         actor_data.is_unique
-        ? (actor::name_the(actor) + " is ")
-        : ("They are ");
+        ? (actor::name_the(actor) +
+           i18n::get("view_actor_descr.unique_is", " is "))
+        : i18n::get("view_actor_descr.they_are", "They are ");
 
     return (
         shock_strings.color_fmt_str +
         prefix_str +
         shock_strings.shock_str +
-        " to behold" +
+        i18n::get("view_actor_descr.to_behold", " to behold") +
         shock_strings.punct_str +
-        "{reset_color}");
+        i18n::get("view_actor_descr.color_reset", "{reset_color}"));
 }
 
 static std::string get_mon_wielded_wpn_str(
@@ -331,7 +353,7 @@ static std::string get_mon_wielded_wpn_str(
     const std::string pronoun_str =
         actor_data.is_unique
         ? actor::name_the(actor)
-        : "It";
+        : i18n::get("view_actor_descr.it", "It");
 
     const std::string wpn_name_a =
         wpn->name(
@@ -339,7 +361,10 @@ static std::string get_mon_wielded_wpn_str(
             ItemNameInfo::none,
             ItemNameAttackInfo::none);
 
-    return pronoun_str + " is wielding " + wpn_name_a + ".";
+    return pronoun_str +
+        i18n::get("view_actor_descr.is_wielding", " is wielding ") +
+        wpn_name_a +
+        i18n::get("view_actor_descr.period", ".");
 }
 
 static std::string get_mon_current_health_descr(const actor::Actor& actor)
@@ -350,8 +375,12 @@ static std::string get_mon_current_health_descr(const actor::Actor& actor)
 
     std::string str =
         (hp_pct >= 100)
-        ? "They are at full health."
-        : ("They are at " + std::to_string(hp_pct) + "% health.");
+        ? i18n::get(
+              "view_actor_descr.full_health",
+              "They are at full health.")
+        : (i18n::get("view_actor_descr.health_prefix", "They are at ") +
+           std::to_string(hp_pct) +
+           i18n::get("view_actor_descr.health_suffix", "% health."));
 
     return str;
 }

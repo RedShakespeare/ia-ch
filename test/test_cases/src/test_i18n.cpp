@@ -239,6 +239,60 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("highscore.browsing_title", "Browsing high scores") == "浏览高分记录");
     REQUIRE(i18n::get("manual.browsing_title", "Browsing manual") == "浏览手册");
     REQUIRE(i18n::get("character_descr.title", "Character description") == "角色描述");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.remember_for_at_least",
+            " will remember hostile creatures for at least ") == "至少会记住敌对生物");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.color_dark_yellow",
+            "{COLOR_DARK_YELLOW}") == "{COLOR_DARK_YELLOW}");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.turns_suffix",
+            "{_}turns{reset_color}.") == "{_}回合{reset_color}。");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.remembers_for_a",
+            " remembers hostile creatures for a ") == "会记住敌对生物");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.very_long_time",
+            "{COLOR_DARK_YELLOW}very long time{reset_color}.") == "{COLOR_DARK_YELLOW}非常久{reset_color}。");
+    REQUIRE(i18n::get("view_actor_descr.speed_slowly", "slowly") == "缓慢");
+    REQUIRE(i18n::get("view_actor_descr.speed_fast", "fast") == "快速");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.speed_very_swiftly",
+            "very swiftly") == "非常迅速");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.appears_to_move_suffix",
+            " appears to move{_}") == "看起来移动");
+    REQUIRE(i18n::get("view_actor_descr.period", ".") == "。");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.they_appear_to_move",
+            "They appear to move{_}") == "它们看起来移动");
+    REQUIRE(i18n::get("view_actor_descr.shock_unsettling", "unsettling") == "令人不安");
+    REQUIRE(i18n::get("view_actor_descr.shock_frightening", "frightening") == "令人恐惧");
+    REQUIRE(i18n::get("view_actor_descr.shock_terrifying", "terrifying") == "恐怖");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.shock_mind_shattering",
+            "mind shattering") == "震碎心智");
+    REQUIRE(i18n::get("view_actor_descr.unique_is", " is ") == "看起来");
+    REQUIRE(i18n::get("view_actor_descr.they_are", "They are ") == "它们看起来");
+    REQUIRE(i18n::get("view_actor_descr.to_behold", " to behold") == "");
+    REQUIRE(i18n::get("view_actor_descr.color_reset", "{reset_color}") == "{reset_color}");
+    REQUIRE(i18n::get("view_actor_descr.it", "It") == "它");
+    REQUIRE(i18n::get("view_actor_descr.is_wielding", " is wielding ") == "正持有");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.full_health",
+            "They are at full health.") == "它们生命值全满。");
+    REQUIRE(i18n::get("view_actor_descr.health_prefix", "They are at ") == "它们生命值为");
+    REQUIRE(i18n::get("view_actor_descr.health_suffix", "% health.") == "%。");
     REQUIRE(i18n::get("game_over_summary.title", "Game summary") == "游戏总结");
     REQUIRE(i18n::get("inventory.slot.weapon", "Weapon") == "武器");
     REQUIRE(i18n::get("inventory.browsing_title", "Browsing inventory") == "浏览物品栏");
