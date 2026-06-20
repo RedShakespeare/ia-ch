@@ -1665,6 +1665,42 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("item_data.intr_energy_engulf.attack_other", "吞没");
     require_translation("item_data.intr_spores.attack_other", "释放孢子到");
     require_translation("item_data.intr_web_bola.attack_other", "发射蛛网流星索");
+    require_translation("item_data.armor_leather_jacket.name", "皮夹克");
+    require_translation("item_data.armor_leather_jacket.name_a", "一件皮夹克");
+    require_translation("item_data.armor_leather_jacket.base_descr", "它提供一些保护。");
+    require_translation("item_data.armor_heavy_coat.name", "厚外套");
+    require_translation("item_data.armor_heavy_coat.name_a", "一件厚外套");
+    require_translation("item_data.armor_heavy_coat.base_descr", "它提供不错的保护，代价是让移动稍微更困难（-5%潜行，-5%闪避）。");
+    require_translation("item_data.armor_iron_suit.name", "铁甲");
+    require_translation("item_data.armor_iron_suit.name_a", "一套铁甲");
+    require_translation("item_data.armor_iron_suit.base_descr_1", "一套由金属板、螺栓和皮带构成的粗制铠甲。");
+    require_translation("item_data.armor_iron_suit.base_descr_2", "它可以吸收大量伤害，但会让移动困难得多（-20%潜行，-20%闪避）。");
+    require_translation("item_data.armor_iron_suit.land_on_hard_snd_msg", "我听到一声撞击巨响。");
+    require_translation("item_data.armor_flak_jacket.name", "防弹背心");
+    require_translation("item_data.armor_flak_jacket.name_a", "一件防弹背心");
+    require_translation("item_data.armor_flak_jacket.base_descr_1", "一种由缝入背心的钢板组成的护甲。");
+    require_translation("item_data.armor_flak_jacket.base_descr_2", "它相对于重量能提供非常好的保护，但穿起来有些笨重（-10%潜行，-10%闪避）。");
+    require_translation("item_data.armor_flak_jacket.land_on_hard_snd_msg", "我听到一声闷响。");
+    require_translation("item_data.armor_asb_suit.name", "石棉防护服");
+    require_translation("item_data.armor_asb_suit.name_a", "一套石棉防护服");
+    require_translation("item_data.armor_asb_suit.base_descr_1", "一件石棉织物制成的连体工作服，包括兜帽、炉用面罩、手套和鞋子。");
+    require_translation("item_data.armor_asb_suit.base_descr_2", "它保护穿戴者免受火焰和电击伤害，也能抵御烟、烟雾和毒气。");
+    require_translation("item_data.armor_asb_suit.base_descr_3", "它穿起来有些笨重（-10%潜行，-10%闪避）。");
+    require_translation("item_data.armor_mi_go.name", "米-戈生体护甲");
+    require_translation("item_data.armor_mi_go.name_a", "一件米-戈生体护甲");
+    require_translation("item_data.armor_mi_go.base_descr", "米-戈创造的极其耐用的生物护甲。");
+    require_translation("item_data.gas_mask.name", "防毒面具");
+    require_translation("item_data.gas_mask.name_a", "一个防毒面具");
+    require_translation(
+        "item_data.gas_mask.base_descr_1",
+        "保护眼睛、喉咙和肺部免受烟尘与烟雾伤害。它的有效使用寿命有限，与滤芯的吸附能力有关。");
+    require_translation(
+        "item_data.gas_mask.base_descr_2",
+        "由于眼窗很小，瞄准会稍微更困难，也更难发现潜行的敌人和隐藏物体（-10%近战和远程命中率，-6%搜索）。");
+    require_translation("item_data.torture_collar.name", "折磨项圈");
+    require_translation("item_data.torture_collar.name_a", "一个折磨项圈");
+    require_translation("item_data.torture_collar.base_descr_1", "一种可怖的折磨器具，尖刺刺入佩戴者颈部。它无法被取下。");
+    require_translation("item_data.torture_collar.base_descr_2", "戴着项圈行走需要额外回合，潜行和闪避降低20%。不过，佩戴项圈会让苦修者更能承受肉体痛苦，护甲增加3点。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");

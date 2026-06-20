@@ -1644,9 +1644,12 @@ void init()
 
     reset_data(d, ItemType::armor);
     d.id = Id::armor_leather_jacket;
-    d.base_name = {"Leather Jacket", "", "a Leather Jacket"};
+    d.base_name = {
+        tr("armor_leather_jacket.name", "Leather Jacket"),
+        "",
+        tr("armor_leather_jacket.name_a", "a Leather Jacket")};
     d.base_descr = {
-        "It offers some protection."};
+        tr("armor_leather_jacket.base_descr", "It offers some protection.")};
     d.weight = Weight::light;
     d.color = colors::brown();
     d.spawn_std_range.min = 1;
@@ -1658,10 +1661,15 @@ void init()
 
     reset_data(d, ItemType::armor);
     d.id = Id::armor_heavy_coat;
-    d.base_name = {"Heavy Coat", "", "a Heavy Coat"};
+    d.base_name = {
+        tr("armor_heavy_coat.name", "Heavy Coat"),
+        "",
+        tr("armor_heavy_coat.name_a", "a Heavy Coat")};
     d.base_descr = {
-        "It offers decent protection, at the cost of making movement "
-        "slightly more difficult (-5% stealth, -5% dodging)."};
+        tr(
+            "armor_heavy_coat.base_descr",
+            "It offers decent protection, at the cost of making movement "
+            "slightly more difficult (-5% stealth, -5% dodging).")};
     d.ability_mods_while_equipped[(size_t)AbilityId::stealth] = -5;
     d.ability_mods_while_equipped[(size_t)AbilityId::dodging] = -5;
     d.weight = Weight::medium;
@@ -1675,13 +1683,20 @@ void init()
 
     reset_data(d, ItemType::armor);
     d.id = Id::armor_iron_suit;
-    d.base_name = {"Iron Suit", "", "an Iron Suit"};
+    d.base_name = {
+        tr("armor_iron_suit.name", "Iron Suit"),
+        "",
+        tr("armor_iron_suit.name_a", "an Iron Suit")};
     d.base_descr = {
-        "A crude armour constructed from metal plates, bolts, and "
-        "leather straps.",
+        tr(
+            "armor_iron_suit.base_descr_1",
+            "A crude armour constructed from metal plates, bolts, and "
+            "leather straps."),
 
-        "It can absorb a high amount of damage, but it makes movement "
-        "a lot more difficult (-20% stealth, -20% dodging)."};
+        tr(
+            "armor_iron_suit.base_descr_2",
+            "It can absorb a high amount of damage, but it makes movement "
+            "a lot more difficult (-20% stealth, -20% dodging).")};
     d.ability_mods_while_equipped[(size_t)AbilityId::stealth] = -20;
     d.ability_mods_while_equipped[(size_t)AbilityId::dodging] = -20;
     d.weight = Weight::extra_heavy;
@@ -1689,18 +1704,26 @@ void init()
     d.spawn_std_range.min = 2;
     d.armor.armor_points = 5;
     d.armor.dmg_to_durability_factor = 0.3;
-    d.land_on_hard_snd_msg = "I hear a crashing sound.";
+    d.land_on_hard_snd_msg =
+        tr("armor_iron_suit.land_on_hard_snd_msg", "I hear a crashing sound.");
     d.native_containers.push_back(terrain::Id::cabinet);
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::armor);
     d.id = Id::armor_flak_jacket;
-    d.base_name = {"Flak Jacket", "", "a Flak Jacket"};
+    d.base_name = {
+        tr("armor_flak_jacket.name", "Flak Jacket"),
+        "",
+        tr("armor_flak_jacket.name_a", "a Flak Jacket")};
     d.base_descr = {
-        "An armour consisting of steel plates sewn into a waistcoat.",
+        tr(
+            "armor_flak_jacket.base_descr_1",
+            "An armour consisting of steel plates sewn into a waistcoat."),
 
-        "It offers very good protection for its weight, but is "
-        "somewhat bulky to wear (-10% stealth, -10% dodging)."};
+        tr(
+            "armor_flak_jacket.base_descr_2",
+            "It offers very good protection for its weight, but is "
+            "somewhat bulky to wear (-10% stealth, -10% dodging).")};
     d.ability_mods_while_equipped[(size_t)AbilityId::stealth] = -10;
     d.ability_mods_while_equipped[(size_t)AbilityId::dodging] = -10;
     d.weight = Weight::medium;
@@ -1708,21 +1731,31 @@ void init()
     d.spawn_std_range.min = 3;
     d.armor.armor_points = 3;
     d.armor.dmg_to_durability_factor = 0.5;
-    d.land_on_hard_snd_msg = "I hear a thudding sound.";
+    d.land_on_hard_snd_msg =
+        tr("armor_flak_jacket.land_on_hard_snd_msg", "I hear a thudding sound.");
     d.native_containers.push_back(terrain::Id::cabinet);
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::armor);
     d.id = Id::armor_asb_suit;
-    d.base_name = {"Asbestos Suit", "", "an Asbestos Suit"};
+    d.base_name = {
+        tr("armor_asb_suit.name", "Asbestos Suit"),
+        "",
+        tr("armor_asb_suit.name_a", "an Asbestos Suit")};
     d.base_descr = {
-        "A one piece overall of asbestos fabric, including a hood, "
-        "furnace mask, gloves and shoes.",
+        tr(
+            "armor_asb_suit.base_descr_1",
+            "A one piece overall of asbestos fabric, including a hood, "
+            "furnace mask, gloves and shoes."),
 
-        "It protects the wearer against fire and electricity, "
-        "and also against smoke, fumes and gas.",
+        tr(
+            "armor_asb_suit.base_descr_2",
+            "It protects the wearer against fire and electricity, "
+            "and also against smoke, fumes and gas."),
 
-        "It is somewhat bulky to wear (-10% stealth, -10% dodging)."};
+        tr(
+            "armor_asb_suit.base_descr_3",
+            "It is somewhat bulky to wear (-10% stealth, -10% dodging).")};
     d.ability_mods_while_equipped[(size_t)AbilityId::stealth] = -10;
     d.ability_mods_while_equipped[(size_t)AbilityId::dodging] = -10;
     d.weight = Weight::medium;
@@ -1737,9 +1770,14 @@ void init()
 
     reset_data(d, ItemType::armor);
     d.id = Id::armor_mi_go;
-    d.base_name = {"Mi-Go Bio-armor", "", "a Mi-Go Bio-armor"};
+    d.base_name = {
+        tr("armor_mi_go.name", "Mi-Go Bio-armor"),
+        "",
+        tr("armor_mi_go.name_a", "a Mi-Go Bio-armor")};
     d.base_descr = {
-        "An extremely durable biological armor created by the Mi-Go."};
+        tr(
+            "armor_mi_go.base_descr",
+            "An extremely durable biological armor created by the Mi-Go.")};
     d.spawn_std_range = Range(-1, -1);
     d.weight = Weight::medium;
     d.color = colors::magenta();
@@ -1751,16 +1789,23 @@ void init()
 
     reset_data(d, ItemType::head_wear);
     d.id = Id::gas_mask;
-    d.base_name = {"Gas Mask", "", "a Gas Mask"};
+    d.base_name = {
+        tr("gas_mask.name", "Gas Mask"),
+        "",
+        tr("gas_mask.name_a", "a Gas Mask")};
     d.base_descr = {
-        "Protects the eyes, throat and lungs from smoke and fumes. It "
-        "has a limited useful lifespan that is related to the "
-        "absorbent capacity of the filter. ",
+        tr(
+            "gas_mask.base_descr_1",
+            "Protects the eyes, throat and lungs from smoke and fumes. It "
+            "has a limited useful lifespan that is related to the "
+            "absorbent capacity of the filter. "),
 
-        "Due to the small eye windows, aiming is slightly more "
-        "difficult, and it is harder to detect sneaking enemies and "
-        "hidden objects "
-        "(-10% melee and ranged hit chance, -6% searching)."};
+        tr(
+            "gas_mask.base_descr_2",
+            "Due to the small eye windows, aiming is slightly more "
+            "difficult, and it is harder to detect sneaking enemies and "
+            "hidden objects "
+            "(-10% melee and ranged hit chance, -6% searching).")};
     d.ability_mods_while_equipped[(size_t)AbilityId::melee] = -10;
     d.ability_mods_while_equipped[(size_t)AbilityId::ranged] = -10;
     d.ability_mods_while_equipped[(size_t)AbilityId::searching] = -6;
@@ -1776,15 +1821,22 @@ void init()
 
     reset_data(d, ItemType::head_wear);
     d.id = Id::torture_collar;
-    d.base_name = {"Torture Collar", "", "a Torture Collar"};
+    d.base_name = {
+        tr("torture_collar.name", "Torture Collar"),
+        "",
+        tr("torture_collar.name_a", "a Torture Collar")};
     d.base_descr = {
-        "A gruesome torture device with spikes driven into the neck "
-        "of the wearer. It is impossible to take off.",
+        tr(
+            "torture_collar.base_descr_1",
+            "A gruesome torture device with spikes driven into the neck "
+            "of the wearer. It is impossible to take off."),
 
-        "Walking with the collar requires extra turns, and stealth "
-        "and evasion are reduced by 20%. However, wearing the "
-        "collar hardens the Flagellant against physical suffering, "
-        "armor is increased by 3 points."};
+        tr(
+            "torture_collar.base_descr_2",
+            "Walking with the collar requires extra turns, and stealth "
+            "and evasion are reduced by 20%. However, wearing the "
+            "collar hardens the Flagellant against physical suffering, "
+            "armor is increased by 3 points.")};
     d.is_stackable = false;
     d.color = colors::red();
     d.tile = gfx::TileId::torture_collar;
