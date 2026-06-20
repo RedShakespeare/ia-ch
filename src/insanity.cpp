@@ -17,6 +17,7 @@
 #include "audio_data.hpp"
 #include "debug.hpp"
 #include "game.hpp"
+#include "i18n.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
 #include "msg_log.hpp"
@@ -45,7 +46,11 @@ void InsSympt::on_start()
 
     const std::string heading = start_heading();
 
-    const std::string msg = "Insanity draws nearer... " + start_msg();
+    const std::string msg =
+        i18n::get(
+            "insanity.draws_nearer_prefix",
+            "Insanity draws nearer... ") +
+        start_msg();
 
     ASSERT(!heading.empty() && !msg.empty());
 
@@ -99,8 +104,10 @@ void InsReduceXp::on_start_hook()
 
 std::string InsReduceXp::start_msg() const
 {
-    return "Thanks to the mercy of the mind, some past experiences are "
-           "forgotten (-25% XP).";
+    return i18n::get(
+        "insanity.reduce_xp_start",
+        "Thanks to the mercy of the mind, some past experiences are "
+        "forgotten (-25% XP).");
 }
 
 bool InsScream::is_allowed() const
@@ -118,10 +125,14 @@ void InsScream::on_start_hook()
 std::string InsScream::start_msg() const
 {
     if (rnd::coin_toss()) {
-        return "I let out a terrified shriek.";
+        return i18n::get(
+            "insanity.scream_shriek",
+            "I let out a terrified shriek.");
     }
     else {
-        return "I scream in terror.";
+        return i18n::get(
+            "insanity.scream_terror",
+            "I scream in terror.");
     }
 }
 

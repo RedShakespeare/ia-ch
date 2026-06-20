@@ -148,6 +148,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "hints.kick_statue.body",
             "Statues can be kicked over to "
             "damage and stun a creature on the other side.") == "可以踢倒雕像，伤害并击晕另一侧的生物。");
+    REQUIRE(i18n::get("insanity.draws_nearer_prefix", "Insanity draws nearer... ") == "疯狂逼近……");
+    REQUIRE(
+        i18n::get(
+            "insanity.reduce_xp_start",
+            "Thanks to the mercy of the mind, some past experiences are "
+            "forgotten (-25% XP).") == "多亏心智的仁慈，一些过去的经历被遗忘了（-25% 经验）。");
+    REQUIRE(i18n::get("insanity.scream_shriek", "I let out a terrified shriek.") == "我发出一声惊恐的尖叫。");
+    REQUIRE(i18n::get("insanity.scream_terror", "I scream in terror.") == "我恐惧地尖叫。");
     REQUIRE(
         i18n::get(
             "hints.temporary_and_permanent_shock.title",
