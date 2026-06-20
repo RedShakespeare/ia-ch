@@ -1590,6 +1590,12 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "Distorts the perception of the spell's victims, causing "
             "all other creatures to be misidentified as enemies.") ==
         "扭曲法术受害者的感知，使其把所有其他生物都误认为敌人。");
+    REQUIRE(i18n::get("spells.disease.name", "Disease") == "疾病");
+    REQUIRE(
+        i18n::get(
+            "spells.disease.afflict_prefix",
+            "A horrible disease is starting to afflict ") ==
+        "一种可怕的疾病开始折磨");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

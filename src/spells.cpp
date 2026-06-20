@@ -7166,7 +7166,7 @@ int SpellDisease::mon_cooldown() const
 
 std::string SpellDisease::name() const
 {
-    return "Disease";
+    return i18n::get("spells.disease.name", "Disease");
 }
 
 SpellId SpellDisease::id() const
@@ -7242,13 +7242,17 @@ void SpellDisease::run_effect(
     if (actor::can_player_see_actor(*target)) {
         const std::string actor_name =
             actor::is_player(target)
-            ? "me"
+            ? i18n::get("spells.me", "me")
             : actor::name_the(*target);
 
         msg_log::add(
-            "A horrible disease is starting to afflict " +
+            i18n::get(
+                "spells.disease.afflict_prefix",
+                "A horrible disease is starting to afflict ") +
             actor_name +
-            "!");
+            i18n::get(
+                "spells.exclamation",
+                "!"));
     }
 
     target->m_properties.apply(prop::make(prop::Id::diseased));
