@@ -1068,11 +1068,15 @@ static void init_data_list()
 
     d.id = prop::Id::radiant_fov;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Radiant";
-    d.name_short = "Radiant";
-    d.descr = "Emanating a bright light.";
-    d.msg_start_player = "A bright light shines around me.";
-    d.msg_end_player = "It suddenly gets darker.";
+    d.name = i18n::get("property_data.radiant_fov.name", "Radiant");
+    d.name_short = i18n::get("property_data.radiant_fov.name_short", "Radiant");
+    d.descr = i18n::get("property_data.radiant_fov.descr", "Emanating a bright light.");
+    d.msg_start_player =
+        i18n::get(
+            "property_data.radiant_fov.msg_start_player",
+            "A bright light shines around me.");
+    d.msg_end_player =
+        i18n::get("property_data.radiant_fov.msg_end_player", "It suddenly gets darker.");
     d.allow_display_turns = true;
     d.update_vision_on_toggled = true;
     d.allow_test_on_bot = true;
@@ -1081,12 +1085,13 @@ static void init_data_list()
 
     d.id = prop::Id::invis;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "Invisible";
-    d.name_short = "Invisible";
-    d.descr = "Cannot be detected by normal sight.";
-    d.msg_start_player = "I am out of sight!";
-    d.msg_start_mon = "{} is out of sight!";
-    d.msg_end_player = "I am no longer invisible.";
+    d.name = i18n::get("property_data.invis.name", "Invisible");
+    d.name_short = i18n::get("property_data.invis.name_short", "Invisible");
+    d.descr = i18n::get("property_data.invis.descr", "Cannot be detected by normal sight.");
+    d.msg_start_player = i18n::get("property_data.invis.msg_start_player", "I am out of sight!");
+    d.msg_start_mon = i18n::get("property_data.invis.msg_start_mon", "{} is out of sight!");
+    d.msg_end_player =
+        i18n::get("property_data.invis.msg_end_player", "I am no longer invisible.");
     d.allow_display_turns = true;
     d.update_vision_on_toggled = true;
     d.allow_test_on_bot = true;
@@ -1095,14 +1100,15 @@ static void init_data_list()
 
     d.id = prop::Id::cloaked;
     d.std_rnd_turns = Range(5, 7);
-    d.name = "Cloaked";
-    d.name_short = "Cloaked";
-    d.descr =
+    d.name = i18n::get("property_data.cloaked.name", "Cloaked");
+    d.name_short = i18n::get("property_data.cloaked.name_short", "Cloaked");
+    d.descr = i18n::get(
+        "property_data.cloaked.descr",
         "Cannot be detected by normal sight, ends if attacking or "
-        "casting spells.";
-    d.msg_start_player = "I am cloaked!";
-    d.msg_start_mon = "{} is cloaked!";
-    d.msg_end_player = "My cloak fades.";
+        "casting spells.");
+    d.msg_start_player = i18n::get("property_data.cloaked.msg_start_player", "I am cloaked!");
+    d.msg_start_mon = i18n::get("property_data.cloaked.msg_start_mon", "{} is cloaked!");
+    d.msg_end_player = i18n::get("property_data.cloaked.msg_end_player", "My cloak fades.");
     d.allow_display_turns = true;
     d.update_vision_on_toggled = true;
     d.allow_test_on_bot = true;
@@ -1114,13 +1120,18 @@ static void init_data_list()
 
     d.id = prop::Id::see_invis;
     d.std_rnd_turns = Range(50, 100);
-    d.name = "See Invisible";
-    d.name_short = "See Invis";
-    d.descr = "Can see invisible creatures, cannot be blinded.";
-    d.msg_start_player = "My eyes perceive the invisible.";
-    d.msg_start_mon = "{} seems very keen.";
-    d.msg_end_player = "My eyes can no longer perceive the invisible.";
-    d.msg_end_mon = "{} seems less keen.";
+    d.name = i18n::get("property_data.see_invis.name", "See Invisible");
+    d.name_short = i18n::get("property_data.see_invis.name_short", "See Invis");
+    d.descr = i18n::get(
+        "property_data.see_invis.descr",
+        "Can see invisible creatures, cannot be blinded.");
+    d.msg_start_player =
+        i18n::get("property_data.see_invis.msg_start_player", "My eyes perceive the invisible.");
+    d.msg_start_mon = i18n::get("property_data.see_invis.msg_start_mon", "{} seems very keen.");
+    d.msg_end_player = i18n::get(
+        "property_data.see_invis.msg_end_player",
+        "My eyes can no longer perceive the invisible.");
+    d.msg_end_mon = i18n::get("property_data.see_invis.msg_end_mon", "{} seems less keen.");
     d.allow_display_turns = true;
     d.update_vision_on_toggled = true;
     d.allow_test_on_bot = true;
