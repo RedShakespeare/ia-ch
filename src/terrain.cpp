@@ -4435,8 +4435,10 @@ void Fountain::bump(actor::Actor& actor_bumping)
         }
         else {
             msg_log::add(
-                "There is a fountain here, "
-                "but it's dried-up.");
+                i18n::get(
+                    "terrain.fountain_here_dried_up",
+                    "There is a fountain here, "
+                    "but it's dried-up."));
         }
 
         return;
@@ -4456,14 +4458,22 @@ void Fountain::bump(actor::Actor& actor_bumping)
                 text_format::first_to_lower(
                     name(Article::the));
 
-            msg = "Drink from " + name_the + "?";
+            msg =
+                i18n::get("terrain.drink_from_prefix", "Drink from ") +
+                name_the +
+                i18n::get("terrain.query_suffix", "?");
         }
         else {
             const std::string name_a =
                 text_format::first_to_lower(
                     name(Article::a));
 
-            msg = "There is " + name_a + " here. Drink from it?";
+            msg =
+                i18n::get("terrain.there_is_prefix", "There is ") +
+                name_a +
+                i18n::get(
+                    "terrain.here_drink_from_it_suffix",
+                    " here. Drink from it?");
         }
 
         msg += " " + common_text::g_yes_or_no_hint;
@@ -4612,8 +4622,9 @@ void Fountain::bless()
                 name(Article::the));
 
         msg_log::add(
-            "The water in " + name_the +
-            " seems clearer.");
+            i18n::get("terrain.water_in_prefix", "The water in ") +
+            name_the +
+            i18n::get("terrain.seems_clearer_suffix", " seems clearer."));
     }
 }
 
@@ -4644,9 +4655,9 @@ void Fountain::curse()
                 name(Article::the));
 
         msg_log::add(
-            "The water in " +
+            i18n::get("terrain.water_in_prefix", "The water in ") +
             name_the +
-            " seems murkier.");
+            i18n::get("terrain.seems_murkier_suffix", " seems murkier."));
     }
 }
 

@@ -464,7 +464,19 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.lock_resists", "The lock resists.") == "锁抵住了。");
     REQUIRE(i18n::get("terrain.fountain_destroyed", "The fountain is destroyed.") == "喷泉被摧毁了。");
     REQUIRE(i18n::get("terrain.fountain_dried_up", "The fountain is dried-up.") == "喷泉已经干涸。");
+    REQUIRE(
+        i18n::get(
+            "terrain.fountain_here_dried_up",
+            "There is a fountain here, "
+            "but it's dried-up.") == "这里有一座喷泉，但它已经干涸了。");
     REQUIRE(i18n::get("terrain.drink_from_fountain", "I drink from the fountain...") == "我从喷泉中饮水……");
+    REQUIRE(i18n::get("terrain.drink_from_prefix", "Drink from ") == "从");
+    REQUIRE(i18n::get("terrain.query_suffix", "?") == "？");
+    REQUIRE(i18n::get("terrain.there_is_prefix", "There is ") == "这里有");
+    REQUIRE(i18n::get("terrain.here_drink_from_it_suffix", " here. Drink from it?") == "。要从中饮水吗？");
+    REQUIRE(i18n::get("terrain.water_in_prefix", "The water in ") == "喷泉");
+    REQUIRE(i18n::get("terrain.seems_clearer_suffix", " seems clearer.") == "中的水似乎更清澈了。");
+    REQUIRE(i18n::get("terrain.seems_murkier_suffix", " seems murkier.") == "中的水似乎更浑浊了。");
     REQUIRE(i18n::get("terrain.very_refreshing", "It's very refreshing.") == "非常清爽。");
     REQUIRE(i18n::get("terrain.feel_more_powerful", "I feel more powerful!") == "我感觉更强大了！");
     REQUIRE(i18n::get("terrain.fountain_dries_up", "The fountain dries up.") == "喷泉干涸了。");
