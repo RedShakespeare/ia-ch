@@ -3098,7 +3098,7 @@ std::optional<map::MinimapAppearance> Brazier::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = colors::dark_yellow();
-    appearance.legend_text = "Brazier";
+    appearance.legend_text = i18n::get("terrain.legend_brazier", "Brazier");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -3519,7 +3519,7 @@ std::optional<map::MinimapAppearance> Tomb::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = colors::gray();
-    appearance.legend_text = "Tomb";
+    appearance.legend_text = i18n::get("terrain.legend_tomb", "Tomb");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
@@ -4385,7 +4385,7 @@ std::optional<map::MinimapAppearance> Fountain::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Fountain";
+    appearance.legend_text = i18n::get("terrain.legend_fountain", "Fountain");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
