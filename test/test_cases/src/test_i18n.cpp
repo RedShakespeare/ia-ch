@@ -1563,6 +1563,26 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "spells.slow.descr",
             "Causes the spell's victims to move more slowly.") ==
         "使法术的受害者移动得更慢。");
+    REQUIRE(i18n::get("spells.terrify.name", "Terrify") == "恐惧");
+    REQUIRE(
+        i18n::get(
+            "spells.terrify.descr",
+            "Inflicts a nightmare illusion that overwhelms its victims with dread.") ==
+        "施加一场噩梦般的幻象，使受害者被恐惧淹没。");
+    REQUIRE(
+        i18n::get(
+            "spells.terrify.descr_transcendent",
+            "Affected creatures also faint.") ==
+        "受影响的生物还会昏厥。");
+    REQUIRE(i18n::get("spells.terrify.creature_singular", "creature") == "生物");
+    REQUIRE(i18n::get("spells.terrify.creature_plural", "creatures") == "生物");
+    REQUIRE(i18n::get("spells.terrify.faint_chance_prefix", "Has a ") == "有");
+    REQUIRE(
+        i18n::get(
+            "spells.terrify.faint_chance_middle",
+            "% chance to also make affected ") ==
+        "%几率让受影响的");
+    REQUIRE(i18n::get("spells.terrify.faint_chance_suffix", " faint.") == "昏厥。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

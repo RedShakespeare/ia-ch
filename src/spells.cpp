@@ -6806,7 +6806,7 @@ bool SpellSlow::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellTerrify::name() const
 {
-    return "Terrify";
+    return i18n::get("spells.terrify.name", "Terrify");
 }
 
 SpellId SpellTerrify::id() const
@@ -6961,27 +6961,46 @@ std::vector<std::string> SpellTerrify::descr_specific(
 
     std::vector<std::string> descr;
 
-    descr.emplace_back("Inflicts a nightmare illusion that overwhelms its victims with dread.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.terrify.descr",
+            "Inflicts a nightmare illusion that overwhelms its victims with dread."));
 
     descr.emplace_back(
         skill == SpellSkill::basic
-            ? "Affects one random visible hostile creature."
-            : "Affects all visible hostile creatures.");
+            ? i18n::get(
+                "spells.target.one_visible_hostile",
+                "Affects one random visible hostile creature.")
+            : i18n::get(
+                "spells.target.all_visible_hostile",
+                "Affects all visible hostile creatures."));
 
     descr.push_back(spell_duration_descr(duration_range(skill).str()));
 
     if (skill == SpellSkill::transcendent) {
-        descr.emplace_back("Affected creatures also faint.");
+        descr.emplace_back(
+            i18n::get(
+                "spells.terrify.descr_transcendent",
+                "Affected creatures also faint."));
     }
     else {
-        const std::string creature_str = (skill == SpellSkill::basic) ? "creature" : "creatures";
+        const std::string creature_str =
+            (skill == SpellSkill::basic)
+            ? i18n::get("spells.terrify.creature_singular", "creature")
+            : i18n::get("spells.terrify.creature_plural", "creatures");
 
         descr.emplace_back(
-            "Has a " +
+            i18n::get(
+                "spells.terrify.faint_chance_prefix",
+                "Has a ") +
             std::to_string(faint_pct_chance(skill)) +
-            "% chance to also make affected " +
+            i18n::get(
+                "spells.terrify.faint_chance_middle",
+                "% chance to also make affected ") +
             creature_str +
-            " faint.");
+            i18n::get(
+                "spells.terrify.faint_chance_suffix",
+                " faint."));
     }
 
     return descr;
