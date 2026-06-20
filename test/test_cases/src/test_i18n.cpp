@@ -1506,6 +1506,24 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "spells.expulsion.forced",
             "The teleportation is forced; the target can never control it.") ==
         "这是强制传送；目标永远无法控制它。");
+    REQUIRE(i18n::get("spells.curse.name", "Curse") == "诅咒");
+    REQUIRE(
+        i18n::get(
+            "spells.curse.victims_prefix",
+            "The spell's victims are ") ==
+        "法术的受害者会变成");
+    REQUIRE(i18n::get("spells.curse.prop_open_paren", " (") == "（");
+    REQUIRE(i18n::get("spells.curse.close_paren", ")") == "）");
+    REQUIRE(
+        i18n::get(
+            "spells.curse.doom_chance_prefix",
+            "With ") ==
+        "有");
+    REQUIRE(
+        i18n::get(
+            "spells.curse.doom_chance_middle",
+            "% chance, the victims instead become ") ==
+        "%几率，受害者会转而变成");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

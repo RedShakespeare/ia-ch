@@ -5874,7 +5874,7 @@ int SpellCurse::base_max_cost(
 
 std::string SpellCurse::name() const
 {
-    return "Curse";
+    return i18n::get("spells.curse.name", "Curse");
 }
 
 SpellId SpellCurse::id() const
@@ -6007,21 +6007,35 @@ std::vector<std::string> SpellCurse::descr_specific(SpellSkill skill) const
     const prop::PropData& main_prop_data = is_below_master ? cursed_data : doomed_data;
 
     descr.emplace_back(
-        "The spell's victims are " +
+        i18n::get(
+            "spells.curse.victims_prefix",
+            "The spell's victims are ") +
         text_format::first_to_lower(main_prop_data.name) +
-        " (" +
+        i18n::get(
+            "spells.curse.prop_open_paren",
+            " (") +
         main_prop_data.descr +
-        ")");
+        i18n::get(
+            "spells.curse.close_paren",
+            ")"));
 
     if (is_below_master) {
         descr.emplace_back(
-            "With " +
+            i18n::get(
+                "spells.curse.doom_chance_prefix",
+                "With ") +
             std::to_string(pct_chance_doom(skill)) +
-            "% chance, the victims instead become " +
+            i18n::get(
+                "spells.curse.doom_chance_middle",
+                "% chance, the victims instead become ") +
             text_format::first_to_lower(doomed_data.name) +
-            " (" +
+            i18n::get(
+                "spells.curse.prop_open_paren",
+                " (") +
             doomed_data.descr +
-            ")");
+            i18n::get(
+                "spells.curse.close_paren",
+                ")"));
     }
 
     descr.emplace_back(not_alerting_mon_descr());
