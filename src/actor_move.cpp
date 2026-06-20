@@ -98,7 +98,7 @@ static void player_displace_allied_mon(actor::Actor& mon, const P& new_mon_pos)
         std::string mon_name =
             can_player_see_actor(mon)
             ? actor::name_a(mon)
-            : "it";
+            : i18n::get("actor_move.it", "it");
 
         msg_log::add(
             i18n::get("actor_move.displace_prefix", "I displace ") +

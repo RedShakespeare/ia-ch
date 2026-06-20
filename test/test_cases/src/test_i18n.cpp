@@ -411,6 +411,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("ai.looks_desperate_suffix", " looks desperate.") == "看起来绝望了。");
     REQUIRE(i18n::get("actor_move.through", "through") == "穿过");
     REQUIRE(i18n::get("actor_move.under", "under") == "从下方");
+    REQUIRE(i18n::get("actor_move.it", "it") == "它");
     REQUIRE(i18n::get("actor_move.seeps_prefix", " seeps ") == "渗");
     REQUIRE(i18n::get("actor_move.space", " ") == "");
     REQUIRE(i18n::get("actor_move.squirms_through", " squirms through ") == "钻过");
