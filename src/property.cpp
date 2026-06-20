@@ -1384,7 +1384,9 @@ void Wound::load()
 
 std::string Wound::name_short() const
 {
-    return "Wounded(" + std::to_string(m_nr_wounds) + ")";
+    return i18n::get("property.wounded_open", "Wounded(") +
+           std::to_string(m_nr_wounds) +
+           i18n::get("property.close_paren", ")");
 }
 
 int Wound::ability_mod(const AbilityId ability) const
@@ -2934,7 +2936,7 @@ PropActResult CorpseRises::on_act()
                 m_owner->m_data->corpse_name_the);
 
         msg_log::add(
-            name + " rises again!!",
+            name + i18n::get("property.rises_again_suffix", " rises again!!"),
             colors::text(),
             MsgInterruptPlayer::yes);
 
@@ -4116,9 +4118,11 @@ std::string CrimsonPassage::name_short() const
     std::string nr_str =
         (m_nr_steps_allowed >= 0)
         ? std::to_string(m_nr_steps_allowed - m_nr_steps_taken)
-        : "INF";
+        : i18n::get("property.crimson_passage_infinite", "INF");
 
-    return "Crims Psg(" + nr_str + ")";
+    return i18n::get("property.crimson_passage_short_open", "Crims Psg(") +
+           nr_str +
+           i18n::get("property.close_paren", ")");
 }
 
 int CrimsonPassage::dmg_per_step()

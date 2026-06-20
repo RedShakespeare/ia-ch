@@ -1032,6 +1032,11 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(
         i18n::get("attack_melee.stopped_at_boundary_suffix", " is stopped at the boundary.") ==
         "被挡在边界处。");
+    REQUIRE(i18n::get("property.wounded_open", "Wounded(") == "受伤（");
+    REQUIRE(i18n::get("property.close_paren", ")") == "）");
+    REQUIRE(i18n::get("property.rises_again_suffix", " rises again!!") == "再次站了起来！！");
+    REQUIRE(i18n::get("property.crimson_passage_infinite", "INF") == "无限");
+    REQUIRE(i18n::get("property.crimson_passage_short_open", "Crims Psg(") == "猩红通道（");
     REQUIRE(i18n::get("property.stopped_at_boundary_suffix", " is stopped at the boundary.") == "被挡在边界处。");
     REQUIRE(i18n::get("property.possessed_by_middle", " was possessed by ") == "被");
     REQUIRE(i18n::get("property.possessed_by_suffix", "!") == "附身了！");
