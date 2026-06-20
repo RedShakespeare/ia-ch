@@ -1664,6 +1664,9 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "however other forms of damage such as fire is still "
             "harmful).") ==
         "通过艰苦的痛苦，施法者淬炼自己的身体以抵抗物理力量（不会被普通攻击伤害，但火焰等其他形式的伤害仍然有害）。");
+    REQUIRE(i18n::get("spells.thorns.name", "Thorns") == "荆棘");
+    REQUIRE(i18n::get("spells.thorns.return_damage_prefix", "The spell returns ") == "该法术会向攻击者反弹");
+    REQUIRE(i18n::get("spells.thorns.return_damage_suffix", " damage to the attacker.") == "点伤害。");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");

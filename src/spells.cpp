@@ -8714,7 +8714,7 @@ std::vector<std::string> SpellBloodTempering::descr_specific(
 // -----------------------------------------------------------------------------
 std::string SpellThorns::name() const
 {
-    return "Thorns";
+    return i18n::get("spells.thorns.name", "Thorns");
 }
 
 SpellId SpellThorns::id() const
@@ -8804,9 +8804,13 @@ std::vector<std::string> SpellThorns::descr_specific(SpellSkill skill) const
     descr.push_back(prop::g_data[(size_t)prop::Id::thorns].descr);
 
     descr.push_back(
-        "The spell returns " +
+        i18n::get(
+            "spells.thorns.return_damage_prefix",
+            "The spell returns ") +
         dmg_range(skill).str() +
-        " damage to the attacker.");
+        i18n::get(
+            "spells.thorns.return_damage_suffix",
+            " damage to the attacker."));
 
     descr.emplace_back(spell_duration_descr(duration_range(skill).str()));
 
