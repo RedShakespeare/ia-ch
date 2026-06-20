@@ -902,9 +902,12 @@ void Gong::hit(
 
 std::string Gong::name(const Article article) const
 {
-    std::string a = (article == Article::a) ? "a " : "the ";
+    std::string a =
+        (article == Article::a)
+            ? i18n::get("terrain_gong.article_a", "a ")
+            : i18n::get("terrain_gong.article_the", "the ");
 
-    return a + "temple gong";
+    return a + i18n::get("terrain_gong.temple_gong_name", "temple gong");
 }
 
 Color Gong::color_default() const
@@ -921,7 +924,8 @@ std::optional<map::MinimapAppearance> Gong::minimap_appearance() const
     map::MinimapAppearance appearance;
 
     appearance.color = color_default();
-    appearance.legend_text = "Temple Gong";
+    appearance.legend_text =
+        i18n::get("terrain_gong.temple_gong_legend", "Temple Gong");
     appearance.symbol = map::MinimapSymbol::rectangle_edge;
 
     return appearance;
