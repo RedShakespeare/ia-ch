@@ -8103,7 +8103,7 @@ int SpellDeafen::mon_cooldown() const
 
 std::string SpellDeafen::name() const
 {
-    return "Deafen";
+    return i18n::get("spells.deafen.name", "Deafen");
 }
 
 SpellId SpellDeafen::id() const
