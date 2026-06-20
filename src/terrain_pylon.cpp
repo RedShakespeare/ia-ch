@@ -620,7 +620,9 @@ void Pylon::hit(
                 text_format::first_to_upper(
                     this->name(Article::the));
 
-            msg_log::add(terrain_name + " is destroyed.");
+            msg_log::add(
+                terrain_name +
+                i18n::get("terrain_pylon.destroyed_suffix", " is destroyed."));
         }
 
         map::update_terrain(make(Id::rubble_low, m_pos));

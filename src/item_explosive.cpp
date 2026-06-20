@@ -239,7 +239,7 @@ void Molotov::on_std_turn_player_hold_ignited()
         const P player_pos = map::g_player->m_pos;
 
         Snd snd(
-            "I hear an explosion!",
+            i18n::get("item_explosive.hear_explosion", "I hear an explosion!"),
             audio::SfxId::explosion_molotov,
             IgnoreMsgIfOriginSeen::yes,
             player_pos,
