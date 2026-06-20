@@ -1335,7 +1335,7 @@ void init()
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::player_kick;
-    d.melee.attack_msgs = {"kick", ""};
+    d.melee.attack_msgs = {tr("player_kick.attack_player", "kick"), ""};
     d.melee.hit_chance_mod = 15;
     d.melee.dmg = WpnDmg(1, 2);
     d.melee.knocks_back = true;
@@ -1348,7 +1348,7 @@ void init()
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::player_stomp;
-    d.melee.attack_msgs = {"stomp", ""};
+    d.melee.attack_msgs = {tr("player_stomp.attack_player", "stomp"), ""};
     d.melee.hit_chance_mod =
         g_data[(size_t)Id::player_kick].melee.hit_chance_mod;
     d.melee.dmg =
@@ -1361,8 +1361,11 @@ void init()
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::player_punch;
-    d.base_name = {"Punch", "", "a punch"};
-    d.melee.attack_msgs = {"punch", ""};
+    d.base_name = {
+        tr("player_punch.name", "Punch"),
+        "",
+        tr("player_punch.name_a", "a punch")};
+    d.melee.attack_msgs = {tr("player_punch.attack_player", "punch"), ""};
     d.melee.hit_chance_mod = 20;
     d.melee.dmg = WpnDmg(1, 1);
     d.melee.miss_sfx = audio::SfxId::miss_light;
@@ -1370,8 +1373,11 @@ void init()
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::player_ghoul_claw;
-    d.base_name = {"Claw", "", "clawing"};
-    d.melee.attack_msgs = {"claw", ""};
+    d.base_name = {
+        tr("player_ghoul_claw.name", "Claw"),
+        "",
+        tr("player_ghoul_claw.name_a", "clawing")};
+    d.melee.attack_msgs = {tr("player_ghoul_claw.attack_player", "claw"), ""};
     d.melee.hit_chance_mod = 20;
     d.melee.dmg = WpnDmg(1, 8);
     d.melee.is_noisy = false;
@@ -1384,53 +1390,57 @@ void init()
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_kick;
-    d.melee.attack_msgs = {"", "kicks"};
+    d.melee.attack_msgs = {"", tr("intr_kick.attack_other", "kicks")};
     d.melee.dmg_type = DmgType::blunt;
     d.melee.knocks_back = true;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_bite;
-    d.melee.attack_msgs = {"", "bites"};
+    d.melee.attack_msgs = {"", tr("intr_bite.attack_other", "bites")};
     d.melee.dmg_type = DmgType::piercing;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_claw;
-    d.melee.attack_msgs = {"", "claws"};
+    d.melee.attack_msgs = {"", tr("intr_claw.attack_other", "claws")};
     d.melee.dmg_type = DmgType::slashing;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_strike;
-    d.melee.attack_msgs = {"", "strikes"};
+    d.melee.attack_msgs = {"", tr("intr_strike.attack_other", "strikes")};
     d.melee.dmg_type = DmgType::blunt;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_punch;
-    d.melee.attack_msgs = {"", "punches"};
+    d.melee.attack_msgs = {"", tr("intr_punch.attack_other", "punches")};
     d.melee.dmg_type = DmgType::blunt;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_punch_knockback;
-    d.melee.attack_msgs = {"", "punches"};
+    d.melee.attack_msgs = {
+        "",
+        tr("intr_punch_knockback.attack_other", "punches")};
     d.melee.dmg_type = DmgType::blunt;
     d.melee.knocks_back = true;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_headbutt;
-    d.melee.attack_msgs = {"", "slams into"};
+    d.melee.attack_msgs = {"", tr("intr_headbutt.attack_other", "slams into")};
     d.melee.dmg_type = DmgType::blunt;
     d.melee.knocks_back = true;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::ranged_wpn_intr);
     d.id = Id::intr_putrid_spit;
-    d.ranged.attack_msgs = {"", "spits pus"};
-    d.ranged.snd_msg = "I hear spitting.";
+    d.ranged.attack_msgs = {
+        "",
+        tr("intr_putrid_spit.attack_other", "spits pus")};
+    d.ranged.snd_msg = tr("intr_putrid_spit.ranged_snd_msg", "I hear spitting.");
     d.ranged.projectile_color = colors::light_green();
     d.ranged.dmg_type = DmgType::blunt;
     d.ranged.projectile_character = '*';
@@ -1438,8 +1448,12 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn_intr);
     d.id = Id::intr_snake_venom_spit;
-    d.ranged.attack_msgs = {"", "spits venom"};
-    d.ranged.snd_msg = "I hear hissing and spitting.";
+    d.ranged.attack_msgs = {
+        "",
+        tr("intr_snake_venom_spit.attack_other", "spits venom")};
+    d.ranged.snd_msg = tr(
+        "intr_snake_venom_spit.ranged_snd_msg",
+        "I hear hissing and spitting.");
     d.ranged.projectile_color = colors::light_green();
     d.ranged.dmg_type = DmgType::piercing;
     d.ranged.projectile_character = '*';
@@ -1447,8 +1461,11 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn_intr);
     d.id = Id::intr_earth_breath;
-    d.ranged.attack_msgs = {"", "breathes forth immense density"};
-    d.ranged.snd_msg = "I hear a hammering sound.";
+    d.ranged.attack_msgs = {
+        "",
+        tr("intr_earth_breath.attack_other", "breathes forth immense density")};
+    d.ranged.snd_msg =
+        tr("intr_earth_breath.ranged_snd_msg", "I hear a hammering sound.");
     d.ranged.attack_sfx = audio::SfxId::earth_breath;
     d.ranged.projectile_color = colors::brown();
     d.ranged.projectile_character = '*';
@@ -1459,8 +1476,10 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn_intr);
     d.id = Id::intr_water_breath;
-    d.ranged.attack_msgs = {"", "breathes forth a raging torrent"};
-    d.ranged.snd_msg = "I hear a gushing sound.";
+    d.ranged.attack_msgs = {
+        "",
+        tr("intr_water_breath.attack_other", "breathes forth a raging torrent")};
+    d.ranged.snd_msg = tr("intr_water_breath.ranged_snd_msg", "I hear a gushing sound.");
     d.ranged.attack_sfx = audio::SfxId::water_breath;
     d.ranged.projectile_color = colors::light_blue();
     d.ranged.projectile_character = '*';
@@ -1471,8 +1490,10 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn_intr);
     d.id = Id::intr_fire_breath;
-    d.ranged.attack_msgs = {"", "breathes fire"};
-    d.ranged.snd_msg = "I hear a burst of flames.";
+    d.ranged.attack_msgs = {
+        "",
+        tr("intr_fire_breath.attack_other", "breathes fire")};
+    d.ranged.snd_msg = tr("intr_fire_breath.ranged_snd_msg", "I hear a burst of flames.");
     d.ranged.attack_sfx = audio::SfxId::fire_breath;
     d.ranged.projectile_color = colors::light_red();
     d.ranged.projectile_character = '*';
@@ -1483,8 +1504,12 @@ void init()
 
     reset_data(d, ItemType::ranged_wpn_intr);
     d.id = Id::intr_lightning_breath;
-    d.ranged.attack_msgs = {"", "breathes lightning"};
-    d.ranged.snd_msg = "I hear a burst of lightning.";
+    d.ranged.attack_msgs = {
+        "",
+        tr("intr_lightning_breath.attack_other", "breathes lightning")};
+    d.ranged.snd_msg = tr(
+        "intr_lightning_breath.ranged_snd_msg",
+        "I hear a burst of lightning.");
     d.ranged.attack_sfx = audio::SfxId::lightning_breath;
     d.ranged.projectile_color = colors::yellow();
     d.ranged.projectile_character = '*';
@@ -1495,50 +1520,59 @@ void init()
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_raven_peck;
-    d.melee.attack_msgs = {"", "pecks"};
+    d.melee.attack_msgs = {"", tr("intr_raven_peck.attack_other", "pecks")};
     d.melee.dmg_type = DmgType::piercing;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_vampiric_bite;
-    d.melee.attack_msgs = {"", "bites"};
+    d.melee.attack_msgs = {"", tr("intr_vampiric_bite.attack_other", "bites")};
     d.melee.dmg_type = DmgType::piercing;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_strangle;
-    d.melee.attack_msgs = {"", "strangles"};
+    d.melee.attack_msgs = {"", tr("intr_strangle.attack_other", "strangles")};
     d.melee.dmg_type = DmgType::blunt;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_ghost_touch;
-    d.melee.attack_msgs = {"", "reaches for"};
+    d.melee.attack_msgs = {
+        "",
+        tr("intr_ghost_touch.attack_other", "reaches for")};
     d.melee.dmg_type = DmgType::spirit;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_sting;
-    d.melee.attack_msgs = {"", "stings"};
+    d.melee.attack_msgs = {"", tr("intr_sting.attack_other", "stings")};
     d.melee.dmg_type = DmgType::piercing;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_mind_leech_sting;
-    d.melee.attack_msgs = {"", "stings"};
+    d.melee.attack_msgs = {
+        "",
+        tr("intr_mind_leech_sting.attack_other", "stings")};
     d.melee.dmg_type = DmgType::piercing;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_spear_thrust;
-    d.melee.attack_msgs = {"", "strikes"};
+    d.melee.attack_msgs = {
+        "",
+        tr("intr_spear_thrust.attack_other", "strikes")};
     d.melee.dmg_type = DmgType::piercing;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::ranged_wpn_intr);
     d.id = Id::intr_net_throw;
-    d.ranged.attack_msgs = {"", "throws a net"};
-    d.ranged.snd_msg = "I hear a whooshing sound.";
+    d.ranged.attack_msgs = {
+        "",
+        tr("intr_net_throw.attack_other", "throws a net")};
+    d.ranged.snd_msg =
+        tr("intr_net_throw.ranged_snd_msg", "I hear a whooshing sound.");
     d.ranged.projectile_color = colors::brown();
     d.ranged.dmg_type = DmgType::blunt;
     d.ranged.projectile_character = '*';
@@ -1547,49 +1581,59 @@ void init()
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_maul;
-    d.melee.attack_msgs = {"", "mauls"};
+    d.melee.attack_msgs = {"", tr("intr_maul.attack_other", "mauls")};
     d.melee.dmg_type = DmgType::blunt;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_pus_spew;
-    d.melee.attack_msgs = {"", "spews pus on"};
+    d.melee.attack_msgs = {
+        "",
+        tr("intr_pus_spew.attack_other", "spews pus on")};
     d.melee.dmg_type = DmgType::blunt;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_strange_color_touch;
-    d.melee.attack_msgs = {"", "touches"};
+    d.melee.attack_msgs = {
+        "",
+        tr("intr_strange_color_touch.attack_other", "touches")};
     d.melee.dmg_type = DmgType::pure;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_dust_engulf;
-    d.melee.attack_msgs = {"", "engulfs"};
+    d.melee.attack_msgs = {"", tr("intr_dust_engulf.attack_other", "engulfs")};
     d.melee.dmg_type = DmgType::blunt;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_fire_engulf;
-    d.melee.attack_msgs = {"", "engulfs"};
+    d.melee.attack_msgs = {"", tr("intr_fire_engulf.attack_other", "engulfs")};
     d.melee.dmg_type = DmgType::fire;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_energy_engulf;
-    d.melee.attack_msgs = {"", "engulfs"};
+    d.melee.attack_msgs = {
+        "",
+        tr("intr_energy_engulf.attack_other", "engulfs")};
     d.melee.dmg_type = DmgType::electric;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn_intr);
     d.id = Id::intr_spores;
-    d.melee.attack_msgs = {"", "releases spores on"};
+    d.melee.attack_msgs = {
+        "",
+        tr("intr_spores.attack_other", "releases spores on")};
     d.melee.dmg_type = DmgType::blunt;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::ranged_wpn_intr);
     d.id = Id::intr_web_bola;
-    d.ranged.attack_msgs = {"", "shoots a web bola"};
+    d.ranged.attack_msgs = {
+        "",
+        tr("intr_web_bola.attack_other", "shoots a web bola")};
     d.ranged.snd_msg = "";
     d.ranged.projectile_color = colors::light_white();
     d.ranged.projectile_tile = gfx::TileId::blast1;
