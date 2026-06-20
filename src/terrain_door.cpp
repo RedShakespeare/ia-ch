@@ -1110,25 +1110,27 @@ std::string Door::base_name() const
     case DoorType::wood:
         switch (m_ward_state) {
         case WardState::not_warded:
-            return "wooden door";
+            return i18n::get("terrain_door.name_wooden_door", "wooden door");
             break;
 
         case WardState::warded:
-            return "warded door";
+            return i18n::get("terrain_door.name_warded_door", "warded door");
             break;
 
         case WardState::unwarded:
-            return "unwarded door";
+            return i18n::get(
+                "terrain_door.name_unwarded_door",
+                "unwarded door");
             break;
         };
         break;
 
     case DoorType::metal:
-        ret = "metal door";
+        ret = i18n::get("terrain_door.name_metal_door", "metal door");
         break;
 
     case DoorType::gate:
-        ret = "barred gate";
+        ret = i18n::get("terrain_door.name_barred_gate", "barred gate");
         break;
     }
 
