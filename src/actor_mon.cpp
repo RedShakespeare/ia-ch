@@ -24,6 +24,7 @@
 #include "game_time.hpp"
 #include "global.hpp"
 #include "gods.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item_data.hpp"
 #include "item_weapon.hpp"
@@ -172,50 +173,50 @@ bool is_player_aware_of_me(const actor::Actor& actor)
 std::string get_cultist_phrase()
 {
     std::vector<std::string> phrase_bucket = {
-        "Apigami!",
-        "Bhuudesco invisuu!",
-        "Bhuuesco marana!",
-        "Crudux cruo!",
-        "Cruento paashaeximus!",
-        "Cruento pestis shatruex!",
-        "Cruo crunatus durbe!",
-        "Cruo lokemundux!",
-        "Cruo stragara-na!",
-        "Gero shay cruo!",
-        "In marana domus-bhaava crunatus!",
-        "Caecux infirmux!",
-        "Malax sayti!",
-        "Marana pallex!",
-        "Marana malax!",
-        "Pallex ti!",
-        "Peroshay bibox malax!",
-        "Pestis Cruento!",
-        "Pestis cruento vilomaxus pretiacruento!",
-        "Pretaanluxis cruonit!",
-        "Pretiacruento!",
-        "Stragar-Naya!",
-        "Vorox esco marana!",
-        "Vilomaxus!",
-        "Prostragaranar malachtose!",
-        "Apigami!"};
+        i18n::get("actor_mon.cultist_phrase_apigami", "Apigami!"),
+        i18n::get("actor_mon.cultist_phrase_bhuudesco_invisuu", "Bhuudesco invisuu!"),
+        i18n::get("actor_mon.cultist_phrase_bhuuesco_marana", "Bhuuesco marana!"),
+        i18n::get("actor_mon.cultist_phrase_crudux_cruo", "Crudux cruo!"),
+        i18n::get("actor_mon.cultist_phrase_cruento_paashaeximus", "Cruento paashaeximus!"),
+        i18n::get("actor_mon.cultist_phrase_cruento_pestis_shatruex", "Cruento pestis shatruex!"),
+        i18n::get("actor_mon.cultist_phrase_cruo_crunatus_durbe", "Cruo crunatus durbe!"),
+        i18n::get("actor_mon.cultist_phrase_cruo_lokemundux", "Cruo lokemundux!"),
+        i18n::get("actor_mon.cultist_phrase_cruo_stragara_na", "Cruo stragara-na!"),
+        i18n::get("actor_mon.cultist_phrase_gero_shay_cruo", "Gero shay cruo!"),
+        i18n::get("actor_mon.cultist_phrase_in_marana_domus", "In marana domus-bhaava crunatus!"),
+        i18n::get("actor_mon.cultist_phrase_caecux_infirmux", "Caecux infirmux!"),
+        i18n::get("actor_mon.cultist_phrase_malax_sayti", "Malax sayti!"),
+        i18n::get("actor_mon.cultist_phrase_marana_pallex", "Marana pallex!"),
+        i18n::get("actor_mon.cultist_phrase_marana_malax", "Marana malax!"),
+        i18n::get("actor_mon.cultist_phrase_pallex_ti", "Pallex ti!"),
+        i18n::get("actor_mon.cultist_phrase_peroshay_bibox_malax", "Peroshay bibox malax!"),
+        i18n::get("actor_mon.cultist_phrase_pestis_cruento", "Pestis Cruento!"),
+        i18n::get("actor_mon.cultist_phrase_pestis_cruento_vilomaxus", "Pestis cruento vilomaxus pretiacruento!"),
+        i18n::get("actor_mon.cultist_phrase_pretaanluxis_cruonit", "Pretaanluxis cruonit!"),
+        i18n::get("actor_mon.cultist_phrase_pretiacruento", "Pretiacruento!"),
+        i18n::get("actor_mon.cultist_phrase_stragar_naya", "Stragar-Naya!"),
+        i18n::get("actor_mon.cultist_phrase_vorox_esco_marana", "Vorox esco marana!"),
+        i18n::get("actor_mon.cultist_phrase_vilomaxus", "Vilomaxus!"),
+        i18n::get("actor_mon.cultist_phrase_prostragaranar_malachtose", "Prostragaranar malachtose!"),
+        i18n::get("actor_mon.cultist_phrase_apigami", "Apigami!")};
 
     if (rnd::one_in(4)) {
         const God& god = gods::current_god();
 
         const std::vector<std::string> god_phrases = {
-            god.name + " save us!",
-            god.descr + " will save us!",
-            god.name + " watches over us!",
-            god.descr + " watches over us!",
-            god.name + ", guide us!",
-            god.descr + " guides us!",
-            "For " + god.name + "!",
-            "For " + god.descr + "!",
-            "Blood for " + god.name + "!",
-            "Blood for " + god.descr + "!",
-            "Perish for " + god.name + "!",
-            "Perish for " + god.descr + "!",
-            "In the name of " + god.name + "!",
+            god.name + i18n::get("actor_mon.save_us_suffix", " save us!"),
+            god.descr + i18n::get("actor_mon.will_save_us_suffix", " will save us!"),
+            god.name + i18n::get("actor_mon.watches_over_us_suffix", " watches over us!"),
+            god.descr + i18n::get("actor_mon.watches_over_us_suffix", " watches over us!"),
+            god.name + i18n::get("actor_mon.guide_us_suffix", ", guide us!"),
+            god.descr + i18n::get("actor_mon.guides_us_suffix", " guides us!"),
+            i18n::get("actor_mon.for_prefix", "For ") + god.name + i18n::get("actor_mon.exclaim", "!"),
+            i18n::get("actor_mon.for_prefix", "For ") + god.descr + i18n::get("actor_mon.exclaim", "!"),
+            i18n::get("actor_mon.blood_for_prefix", "Blood for ") + god.name + i18n::get("actor_mon.exclaim", "!"),
+            i18n::get("actor_mon.blood_for_prefix", "Blood for ") + god.descr + i18n::get("actor_mon.exclaim", "!"),
+            i18n::get("actor_mon.perish_for_prefix", "Perish for ") + god.name + i18n::get("actor_mon.exclaim", "!"),
+            i18n::get("actor_mon.perish_for_prefix", "Perish for ") + god.descr + i18n::get("actor_mon.exclaim", "!"),
+            i18n::get("actor_mon.in_the_name_of_prefix", "In the name of ") + god.name + i18n::get("actor_mon.exclaim", "!"),
         };
 
         phrase_bucket.insert(
@@ -236,7 +237,7 @@ std::string get_cultist_aware_msg_seen(const Actor& actor)
 
 std::string get_cultist_aware_msg_hidden()
 {
-    return "Voice: " + get_cultist_phrase();
+    return i18n::get("actor_mon.voice_prefix", "Voice: ") + get_cultist_phrase();
 }
 
 // -----------------------------------------------------------------------------
@@ -457,7 +458,9 @@ void Actor::become_wary_player()
 
 void Actor::print_player_see_mon_become_aware_msg() const
 {
-    std::string msg = text_format::first_to_upper(name_the(*this)) + " sees me!";
+    std::string msg =
+        text_format::first_to_upper(name_the(*this)) +
+        i18n::get("actor_mon.sees_me_suffix", " sees me!");
 
     const std::string dir_str =
         dir_utils::compass_dir_name(map::g_player->m_pos, m_pos);
