@@ -190,6 +190,185 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("player_bon.background.occultist.title", "Occultist") == "神秘学者");
     REQUIRE(i18n::get("player_bon.background.rogue.title", "Rogue") == "盗贼");
     REQUIRE(i18n::get("player_bon.background.war_vet.title", "War Veteran") == "战争老兵");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.exorcist.destroy_sacred_tools_descr",
+            "Cannot use manuscripts, altars, monoliths, or gongs, "
+            "but instead gains experience and fervor for destroying "
+            "these (manuscripts are destroyed when picking them up). "
+            "Fervor can be used for casting spells - these points "
+            "are used automatically when there is not enough "
+            "spirit points to cast from.") ==
+        "不能使用手稿、祭坛、独石或锣，而是通过摧毁它们获得经验和热忱（手稿会在拾取时被摧毁）。热忱可用于施放法术；当精神点不足以施放时，会自动消耗这些点数。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.exorcist.holy_symbol_descr",
+            "Starts with a Holy Symbol, which can restore "
+            "spirit points and grant resistance against "
+            "mental shock and fear.") ==
+        "开局携带一个圣符，可恢复精神点，并赋予对精神震惊和恐惧的抗性。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.exorcist.bonus_trait_levels_prefix",
+            "Gains a bonus trait at character levels ") == "在角色等级");
+    REQUIRE(i18n::get("player_bon.background.exorcist.bonus_trait_levels_separator", ", ") == "、");
+    REQUIRE(i18n::get("player_bon.background.exorcist.bonus_trait_levels_and_separator", ", and ") == "和");
+    REQUIRE(i18n::get("player_bon.background.exorcist.bonus_trait_levels_suffix", ".") == "时获得一个额外特质。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.flagellant.no_damage_shock_descr",
+            "No mental shock received for taking damage.") == "因受伤而受到的精神震惊为零。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.flagellant.moribund_descr",
+            "If health is reduced to 6 hit points or below when taking damage, "
+            "the moribund status is applied for 5-7 turns "
+            "(+3 melee damage, +30% melee hit chance, +3 armor points).") ==
+        "因受到伤害而生命值降至 6 点或以下时，会获得濒死状态 5-7 回合（+3 近战伤害、+30% 近战命中率、+3 护甲点）。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.flagellant.torture_collar_descr",
+            "Wears a torture collar which cannot be taken off; "
+            "walking requires extra turns, and stealth and evasion "
+            "are reduced by 20%. However, wearing the collar hardens "
+            "the Flagellant against physical suffering, armor is "
+            "increased by 3 points.") ==
+        "佩戴无法取下的苦刑项圈；行走需要额外回合，潜行和闪避降低 20%。然而，佩戴项圈会让鞭笞者对肉体痛苦更加麻木，护甲增加 3 点。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.flagellant.blood_upgrade_levels_prefix",
+            "Specializes in spells belonging to the Blood domain. "
+            "At character levels ") == "专精于鲜血领域法术。在角色等级");
+    REQUIRE(i18n::get("player_bon.background.flagellant.blood_upgrade_levels_and_separator", " and ") == "和");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.flagellant.blood_upgrade_levels_suffix",
+            ", all spells belonging to this domain are cast at "
+            "a higher skill level.") == "时，该领域的所有法术都以更高技能等级施放。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.flagellant.blood_spell_shock_descr",
+            "-25% mental shock taken from casting memorized spells "
+            "from the Blood domain.") == "施放已记忆的鲜血领域法术时，受到的精神震惊 -25%。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.ghoul.darkness_shock_descr",
+            "-50% mental shock taken from seeing monsters and "
+            "standing in darkness - "
+            "but also only gains halved shock reduction from light.") ==
+        "因看见怪物和站在黑暗中受到的精神震惊 -50%，但从光照获得的震惊降低效果也减半。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.ghoul.corpse_feeding_descr",
+            "Does not regenerate hit points and cannot use medical equipment - "
+            "instead heals by feeding on corpses "
+            "(feeding is done by waiting on a corpse).") ==
+        "不会再生生命值，也不能使用医疗器械，而是通过吞食尸体来治疗（在尸体上等待即可吞食）。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.ghoul.frenzy_descr",
+            "Can incite frenzy at will, and does not become weakened "
+            "when frenzy ends.") == "可以随意激发狂暴，并且狂暴结束时不会变得虚弱。");
+    REQUIRE(i18n::get("player_bon.background.ghoul.hit_points_descr", "+8 hit points.") == "+8 点生命值。");
+    REQUIRE(
+        i18n::get("player_bon.background.ghoul.disease_immunity_descr", "Is immune to disease and infections.") ==
+        "免疫疾病和感染。");
+    REQUIRE(i18n::get("player_bon.background.ghoul.sprain_immunity_descr", "Does not get sprains.") == "不会扭伤。");
+    REQUIRE(i18n::get("player_bon.background.ghoul.darkvision_descr", "Can see in darkness.") == "可以在黑暗中视物。");
+    REQUIRE(
+        i18n::get("player_bon.background.ghoul.ranged_penalty_descr", "-15% hit chance with firearms and thrown weapons.") ==
+        "使用火器和投掷武器时命中率 -15%。");
+    REQUIRE(i18n::get("player_bon.background.ghoul.ghoul_allies_descr", "All ghouls are allied.") == "所有食尸鬼都是盟友。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.strange_item_shock_descr",
+            "-50% mental shock taken from casting memorized spells "
+            "and from using or identifying strange items such as "
+            "potions or manuscripts "
+            "(in addition to \"Cool-headed\").") ==
+        "施放已记忆的法术，以及使用或鉴定药水、手稿等奇异物品时，受到的精神震惊 -50%（在“冷静”之外）。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.spell_domain_traits_descr",
+            "Can gain traits to increase skill level in various spell domains.") ==
+        "可以获得特质来提高各个法术领域的技能等级。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.choose_domain_descr",
+            "Chooses background in a specific spell domain at character creation, "
+            "which determines starting spells.") == "在角色创建时选择一个特定法术领域作为背景，这会决定起始法术。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.spirit_points_descr",
+            "+3 spirit points (in addition to \"Stout Spirit\").") == "+3 点精神（在“坚定精神”之外）。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.bone_charms_descr",
+            "Starts with several Bone Charms, that can be used for "
+            "gaining spell resistance or dispelling sigils "
+            "(\"strange shape\" on the floor).") == "开局携带数个骨符，可用于获得法术抗性或驱散符印（地面上的“奇异形状”）。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.domain.channeling_prefix",
+            "You have previously dabbled in the channeling of violent energy, ") ==
+        "你曾涉猎暴烈能量的导引，");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.domain.corruption_prefix",
+            "You have previously dabbled in spells that wither and corrupt, ") ==
+        "你曾涉猎枯萎与腐化的法术，");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.domain.illusion_prefix",
+            "You have previously dabbled in the casting of illusions, ") ==
+        "你曾涉猎幻象的施放，");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.domain.mind_prefix",
+            "You have previously dabbled in disciplines of revelation, foresight, "
+            "and will, ") == "你曾涉猎启示、预见与意志的学科，");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.domain.time_prefix",
+            "You have previously dabbled in the manipulation of time and causality, ") ==
+        "你曾涉猎时间与因果的操纵，");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.occultist.domain.warding_prefix",
+            "You have previously dabbled in protective magic, ") == "你曾涉猎防护魔法，");
+    REQUIRE(i18n::get("player_bon.background.occultist.domain.knowledge_prefix", "and have basic knowledge of ") == "并对");
+    REQUIRE(i18n::get("player_bon.background.occultist.domain.knowledge_suffix", ".") == "有基础了解。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.rogue.passive_shock_descr",
+            "Mental shock received passively over time is reduced by 25%.") == "随时间被动获得的精神震惊减少 25%。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.rogue.spot_hidden_descr",
+            "+10% chance to spot hidden monsters, doors, and traps.") == "发现隐藏怪物、门和陷阱的几率 +10%。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.rogue.creature_awareness_descr",
+            "Remains aware of the presence of other creatures longer.") == "对其他生物存在的感知保持更久。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.rogue.sense_uniques_descr",
+            "Can sense the presence of unique monsters or powerful "
+            "artifacts.") == "可以感知独特怪物或强大神器的存在。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.rogue.mind_cloud_artifact_descr",
+            "Has acquired an artifact which can cloud the minds of all "
+            "enemies, causing them to forget the presence of the "
+            "user.") == "已获得一件神器，可以蒙蔽所有敌人的心智，使它们忘记使用者的存在。");
+    REQUIRE(
+        i18n::get("player_bon.background.war_vet.instant_prepare_descr", "Switches to prepared weapon instantly.") ==
+        "立即切换到预备武器。");
+    REQUIRE(i18n::get("player_bon.background.war_vet.flak_jacket_descr", "Starts with a Flak Jacket.") == "开局携带一件防弹背心。");
+    REQUIRE(
+        i18n::get(
+            "player_bon.background.war_vet.armor_maintenance_descr",
+            "Maintains armor twice as long before it breaks.") == "护甲在损坏前可维持两倍时间。");
     REQUIRE(i18n::get("player_bon.trait.adept_melee.title", "Adept Melee Fighter") == "熟练近战斗士");
     REQUIRE(
         i18n::get(

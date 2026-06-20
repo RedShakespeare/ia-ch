@@ -1179,24 +1179,34 @@ std::vector<ColoredString> bg_descr(const Bg id)
 
     switch (id) {
     case Bg::exorcist:
-        put("Cannot use manuscripts, altars, monoliths, or gongs, "
+        put(i18n::get(
+            "player_bon.background.exorcist.destroy_sacred_tools_descr",
+            "Cannot use manuscripts, altars, monoliths, or gongs, "
             "but instead gains experience and fervor for destroying "
             "these (manuscripts are destroyed when picking them up). "
             "Fervor can be used for casting spells - these points "
             "are used automatically when there is not enough "
-            "spirit points to cast from.");
+            "spirit points to cast from."));
         put("");
-        put("Starts with a Holy Symbol, which can restore "
+        put(i18n::get(
+            "player_bon.background.exorcist.holy_symbol_descr",
+            "Starts with a Holy Symbol, which can restore "
             "spirit points and grant resistance against "
-            "mental shock and fear.");
+            "mental shock and fear."));
         put("");
-        put("Gains a bonus trait at character levels " +
+        put(i18n::get(
+                "player_bon.background.exorcist.bonus_trait_levels_prefix",
+                "Gains a bonus trait at character levels ") +
             std::to_string(s_exorcist_bon_trait_lvl_1) +
-            ", " +
+            i18n::get(
+                "player_bon.background.exorcist.bonus_trait_levels_separator",
+                ", ") +
             std::to_string(s_exorcist_bon_trait_lvl_2) +
-            ", and " +
+            i18n::get(
+                "player_bon.background.exorcist.bonus_trait_levels_and_separator",
+                ", and ") +
             std::to_string(s_exorcist_bon_trait_lvl_3) +
-            ".");
+            i18n::get("player_bon.background.exorcist.bonus_trait_levels_suffix", "."));
         put("");
         put_trait(TraitId::stout_spirit);
         put("");
@@ -1204,28 +1214,42 @@ std::vector<ColoredString> bg_descr(const Bg id)
         break;
 
     case Bg::flagellant:
-        put("No mental shock received for taking damage.");
+        put(i18n::get(
+            "player_bon.background.flagellant.no_damage_shock_descr",
+            "No mental shock received for taking damage."));
         put("");
-        put("If health is reduced to 6 hit points or below when taking damage, "
+        put(i18n::get(
+            "player_bon.background.flagellant.moribund_descr",
+            "If health is reduced to 6 hit points or below when taking damage, "
             "the moribund status is applied for 5-7 turns "
-            "(+3 melee damage, +30% melee hit chance, +3 armor points).");
+            "(+3 melee damage, +30% melee hit chance, +3 armor points)."));
         put("");
-        put("Wears a torture collar which cannot be taken off; "
+        put(i18n::get(
+            "player_bon.background.flagellant.torture_collar_descr",
+            "Wears a torture collar which cannot be taken off; "
             "walking requires extra turns, and stealth and evasion "
             "are reduced by 20%. However, wearing the collar hardens "
             "the Flagellant against physical suffering, armor is "
-            "increased by 3 points.");
+            "increased by 3 points."));
         put("");
-        put("Specializes in spells belonging to the Blood domain. "
-            "At character levels " +
+        put(i18n::get(
+                "player_bon.background.flagellant.blood_upgrade_levels_prefix",
+                "Specializes in spells belonging to the Blood domain. "
+                "At character levels ") +
             std::to_string(s_flagellant_spell_upgrade_lvl_1) +
-            " and " +
+            i18n::get(
+                "player_bon.background.flagellant.blood_upgrade_levels_and_separator",
+                " and ") +
             std::to_string(s_flagellant_spell_upgrade_lvl_2) +
-            ", all spells belonging to this domain are cast at "
-            "a higher skill level.");
+            i18n::get(
+                "player_bon.background.flagellant.blood_upgrade_levels_suffix",
+                ", all spells belonging to this domain are cast at "
+                "a higher skill level."));
         put("");
-        put("-25% mental shock taken from casting memorized spells "
-            "from the Blood domain.");
+        put(i18n::get(
+            "player_bon.background.flagellant.blood_spell_shock_descr",
+            "-25% mental shock taken from casting memorized spells "
+            "from the Blood domain."));
         put("");
         put_trait(TraitId::self_aware);
         put("");
@@ -1233,47 +1257,66 @@ std::vector<ColoredString> bg_descr(const Bg id)
         break;
 
     case Bg::ghoul:
-        put("-50% mental shock taken from seeing monsters and "
+        put(i18n::get(
+            "player_bon.background.ghoul.darkness_shock_descr",
+            "-50% mental shock taken from seeing monsters and "
             "standing in darkness - "
-            "but also only gains halved shock reduction from light.");
+            "but also only gains halved shock reduction from light."));
         put("");
-        put("Does not regenerate hit points and cannot use medical equipment - "
+        put(i18n::get(
+            "player_bon.background.ghoul.corpse_feeding_descr",
+            "Does not regenerate hit points and cannot use medical equipment - "
             "instead heals by feeding on corpses "
-            "(feeding is done by waiting on a corpse).");
+            "(feeding is done by waiting on a corpse)."));
         put("");
-        put("Can incite frenzy at will, and does not become weakened "
-            "when frenzy ends.");
+        put(i18n::get(
+            "player_bon.background.ghoul.frenzy_descr",
+            "Can incite frenzy at will, and does not become weakened "
+            "when frenzy ends."));
         put("");
-        put("+8 hit points.");
+        put(i18n::get("player_bon.background.ghoul.hit_points_descr", "+8 hit points."));
         put("");
-        put("Is immune to disease and infections.");
+        put(i18n::get(
+            "player_bon.background.ghoul.disease_immunity_descr",
+            "Is immune to disease and infections."));
         put("");
-        put("Does not get sprains.");
+        put(i18n::get("player_bon.background.ghoul.sprain_immunity_descr", "Does not get sprains."));
         put("");
-        put("Can see in darkness.");
+        put(i18n::get("player_bon.background.ghoul.darkvision_descr", "Can see in darkness."));
         put("");
-        put("-15% hit chance with firearms and thrown weapons.");
+        put(i18n::get(
+            "player_bon.background.ghoul.ranged_penalty_descr",
+            "-15% hit chance with firearms and thrown weapons."));
         put("");
-        put("All ghouls are allied.");
+        put(i18n::get("player_bon.background.ghoul.ghoul_allies_descr", "All ghouls are allied."));
         break;
 
     case Bg::occultist:
-        put("-50% mental shock taken from casting memorized spells "
+        put(i18n::get(
+            "player_bon.background.occultist.strange_item_shock_descr",
+            "-50% mental shock taken from casting memorized spells "
             "and from using or identifying strange items such as "
             "potions or manuscripts "
-            "(in addition to \"Cool-headed\").");
+            "(in addition to \"Cool-headed\")."));
         put("");
-        put("Can gain traits to increase skill level in various spell domains.");
+        put(i18n::get(
+            "player_bon.background.occultist.spell_domain_traits_descr",
+            "Can gain traits to increase skill level in various spell domains."));
         put("");
-        put("Chooses background in a specific spell domain at character creation, "
-            "which determines starting spells.");
+        put(i18n::get(
+            "player_bon.background.occultist.choose_domain_descr",
+            "Chooses background in a specific spell domain at character creation, "
+            "which determines starting spells."));
         put("");
-        put("+3 spirit points (in addition to \"Stout Spirit\").");
+        put(i18n::get(
+            "player_bon.background.occultist.spirit_points_descr",
+            "+3 spirit points (in addition to \"Stout Spirit\")."));
         put("");
-        put("Starts with several Bone Charms, that can be used for "
+        put(i18n::get(
+            "player_bon.background.occultist.bone_charms_descr",
+            "Starts with several Bone Charms, that can be used for "
             "gaining spell resistance or dispelling sigils "
-            ""
-            "(\"strange shape\" on the floor).");
+            "(\"strange shape\" on the floor)."));
 
         put("");
         put_trait(TraitId::stout_spirit);
@@ -1282,28 +1325,44 @@ std::vector<ColoredString> bg_descr(const Bg id)
         break;
 
     case Bg::rogue:
-        put("Mental shock received passively over time is reduced by 25%.");
+        put(i18n::get(
+            "player_bon.background.rogue.passive_shock_descr",
+            "Mental shock received passively over time is reduced by 25%."));
         put("");
-        put("+10% chance to spot hidden monsters, doors, and traps.");
+        put(i18n::get(
+            "player_bon.background.rogue.spot_hidden_descr",
+            "+10% chance to spot hidden monsters, doors, and traps."));
         put("");
-        put("Remains aware of the presence of other creatures longer.");
+        put(i18n::get(
+            "player_bon.background.rogue.creature_awareness_descr",
+            "Remains aware of the presence of other creatures longer."));
         put("");
-        put("Can sense the presence of unique monsters or powerful "
-            "artifacts.");
+        put(i18n::get(
+            "player_bon.background.rogue.sense_uniques_descr",
+            "Can sense the presence of unique monsters or powerful "
+            "artifacts."));
         put("");
-        put("Has acquired an artifact which can cloud the minds of all "
+        put(i18n::get(
+            "player_bon.background.rogue.mind_cloud_artifact_descr",
+            "Has acquired an artifact which can cloud the minds of all "
             "enemies, causing them to forget the presence of the "
-            "user.");
+            "user."));
         put("");
         put_trait(TraitId::stealthy);
         break;
 
     case Bg::war_vet:
-        put("Switches to prepared weapon instantly.");
+        put(i18n::get(
+            "player_bon.background.war_vet.instant_prepare_descr",
+            "Switches to prepared weapon instantly."));
         put("");
-        put("Starts with a Flak Jacket.");
+        put(i18n::get(
+            "player_bon.background.war_vet.flak_jacket_descr",
+            "Starts with a Flak Jacket."));
         put("");
-        put("Maintains armor twice as long before it breaks.");
+        put(i18n::get(
+            "player_bon.background.war_vet.armor_maintenance_descr",
+            "Maintains armor twice as long before it breaks."));
         put("");
         put_trait(TraitId::adept_marksman);
         put("");
@@ -1339,42 +1398,72 @@ std::string occultist_domain_descr(const SpellDomain domain)
     switch (domain) {
     case SpellDomain::channeling:
         return (
-            "You have previously dabbled in the channeling of violent energy, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.channeling_prefix",
+                "You have previously dabbled in the channeling of violent energy, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::corruption:
         // NOTE: The phrasing here match the Corruption domain starting spells Aura of Decay
         // and Curse:
         return (
-            "You have previously dabbled in spells that wither and corrupt, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.corruption_prefix",
+                "You have previously dabbled in spells that wither and corrupt, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::illusion:
         return (
-            "You have previously dabbled in the casting of illusions, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.illusion_prefix",
+                "You have previously dabbled in the casting of illusions, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::mind:
         return (
-            "You have previously dabbled in disciplines of revelation, foresight, "
-            "and will, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.mind_prefix",
+                "You have previously dabbled in disciplines of revelation, foresight, "
+                "and will, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::time:
         return (
-            "You have previously dabbled in the manipulation of time and causality, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.time_prefix",
+                "You have previously dabbled in the manipulation of time and causality, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::warding:
         return (
-            "You have previously dabbled in protective magic, "
-            "and have basic knowledge of " +
-            spell_list_str + ".");
+            i18n::get(
+                "player_bon.background.occultist.domain.warding_prefix",
+                "You have previously dabbled in protective magic, ") +
+            i18n::get(
+                "player_bon.background.occultist.domain.knowledge_prefix",
+                "and have basic knowledge of ") +
+            spell_list_str +
+            i18n::get("player_bon.background.occultist.domain.knowledge_suffix", "."));
 
     case SpellDomain::blood:
     case SpellDomain::END:
