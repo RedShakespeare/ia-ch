@@ -1051,6 +1051,52 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("property.stirs_up_great_frenzy_suffix", " stirs up a great frenzy!") == "激起了巨大的狂乱！");
     REQUIRE(i18n::get("property.calls_plague_of_locusts_suffix", " calls a plague of Locusts!") == "召唤了一场蝗灾！");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
+    REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
+    REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");
+    REQUIRE(i18n::get("spells.reflected", "The spell is reflected!") == "法术被反射了！");
+    REQUIRE(
+        i18n::get(
+            "spells.not_alerting_mon_descr",
+            "Casting this spell does not alert the victim to the caster's presence.") ==
+        "施放此法术不会让受害者察觉施法者的存在。");
+    REQUIRE(i18n::get("spells.duration_prefix", "The spell lasts ") == "法术持续");
+    REQUIRE(i18n::get("spells.duration_suffix", " turns.") == "回合。");
+    REQUIRE(i18n::get("spells.duration_indefinite", "The spell lasts indefinitely.") == "法术无限期持续。");
+    REQUIRE(
+        i18n::get(
+            "spells.cast_requires_sounds",
+            "Casting this spell requires making sounds.") == "施放此法术需要发出声音。");
+    REQUIRE(i18n::get("spells.cast_silently", "The spell can be cast silently.") == "此法术可以无声施放。");
+    REQUIRE(i18n::get("spells.skill_descr_prefix", "The spell can be cast at ") == "此法术可以以");
+    REQUIRE(i18n::get("spells.skill_descr_suffix", " level") == "等级施放");
+    REQUIRE(i18n::get("spells.skill.basic", "basic") == "基础");
+    REQUIRE(i18n::get("spells.skill.expert", "expert") == "专家");
+    REQUIRE(i18n::get("spells.skill.master", "master") == "大师");
+    REQUIRE(i18n::get("spells.skill.transcendent", "transcendent") == "超凡");
+    REQUIRE(i18n::get("spells.skill_bonus.manuscript", "manuscript") == "手稿");
+    REQUIRE(i18n::get("spells.skill_bonus.altar", "altar") == "祭坛");
+    REQUIRE(i18n::get("spells.skill_bonus.erudition", "erudition") == "博学");
+    REQUIRE(i18n::get("spells.skill_bonus.necronomicon", "necronomicon") == "死灵之书");
+    REQUIRE(
+        i18n::get(
+            "spells.forgotten_hint",
+            "Forgotten spells can be recalled by "
+            "studying inscribed objects "
+            "or by casting them from a manuscript.") == "遗忘的法术可以通过研究铭文物体或从手稿中施放来回忆。");
+    REQUIRE(
+        i18n::get(
+            "spells.forgotten_descr_prefix",
+            "Forgotten - this spell can no longer be "
+            "cast from memory. ") == "已遗忘 - 此法术不能再凭记忆施放。");
+    REQUIRE(
+        i18n::get(
+            "spells.tenebrous_descr_prefix",
+            "Tenebrous - this spell will be instantly "
+            "forgotten if cast from memory. ") == "晦暗 - 如果凭记忆施放，此法术会立刻被遗忘。");
+    REQUIRE(i18n::get("spells.domain_descr_prefix", "It belongs to the \"") == "它属于“");
+    REQUIRE(i18n::get("spells.domain_descr_suffix", "\" domain.") == "”领域。");
+    REQUIRE(i18n::get("spells.someone", "Someone") == "某人");
+    REQUIRE(i18n::get("spells.something", "Something") == "某物");
     REQUIRE(i18n::get("spells.suddenly_flayed_alive_suffix", " is suddenly flayed alive!") == "突然被活剥了！");
     REQUIRE(i18n::get("spells.dark_sphere_fizzles", "A dark sphere materializes, but quickly fizzles out.") == "一个黑暗球体成形，但很快就消散了。");
     REQUIRE(i18n::get("spells.darkbolt_release_sound", "I hear something rushing through the air.") == "我听到有什么东西划破空气飞来。");
