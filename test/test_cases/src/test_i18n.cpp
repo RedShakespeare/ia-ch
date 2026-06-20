@@ -87,12 +87,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.seems_futile", "It seems futile.") == "这似乎徒劳无功。");
     REQUIRE(i18n::get("terrain_door.hear_loud_banging", "I hear a loud banging.") == "我听到响亮的撞击声。");
     REQUIRE(i18n::get("terrain_door.open_prefix", "I open the ") == "我打开了");
+    REQUIRE(i18n::get("terrain_door.close_prefix", "I close the ") == "我关上了");
     REQUIRE(i18n::get("terrain_door.period", ".") == "。");
     REQUIRE(i18n::get("terrain_door.hear_door_open", "I hear a door open.") == "我听到一扇门打开。");
     REQUIRE(i18n::get("terrain_door.opens_a", " opens a ") == "打开了一扇");
     REQUIRE(i18n::get("terrain_door.see_a", "I see a ") == "我看见一扇");
     REQUIRE(i18n::get("terrain_door.opening_suffix", " opening.") == "正在打开。");
     REQUIRE(i18n::get("terrain_door.fumble_with_a", "I fumble with a ") == "我摸索着一扇");
+    REQUIRE(i18n::get("terrain_door.manage_close_suffix", ", but manage to close it.") == "，但设法关上了。");
     REQUIRE(i18n::get("terrain_door.manage_open_suffix", ", but manage to open it.") == "，但设法打开了。");
     REQUIRE(
         i18n::get(
@@ -112,6 +114,25 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "terrain_door.hear_attempt_open_door",
             "I hear something attempting to open a door.") == "我听到有什么东西试图打开一扇门。");
+    REQUIRE(i18n::get("terrain_door.futile", "It seems futile.") == "这样做似乎毫无用处。");
+    REQUIRE(i18n::get("terrain_door.door_burns_down", "The door burns down.") == "门烧毁了。");
+    REQUIRE(
+        i18n::get(
+            "terrain_door.foreboding_feeling",
+            "Something gives me a foreboding feeling.") == "有什么东西给了我一种不祥的感觉。");
+    REQUIRE(i18n::get("terrain_door.there_is", "There is ") == "这里有");
+    REQUIRE(i18n::get("terrain_door.here", " here.") == "在这里。");
+    REQUIRE(i18n::get("terrain_door.secret_revealed", "A secret is revealed.") == "一个秘密被揭示了。");
+    REQUIRE(i18n::get("terrain_door.seems_stuck_suffix", " seems to be stuck.") == "似乎被卡住了。");
+    REQUIRE(i18n::get("terrain_door.a", "a ") == "一扇");
+    REQUIRE(i18n::get("terrain_door.the_lowercase", "the ") == "那扇");
+    REQUIRE(i18n::get("terrain_door.jam_prefix", "I jam ") == "我用尖刺卡住了");
+    REQUIRE(i18n::get("terrain_door.with_a_spike", " with a spike.") == "。");
+    REQUIRE(i18n::get("terrain_door.see_nothing_to_close", "I see nothing there to close.") == "我没看到那里有什么可关闭的东西。");
+    REQUIRE(i18n::get("terrain_door.find_nothing_to_close", "I find nothing there to close.") == "我没找到任何可关闭的东西。");
+    REQUIRE(i18n::get("terrain_door.opens_suffix", " opens.") == "打开了。");
+    REQUIRE(i18n::get("terrain_door.closes_suffix", " closes.") == "关上了。");
+    REQUIRE(i18n::get("terrain_door.something_approaches", "Something approaches...") == "有什么东西接近了...");
     REQUIRE(i18n::get("terrain.does_not_yield", "It does not yield at all.") == "它完全没有松动。");
     REQUIRE(i18n::get("terrain.resists", "It resists.") == "它抵住了。");
     REQUIRE(i18n::get("terrain.moves_little", "It moves a little!") == "它移动了一点！");
