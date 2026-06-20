@@ -493,9 +493,10 @@ AllowAction Trap::pre_bump(actor::Actor& actor_bumping)
         const std::string name_the = name(Article::the);
 
         const std::string msg =
-            "Step into " +
+            i18n::get("terrain_trap.step_into", "Step into ") +
             name_the +
-            "? " +
+            i18n::get("terrain_trap.query_suffix", "?") +
+            " " +
             common_text::g_yes_or_no_hint;
 
         msg_log::add(
@@ -598,11 +599,17 @@ void Trap::reveal(const PrintRevealMsg print_reveal_msg)
         const std::string trap_name_a = m_trap_impl->name(Article::a);
 
         if (m_pos == map::g_player->m_pos) {
-            msg = "There is " + trap_name_a + " here!";
+            msg =
+                i18n::get("terrain_trap.there_is", "There is ") +
+                trap_name_a +
+                i18n::get("terrain_trap.here_exclaim", " here!");
         }
         else {
             // Trap is not at player position
-            msg = "I spot " + trap_name_a + ".";
+            msg =
+                i18n::get("terrain_trap.spot_prefix", "I spot ") +
+                trap_name_a +
+                i18n::get("terrain_trap.period", ".");
         }
 
         msg_log::add(msg);
@@ -751,7 +758,7 @@ void MechTrapImpl::trigger(actor::Actor* actor)
 
 std::string MechTrapImpl::disarm_msg() const
 {
-    return "I disarm a trap.";
+    return i18n::get("terrain_trap.disarm", "I disarm a trap.");
 }
 
 // -----------------------------------------------------------------------------
@@ -762,9 +769,12 @@ SigilImpl::SigilImpl(P pos, TrapId type, Trap* const base_trap) :
 
 std::string SigilImpl::name(const Article article) const
 {
-    std::string name = (article == Article::a) ? "a" : "the";
+    std::string name =
+        (article == Article::a)
+            ? i18n::get("terrain_trap.article_a", "a")
+            : i18n::get("terrain_trap.article_the", "the");
 
-    name += " Sigil";
+    name += i18n::get("terrain_trap.sigil_name", " Sigil");
 
     return name;
 }
@@ -813,9 +823,12 @@ TrapDart::TrapDart(P pos, Trap* const base_trap) :
 
 std::string TrapDart::name(const Article article) const
 {
-    std::string name = (article == Article::a) ? "a" : "the";
+    std::string name =
+        (article == Article::a)
+            ? i18n::get("terrain_trap.article_a", "a")
+            : i18n::get("terrain_trap.article_the", "the");
 
-    name += " dart trap";
+    name += i18n::get("terrain_trap.dart_trap_name", " dart trap");
 
     return name;
 }
@@ -961,9 +974,12 @@ TrapSpear::TrapSpear(P pos, Trap* const base_trap) :
 
 std::string TrapSpear::name(const Article article) const
 {
-    std::string name = (article == Article::a) ? "a" : "the";
+    std::string name =
+        (article == Article::a)
+            ? i18n::get("terrain_trap.article_a", "a")
+            : i18n::get("terrain_trap.article_the", "the");
 
-    name += " spear trap";
+    name += i18n::get("terrain_trap.spear_trap_name", " spear trap");
 
     return name;
 }
@@ -1070,9 +1086,12 @@ TrapBlindingFlash::TrapBlindingFlash(P pos, Trap* const base_trap) :
 
 std::string TrapBlindingFlash::name(const Article article) const
 {
-    std::string name = (article == Article::a) ? "a" : "the";
+    std::string name =
+        (article == Article::a)
+            ? i18n::get("terrain_trap.article_a", "a")
+            : i18n::get("terrain_trap.article_the", "the");
 
-    name += " blinding trap";
+    name += i18n::get("terrain_trap.blinding_trap_name", " blinding trap");
 
     return name;
 }
@@ -1112,9 +1131,12 @@ TrapDeafening::TrapDeafening(P pos, Trap* const base_trap) :
 
 std::string TrapDeafening::name(const Article article) const
 {
-    std::string name = (article == Article::a) ? "a" : "the";
+    std::string name =
+        (article == Article::a)
+            ? i18n::get("terrain_trap.article_a", "a")
+            : i18n::get("terrain_trap.article_the", "the");
 
-    name += " deafening trap";
+    name += i18n::get("terrain_trap.deafening_trap_name", " deafening trap");
 
     return name;
 }
@@ -1131,8 +1153,9 @@ void TrapDeafening::run_trigger_effect(const WasKnownBeforeTrigger was_known_bef
     TRACE_FUNC_BEGIN;
 
     if (map::g_seen.at(m_pos)) {
-        msg_log::add(
-            "There is suddenly a crushing pressure in the air!");
+        msg_log::add(i18n::get(
+            "terrain_trap.crushing_pressure",
+            "There is suddenly a crushing pressure in the air!"));
     }
 
     explosion::run(
@@ -1152,9 +1175,12 @@ TrapSmoke::TrapSmoke(P pos, Trap* const base_trap) :
 
 std::string TrapSmoke::name(const Article article) const
 {
-    std::string name = (article == Article::a) ? "a" : "the";
+    std::string name =
+        (article == Article::a)
+            ? i18n::get("terrain_trap.article_a", "a")
+            : i18n::get("terrain_trap.article_the", "the");
 
-    name += " smoke trap";
+    name += i18n::get("terrain_trap.smoke_trap_name", " smoke trap");
 
     return name;
 }
@@ -1198,9 +1224,12 @@ TrapAlarm::TrapAlarm(P pos, Trap* const base_trap) :
 
 std::string TrapAlarm::name(const Article article) const
 {
-    std::string name = (article == Article::a) ? "an" : "the";
+    std::string name =
+        (article == Article::a)
+            ? i18n::get("terrain_trap.article_an", "an")
+            : i18n::get("terrain_trap.article_the", "the");
 
-    name += " alarm trap";
+    name += i18n::get("terrain_trap.alarm_trap_name", " alarm trap");
 
     return name;
 }
@@ -1235,9 +1264,12 @@ TrapWeb::TrapWeb(P pos, Trap* const base_trap) :
 
 std::string TrapWeb::name(const Article article) const
 {
-    std::string name = (article == Article::a) ? "a" : "the";
+    std::string name =
+        (article == Article::a)
+            ? i18n::get("terrain_trap.article_a", "a")
+            : i18n::get("terrain_trap.article_the", "the");
 
-    name += " spider web";
+    name += i18n::get("terrain_trap.spider_web_name", " spider web");
 
     return name;
 }
@@ -1276,7 +1308,9 @@ void TrapWeb::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
 
         if (item && (item->id() == item::Id::machete)) {
             msg_log::add(
-                "I cut myself free with my Machete.",
+                i18n::get(
+                    "terrain_trap.cut_free_machete",
+                    "I cut myself free with my Machete."),
                 colors::text(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no);
@@ -1288,11 +1322,15 @@ void TrapWeb::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
     if (actor::is_player(actor_here)) {
         std::string msg;
         if (actor_here->m_properties.allow_see()) {
-            msg = "I am entangled in a spider web!";
+            msg = i18n::get(
+                "terrain_trap.entangled_web",
+                "I am entangled in a spider web!");
         }
         else {
             // Cannot see
-            msg = "I am entangled in a sticky mass of threads!";
+            msg = i18n::get(
+                "terrain_trap.entangled_threads",
+                "I am entangled in a sticky mass of threads!");
         }
 
         msg_log::add(msg);
@@ -1340,7 +1378,9 @@ void TrapWeb::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
 
 std::string TrapWeb::disarm_msg() const
 {
-    return "I tear down a spider web.";
+    return i18n::get(
+        "terrain_trap.tear_down_web",
+        "I tear down a spider web.");
 }
 
 void TrapTeleport::on_bumped(actor::Actor& actor_bumping)
@@ -1685,9 +1725,12 @@ int TrapUnlearnSpell::fade_chance_pct() const
 
 std::string TrapBoundary::name(const Article article) const
 {
-    std::string name = (article == Article::a) ? "a" : "the";
+    std::string name =
+        (article == Article::a)
+            ? i18n::get("terrain_trap.article_a", "a")
+            : i18n::get("terrain_trap.article_the", "the");
 
-    name += " Boundary Sigil";
+    name += i18n::get("terrain_trap.boundary_sigil_name", " Boundary Sigil");
 
     return name;
 }
