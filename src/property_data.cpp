@@ -584,57 +584,73 @@ static void init_data_list()
     d.id = prop::Id::astral_opium_addiction;
     d.std_rnd_turns = Range(100, 200);
     d.std_rnd_dlvls = Range(3, 6);
-    d.name = "Astral Opium Addiction";
-    d.name_short = "Addict";
-    d.descr =
+    d.name = i18n::get("property_data.astral_opium_addiction.name", "Astral Opium Addiction");
+    d.name_short = i18n::get("property_data.astral_opium_addiction.name_short", "Addict");
+    d.descr = i18n::get(
+        "property_data.astral_opium_addiction.descr",
         "Addicted to Astral Opium - the addiction will cease "
         "eventually if Astral Opium is not used again, however the "
         "abstinence will soon cause withdrawal symptoms "
         "(increased minimum shock). "
         "The addiction is too powerful and otherwordly to be cured by a "
-        "Potion of Fortitude.";
-    d.msg_start_player = "That felt amazing!";
-    d.msg_end_player = "I suddenly realize that I no longer crave Astral Opium.";
+        "Potion of Fortitude.");
+    d.msg_start_player = i18n::get(
+        "property_data.astral_opium_addiction.msg_start_player",
+        "That felt amazing!");
+    d.msg_end_player = i18n::get(
+        "property_data.astral_opium_addiction.msg_end_player",
+        "I suddenly realize that I no longer crave Astral Opium.");
     d.allow_display_turns = false;
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::bad;
     add(d);
 
     d.id = prop::Id::meditative_focused;
-    d.name = "Focused";
-    d.name_short = "Focused";
-    d.descr = "The next spell is cast without spending a turn, and with reduced cost.";
-    d.msg_start_player = "I feel very focused.";
-    d.msg_end_player = "I feel less focused.";
+    d.name = i18n::get("property_data.meditative_focused.name", "Focused");
+    d.name_short = i18n::get("property_data.meditative_focused.name_short", "Focused");
+    d.descr = i18n::get(
+        "property_data.meditative_focused.descr",
+        "The next spell is cast without spending a turn, and with reduced cost.");
+    d.msg_start_player =
+        i18n::get("property_data.meditative_focused.msg_start_player", "I feel very focused.");
+    d.msg_end_player =
+        i18n::get("property_data.meditative_focused.msg_end_player", "I feel less focused.");
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::good;
     add(d);
 
     d.id = prop::Id::thorns;
-    d.name = "Thorns";
-    d.name_short = "Thorns";
-    d.descr =
+    d.name = i18n::get("property_data.thorns.name", "Thorns");
+    d.name_short = i18n::get("property_data.thorns.name_short", "Thorns");
+    d.descr = i18n::get(
+        "property_data.thorns.descr",
         "Any time the caster is harmed by a melee attack, "
         "ranged attack or damaging spell, the attacker is "
-        "struck by an irresistible force.";
-    d.msg_start_player = "Reprisal is sealed!";
-    d.msg_end_player = "I cease to return harm.";
+        "struck by an irresistible force.");
+    d.msg_start_player =
+        i18n::get("property_data.thorns.msg_start_player", "Reprisal is sealed!");
+    d.msg_end_player =
+        i18n::get("property_data.thorns.msg_end_player", "I cease to return harm.");
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::good;
     add(d);
 
     d.id = prop::Id::crimson_passage;
-    d.name = "Crimson Passage";
-    d.name_short = "Crims Psg";
-    d.descr =
+    d.name = i18n::get("property_data.crimson_passage.name", "Crimson Passage");
+    d.name_short = i18n::get("property_data.crimson_passage.name_short", "Crims Psg");
+    d.descr = i18n::get(
+        "property_data.crimson_passage.descr",
         "Walking does not spend any time, "
         "but every step taken drains 2 hit points "
         "(waiting in place can still be done as normal). "
         "The effect ends after a certain number of steps have "
         "been taken, "
-        "or if there is not enough hit points to drain.";
-    d.msg_start_player = "A gruesome path lies ahead.";
-    d.msg_end_player = "My movement is normal again.";
+        "or if there is not enough hit points to drain.");
+    d.msg_start_player = i18n::get(
+        "property_data.crimson_passage.msg_start_player",
+        "A gruesome path lies ahead.");
+    d.msg_end_player =
+        i18n::get("property_data.crimson_passage.msg_end_player", "My movement is normal again.");
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::good;
     add(d);
@@ -1448,13 +1464,16 @@ static void init_data_list()
 
     d.id = prop::Id::sanctuary;
     d.std_rnd_turns = Range(5, 7);
-    d.name = "Sanctuary";
-    d.name_short = "Sanctuary";
-    d.descr =
+    d.name = i18n::get("property_data.sanctuary.name", "Sanctuary");
+    d.name_short = i18n::get("property_data.sanctuary.name_short", "Sanctuary");
+    d.descr = i18n::get(
+        "property_data.sanctuary.descr",
         "Is ignored by all hostile creatures. The effect ends if "
-        "moving or performing a melee or ranged attack.";
-    d.msg_start_player = "I feel very secure.";
-    d.msg_end_player = "I feel much less secure.";
+        "moving or performing a melee or ranged attack.");
+    d.msg_start_player =
+        i18n::get("property_data.sanctuary.msg_start_player", "I feel very secure.");
+    d.msg_end_player =
+        i18n::get("property_data.sanctuary.msg_end_player", "I feel much less secure.");
     d.allow_display_turns = true;
     d.update_vision_on_toggled = false;
     d.allow_test_on_bot = true;
@@ -1468,22 +1487,32 @@ static void init_data_list()
     add(d);
 
     d.id = prop::Id::moribund;
-    d.descr = "+3 melee damage, +30% melee hit chance, +3 armor points.";
-    d.name = "Moribund";
-    d.name_short = "Moribund";
+    d.descr = i18n::get(
+        "property_data.moribund.descr",
+        "+3 melee damage, +30% melee hit chance, +3 armor points.");
+    d.name = i18n::get("property_data.moribund.name", "Moribund");
+    d.name_short = i18n::get("property_data.moribund.name_short", "Moribund");
     d.allow_display_turns = true;
     d.allow_test_on_bot = true;
     d.alignment = prop::PropAlignment::good;
     add(d);
 
     d.id = prop::Id::temporal_echo;
-    d.name = "Temporal Echo";
-    d.name_short = "Echo";
-    d.descr = "All damage taken is dealt again when the effect ends.";
-    d.msg_start_player = "I am marked by a temporal echo.";
-    d.msg_start_mon = "{} is marked by a temporal echo.";
-    d.msg_end_player = "Time recurs!";
-    d.msg_end_mon = "Time recurs for {}.";
+    d.name = i18n::get("property_data.temporal_echo.name", "Temporal Echo");
+    d.name_short = i18n::get("property_data.temporal_echo.name_short", "Echo");
+    d.descr = i18n::get(
+        "property_data.temporal_echo.descr",
+        "All damage taken is dealt again when the effect ends.");
+    d.msg_start_player = i18n::get(
+        "property_data.temporal_echo.msg_start_player",
+        "I am marked by a temporal echo.");
+    d.msg_start_mon = i18n::get(
+        "property_data.temporal_echo.msg_start_mon",
+        "{} is marked by a temporal echo.");
+    d.msg_end_player =
+        i18n::get("property_data.temporal_echo.msg_end_player", "Time recurs!");
+    d.msg_end_mon =
+        i18n::get("property_data.temporal_echo.msg_end_mon", "Time recurs for {}.");
     d.allow_test_on_bot = false;
     d.alignment = prop::PropAlignment::bad;
     add(d);
