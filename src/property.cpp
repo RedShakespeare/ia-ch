@@ -527,7 +527,10 @@ PropEnded Entangled::affect_move_dir(Dir& dir)
                     actor::name_the(*m_owner));
 
             msg_log::add(
-                actor_name_the + " struggles to tear free.",
+                actor_name_the +
+                i18n::get(
+                    "property.mon_struggles_tear_free_suffix",
+                    " struggles to tear free."),
                 colors::msg_good());
         }
     }
@@ -610,7 +613,10 @@ PropEnded Stuck::affect_move_dir(Dir& dir)
                     actor::name_the(*m_owner));
 
             msg_log::add(
-                actor_name_the + " struggles to pull free.",
+                actor_name_the +
+                i18n::get(
+                    "property.mon_struggles_pull_free_suffix",
+                    " struggles to pull free."),
                 colors::msg_good());
         }
     }
@@ -699,7 +705,9 @@ PropEnded Infected::on_actor_turn()
             !has_warned &&
             rnd::coin_toss()) {
             msg_log::add(
-                "My infection is getting worse!",
+                i18n::get(
+                    "property.infection_getting_worse",
+                    "My infection is getting worse!"),
                 colors::msg_note(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);
@@ -1298,7 +1306,9 @@ PropEnded Nailed::affect_move_dir(Dir& dir)
 
     if (actor::is_player(m_owner)) {
         msg_log::add(
-            "I struggle to tear out the spike!",
+            i18n::get(
+                "property.struggle_tear_out_spike",
+                "I struggle to tear out the spike!"),
             colors::msg_bad());
     }
     else {
@@ -1309,7 +1319,10 @@ PropEnded Nailed::affect_move_dir(Dir& dir)
                     actor::name_the(*m_owner));
 
             msg_log::add(
-                actor_name_the + " struggles in pain!",
+                actor_name_the +
+                i18n::get(
+                    "property.mon_struggles_in_pain_suffix",
+                    " struggles in pain!"),
                 colors::msg_good());
         }
     }
@@ -1412,12 +1425,12 @@ int Wound::max_hp_pct_mod() const
 
 std::string Wound::get_one_wound_heal_str() const
 {
-    return "A wound is healed.";
+    return i18n::get("property.one_wound_healed", "A wound is healed.");
 }
 
 std::string Wound::get_all_wounds_heal_str() const
 {
-    return "All my wounds are healed!";
+    return i18n::get("property.all_wounds_healed", "All my wounds are healed!");
 }
 
 std::string Wound::msg_end_player() const
@@ -1797,7 +1810,9 @@ void AstralOpiumAddict::on_std_turn()
 
         if (m_nr_turns_to_penalty == 0) {
             msg_log::add(
-                "I crave Astral Opium!!",
+                i18n::get(
+                    "property.crave_astral_opium",
+                    "I crave Astral Opium!!"),
                 colors::msg_note(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::yes);

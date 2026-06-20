@@ -236,6 +236,29 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "All your melee attacks are silent (regardless of the weapon), "
             "and creatures are not alerted when you open or close doors, "
             "or wade through water") == "你的所有近战攻击都是无声的（无论使用什么武器），打开或关闭门、涉水而过时也不会惊动生物");
+    REQUIRE(
+        i18n::get(
+            "property.mon_struggles_tear_free_suffix",
+            " struggles to tear free.") == "挣扎着想挣脱。");
+    REQUIRE(
+        i18n::get(
+            "property.infection_getting_worse",
+            "My infection is getting worse!") == "我的感染正在恶化！");
+    REQUIRE(
+        i18n::get(
+            "property.mon_struggles_pull_free_suffix",
+            " struggles to pull free.") == "挣扎着想拔脱。");
+    REQUIRE(
+        i18n::get(
+            "property.struggle_tear_out_spike",
+            "I struggle to tear out the spike!") == "我挣扎着想拔出尖刺！");
+    REQUIRE(
+        i18n::get(
+            "property.mon_struggles_in_pain_suffix",
+            " struggles in pain!") == "痛苦地挣扎！");
+    REQUIRE(i18n::get("property.one_wound_healed", "A wound is healed.") == "一道伤口愈合了。");
+    REQUIRE(i18n::get("property.all_wounds_healed", "All my wounds are healed!") == "我所有的伤口都愈合了！");
+    REQUIRE(i18n::get("property.crave_astral_opium", "I crave Astral Opium!!") == "我渴望星界鸦片！！");
     REQUIRE(i18n::get("highscore.browsing_title", "Browsing high scores") == "浏览高分记录");
     REQUIRE(i18n::get("manual.browsing_title", "Browsing manual") == "浏览手册");
     REQUIRE(i18n::get("character_descr.title", "Character description") == "角色描述");
