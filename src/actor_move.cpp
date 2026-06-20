@@ -199,7 +199,7 @@ static void print_ooze_enter_terrain_msg(
         mon_name +
         i18n::get("actor_move.seeps_prefix", " seeps ") +
         preposition +
-        " " +
+        i18n::get("actor_move.space", " ") +
         ter_name +
         i18n::get("actor_move.period", "."));
 }

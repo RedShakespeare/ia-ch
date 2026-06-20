@@ -34,6 +34,7 @@ static std::string locale_dir(const std::string& language)
 
 static constexpr const char* kLocaleTextFile = "text.ini";
 static constexpr const char* kLegacyLocaleTextFile = "ui.ini";
+static constexpr const char* kEmptyLocaleValue = "__EMPTY__";
 
 static std::string ui_ini_path(const std::string& language)
 {
@@ -162,6 +163,10 @@ std::string get(const std::string& key, const std::string& fallback)
 
     if (value.empty()) {
         return fallback;
+    }
+
+    if (value == kEmptyLocaleValue) {
+        return "";
     }
 
     return decode_locale_escapes(value);
