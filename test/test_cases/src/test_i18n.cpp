@@ -1526,6 +1526,101 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("item_data.electric_gun.base_descr_2_turns_suffix", "回合）。");
     require_translation("item_data.electric_gun.ranged_snd_msg", "我听到一道电流爆响。");
     require_translation("item_data.trap_dart.ranged_snd_msg", "我听到弹体发射声。");
+    require_translation("item_data.attack.stab.player", "刺击");
+    require_translation("item_data.attack.stab.other", "刺击");
+    require_translation("item_data.attack.smash.player", "砸击");
+    require_translation("item_data.attack.smash.other", "砸击");
+    require_translation("item_data.attack.chop.player", "劈砍");
+    require_translation("item_data.attack.chop.other", "劈砍");
+    require_translation("item_data.dynamite.name", "炸药");
+    require_translation("item_data.dynamite.name_plural", "炸药棒");
+    require_translation("item_data.dynamite.name_a", "一根炸药棒");
+    require_translation("item_data.dynamite.base_descr", "一种以硝化甘油为基础的爆炸材料。这个名字来自古希腊语中表示“力量”的词。");
+    require_translation("item_data.flare.name", "照明棒");
+    require_translation("item_data.flare.name_plural", "照明棒");
+    require_translation("item_data.flare.name_a", "一根照明棒");
+    require_translation("item_data.flare.base_descr", "一种烟火装置，可以产生明亮光芒或强烈热量而不会爆炸。");
+    require_translation("item_data.molotov.name", "燃烧瓶");
+    require_translation("item_data.molotov.name_plural", "燃烧瓶");
+    require_translation("item_data.molotov.name_a", "一个燃烧瓶");
+    require_translation(
+        "item_data.molotov.base_descr",
+        "一种临时制作的燃烧武器，由装有易燃液体的玻璃瓶和用于点火的布料组成。使用时点燃布料并将瓶子掷向目标，立即造成一团火球，随后燃起熊熊烈火。");
+    require_translation("item_data.smoke_grenade.name", "烟雾弹");
+    require_translation("item_data.smoke_grenade.name_plural", "烟雾弹");
+    require_translation("item_data.smoke_grenade.name_a", "一枚烟雾弹");
+    require_translation(
+        "item_data.smoke_grenade.base_descr",
+        "一个薄钢筒，点燃后会从排放孔释放烟雾。它们主要用于制造烟幕以便隐蔽。产生的烟雾会伤害眼睛、喉咙和肺部，因此建议佩戴防护面具。");
+    require_translation("item_data.thr_knife.name", "飞刀");
+    require_translation("item_data.thr_knife.name_plural", "飞刀");
+    require_translation("item_data.thr_knife.name_a", "一把飞刀");
+    require_translation("item_data.thr_knife.base_descr", "一种经过专门设计和配重、便于有效投掷的刀。");
+    require_translation("item_data.rock.name", "石块");
+    require_translation("item_data.rock.name_plural", "石块");
+    require_translation("item_data.rock.name_a", "一块石块");
+    require_translation("item_data.rock.base_descr", "虽然不是很起眼的武器，但有技巧地使用也能产生一些效果。");
+    require_translation("item_data.dagger.name", "匕首");
+    require_translation("item_data.dagger.name_plural", "匕首");
+    require_translation("item_data.dagger.name_a", "一把匕首");
+    require_translation("item_data.dagger.base_descr_1", "常与欺骗、潜行和背叛联系在一起。许多暗杀都是用匕首完成的。");
+    require_translation(
+        "item_data.dagger.base_descr_2",
+        "用匕首对未警觉的对手进行近战攻击造成+200%伤害（此外还享受潜行攻击通常的+50%伤害）。");
+    require_translation("item_data.dagger.base_descr_3", "用匕首进行近战攻击是无声的。");
+    require_translation("item_data.hatchet.name", "短柄斧");
+    require_translation("item_data.hatchet.name_plural", "短柄斧");
+    require_translation("item_data.hatchet.name_a", "一把短柄斧");
+    require_translation(
+        "item_data.hatchet.base_descr_1",
+        "一把短柄小斧。短柄斧是可靠的武器——易于使用，并且相对于重量能造成不错的伤害。");
+    require_translation("item_data.hatchet.base_descr_2", "用短柄斧进行近战攻击是无声的。");
+    require_translation("item_data.club.name", "棍棒");
+    require_translation("item_data.club.name_plural", "棍棒");
+    require_translation("item_data.club.name_a", "一根棍棒");
+    require_translation("item_data.club.base_descr_1", "自史前时代以来就被使用。");
+    require_translation("item_data.club.base_descr_2", "用棍棒进行近战攻击是无声的。");
+    require_translation("item_data.club.land_on_hard_snd_msg", "我听到一声闷响。");
+    require_translation("item_data.hammer.name", "锤子");
+    require_translation("item_data.hammer.name_plural", "锤子");
+    require_translation("item_data.hammer.name_a", "一把锤子");
+    require_translation("item_data.hammer.base_descr_1", "通常用于建筑施工，但作为武器挥舞时也相当具有毁灭性。");
+    require_translation("item_data.hammer.base_descr_2", "用锤子进行近战攻击会发出声响。");
+    require_translation("item_data.machete.name", "砍刀");
+    require_translation("item_data.machete.name_plural", "砍刀");
+    require_translation("item_data.machete.name_a", "一把砍刀");
+    require_translation("item_data.machete.base_descr_1", "一把类似大型菜刀的刀。既适合作为切割工具，也适合作为武器。");
+    require_translation("item_data.machete.base_descr_2", "用砍刀进行近战攻击会发出声响。");
+    require_translation("item_data.axe.name", "斧头");
+    require_translation("item_data.axe.name_plural", "斧头");
+    require_translation("item_data.axe.name_a", "一把斧头");
+    require_translation(
+        "item_data.axe.base_descr_1",
+        "用于砍树、劈木材等工作的工具。作为武器使用时可以造成毁灭性打击，尽管需要一定技巧才能有效使用。");
+    require_translation("item_data.axe.base_descr_2", "用斧头进行近战攻击会发出声响。");
+    require_translation("item_data.spiked_mace.name", "钉头锤");
+    require_translation("item_data.spiked_mace.name_plural", "钉头锤");
+    require_translation("item_data.spiked_mace.name_a", "一把钉头锤");
+    require_translation("item_data.spiked_mace.base_descr_1", "一种残酷的武器，结合了钝击力与穿刺。");
+    require_translation("item_data.spiked_mace.base_descr_2", "用这件武器攻击有25%几率击晕受害者，使其短时间无法行动。");
+    require_translation("item_data.spiked_mace.base_descr_3", "用钉头锤进行近战攻击会发出声响。");
+    require_translation("item_data.pitchfork.name", "草叉");
+    require_translation("item_data.pitchfork.name_plural", "草叉");
+    require_translation("item_data.pitchfork.name_a", "一把草叉");
+    require_translation("item_data.pitchfork.base_descr_1", "一根长杆，末端有四齿叉头。");
+    require_translation("item_data.pitchfork.base_descr_2", "草叉有助于让攻击者保持距离——被刺中的受害者会被推开。");
+    require_translation("item_data.spear.name", "长矛");
+    require_translation("item_data.spear.name_plural", "长矛");
+    require_translation("item_data.spear.name_a", "一根长矛");
+    require_translation("item_data.spear.base_descr", "一种由木柄和钢制矛头组成的长柄武器。");
+    require_translation("item_data.sledgehammer.name", "大锤");
+    require_translation("item_data.sledgehammer.name_plural", "大锤");
+    require_translation("item_data.sledgehammer.name_a", "一把大锤");
+    require_translation("item_data.sledgehammer.base_descr", "它能造成毁灭性伤害，但携带起来很笨重，也需要一定技巧才能有效使用。");
+    require_translation("item_data.iron_spike.name", "铁尖刺");
+    require_translation("item_data.iron_spike.name_plural", "铁尖刺");
+    require_translation("item_data.iron_spike.name_a", "一根铁尖刺");
+    require_translation("item_data.iron_spike.base_descr", "可用于楔住东西，使其保持关闭。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");

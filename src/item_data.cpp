@@ -879,10 +879,16 @@ void init()
 
     reset_data(d, ItemType::explosive);
     d.id = Id::dynamite;
-    d.base_name = {"Dynamite", "Sticks of Dynamite", "a Stick of Dynamite"};
+    d.base_name = item_name(
+        "dynamite",
+        "Dynamite",
+        "Sticks of Dynamite",
+        "a Stick of Dynamite");
     d.base_descr = {
-        "An explosive material based on nitroglycerin. The name comes "
-        "from the ancient Greek word for \"power\"."};
+        tr(
+            "dynamite.base_descr",
+            "An explosive material based on nitroglycerin. The name comes "
+            "from the ancient Greek word for \"power\".")};
     d.weight = Weight::light;
     d.tile = gfx::TileId::dynamite;
     d.color = colors::light_red();
@@ -893,10 +899,12 @@ void init()
 
     reset_data(d, ItemType::explosive);
     d.id = Id::flare;
-    d.base_name = {"Flare", "Flares", "a Flare"};
+    d.base_name = item_name("flare", "Flare", "Flares", "a Flare");
     d.base_descr = {
-        "A type of pyrotechnic that produces a brilliant light or "
-        "intense heat without an explosion."};
+        tr(
+            "flare.base_descr",
+            "A type of pyrotechnic that produces a brilliant light or "
+            "intense heat without an explosion.")};
     d.weight = Weight::light;
     d.tile = gfx::TileId::flare;
     d.color = colors::gray();
@@ -907,13 +915,18 @@ void init()
 
     reset_data(d, ItemType::explosive);
     d.id = Id::molotov;
-    d.base_name = {
-        "Molotov Cocktail", "Molotov Cocktails", "a Molotov Cocktail"};
+    d.base_name = item_name(
+        "molotov",
+        "Molotov Cocktail",
+        "Molotov Cocktails",
+        "a Molotov Cocktail");
     d.base_descr = {
-        "An improvised incendiary weapon made of a glass bottle "
-        "containing flammable liquid and some cloth for ignition. In "
-        "action, the cloth is lit and the bottle hurled at a target, "
-        "causing an immediate fireball followed by a raging fire."};
+        tr(
+            "molotov.base_descr",
+            "An improvised incendiary weapon made of a glass bottle "
+            "containing flammable liquid and some cloth for ignition. In "
+            "action, the cloth is lit and the bottle hurled at a target, "
+            "causing an immediate fireball followed by a raging fire.")};
     d.weight = Weight::light;
     d.tile = gfx::TileId::molotov;
     d.color = colors::white();
@@ -924,13 +937,19 @@ void init()
 
     reset_data(d, ItemType::explosive);
     d.id = Id::smoke_grenade;
-    d.base_name = {"Smoke Grenade", "Smoke Grenades", "a Smoke Grenade"};
+    d.base_name = item_name(
+        "smoke_grenade",
+        "Smoke Grenade",
+        "Smoke Grenades",
+        "a Smoke Grenade");
     d.base_descr = {
-        "A sheet steel cylinder with emission holes releasing smoke "
-        "when the grenade is ignited. Their primary use is to create "
-        "smoke screens for concealment. The fumes produced can harm "
-        "the eyes, throat and lungs - so it is recommended to wear a "
-        "protective mask."};
+        tr(
+            "smoke_grenade.base_descr",
+            "A sheet steel cylinder with emission holes releasing smoke "
+            "when the grenade is ignited. Their primary use is to create "
+            "smoke screens for concealment. The fumes produced can harm "
+            "the eyes, throat and lungs - so it is recommended to wear a "
+            "protective mask.")};
     d.weight = Weight::light;
     d.tile = gfx::TileId::flare;
     d.color = colors::green();
@@ -940,10 +959,16 @@ void init()
 
     reset_data(d, ItemType::throwing_wpn);
     d.id = Id::thr_knife;
-    d.base_name = {"Throwing Knife", "Throwing Knives", "a Throwing Knife"};
+    d.base_name = item_name(
+        "thr_knife",
+        "Throwing Knife",
+        "Throwing Knives",
+        "a Throwing Knife");
     d.base_descr = {
-        "A knife specially designed and weighted so that it can be "
-        "thrown effectively."};
+        tr(
+            "thr_knife.base_descr",
+            "A knife specially designed and weighted so that it can be "
+            "thrown effectively.")};
     d.weight = Weight::extra_light;
     d.tile = gfx::TileId::dagger;
     d.character = '/';
@@ -953,7 +978,9 @@ void init()
     d.ranged.effective_range = {0, 4};
     d.ranged.max_range = d.ranged.effective_range.max + 3;
     d.max_stack_at_spawn = 6;
-    d.land_on_hard_snd_msg = "I hear a clanking sound.";
+    d.land_on_hard_snd_msg = tr(
+        "item_type.melee_wpn.land_on_hard_snd_msg",
+        "I hear a clanking sound.");
     d.land_on_hard_sfx = audio::SfxId::metal_clank;
     d.main_attack_mode = AttackMode::thrown;
     d.native_containers.push_back(terrain::Id::chest);
@@ -963,10 +990,12 @@ void init()
 
     reset_data(d, ItemType::throwing_wpn);
     d.id = Id::rock;
-    d.base_name = {"Rock", "Rocks", "a Rock"};
+    d.base_name = item_name("rock", "Rock", "Rocks", "a Rock");
     d.base_descr = {
-        "Although not a very impressive weapon, with skill they can "
-        "be used with some result."};
+        tr(
+            "rock.base_descr",
+            "Although not a very impressive weapon, with skill they can "
+            "be used with some result.")};
     d.weight = Weight::extra_light;
     d.tile = gfx::TileId::rock;
     d.character = '*';
@@ -983,20 +1012,24 @@ void init()
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::dagger;
-    d.base_name = {"Dagger", "Daggers", "a Dagger"};
+    d.base_name = item_name("dagger", "Dagger", "Daggers", "a Dagger");
     d.base_descr = {
-        "Commonly associated with deception, stealth, and treachery. "
-        "Many assassinations have been carried out with the use of a "
-        "dagger.",
+        tr(
+            "dagger.base_descr_1",
+            "Commonly associated with deception, stealth, and treachery. "
+            "Many assassinations have been carried out with the use of a "
+            "dagger."),
 
-        "Melee attacks performed with a dagger against an unaware "
-        "opponent does +200% damage (in addition to the normal +50% "
-        "damage from stealth attacks).",
+        tr(
+            "dagger.base_descr_2",
+            "Melee attacks performed with a dagger against an unaware "
+            "opponent does +200% damage (in addition to the normal +50% "
+            "damage from stealth attacks)."),
 
-        "Melee attacks with daggers are silent."};
+        tr("dagger.base_descr_3", "Melee attacks with daggers are silent.")};
     d.weight = Weight::light;
     d.tile = gfx::TileId::dagger;
-    d.melee.attack_msgs = {"stab", "stabs"};
+    d.melee.attack_msgs = attack_msgs("attack.stab", "stab", "stabs");
     d.melee.dmg = WpnDmg(2, 4);
     d.melee.hit_chance_mod = 20;
     d.melee.dmg_type = DmgType::piercing;
@@ -1013,16 +1046,18 @@ void init()
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::hatchet;
-    d.base_name = {"Hatchet", "Hatchets", "a Hatchet"};
+    d.base_name = item_name("hatchet", "Hatchet", "Hatchets", "a Hatchet");
     d.base_descr = {
-        "A small axe with a short handle. Hatchets are reliable "
-        "weapons - they are easy to use, and cause decent damage for "
-        "their low weight.",
+        tr(
+            "hatchet.base_descr_1",
+            "A small axe with a short handle. Hatchets are reliable "
+            "weapons - they are easy to use, and cause decent damage for "
+            "their low weight."),
 
-        "Melee attacks with hatchets are silent."};
+        tr("hatchet.base_descr_2", "Melee attacks with hatchets are silent.")};
     d.weight = Weight::light;
     d.tile = gfx::TileId::axe;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.melee.dmg = WpnDmg(1, 6);
     d.melee.hit_chance_mod = 15;
     d.melee.can_attack_corpse = true;
@@ -1042,16 +1077,16 @@ void init()
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::club;
-    d.base_name = {"Club", "Clubs", "a Club"};
+    d.base_name = item_name("club", "Club", "Clubs", "a Club");
     d.base_descr = {
-        "Wielded since prehistoric times.",
+        tr("club.base_descr_1", "Wielded since prehistoric times."),
 
-        "Melee attacks with clubs are silent."};
+        tr("club.base_descr_2", "Melee attacks with clubs are silent.")};
     d.spawn_std_range = Range(g_dlvl_first_mid_game, g_dlvl_last);
     d.weight = Weight::medium;
     d.tile = gfx::TileId::club;
     d.color = colors::brown();
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.melee.dmg = WpnDmg(3, 6);
     d.melee.hit_chance_mod = 15;
     d.melee.can_attack_corpse = true;
@@ -1062,21 +1097,23 @@ void init()
     d.ranged.effective_range = {0, 4};
     d.ranged.max_range = d.ranged.effective_range.max + 3;
     d.ranged.dmg_type = DmgType::blunt;
-    d.land_on_hard_snd_msg = "I hear a thudding sound.";
+    d.land_on_hard_snd_msg = tr("club.land_on_hard_snd_msg", "I hear a thudding sound.");
     d.land_on_hard_sfx = audio::SfxId::END;
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::hammer;
-    d.base_name = {"Hammer", "Hammers", "a Hammer"};
+    d.base_name = item_name("hammer", "Hammer", "Hammers", "a Hammer");
     d.base_descr = {
-        "Typically used for construction, but can be quite devastating "
-        "when wielded as a weapon.",
+        tr(
+            "hammer.base_descr_1",
+            "Typically used for construction, but can be quite devastating "
+            "when wielded as a weapon."),
 
-        "Melee attacks with hammers are noisy."};
+        tr("hammer.base_descr_2", "Melee attacks with hammers are noisy.")};
     d.weight = Weight::medium;
     d.tile = gfx::TileId::hammer;
-    d.melee.attack_msgs = {"smash", "smashes"};
+    d.melee.attack_msgs = attack_msgs("attack.smash", "smash", "smashes");
     d.melee.dmg = WpnDmg(4, 7);
     d.melee.hit_chance_mod = 10;
     d.melee.can_attack_corpse = true;
@@ -1090,15 +1127,17 @@ void init()
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::machete;
-    d.base_name = {"Machete", "Machetes", "a Machete"};
+    d.base_name = item_name("machete", "Machete", "Machetes", "a Machete");
     d.base_descr = {
-        "A large cleaver-like knife. It serves well both as a cutting "
-        "tool and weapon.",
+        tr(
+            "machete.base_descr_1",
+            "A large cleaver-like knife. It serves well both as a cutting "
+            "tool and weapon."),
 
-        "Melee attacks with machetes are noisy."};
+        tr("machete.base_descr_2", "Melee attacks with machetes are noisy.")};
     d.weight = Weight::medium;
     d.tile = gfx::TileId::machete;
-    d.melee.attack_msgs = {"chop", "chops"};
+    d.melee.attack_msgs = attack_msgs("attack.chop", "chop", "chops");
     d.melee.dmg = WpnDmg(3, 9);
     d.melee.hit_chance_mod = 5;
     d.melee.can_attack_corpse = true;
@@ -1114,16 +1153,18 @@ void init()
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::axe;
-    d.base_name = {"Axe", "Axes", "an Axe"};
+    d.base_name = item_name("axe", "Axe", "Axes", "an Axe");
     d.base_descr = {
-        "A tool intended for felling trees, splitting timber, etc. "
-        "Used as a weapon it can deliver devastating blows, although "
-        "it requires some skill to use effectively.",
+        tr(
+            "axe.base_descr_1",
+            "A tool intended for felling trees, splitting timber, etc. "
+            "Used as a weapon it can deliver devastating blows, although "
+            "it requires some skill to use effectively."),
 
-        "Melee attacks with axes are noisy."};
+        tr("axe.base_descr_2", "Melee attacks with axes are noisy.")};
     d.weight = Weight::medium;
     d.tile = gfx::TileId::axe;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.melee.dmg = WpnDmg(3, 12);
     d.melee.hit_chance_mod = 0;
     d.melee.can_attack_corpse = true;
@@ -1139,18 +1180,28 @@ void init()
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::spiked_mace;
-    d.base_name = {"Spiked Mace", "Spiked Maces", "a Spiked Mace"};
+    d.base_name = item_name(
+        "spiked_mace",
+        "Spiked Mace",
+        "Spiked Maces",
+        "a Spiked Mace");
     d.base_descr = {
-        "A brutal weapon, utilizing a combination of blunt-force and "
-        "puncture.",
+        tr(
+            "spiked_mace.base_descr_1",
+            "A brutal weapon, utilizing a combination of blunt-force and "
+            "puncture."),
 
-        "Attacks with this weapon have a 25% chance to stun the "
-        "victim, rendering them unable to act for a brief time.",
+        tr(
+            "spiked_mace.base_descr_2",
+            "Attacks with this weapon have a 25% chance to stun the "
+            "victim, rendering them unable to act for a brief time."),
 
-        "Melee attacks with spiked maces are noisy."};
+        tr(
+            "spiked_mace.base_descr_3",
+            "Melee attacks with spiked maces are noisy.")};
     d.weight = Weight::moderately_heavy;
     d.tile = gfx::TileId::spiked_mace;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.melee.dmg = WpnDmg(1, 14);
     d.melee.hit_chance_mod = -10;
     d.melee.can_attack_corpse = true;
@@ -1173,15 +1224,21 @@ void init()
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::pitchfork;
-    d.base_name = {"Pitchfork", "Pitchforks", "a Pitchfork"};
+    d.base_name = item_name(
+        "pitchfork",
+        "Pitchfork",
+        "Pitchforks",
+        "a Pitchfork");
     d.base_descr = {
-        "A long staff with a forked, four-pronged end.",
+        tr("pitchfork.base_descr_1", "A long staff with a forked, four-pronged end."),
 
-        "Pitchforks are useful in keeping attackers at bay - "
-        "the victim is pushed back when stabbed."};
+        tr(
+            "pitchfork.base_descr_2",
+            "Pitchforks are useful in keeping attackers at bay - "
+            "the victim is pushed back when stabbed.")};
     d.weight = Weight::moderately_heavy;
     d.tile = gfx::TileId::pitchfork;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.melee.dmg = WpnDmg(1, 7);
     d.melee.hit_chance_mod = -10;
     d.melee.can_attack_corpse = true;
@@ -1199,13 +1256,15 @@ void init()
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::spear;
-    d.base_name = {"Spear", "Spears", "a Spear"};
+    d.base_name = item_name("spear", "Spear", "Spears", "a Spear");
     d.base_descr = {
-        "A pole weapon consisting of a wooden shaft and a steel head."};
+        tr(
+            "spear.base_descr",
+            "A pole weapon consisting of a wooden shaft and a steel head.")};
     d.weight = Weight::moderately_heavy;
     d.tile = gfx::TileId::spear;
     d.color = colors::brown();
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.melee.dmg = WpnDmg(1, 9);
     d.melee.hit_chance_mod = 0;
     d.melee.can_attack_corpse = true;
@@ -1222,13 +1281,19 @@ void init()
 
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::sledgehammer;
-    d.base_name = {"Sledgehammer", "Sledgehammers", "a Sledgehammer"};
+    d.base_name = item_name(
+        "sledgehammer",
+        "Sledgehammer",
+        "Sledgehammers",
+        "a Sledgehammer");
     d.base_descr = {
-        "It can deal devastating damage, although it is cumbersome "
-        "to carry, and it requires some skill to use effectively."};
+        tr(
+            "sledgehammer.base_descr",
+            "It can deal devastating damage, although it is cumbersome "
+            "to carry, and it requires some skill to use effectively.")};
     d.weight = Weight::heavy;
     d.tile = gfx::TileId::sledgehammer;
-    d.melee.attack_msgs = {"smash", "smashes"};
+    d.melee.attack_msgs = attack_msgs("attack.smash", "smash", "smashes");
     d.melee.dmg = WpnDmg(4, 15);
     d.melee.hit_chance_mod = -10;
     d.melee.can_attack_corpse = true;
@@ -1242,9 +1307,13 @@ void init()
 
     reset_data(d, ItemType::throwing_wpn);
     d.id = Id::iron_spike;
-    d.base_name = {"Iron Spike", "Iron Spikes", "an Iron Spike"};
+    d.base_name = item_name(
+        "iron_spike",
+        "Iron Spike",
+        "Iron Spikes",
+        "an Iron Spike");
     d.base_descr = {
-        "Can be useful for wedging things closed."};
+        tr("iron_spike.base_descr", "Can be useful for wedging things closed.")};
     d.weight = Weight::extra_light;
     d.tile = gfx::TileId::iron_spike;
     d.is_stackable = true;
@@ -1255,7 +1324,9 @@ void init()
     d.ranged.effective_range = {0, 3};
     d.ranged.max_range = d.ranged.effective_range.max + 3;
     d.max_stack_at_spawn = 12;
-    d.land_on_hard_snd_msg = "I hear a clanking sound.";
+    d.land_on_hard_snd_msg = tr(
+        "item_type.melee_wpn.land_on_hard_snd_msg",
+        "I hear a clanking sound.");
     d.land_on_hard_sfx = audio::SfxId::metal_clank;
     d.main_attack_mode = AttackMode::thrown;
     d.native_containers.push_back(terrain::Id::cabinet);
