@@ -7020,7 +7020,7 @@ bool SpellTerrify::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellThreatProjection::name() const
 {
-    return "Threat Projection";
+    return i18n::get("spells.threat_projection.name", "Threat Projection");
 }
 
 SpellId SpellThreatProjection::id() const
@@ -7137,13 +7137,19 @@ std::vector<std::string> SpellThreatProjection::descr_specific(
     std::vector<std::string> descr;
 
     descr.emplace_back(
-        "Distorts the perception of the spell's victims, causing "
-        "all other creatures to be misidentified as enemies.");
+        i18n::get(
+            "spells.threat_projection.descr",
+            "Distorts the perception of the spell's victims, causing "
+            "all other creatures to be misidentified as enemies."));
 
     descr.emplace_back(
         skill == SpellSkill::basic
-            ? "Affects one random visible hostile creature."
-            : "Affects all visible hostile creatures.");
+            ? i18n::get(
+                "spells.target.one_visible_hostile",
+                "Affects one random visible hostile creature.")
+            : i18n::get(
+                "spells.target.all_visible_hostile",
+                "Affects all visible hostile creatures."));
 
     descr.push_back(spell_duration_descr(duration_range(skill).str()));
 
