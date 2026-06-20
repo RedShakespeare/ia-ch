@@ -285,6 +285,41 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         i18n::get(
             "view_actor_descr.natural_property_or",
             "or ") == "或");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.melee_hit_chance_prefix",
+            "The chance to hit ") == "命中");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.melee_hit_chance_same_suffix",
+            " with a melee attack or kicking is currently{_}{COLOR_LIGHT_GREEN}") ==
+        "的近战攻击或踢击命中率当前为{_}{COLOR_LIGHT_GREEN}");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.melee_hit_chance_weapon_suffix",
+            " with a melee attack is currently{_}{COLOR_LIGHT_GREEN}") ==
+        "的近战攻击命中率当前为{_}{COLOR_LIGHT_GREEN}");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.pct_color_suffix",
+            "%{reset_color}") == "%{reset_color}");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.melee_hit_chance_kick_suffix",
+            ", and the chance to hit by kicking is{_}{COLOR_LIGHT_GREEN}") ==
+        "，踢击命中率为{_}{COLOR_LIGHT_GREEN}");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.because_unaware_suffix",
+            " (because they are unaware)") == "（因为它们未察觉）");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.sneak_chance_prefix",
+            "The chance to remain undetected by ") == "不被");
+    REQUIRE(
+        i18n::get(
+            "view_actor_descr.sneak_chance_suffix",
+            " is currently{_}{COLOR_LIGHT_GREEN}") == "发现的几率当前为{_}{COLOR_LIGHT_GREEN}");
     REQUIRE(i18n::get("game_over_summary.title", "Game summary") == "游戏总结");
     REQUIRE(i18n::get("inventory.slot.weapon", "Weapon") == "武器");
     REQUIRE(i18n::get("inventory.browsing_title", "Browsing inventory") == "浏览物品栏");

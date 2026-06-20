@@ -510,29 +510,47 @@ static std::string get_melee_hit_chance_descr(actor::Actor& actor)
 
     if (wpn_hit_chance == kick_hit_chance) {
         descr =
-            "The chance to hit " +
+            i18n::get(
+                "view_actor_descr.melee_hit_chance_prefix",
+                "The chance to hit ") +
             actor::name_the(actor) +
-            " with a melee attack or kicking is currently{_}{COLOR_LIGHT_GREEN}" +
+            i18n::get(
+                "view_actor_descr.melee_hit_chance_same_suffix",
+                " with a melee attack or kicking is currently{_}{COLOR_LIGHT_GREEN}") +
             std::to_string(wpn_hit_chance) +
-            "%{reset_color}";
+            i18n::get(
+                "view_actor_descr.pct_color_suffix",
+                "%{reset_color}");
     }
     else {
         descr =
-            "The chance to hit " +
+            i18n::get(
+                "view_actor_descr.melee_hit_chance_prefix",
+                "The chance to hit ") +
             actor::name_the(actor) +
-            " with a melee attack is currently{_}{COLOR_LIGHT_GREEN}" +
+            i18n::get(
+                "view_actor_descr.melee_hit_chance_weapon_suffix",
+                " with a melee attack is currently{_}{COLOR_LIGHT_GREEN}") +
             std::to_string(wpn_hit_chance) +
-            "%{reset_color}" +
-            ", and the chance to hit by kicking is{_}{COLOR_LIGHT_GREEN}" +
+            i18n::get(
+                "view_actor_descr.pct_color_suffix",
+                "%{reset_color}") +
+            i18n::get(
+                "view_actor_descr.melee_hit_chance_kick_suffix",
+                ", and the chance to hit by kicking is{_}{COLOR_LIGHT_GREEN}") +
             std::to_string(kick_hit_chance) +
-            "%{reset_color}";
+            i18n::get(
+                "view_actor_descr.pct_color_suffix",
+                "%{reset_color}");
     }
 
     if (wpn_att_data.is_backstab) {
-        descr += " (because they are unaware)";
+        descr += i18n::get(
+            "view_actor_descr.because_unaware_suffix",
+            " (because they are unaware)");
     }
 
-    descr += ".";
+    descr += i18n::get("view_actor_descr.period", ".");
 
     return descr;
 }
@@ -548,11 +566,16 @@ static std::string get_sneak_chance_descr(actor::Actor& actor)
             actor::calc_total_sneak_ability(p));
 
     std::string descr =
-        "The chance to remain undetected by " +
+        i18n::get(
+            "view_actor_descr.sneak_chance_prefix",
+            "The chance to remain undetected by ") +
         actor::name_the(actor) +
-        " is currently{_}{COLOR_LIGHT_GREEN}" +
+        i18n::get(
+            "view_actor_descr.sneak_chance_suffix",
+            " is currently{_}{COLOR_LIGHT_GREEN}") +
         std::to_string(tot_value) +
-        "%{reset_color}.";
+        i18n::get("view_actor_descr.pct_color_suffix", "%{reset_color}") +
+        i18n::get("view_actor_descr.period", ".");
 
     return descr;
 }
