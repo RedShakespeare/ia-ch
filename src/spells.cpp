@@ -7725,7 +7725,9 @@ std::vector<std::string> SummonTentacles::filter_allowed_ids(
 
 std::string SummonTentacles::appear_msg_override() const
 {
-    return "Monstrous tentacles rise up from the ground!";
+    return i18n::get(
+        "spells.summon_tentacles.appear_msg",
+        "Monstrous tentacles rise up from the ground!");
 }
 
 // -----------------------------------------------------------------------------

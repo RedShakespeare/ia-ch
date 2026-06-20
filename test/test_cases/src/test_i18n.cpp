@@ -1630,6 +1630,10 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "Distorts the perception of the spell's victims, causing "
             "all other creatures to be misidentified as enemies.") ==
         "扭曲法术受害者的感知，使其把所有其他生物都误认为敌人。");
+    REQUIRE(
+        i18n::get(
+            "spells.summon_tentacles.appear_msg",
+            "Monstrous tentacles rise up from the ground!") == "巨大的触手从地面升起！");
     REQUIRE(i18n::get("spells.disease.name", "Disease") == "疾病");
     REQUIRE(
         i18n::get(
