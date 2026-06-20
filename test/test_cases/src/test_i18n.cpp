@@ -312,6 +312,8 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "and cannot be closed.") == "门正在被打开，无法关闭。");
     REQUIRE(i18n::get("terrain_door.blocked_prefix", "The ") == "那扇");
     REQUIRE(i18n::get("terrain_door.blocked_suffix", " is blocked.") == "被挡住了。");
+    REQUIRE(i18n::get("terrain_door.break_open", "open") == "打开");
+    REQUIRE(i18n::get("terrain_door.break_to_floor", "to the floor") == "到地上");
     REQUIRE(
         i18n::get(
             "terrain_door.something_blocking_prefix",

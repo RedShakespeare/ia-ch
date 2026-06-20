@@ -951,7 +951,10 @@ void Door::player_bash(const DmgType dmg_type, const int dmg)
     const audio::SfxId sfx_door_bang = get_bang_sfx(m_type);
     const audio::SfxId sfx_door_break = get_break_sfx(m_type);
 
-    const std::string break_descr = (m_type == DoorType::gate) ? "to the floor" : "open";
+    const std::string break_descr =
+        (m_type == DoorType::gate)
+        ? i18n::get("terrain_door.break_to_floor", "to the floor")
+        : i18n::get("terrain_door.break_open", "open");
 
     if (destr_chance_pct <= 0) {
         if (map::g_seen.at(m_pos) && !m_is_hidden) {
@@ -1000,7 +1003,10 @@ void Door::mon_bash(actor::Actor& mon)
     const audio::SfxId sfx_door_bang = get_bang_sfx(m_type);
     const audio::SfxId sfx_door_break = get_break_sfx(m_type);
 
-    const std::string break_descr = (m_type == DoorType::gate) ? "to the floor" : "open";
+    const std::string break_descr =
+        (m_type == DoorType::gate)
+        ? i18n::get("terrain_door.break_to_floor", "to the floor")
+        : i18n::get("terrain_door.break_open", "open");
 
     if (rnd::percent(destr_chance_pct)) {
         // Destroyed
