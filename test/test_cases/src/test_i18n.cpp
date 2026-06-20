@@ -1043,6 +1043,21 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("property.pulls_me_suffix", " pulls me!") == "拉扯着我！");
     REQUIRE(i18n::get("property.splits_suffix", " splits.") == "分裂了。");
     REQUIRE(i18n::get("property.is_spawned_suffix", " is spawned.") == "出现了。");
+    REQUIRE(i18n::get("property.zombie_part_hand_prefix", "The hand of ") == "");
+    REQUIRE(
+        i18n::get(
+            "property.zombie_part_hand_suffix",
+            " comes off and starts crawling around!") == "的一只手脱落下来，开始四处爬行！");
+    REQUIRE(i18n::get("property.zombie_part_intestines_prefix", "The intestines of ") == "");
+    REQUIRE(
+        i18n::get(
+            "property.zombie_part_intestines_suffix",
+            " starts crawling around!") == "的肠子开始四处爬行！");
+    REQUIRE(i18n::get("property.zombie_part_head_prefix", "The head of ") == "");
+    REQUIRE(
+        i18n::get(
+            "property.zombie_part_head_suffix",
+            " starts floating around!") == "的头颅开始四处漂浮！");
     REQUIRE(i18n::get("property.spews_ooze_suffix", " spews ooze.") == "喷出了软泥。");
     REQUIRE(i18n::get("property.bewilders_me_suffix", " bewilders me.") == "使我困惑。");
     REQUIRE(i18n::get("property.is_taunting_me_suffix", " is taunting me!") == "正在嘲弄我！");

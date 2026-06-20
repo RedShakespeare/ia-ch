@@ -3021,27 +3021,35 @@ void SpawnsZombiePartsOnDestroyed::try_spawn_zombie_parts() const
         id_to_spawn = "MON_CRAWLING_HAND";
 
         spawn_msg =
-            "The hand of " +
+            i18n::get("property.zombie_part_hand_prefix", "The hand of ") +
             my_name +
-            " comes off and starts crawling around!";
+            i18n::get(
+                "property.zombie_part_hand_suffix",
+                " comes off and starts crawling around!");
         break;
 
     case 1:
         id_to_spawn = "MON_INTESTINAL_MASS";
 
         spawn_msg =
-            "The intestines of " +
+            i18n::get(
+                "property.zombie_part_intestines_prefix",
+                "The intestines of ") +
             my_name +
-            " starts crawling around!";
+            i18n::get(
+                "property.zombie_part_intestines_suffix",
+                " starts crawling around!");
         break;
 
     case 2:
         id_to_spawn = "MON_FLOATING_SKULL";
 
         spawn_msg =
-            "The head of " +
+            i18n::get("property.zombie_part_head_prefix", "The head of ") +
             my_name +
-            " starts floating around!";
+            i18n::get(
+                "property.zombie_part_head_suffix",
+                " starts floating around!");
         break;
 
     default:
