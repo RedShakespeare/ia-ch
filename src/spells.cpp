@@ -5004,7 +5004,7 @@ bool SpellSpellShield::allow_mon_cast_now(
 // -----------------------------------------------------------------------------
 std::string SpellHaste::name() const
 {
-    return "Haste";
+    return i18n::get("spells.haste.name", "Haste");
 }
 
 SpellId SpellHaste::id() const
@@ -5073,7 +5073,10 @@ std::vector<std::string> SpellHaste::descr_specific(const SpellSkill skill) cons
 {
     std::vector<std::string> descr;
 
-    descr.emplace_back("The caster moves faster relative to the world around them.");
+    descr.emplace_back(
+        i18n::get(
+            "spells.haste.descr",
+            "The caster moves faster relative to the world around them."));
 
     descr.push_back(spell_duration_descr(duration_range(skill).str()));
 
