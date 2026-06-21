@@ -1,22 +1,24 @@
 ---
 name: extract-i18n
-description: Find player-facing strings still hardcoded in Infra Arcana C++ source, usually by using scan-i18n-raw-strings first, extract a complete coherent class of related text into locale text.ini via i18n::get lookups, run the visible i18n test script before staging, pass the pre-add test-stamp gate, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
+description: Find player-facing strings still hardcoded in Infra Arcana C++ source or player-facing monster XML data, usually by using scan-i18n-raw-strings first, extract a complete coherent class of related text into locale text.ini via i18n::get lookups or XML i18n_key attributes, run the visible i18n test script before staging, pass the pre-add test-stamp gate, then commit the extraction before finishing. Use when the user wants to continue the i18n string-extraction work on this repo — "extract raw text", "find untranslated strings", "i18n a file", "scan then extract", etc.
 ---
 
 # Extract raw text into the i18n layer
 
 This repo (Infra Arcana) is mid-migration from hardcoded English strings to a
-keyed i18n layer. Player-facing strings must be fetched via `i18n::get` and
-defined in the locale files — never hardcoded in source. This skill captures
-the extraction workflow.
+keyed i18n layer. Player-facing strings must be fetched via `i18n::get` or
+resolved from keyed data-file entries, and defined in the locale files — never
+shown from unkeyed English source/data text. This skill captures the extraction
+workflow.
 
 ## 1. Find raw strings
 
 Start with the `scan-i18n-raw-strings` skill. It provides the repo-specific
-scanner that catches direct message calls and nearby UI constructor arguments
-such as `Snd(...)` and `PickTraitState(...)`.
+scanner that catches direct message calls, nearby UI constructor arguments such
+as `Snd(...)` and `PickTraitState(...)`, and known player-facing
+`installed_files/data/monsters.xml` text tags.
 
-From the repository root, scan the current changed C++ files first:
+From the repository root, scan the current changed source/data files first:
 
 ```sh
 python3 .codex/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py --changed
@@ -26,6 +28,12 @@ If the user names a file or module, scan that target directly:
 
 ```sh
 python3 .codex/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py src/item_misc.cpp
+```
+
+If the user names monster data text, scan the monster XML directly:
+
+```sh
+python3 .codex/skills/scan-i18n-raw-strings/scripts/scan_raw_i18n_strings.py installed_files/data/monsters.xml
 ```
 
 For a broader audit after reviewing high-confidence hits, include low-confidence
@@ -52,8 +60,12 @@ grep -rn 'set_title("\|set_msg("\|msg_log::add("' src/ | grep -v 'i18n::get'
 What counts as player-facing raw text: anything the player reads in-game —
 log messages, prompts, popup titles/bodies, menu entries, option labels and
 descriptions, sound messages, game history entries, and inventory item info
-suffixes. What does NOT: debug/assert/log-to-file strings, enum-name string
-maps, save-file keys, IDs, and file paths.
+suffixes. In `installed_files/data/monsters.xml`, player-facing text includes
+monster names, corpse names, descriptions, wary/aware messages, smell messages,
+spell sound/visual messages, and death messages. What does NOT:
+debug/assert/log-to-file strings, enum-name string maps, save-file keys, IDs,
+file paths, XML booleans, spawn data, graphics IDs, audio IDs, AI tags, and
+other data IDs.
 
 Many strings are built by concatenating fragments with `+` (e.g.
 `"I drop " + item_ref + "."`). Each literal fragment becomes its own key — see
@@ -78,6 +90,8 @@ of these:
   entries
 - one item/effect family, such as potion metadata, curse messages, or weapon
   proc text
+- one monster XML text field family, such as all non-empty `smell_message`
+  entries or all related `aware_message_*` entries
 
 Prefer complete sibling sets over per-sibling commits. For example, extract all
 player background descriptions (Exorcist, Flagellant, Ghoul, Occultist, Rogue,
@@ -114,6 +128,13 @@ Example item batches:
 - curse trigger, warning, effect, and description text
 - weapon proc messages for one item family
 
+Example monster-data batches:
+
+- all non-empty monster `smell_message` entries
+- all monster awareness messages for one creature family
+- all names/descriptions for one coherent monster family, when the diff remains
+  reviewable
+
 ## 3. Extract each string
 
 Replace the literal with an `i18n::get(key, english_fallback)` call:
@@ -147,6 +168,20 @@ Rules:
 - Do not run `clang-format` as part of this workflow unless the user explicitly
   asks for it. Match nearby formatting manually; the agent environment may have
   a formatter version too old for this repo's `.clang-format`.
+
+For player-facing strings in `installed_files/data/monsters.xml`:
+
+- Keep the XML element body as the exact English fallback.
+- Add an `i18n_key` attribute to each extracted element, reusing one key for
+  repeated identical messages when that matches the field semantics.
+- Use keys under `actor_data.<field_family>.*`; for repeated smell messages,
+  use keys such as `actor_data.smell.decayed_flesh`.
+- If a field family does not yet read `i18n_key`, update the loader/display path
+  so the key is resolved with `i18n::get(key, fallback)` at display time when
+  possible. Store the fallback text separately if the active language can change
+  after data is loaded.
+- Do not add `i18n_key` to non-player-facing XML IDs, booleans, spawn rules,
+  graphics IDs, audio IDs, or AI/config tags.
 
 ## 4. Add or update tests
 

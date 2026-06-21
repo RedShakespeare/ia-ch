@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Scan Infra Arcana C++ files for likely raw player-facing strings."""
+"""Scan Infra Arcana source/data files for likely raw player-facing strings."""
 
 from __future__ import annotations
 
@@ -14,6 +14,25 @@ from typing import Iterable
 
 SOURCE_EXTS = {".cpp", ".hpp", ".h", ".cc", ".cxx"}
 STRING_RE = re.compile(r'"(?:\\.|[^"\\])*"')
+MONSTERS_XML_PATH = Path("installed_files/data/monsters.xml")
+XML_TEXT_RE = re.compile(
+    r"<(?P<tag>[a-z_]+)(?P<attrs>[^>]*)>(?P<text>[^<]+)</(?P=tag)>"
+)
+
+MONSTER_PLAYER_TEXT_TAGS = {
+    "name_a",
+    "name_the",
+    "corpse_name_a",
+    "corpse_name_the",
+    "description",
+    "wary_message",
+    "smell_message",
+    "aware_message_seen",
+    "aware_message_hidden",
+    "spell_message_sound",
+    "spell_message_visual",
+    "death_message",
+}
 
 DIRECT_UI_PATTERNS = (
     "msg_log::add(",
@@ -97,17 +116,21 @@ def looks_path_like(text: str) -> bool:
     return "/" in text or "\\" in text or re.search(r"\.(cpp|hpp|xml|txt|png|ogg|wav)$", text)
 
 
-def source_files(paths: Iterable[str]) -> list[Path]:
+def is_monsters_xml(path: Path) -> bool:
+    return path.as_posix().endswith(MONSTERS_XML_PATH.as_posix())
+
+
+def scan_files(paths: Iterable[str]) -> list[Path]:
     files: list[Path] = []
     for raw_path in paths:
         path = Path(raw_path)
-        if path.is_file() and path.suffix in SOURCE_EXTS:
+        if path.is_file() and (path.suffix in SOURCE_EXTS or is_monsters_xml(path)):
             files.append(path)
         elif path.is_dir():
             files.extend(
                 child
                 for child in path.rglob("*")
-                if child.is_file() and child.suffix in SOURCE_EXTS
+                if child.is_file() and (child.suffix in SOURCE_EXTS or is_monsters_xml(child))
             )
     return sorted(set(files))
 
@@ -122,6 +145,7 @@ def changed_files() -> list[str]:
         "--",
         "src",
         "include",
+        str(MONSTERS_XML_PATH),
     ]
     result = subprocess.run(cmd, check=False, text=True, capture_output=True)
     if result.returncode != 0:
@@ -199,6 +223,44 @@ def scan_file(path: Path, include_broad: bool, context_lines: int) -> list[Findi
     return findings
 
 
+def scan_monsters_xml(path: Path) -> list[Finding]:
+    findings: list[Finding] = []
+
+    lines = path.read_text(encoding="utf-8").splitlines()
+
+    for idx, original_line in enumerate(lines, start=1):
+        stripped = original_line.strip()
+        match = XML_TEXT_RE.search(stripped)
+
+        if not match:
+            continue
+
+        tag = match.group("tag")
+
+        if tag not in MONSTER_PLAYER_TEXT_TAGS:
+            continue
+
+        if "i18n_key=" in match.group("attrs"):
+            continue
+
+        text = match.group("text").strip()
+
+        if not text or not has_alpha(text):
+            continue
+
+        findings.append(
+            Finding(
+                path=str(path),
+                line=idx,
+                category="monster-xml-text",
+                literal=text,
+                source=stripped,
+            )
+        )
+
+    return findings
+
+
 def print_text(findings: list[Finding]) -> None:
     for finding in findings:
         print(
@@ -210,7 +272,7 @@ def print_text(findings: list[Finding]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Scan Infra Arcana C++ files for likely raw i18n strings."
+        description="Scan Infra Arcana source/data files for likely raw i18n strings."
     )
     parser.add_argument(
         "paths",
@@ -221,7 +283,7 @@ def main() -> int:
     parser.add_argument(
         "--changed",
         action="store_true",
-        help="Scan C++ files changed relative to HEAD under src/ and include/.",
+        help="Scan changed source files and monsters.xml relative to HEAD.",
     )
     parser.add_argument(
         "--include-broad",
@@ -245,8 +307,11 @@ def main() -> int:
     paths = changed_files() if args.changed else args.paths
     findings: list[Finding] = []
 
-    for path in source_files(paths):
-        findings.extend(scan_file(path, args.include_broad, args.context_lines))
+    for path in scan_files(paths):
+        if is_monsters_xml(path):
+            findings.extend(scan_monsters_xml(path))
+        else:
+            findings.extend(scan_file(path, args.include_broad, args.context_lines))
 
     if args.format == "json":
         print(json.dumps([finding.__dict__ for finding in findings], indent=2))

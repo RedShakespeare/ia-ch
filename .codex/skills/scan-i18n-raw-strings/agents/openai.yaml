@@ -1,4 +1,4 @@
 interface:
   display_name: "Scan i18n Raw Strings"
-  short_description: "Find untranslated C++ player-facing strings"
-  default_prompt: "Use $scan-i18n-raw-strings to find raw player-facing strings that still need i18n extraction."
+  short_description: "Find untranslated source and monster XML text"
+  default_prompt: "Use $scan-i18n-raw-strings to find raw player-facing source or monster XML strings that still need i18n extraction."
