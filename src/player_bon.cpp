@@ -1582,16 +1582,6 @@ std::vector<Bg> pickable_bgs()
         result.push_back((Bg)i);
     }
 
-    // Sort lexicographically.
-    std::sort(
-        std::begin(result),
-        std::end(result),
-        [](const Bg bg1, const Bg bg2) {
-            const std::string str1 = bg_title(bg1);
-            const std::string str2 = bg_title(bg2);
-            return str1 < str2;
-        });
-
     return result;
 }
 

@@ -39,3 +39,17 @@ TEST_CASE("Get traits that can be removed")
     REQUIRE(can_be_removed(TraitId::expert_marksman, traits_be_removed));
     REQUIRE(!can_be_removed(TraitId::master_marksman, traits_be_removed));
 }
+
+TEST_CASE("Pickable backgrounds keep the intended menu order")
+{
+    const std::vector<Bg> expected = {
+        Bg::exorcist,
+        Bg::flagellant,
+        Bg::ghoul,
+        Bg::occultist,
+        Bg::rogue,
+        Bg::war_vet,
+    };
+
+    REQUIRE(player_bon::pickable_bgs() == expected);
+}
