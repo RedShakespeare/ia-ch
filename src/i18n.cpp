@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include "config.hpp"
@@ -20,6 +21,7 @@
 // Private
 // -----------------------------------------------------------------------------
 static mINI::INIStructure s_ui_ini;
+static mINI::INIStructure s_grammar_ini;
 static std::string s_current_language = "en";
 
 static std::string locale_root_dir()
@@ -114,6 +116,7 @@ void init()
 void reload()
 {
     s_ui_ini.clear();
+    s_grammar_ini.clear();
 
     s_current_language = config::language();
 
@@ -144,6 +147,21 @@ void reload()
 
         s_ui_ini.clear();
         s_current_language = "en";
+        return;
+    }
+
+    // Load grammar.ini if it exists
+    const auto grammar_path = locale_dir(s_current_language) + "grammar.ini";
+
+    if (std::filesystem::exists(grammar_path)) {
+        mINI::INIFile grammar_file(grammar_path);
+
+        if (!grammar_file.read(s_grammar_ini)) {
+            TRACE_ERROR_RELEASE
+                << "Unable to read grammar file: "
+                << grammar_path
+                << "\n";
+        }
     }
 }
 
@@ -233,6 +251,56 @@ std::string localized_file(
 std::string localized_data_file(const std::string& relative_path)
 {
     return localized_file(relative_path, paths::data_dir() + "/" + relative_path);
+}
+
+std::string format(
+    const std::string& key,
+    const std::string& fallback_template,
+    const std::unordered_map<std::string, std::string>& args)
+{
+    // Get template from grammar.ini
+    std::string template_str = fallback_template;
+
+    // Parse key into section.key format
+    const size_t dot_pos = key.find('.');
+
+    if (dot_pos != std::string::npos) {
+        const std::string section = key.substr(0, dot_pos);
+        const std::string key_name = key.substr(dot_pos + 1);
+
+        if (s_grammar_ini.has(section)) {
+            const auto grammar_section = s_grammar_ini.get(section);
+
+            if (grammar_section.has(key_name)) {
+                template_str = grammar_section.get(key_name);
+                template_str = decode_locale_escapes(template_str);
+            }
+        }
+    }
+
+    // Replace placeholders: {name} -> value
+    std::string result = template_str;
+
+    for (const auto& [placeholder_name, value] : args) {
+        const std::string placeholder = "{" + placeholder_name + "}";
+        size_t pos = 0;
+
+        while ((pos = result.find(placeholder, pos)) != std::string::npos) {
+            result.replace(pos, placeholder.length(), value);
+            pos += value.length();
+        }
+    }
+
+    return result;
+}
+
+std::string format(
+    const std::string& key,
+    const std::string& fallback_template,
+    std::initializer_list<std::pair<const std::string, std::string>> args)
+{
+    std::unordered_map<std::string, std::string> args_map(args);
+    return format(key, fallback_template, args_map);
 }
 
 }  // namespace i18n

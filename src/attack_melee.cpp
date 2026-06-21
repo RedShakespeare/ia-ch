@@ -166,16 +166,17 @@ static void print_player_melee_hit_actor_msg(
             att_data.att_item->name(ItemNameType::a, ItemNameInfo::none);
 
         msg_log::add(
-            std::string(
-                i18n::get("attack_melee.player_prefix", "I ") +
-                wpn_verb +
-                i18n::get("attack_melee.word_separator", " ") +
-                other_name +
-                i18n::get("attack_melee.word_separator", " ") +
-                att_mod_str +
-                i18n::get("attack_melee.with_prefix", "with ") +
-                wpn_name_a +
-                dmg_punct),
+            i18n::format(
+                "attack_melee.hit_weapon",
+                "I {verb} {target} {modifier}with {weapon}{punct}",
+                {
+                    {"verb", wpn_verb},
+                    {"target", other_name},
+                    {"modifier", att_mod_str},
+                    {"weapon", wpn_name_a},
+                    {"punct", dmg_punct}
+                }
+            ),
             color);
     }
 }

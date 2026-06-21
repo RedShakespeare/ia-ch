@@ -43,9 +43,11 @@ static void msg_reload_fumble(
 
     if (actor::is_player(&actor)) {
         msg_log::add(
-            i18n::get("reload.fumble_player_prefix", "I fumble with ") +
-            ammo_name +
-            i18n::get("reload.period", "."));
+            i18n::format(
+                "reload.fumble_player",
+                "I fumble with {ammo}.",
+                {{"ammo", ammo_name}}
+            ));
     }
     else {
         // Is monster
@@ -55,10 +57,11 @@ static void msg_reload_fumble(
                     actor::name_the(actor));
 
             msg_log::add(
-                name_the +
-                i18n::get("reload.fumbles_with", " fumbles with ") +
-                ammo_name +
-                i18n::get("reload.period", "."));
+                i18n::format(
+                    "reload.fumble_monster",
+                    "{actor} fumbles with {ammo}.",
+                    {{"actor", name_the}, {"ammo", ammo_name}}
+                ));
         }
     }
 }
@@ -89,13 +92,15 @@ static void msg_reloaded(
                     ItemNameInfo::none);
 
             msg_log::add(
-                i18n::get("reload.reload_my_prefix", "I reload my ") +
-                wpn_name +
-                i18n::get("reload.ammo_count_prefix", " (") +
-                ammo_loaded_str +
-                "/" +
-                ammo_max_str +
-                i18n::get("reload.ammo_count_suffix", ")."));
+                i18n::format(
+                    "reload.reload_magazine",
+                    "I reload my {weapon} ({current}/{max}).",
+                    {
+                        {"weapon", wpn_name},
+                        {"current", ammo_loaded_str},
+                        {"max", ammo_max_str}
+                    }
+                ));
         }
         else {
             // Not a magazine
@@ -103,13 +108,15 @@ static void msg_reloaded(
                 ammo.name(ItemNameType::a);
 
             msg_log::add(
-                i18n::get("reload.load_prefix", "I load ") +
-                ammo_name +
-                i18n::get("reload.ammo_count_prefix", " (") +
-                ammo_loaded_str +
-                "/" +
-                ammo_max_str +
-                i18n::get("reload.ammo_count_suffix", ")."));
+                i18n::format(
+                    "reload.load_ammo",
+                    "I load {ammo} ({current}/{max}).",
+                    {
+                        {"ammo", ammo_name},
+                        {"current", ammo_loaded_str},
+                        {"max", ammo_max_str}
+                    }
+                ));
         }
     }
     else {
@@ -120,8 +127,11 @@ static void msg_reloaded(
                     actor::name_the(actor));
 
             msg_log::add(
-                name_the +
-                i18n::get("reload.reloads", " reloads."));
+                i18n::format(
+                    "reload.monster_reloads",
+                    "{actor} reloads.",
+                    {{"actor", name_the}}
+                ));
         }
     }
 }
