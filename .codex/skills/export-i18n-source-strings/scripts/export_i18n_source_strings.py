@@ -8,20 +8,25 @@ import csv
 import json
 import re
 import sys
+import xml.etree.ElementTree as ET
 from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Iterable, TextIO
 
 
 SOURCE_EXTS = {".cpp", ".hpp", ".h", ".cc", ".cxx"}
+XML_EXTS = {".xml"}
 MANUAL_REL_PATH = Path("installed_files") / "manual.txt"
 MANUAL_LOCALE_REL_PATH = Path("installed_files") / "data" / "locale"
 MANUAL_DELIM = "-" * 80
 MESSAGES_REL_DIR = Path("installed_files") / "data" / "messages"
+XML_REL_DIR = Path("installed_files") / "data"
 BASE_CALL_SPECS = (
     ("i18n::get", ""),
     ("insanity_i18n::get", "insanity."),
 )
+EMPTY_SOURCE_PLACEHOLDER = "__EMPTY__"
+SPACE_SOURCE_PLACEHOLDER = "__SPACE__"
 
 
 @dataclass(frozen=True)
@@ -60,6 +65,21 @@ def source_files(paths: Iterable[str]) -> list[Path]:
                 child
                 for child in path.rglob("*")
                 if child.is_file() and child.suffix in SOURCE_EXTS
+            )
+    return sorted(set(files))
+
+
+def xml_source_files(paths: Iterable[str]) -> list[Path]:
+    files: list[Path] = []
+    for raw_path in paths:
+        path = Path(raw_path)
+        if path.is_file() and path.suffix in XML_EXTS:
+            files.append(path)
+        elif path.is_dir():
+            files.extend(
+                child
+                for child in path.rglob("*")
+                if child.is_file() and child.suffix in XML_EXTS
             )
     return sorted(set(files))
 
@@ -259,6 +279,38 @@ def call_specs_for_path(path: Path) -> list[tuple[str, str]]:
 def find_line_containing(text: str, needle: str) -> int:
     pos = text.find(needle)
     return line_number(text, pos) if pos >= 0 else 1
+
+
+def xml_i18n_key_lines(text: str) -> dict[str, list[int]]:
+    result: dict[str, list[int]] = {}
+    pattern = re.compile(r"\bi18n_key\s*=\s*([\"'])(.*?)\1")
+
+    for match in pattern.finditer(text):
+        result.setdefault(match.group(2), []).append(line_number(text, match.start()))
+
+    return result
+
+
+def scan_xml_file(path: Path) -> list[Entry]:
+    raw_text = path.read_text(encoding="utf-8")
+    line_by_key = xml_i18n_key_lines(raw_text)
+    tree = ET.parse(path)
+    entries: list[Entry] = []
+
+    for element in tree.iter():
+        key = element.attrib.get("i18n_key")
+        if not key:
+            continue
+
+        source = "".join(element.itertext()).strip()
+        if not source:
+            continue
+
+        key_lines = line_by_key.get(key)
+        line = key_lines.pop(0) if key_lines else 1
+        entries.append(Entry(key, source, str(path), line))
+
+    return entries
 
 
 def slugify_manual_chapter(title: str) -> str:
@@ -779,10 +831,18 @@ def write_paratranz_csv(entries: list[Entry], translations: dict[str, str], out:
         writer.writerow(
             {
                 "index": entry.index,
-                "source": entry.source,
+                "source": paratranz_source_text(entry.source),
                 "translation": translations.get(entry.index, ""),
             }
         )
+
+
+def paratranz_source_text(source: str) -> str:
+    if source == "":
+        return EMPTY_SOURCE_PLACEHOLDER
+    if source.strip() == "":
+        return SPACE_SOURCE_PLACEHOLDER
+    return source
 
 
 def write_json(entries: list[Entry], translations: dict[str, str], out: TextIO) -> None:
@@ -838,6 +898,10 @@ def catalog_entries_for_args(
         entries.extend(file_entries)
         skipped.extend(file_skipped)
 
+    xml_scan_paths = paths or [str(XML_REL_DIR)]
+    for path in xml_source_files(xml_scan_paths):
+        entries.extend(scan_xml_file(path))
+
     if should_include_manual(repo, paths, manual_mode):
         entries.extend(manual_entries(repo))
 
@@ -867,6 +931,37 @@ def write_csv_file(path: Path, entries: list[Entry], translations: dict[str, str
         write_paratranz_csv(entries, translations, out_file)
 
 
+def validate_catalog_keys_match_locale(
+    entries: list[Entry],
+    translations: dict[str, str],
+    locale: str,
+    quiet: bool,
+) -> int:
+    entry_keys = {entry.index for entry in entries}
+    locale_keys = set(translations)
+    missing_from_catalog = sorted(locale_keys - entry_keys)
+    extra_in_catalog = sorted(entry_keys - locale_keys)
+    mismatch_count = len(missing_from_catalog) + len(extra_in_catalog)
+
+    if mismatch_count and not quiet:
+        print(
+            f"error: catalog key set does not match installed_files/data/locale/{locale}/text.ini: "
+            f"{len(missing_from_catalog)} missing from catalog, "
+            f"{len(extra_in_catalog)} extra in catalog",
+            file=sys.stderr,
+        )
+        for key in missing_from_catalog[:20]:
+            print(f"  missing from catalog: {key}", file=sys.stderr)
+        if len(missing_from_catalog) > 20:
+            print(f"  ... {len(missing_from_catalog) - 20} more missing", file=sys.stderr)
+        for key in extra_in_catalog[:20]:
+            print(f"  extra in catalog: {key}", file=sys.stderr)
+        if len(extra_in_catalog) > 20:
+            print(f"  ... {len(extra_in_catalog) - 20} more extra", file=sys.stderr)
+
+    return mismatch_count
+
+
 def catalog_csv_name(locale: str | None) -> str:
     if locale:
         return f"ia-paratranz-{locale}.csv"
@@ -884,6 +979,14 @@ def write_output_dir(
     entries, skipped = catalog_entries_for_args(repo, paths, "never")
     entries, duplicate_diff_count = unique_entries(entries, quiet)
     translations = catalog_translations_for_args(repo, locale, paths, "never", quiet)
+    key_mismatch_count = (
+        validate_catalog_keys_match_locale(entries, translations, locale, quiet)
+        if locale and not paths
+        else 0
+    )
+
+    if key_mismatch_count:
+        return duplicate_diff_count + key_mismatch_count, skipped
 
     write_csv_file(out_dir / catalog_csv_name(locale), entries, translations)
 

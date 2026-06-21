@@ -1,13 +1,14 @@
 ---
 name: export-i18n-source-strings
-description: Export existing Infra Arcana i18n keys, English fallback strings, manual.txt chapter/paragraph entries, and data/messages/*.txt files as Paratranz-compatible CSV. Use when the user asks to scan all i18n-ed strings, extract English source text, split the Tome of Wisdom/manual into translation-platform entries, export message text files, build translation platform import files with index/source/translation columns, populate translation from an existing locale, or audit duplicate i18n keys.
+description: Export existing Infra Arcana i18n keys, English fallback strings, XML i18n_key entries, manual.txt chapter/paragraph entries, and data/messages/*.txt files as Paratranz-compatible CSV. Use when the user asks to scan all i18n-ed strings, extract English source text, split the Tome of Wisdom/manual into translation-platform entries, export XML-backed data strings, export message text files, build translation platform import files with index/source/translation columns, populate translation from an existing locale, or audit duplicate i18n keys.
 ---
 
 # Export i18n source strings
 
 Use this skill to extract the English source catalog from existing Infra Arcana
-i18n calls in C++ source, the Tome of Wisdom `manual.txt`, and
-`data/messages/*.txt`, then write Paratranz-compatible CSV.
+i18n calls in C++ source, XML elements with `i18n_key` attributes, the Tome of
+Wisdom `manual.txt`, and `data/messages/*.txt`, then write
+Paratranz-compatible CSV.
 
 The bundled exporter handles both direct calls like
 `i18n::get("key", "English fallback")` and the local insanity wrapper
@@ -44,6 +45,10 @@ The CSV has no title/header row. Each row has three columns:
 - `source`: the English fallback string from the C++ `i18n::get` call.
 - `translation`: blank by default, or filled from a locale file when requested.
 
+For Paratranz compatibility, empty or whitespace-only source strings are emitted
+as visible placeholders: `__EMPTY__` for an empty source and `__SPACE__` for a
+whitespace-only source. The catalog key remains unchanged.
+
 Useful variants:
 
 ```sh
@@ -67,9 +72,14 @@ python3 .codex/skills/export-i18n-source-strings/scripts/export_i18n_source_stri
 `--output-dir` writes separate Paratranz CSV files:
 
 - `ia-paratranz.csv`, or `ia-paratranz-<locale>.csv` when `--locale` is used:
-  C++ `i18n::get`/wrapper entries intended for `text.ini`.
+  C++ `i18n::get`/wrapper entries and XML `i18n_key` entries intended for
+  `text.ini`.
 - `manual.csv`: `installed_files/manual.txt` chapter and paragraph entries.
 - `<message-file-stem>.csv`: one CSV for each `installed_files/data/messages/*.txt`.
+
+XML export follows the supplied path filters: the default full export scans
+`installed_files/data/**/*.xml`; restricted exports scan XML only when a supplied
+path is an XML file or a directory containing XML files.
 
 Manual export defaults to `--manual auto`: include `manual.txt` in the default
 full export, and include it for restricted exports only when a supplied path is
@@ -85,6 +95,9 @@ After exporting, inspect the script diagnostics:
 - duplicate key with different source: fix before sending to translators.
 - parse skipped calls: inspect manually; the script only exports calls whose
   first two arguments are string literals after any supported wrapper expansion.
+- full `--output-dir --locale <locale>` exports fail if the main
+  `ia-paratranz-<locale>.csv` catalog key set does not exactly match
+  `installed_files/data/locale/<locale>/text.ini`.
 - missing locale translations when `--locale` is used: expected for newly added
   keys, but useful to review before upload.
 - manual chapter/paragraph count mismatch when `--locale` is used: inspect the
