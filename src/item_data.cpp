@@ -2246,23 +2246,27 @@ void init()
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::pharaoh_staff;
     d.base_name = {
-        "Staff of the Pharaohs",
+        tr("pharaoh_staff.name", "Staff of the Pharaohs"),
         "",
-        "the Staff of the Pharaohs"};
+        tr("pharaoh_staff.name_a", "the Staff of the Pharaohs")};
     d.base_descr = {
-        "Wielded by rulers in ancient times, this powerful artifact "
-        "holds power over those that were once bound to it. "
-        "Any mummy beholding the owner will eventually be converted "
-        "(10% chance per turn while the weapon is carried).",
+        tr(
+            "pharaoh_staff.base_descr_1",
+            "Wielded by rulers in ancient times, this powerful artifact "
+            "holds power over those that were once bound to it. "
+            "Any mummy beholding the owner will eventually be converted "
+            "(10% chance per turn while the weapon is carried)."),
 
-        "Also, a devastating curse may fall upon those struck by this weapon "
-        "(50% chance to apply doom, greatly reducing the victim's "
-        "hit chances, evasion, and searching ability, and also causes "
-        "a small chance to fail when casting spells)."};
+        tr(
+            "pharaoh_staff.base_descr_2",
+            "Also, a devastating curse may fall upon those struck by this weapon "
+            "(50% chance to apply doom, greatly reducing the victim's "
+            "hit chances, evasion, and searching ability, and also causes "
+            "a small chance to fail when casting spells).")};
     d.color = colors::magenta();
     d.weight = Weight::medium;
     d.tile = gfx::TileId::pharaoh_staff;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.melee.dmg = WpnDmg(1, 12);
     d.melee.hit_chance_mod = 0;
     d.melee.miss_sfx = audio::SfxId::miss_medium;
@@ -2280,18 +2284,22 @@ void init()
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::flagellant_whip;
     d.base_name = {
-        "Scourge",
+        tr("flagellant_whip.name", "Scourge"),
         "",
-        "a Scourge"};
+        tr("flagellant_whip.name_a", "a Scourge")};
     d.base_descr = {
-        "A brutal whip affixed with sharpened bones and metal spikes.",
+        tr(
+            "flagellant_whip.base_descr_1",
+            "A brutal whip affixed with sharpened bones and metal spikes."),
 
-        "Victims struck by its flesh-tearing bite may be paralyzed "
-        "with pain (20% chance)."};
+        tr(
+            "flagellant_whip.base_descr_2",
+            "Victims struck by its flesh-tearing bite may be paralyzed "
+            "with pain (20% chance).")};
     d.color = colors::red();
     d.weight = Weight::light;
     d.tile = gfx::TileId::whip_scourge;
-    d.melee.attack_msgs = {"strike", "strikes"};
+    d.melee.attack_msgs = attack_msgs("attack.strike", "strike", "strikes");
     d.melee.dmg = WpnDmg(1, 10);
     d.melee.hit_chance_mod = 10;
     d.melee.miss_sfx = audio::SfxId::miss_medium;

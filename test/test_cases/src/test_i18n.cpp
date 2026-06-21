@@ -1725,6 +1725,18 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("item_data.lantern.name_a", "一盏电提灯");
     require_translation("item_data.lantern.base_descr", "一个便携式光源。");
     require_translation("item_data.lantern.land_on_hard_snd_msg", "我听到一阵金属叮当声。");
+    require_translation("item_data.pharaoh_staff.name", "法老权杖");
+    require_translation("item_data.pharaoh_staff.name_a", "法老权杖");
+    require_translation(
+        "item_data.pharaoh_staff.base_descr_1",
+        "古代统治者所持的强大神器，能支配那些曾受它束缚的存在。任何看见持有者的木乃伊最终都会被转化（携带此武器时每回合有10%几率）。");
+    require_translation(
+        "item_data.pharaoh_staff.base_descr_2",
+        "此外，被这件武器击中的目标可能遭受毁灭性的诅咒（50%几率施加厄运，大幅降低受害者的命中率、闪避和搜索能力，并使施法时有小概率失败）。");
+    require_translation("item_data.flagellant_whip.name", "苦修鞭");
+    require_translation("item_data.flagellant_whip.name_a", "一条苦修鞭");
+    require_translation("item_data.flagellant_whip.base_descr_1", "一条残酷的鞭子，上面装有磨尖的骨片和金属尖刺。");
+    require_translation("item_data.flagellant_whip.base_descr_2", "被它撕裂血肉的咬噬击中的受害者，可能因痛苦而麻痹（20%几率）。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");
