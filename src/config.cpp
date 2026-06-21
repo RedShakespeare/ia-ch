@@ -297,8 +297,17 @@ static void set_default_variables()
 
     s_is_double_click_toggle_fullscreen = true;
 
-    // Use the smallest font
-    s_font_name = s_font_image_names[0];
+    // Use 14x24_zhaohua.png as default font, fallback to smallest if not found
+    auto it = std::find(
+        std::cbegin(s_font_image_names),
+        std::cend(s_font_image_names),
+        "14x24_zhaohua.png");
+    if (it != std::cend(s_font_image_names)) {
+        s_font_name = "14x24_zhaohua.png";
+    }
+    else {
+        s_font_name = s_font_image_names[0];
+    }
 
     s_always_center_view_on_player = true;
 
@@ -336,7 +345,7 @@ static void set_default_variables()
     s_is_ranged_wpn_auto_reload = false;
     s_base_delay = 50;
     s_default_player_name = "";
-    s_language = "en";
+    s_language = "zh_CN";
 
     for (size_t i = 0; i < (size_t)hints::Id::END; ++i) {
         s_has_seen_hint_global[i] = false;
@@ -411,7 +420,7 @@ static bool read_config_file()
     s_is_medical_bag_auto_choice = config["is_medical_bag_auto_choice"] == "1";
     s_is_ranged_wpn_auto_reload = config["is_ranged_wpn_auto_reload"] == "1";
     s_base_delay = to_int(config["base_delay"]);
-    s_language = config["language"].empty() ? "en" : config["language"];
+    s_language = config["language"].empty() ? "zh_CN" : config["language"];
 
     s_default_player_name = "";
 

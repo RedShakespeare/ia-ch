@@ -19,7 +19,7 @@ Infra Arcana — an open-source Lovecraftian roguelike (turn-based, grid-based, 
 
 The repo drives everything through scripts at the root (they create and use `build/`, treated as generated output):
 
-```
+```bash
 ./build-debug.sh      # configure + build the debug game target
 ./build-tests.sh      # configure + build tests only
 ./run-tests.sh        # build and run the full test suite
@@ -27,6 +27,14 @@ The repo drives everything through scripts at the root (they create and use `bui
 ./clang-format.sh     # format project C++ files
 ./clang-tidy.sh       # clang-tidy wrapper
 ./cppcheck.sh         # cppcheck wrapper
+```
+
+**Manual builds (for Linux artifacts):** Use `build-linux-tests/` as the build directory instead of `build/` when manually running cmake commands:
+
+```bash
+cmake -B build-linux-tests
+cmake --build build-linux-tests --target ia-test -- -j$(nproc)
+cd build-linux-tests && ./ia-test   # run tests
 ```
 
 Tests use bundled Catch2 under `test/`; cases live in `test/test_cases/src/`. To run a narrow set, build tests and pass a Catch2 name/tag filter to the test binary the build produces, rather than running the whole suite. If a full build is blocked by missing SDL/system deps, report the exact command and missing dependency — tests can build with a narrower dependency set than the game.
