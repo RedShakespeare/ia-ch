@@ -10,6 +10,7 @@
 
 #include "actor.hpp"
 #include "debug.hpp"
+#include "i18n.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
@@ -63,7 +64,9 @@ void Armor::hit(const int dmg)
         const std::string armor_name = name(ItemNameType::plain);
 
         msg_log::add(
-            "My " + armor_name + " is damaged!",
+            i18n::get("item_armor.damage_prefix", "My ") +
+                armor_name +
+                i18n::get("item_armor.damage_suffix", " is damaged!"),
             colors::msg_note());
     }
 }
@@ -76,7 +79,9 @@ std::string Armor::name_info_str(const ItemNameIdentified id_type) const
 
     const std::string ap_str = std::to_string(std::max(1, ap));
 
-    return "(" + ap_str + " armor)";
+    return i18n::get("item_armor.info_prefix", "(") +
+        ap_str +
+        i18n::get("item_armor.info_suffix", " armor)");
 }
 
 void ArmorAsbSuit::on_equip_hook(const Verbose verbose)
@@ -102,7 +107,9 @@ void ArmorMiGo::on_equip_hook(const Verbose verbose)
 {
     if (verbose == Verbose::yes) {
         msg_log::add(
-            "The armor joins with my skin!",
+            i18n::get(
+                "item_armor.joins_with_skin",
+                "The armor joins with my skin!"),
             colors::text(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::yes);

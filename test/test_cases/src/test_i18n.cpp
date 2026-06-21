@@ -380,6 +380,13 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("inventory.browsing_title", "Browsing inventory") == "浏览物品栏");
     REQUIRE(i18n::get("inventory.throw.title", "Throw which item?") == "投掷哪件物品？");
     REQUIRE(i18n::get("inventory.not_while_burning", "Not while burning.") == "燃烧时不能这么做。");
+    REQUIRE(i18n::get("item_armor.damage_prefix", "My ") == "我的");
+    REQUIRE(i18n::get("item_armor.damage_suffix", " is damaged!") == "受损了！");
+    REQUIRE(i18n::get("item_armor.info_suffix", " armor)") == "护甲）");
+    REQUIRE(
+        i18n::get(
+            "item_armor.joins_with_skin",
+            "The armor joins with my skin!") == "护甲与我的皮肤融合了！");
     REQUIRE(i18n::get("player_bon.extra_trait_title", "You gain an extra trait!") == "你获得了额外特质！");
     REQUIRE(i18n::get("player_spells.known_title", "Known spells") == "已知法术");
     REQUIRE(i18n::get("player_spells.skill_label", "Skill: ") == "技能：");
