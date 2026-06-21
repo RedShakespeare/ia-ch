@@ -30,11 +30,15 @@ static std::vector<std::string> read_manual_file()
 {
     std::vector<std::string> lines;
 
-    std::ifstream file("manual.txt");
+    const auto path = i18n::localized_file("manual.txt", "manual.txt");
+
+    std::ifstream file(path);
 
     if (!file.is_open()) {
         TRACE_ERROR_RELEASE
             << "Could not open manual file"
+            << ": "
+            << path
             << "\n";
 
         PANIC;

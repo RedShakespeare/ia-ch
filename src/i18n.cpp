@@ -217,7 +217,9 @@ std::string language_name(const std::string& code)
     return code;
 }
 
-std::string localized_data_file(const std::string& relative_path)
+std::string localized_file(
+    const std::string& relative_path,
+    const std::string& fallback_path)
 {
     const auto localized_path = locale_dir(s_current_language) + relative_path;
 
@@ -225,7 +227,12 @@ std::string localized_data_file(const std::string& relative_path)
         return localized_path;
     }
 
-    return paths::data_dir() + "/" + relative_path;
+    return fallback_path;
+}
+
+std::string localized_data_file(const std::string& relative_path)
+{
+    return localized_file(relative_path, paths::data_dir() + "/" + relative_path);
 }
 
 }  // namespace i18n

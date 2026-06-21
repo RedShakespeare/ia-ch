@@ -3966,6 +3966,22 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
 
     REQUIRE(path.find("locale/zh_CN/messages/menu_quotes.txt") != std::string::npos);
     REQUIRE(std::filesystem::exists(path));
+
+    const auto manual_path = i18n::localized_file("manual.txt", "manual.txt");
+
+    REQUIRE(manual_path.find("locale/zh_CN/manual.txt") != std::string::npos);
+    REQUIRE(std::filesystem::exists(manual_path));
+
+    std::ifstream manual_file(manual_path);
+    REQUIRE(manual_file.is_open());
+
+    std::string first_line;
+    std::getline(manual_file, first_line);
+    REQUIRE(first_line == "--------------------------------------------------------------------------------");
+
+    std::string title_line;
+    std::getline(manual_file, title_line);
+    REQUIRE(title_line == "游戏命令");
 }
 
 TEST_CASE("I18n falls back to base message file when localized file is missing")
@@ -3985,6 +4001,8 @@ TEST_CASE("I18n falls back to base message file when localized file is missing")
     const auto resolved = messages::resolved_path("test_i18n_fallback_only.txt");
 
     REQUIRE(resolved == base_path);
+
+    REQUIRE(i18n::localized_file(unique_rel_path, base_path) == base_path);
 
     std::filesystem::remove(base_path);
 }

@@ -21,6 +21,9 @@ std::string current_language();
 std::vector<std::string> available_languages();
 std::string language_name(const std::string& code);
 
+std::string localized_file(
+    const std::string& relative_path,
+    const std::string& fallback_path);
 std::string localized_data_file(const std::string& relative_path);
 
 }  // namespace i18n
