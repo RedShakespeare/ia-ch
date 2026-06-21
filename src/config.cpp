@@ -1982,7 +1982,9 @@ void BaseDelayOption::change(OptionChangeCommand command) const
         query_config.default_value = s_base_delay;
         query_config.cancel_returns_default = true;
 
-        const int nr = query::number(query_config, "Projectile delay");
+        const int nr = query::number(
+            query_config,
+            i18n::get("option.base_delay.query_title", "Projectile delay"));
 
         if (nr != -1) {
             s_base_delay = nr;
