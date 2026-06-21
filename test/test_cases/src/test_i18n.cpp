@@ -1760,6 +1760,14 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("item_data.clockwork.name", "奥术发条装置");
     require_translation("item_data.clockwork.name_a", "奥术发条装置");
     require_translation("item_data.clockwork.base_descr", "一件由主发条驱动、品质与美感都超乎现实的发条装置。上紧发条后，会使持有者在短时间内行动极为迅速。");
+    require_translation("item_data.horn_of_malice.name", "恶意号角");
+    require_translation("item_data.horn_of_malice.name_a", "恶意号角");
+    require_translation(
+        "item_data.horn_of_malice.base_descr",
+        "吹响时，这件阴森神器会发出怪异共鸣，腐蚀听力范围内所有生物（吹号者除外）的心智，使它们以强烈仇恨和不信任看待所有其他生物。");
+    require_translation("item_data.horn_of_banishment.name", "放逐号角");
+    require_translation("item_data.horn_of_banishment.name_a", "放逐号角");
+    require_translation("item_data.horn_of_banishment.base_descr", "吹响时，这件乐器会迫使听力范围内所有魔法召唤的生物返回其原本的领域。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");

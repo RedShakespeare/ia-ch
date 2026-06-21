@@ -2482,14 +2482,16 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::horn_of_malice;
     d.base_name = {
-        "Horn of Malice",
+        tr("horn_of_malice.name", "Horn of Malice"),
         "",
-        "the Horn of Malice"};
+        tr("horn_of_malice.name_a", "the Horn of Malice")};
     d.base_descr = {
-        "When blown, this sinister artifact emits a weird resonance "
-        "which corrupts the psyche of all those within hearing range "
-        "(excluding the horn blower) - causing them to consider all "
-        "other creatures with intense hatred and distrust."};
+        tr(
+            "horn_of_malice.base_descr",
+            "When blown, this sinister artifact emits a weird resonance "
+            "which corrupts the psyche of all those within hearing range "
+            "(excluding the horn blower) - causing them to consider all "
+            "other creatures with intense hatred and distrust.")};
     d.color = colors::gray();
     d.weight = Weight::light;
     d.tile = gfx::TileId::horn;
@@ -2506,12 +2508,14 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::horn_of_banishment;
     d.base_name = {
-        "Horn of Banishment",
+        tr("horn_of_banishment.name", "Horn of Banishment"),
         "",
-        "the Horn of Banishment"};
+        tr("horn_of_banishment.name_a", "the Horn of Banishment")};
     d.base_descr = {
-        "When blown, this instrument forces all magically summoned "
-        "creatures within hearing range back to their original realm."};
+        tr(
+            "horn_of_banishment.base_descr",
+            "When blown, this instrument forces all magically summoned "
+            "creatures within hearing range back to their original realm.")};
     d.color = colors::magenta();
     d.weight = Weight::light;
     d.tile = gfx::TileId::horn;
