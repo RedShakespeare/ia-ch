@@ -168,6 +168,10 @@ bool TextCompiler::should_add_newline_before_write_action(
             const bool is_newline =
                 fwd_action.id == TextActionId::newline;
 
+            const bool is_fwd_utf8_codepoint =
+                (fwd_action.str.size() > 1) &&
+                (utf8::display_width(fwd_action.str) == 1);
+
             const bool is_breaking_space =
                 (fwd_action.str == " ") &&
                 (fwd_str != "{_}");
@@ -175,7 +179,10 @@ bool TextCompiler::should_add_newline_before_write_action(
             const bool is_done_action =
                 fwd_action.id == TextActionId::done;
 
-            if (is_newline || is_done_action || is_breaking_space) {
+            if (is_newline ||
+                is_done_action ||
+                is_breaking_space ||
+                is_fwd_utf8_codepoint) {
                 break;
             }
 
@@ -309,7 +316,10 @@ std::pair<std::string, size_t> TextCompiler::next_token(size_t pos) const
 
         const auto next_c = m_raw_str[pos];
 
-        if ((next_c == ' ') || (next_c == '\n') || (next_c == '{')) {
+        if ((next_c == ' ') ||
+            (next_c == '\n') ||
+            (next_c == '{') ||
+            (static_cast<unsigned char>(next_c) >= 0x80)) {
             // Next character is the start of a new token
             break;
         }

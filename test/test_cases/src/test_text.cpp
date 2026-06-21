@@ -414,3 +414,47 @@ TEST_CASE("Text with Chinese UTF-8 characters wraps by character")
     REQUIRE(actions[idx].id == TextActionId::write_str);
     REQUIRE(actions[idx].str == "色");
 }
+
+TEST_CASE("Text with ASCII before Chinese UTF-8 characters wraps after ASCII")
+{
+    std::string str = "降低 20%。然而";
+
+    Text text(str);
+
+    text.set_w(6);
+    text.set_color(colors::white());
+
+    const auto actions = text.actions();
+
+    size_t idx = 0;
+
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "降");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "低");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == " ");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "20%");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::newline);
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "。");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "然");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "而");
+}
