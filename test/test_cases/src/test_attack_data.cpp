@@ -163,8 +163,16 @@ TEST_CASE("Melee attack data has reduced damage with weakened and poisoned playe
 
     map::g_player->m_pos = p1;
 
-    map::g_player->m_properties.apply(prop::make(prop::Id::weakened));
-    map::g_player->m_properties.apply(prop::make(prop::Id::poisoned));
+    map::g_player->m_properties.apply(
+        prop::make(prop::Id::weakened),
+        prop::PropSrc::intr,
+        true,
+        Verbose::no);
+    map::g_player->m_properties.apply(
+        prop::make(prop::Id::poisoned),
+        prop::PropSrc::intr,
+        true,
+        Verbose::no);
 
     // Zombie
     actor::Actor& mon = *actor::make("MON_ZOMBIE", p2);
