@@ -79,7 +79,7 @@ struct PropActResult
     PropEnded prop_ended {PropEnded::no};
 };
 
-extern const std::string g_property_ending_suffix;
+std::string property_ending_suffix();
 
 void run_alter_env_effect(const P& origin, int change_pos_one_in_n = 6);
 

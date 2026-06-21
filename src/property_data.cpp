@@ -114,7 +114,7 @@ static const std::unordered_map<std::string, prop::Id> s_str_to_prop_id_map = {
 static void add(prop::PropData& d)
 {
 #ifndef NDEBUG
-    const std::string worst_case_str = d.name_short + prop::g_property_ending_suffix;
+    const std::string worst_case_str = d.name_short + prop::property_ending_suffix();
 
     const size_t worst_case_w = worst_case_str.length();
 

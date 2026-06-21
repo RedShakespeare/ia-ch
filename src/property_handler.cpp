@@ -22,6 +22,7 @@
 #include "game.hpp"
 #include "gfx.hpp"
 #include "hints.hpp"
+#include "i18n.hpp"
 #include "io.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
@@ -164,7 +165,10 @@ static void format_string_with_actor_name(std::string& str, const std::string& a
 // -----------------------------------------------------------------------------
 namespace prop
 {
-const std::string g_property_ending_suffix = " (ending)";
+std::string property_ending_suffix()
+{
+    return i18n::get("property_handler.ending_suffix", " (ending)");
+}
 
 // -----------------------------------------------------------------------------
 // Property handler
@@ -1028,7 +1032,7 @@ std::vector<ColoredString> PropHandler::property_names_short() const
             }
         }
         else if (prop->m_nr_turns_left == 0) {
-            name += g_property_ending_suffix;
+            name += property_ending_suffix();
         }
         else if (is_self_aware && prop->allow_display_turns()) {
             name += get_property_nr_turns_suffix(*prop);
@@ -1066,10 +1070,10 @@ std::vector<PropListEntry> PropHandler::property_names_and_descr() const
                      PropDurationMode::indefinite);
 
                 if (is_indefinite) {
-                    name += " (indefinite)";
+                    name += i18n::get("property_handler.indefinite_suffix", " (indefinite)");
                 }
                 else if (prop->m_nr_turns_left == 0) {
-                    name += g_property_ending_suffix;
+                    name += property_ending_suffix();
                 }
                 else if (is_self_aware && prop->allow_display_turns()) {
                     name += get_property_nr_turns_suffix(*prop);
@@ -1077,7 +1081,7 @@ std::vector<PropListEntry> PropHandler::property_names_and_descr() const
             } break;
 
             case PropSrc::inv: {
-                name += " (from item)";
+                name += i18n::get("property_handler.from_item_suffix", " (from item)");
             } break;
 
             case PropSrc::END: {

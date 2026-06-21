@@ -924,6 +924,9 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         "被挡在边界处。");
     REQUIRE(i18n::get("property.wounded_open", "Wounded(") == "受伤（");
     REQUIRE(i18n::get("property.close_paren", ")") == "）");
+    require_translation("property_handler.ending_suffix", "（即将结束）");
+    require_translation("property_handler.indefinite_suffix", "（无限期）");
+    require_translation("property_handler.from_item_suffix", "（来自物品）");
     REQUIRE(i18n::get("property.rises_again_suffix", " rises again!!") == "再次站了起来！！");
     REQUIRE(i18n::get("property.crimson_passage_infinite", "INF") == "无限");
     REQUIRE(i18n::get("property.crimson_passage_short_open", "Crims Psg(") == "猩红通道（");
