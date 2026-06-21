@@ -123,11 +123,14 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
                 text_e,
                 "allow_speed_description"));
 
-    data.smell_msg =
-        xml::get_text_str(
-            xml::first_child(
-                text_e,
-                "smell_message"));
+    auto* smell_msg_e = xml::first_child(text_e, "smell_message");
+
+    data.smell_msg = xml::get_text_str(smell_msg_e);
+
+    xml::try_get_attribute_str(
+        smell_msg_e,
+        "i18n_key",
+        data.smell_msg_i18n_key);
 
     data.wary_msg =
         xml::get_text_str(
@@ -762,6 +765,7 @@ void ActorData::reset()
     use_cultist_aware_msg_mon_seen = false;
     use_cultist_aware_msg_mon_hidden = false;
     smell_msg = "";
+    smell_msg_i18n_key = "";
     aware_sfx_mon_seen = audio::SfxId::END;
     aware_sfx_mon_hidden = audio::SfxId::END;
     spell_msg_sound = "";

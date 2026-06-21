@@ -165,6 +165,7 @@ struct ActorData
     bool is_auto_spawn_allowed;
     std::string descr;
     std::string smell_msg;
+    std::string smell_msg_i18n_key;
     std::string wary_msg;
     std::string aware_msg_mon_seen;
     std::string aware_msg_mon_hidden;

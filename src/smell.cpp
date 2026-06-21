@@ -19,6 +19,7 @@
 #include "direction.hpp"
 #include "global.hpp"
 #include "inventory.hpp"
+#include "i18n.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
 #include "map_parsing.hpp"
@@ -124,6 +125,17 @@ static bool is_seeing_mon_with_smell_msg()
         });
 }
 
+static std::string localized_smell_msg(const smell::Smell& smell)
+{
+    ASSERT(smell.msg_ptr);
+
+    if (smell.msg_i18n_key_ptr && !smell.msg_i18n_key_ptr->empty()) {
+        return i18n::get(*smell.msg_i18n_key_ptr, *smell.msg_ptr);
+    }
+
+    return *smell.msg_ptr;
+}
+
 // -----------------------------------------------------------------------------
 // smell
 // -----------------------------------------------------------------------------
@@ -191,6 +203,7 @@ void put_smell_for_mon(const actor::Actor& mon)
     Smell smell;
 
     smell.msg_ptr = msg_ptr;
+    smell.msg_i18n_key_ptr = &mon.m_data->smell_msg_i18n_key;
 
     // TODO: Allow different strength for different monsters?
     smell.strength_pct = 30;
@@ -233,7 +246,7 @@ void on_player_turn_start()
     }
 
     msg_log::add(
-        *smell.msg_ptr,
+        localized_smell_msg(smell),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes);

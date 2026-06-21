@@ -81,7 +81,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear a growling voice.</aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -180,7 +180,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear a growling voice.</aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -281,7 +281,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear the flapping of great wings.</aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -381,7 +381,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -483,7 +483,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>false</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -583,7 +583,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -682,7 +682,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -4904,7 +4904,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>It smells like an open grave here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.open_grave">It smells like an open grave here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear a chilling growl.</aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -5004,7 +5004,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>It smells like an open grave here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.open_grave">It smells like an open grave here.</smell_message>
             <aware_message_seen>growls.</aware_message_seen>
             <aware_message_hidden>I hear a chilling growl.</aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -6660,7 +6660,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>speaks in a hollow voice.</aware_message_seen>
             <aware_message_hidden>I hear a hollow voice.</aware_message_hidden>
             <spell_message_sound>speaks incantations in a hollow voice.</spell_message_sound>
@@ -6774,7 +6774,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>speaks in a hollow voice.</aware_message_seen>
             <aware_message_hidden>I hear a hollow voice.</aware_message_hidden>
             <spell_message_sound>speaks incantations in a hollow voice.</spell_message_sound>
@@ -6874,7 +6874,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>speaks in a hollow voice.</aware_message_seen>
             <aware_message_hidden>I hear a hollow voice.</aware_message_hidden>
             <spell_message_sound>speaks incantations in a hollow voice.</spell_message_sound>
@@ -6991,7 +6991,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a stench of decayed flesh here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.decayed_flesh">There is a stench of decayed flesh here.</smell_message>
             <aware_message_seen>speaks in a hollow voice.</aware_message_seen>
             <aware_message_hidden>I hear a hollow voice.</aware_message_hidden>
             <spell_message_sound>speaks incantations in a hollow voice.</spell_message_sound>
@@ -7112,7 +7112,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a briny smell here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.briny">There is a briny smell here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -7206,7 +7206,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>There is a briny smell here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.briny">There is a briny smell here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message_sound>speaks incantations.</spell_message_sound>
@@ -8201,7 +8201,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>seems disturbed.</wary_message>
-            <smell_message>It smells like filth and decrepitude here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.filth_and_decrepitude">It smells like filth and decrepitude here.</smell_message>
             <aware_message_seen>makes a gurgling noise.</aware_message_seen>
             <aware_message_hidden>I hear a gurgling noise.</aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -8308,7 +8308,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>seems disturbed.</wary_message>
-            <smell_message>It smells like filth and decrepitude here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.filth_and_decrepitude">It smells like filth and decrepitude here.</smell_message>
             <aware_message_seen>makes a gurgling noise.</aware_message_seen>
             <aware_message_hidden>I hear a gurgling noise.</aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -8414,7 +8414,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>seems disturbed.</wary_message>
-            <smell_message>It smells like filth and decrepitude here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.filth_and_decrepitude">It smells like filth and decrepitude here.</smell_message>
             <aware_message_seen>makes a gurgling noise.</aware_message_seen>
             <aware_message_hidden>I hear a gurgling noise.</aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -8521,7 +8521,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>seems disturbed.</wary_message>
-            <smell_message>It smells like filth and decrepitude here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.filth_and_decrepitude">It smells like filth and decrepitude here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message_sound></spell_message_sound>
@@ -8826,7 +8826,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>seems disturbed.</wary_message>
-            <smell_message>The air is heavy with a fetid, viscous odor.</smell_message>
+            <smell_message i18n_key="actor_data.smell.fetid_viscous_odor">The air is heavy with a fetid, viscous odor.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message_sound>makes a roaring noise</spell_message_sound>
@@ -10056,7 +10056,7 @@ SPDX-License-Identifier: AGPL-3.0-or-later
             <allow_wielded_weapon_description>false</allow_wielded_weapon_description>
             <allow_speed_description>true</allow_speed_description>
             <wary_message>looks wary.</wary_message>
-            <smell_message>It smells like death here.</smell_message>
+            <smell_message i18n_key="actor_data.smell.death">It smells like death here.</smell_message>
             <aware_message_seen></aware_message_seen>
             <aware_message_hidden></aware_message_hidden>
             <spell_message_sound>speaks incantations in a deep hollow voice.</spell_message_sound>

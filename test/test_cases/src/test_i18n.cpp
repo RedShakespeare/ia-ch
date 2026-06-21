@@ -869,6 +869,12 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         "我能感觉湿气贴在皮肤上，呼吸也变得短促。\n\n"
         "有隧道通向更深的地下水道，但我只能猜测它们会通往哪里。"
         "整个洞穴系统仿佛彼此相连，通道可能通向海洋深处，或地下湖泊与河流。");
+    require_translation("actor_data.smell.briny", "这里有一股咸腥味。");
+    require_translation("actor_data.smell.death", "这里闻起来像死亡。");
+    require_translation("actor_data.smell.decayed_flesh", "这里有一股腐烂血肉的恶臭。");
+    require_translation("actor_data.smell.fetid_viscous_odor", "空气中弥漫着浓重黏腻的恶臭。");
+    require_translation("actor_data.smell.filth_and_decrepitude", "这里闻起来满是污秽与腐朽。");
+    require_translation("actor_data.smell.open_grave", "这里闻起来像敞开的坟墓。");
     REQUIRE(i18n::get("actor_player.monster_here_prefix", "There is ") == "这里有");
     REQUIRE(i18n::get("actor_player.monster_here_suffix", " here!") == "！");
     REQUIRE(i18n::get("actor_player.more_fervent", "I feel more fervent!") == "我感到更加虔诚！");

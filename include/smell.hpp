@@ -20,6 +20,7 @@ struct Smell
 {
     // Pointer to a message stored elsewhere (typically in monster data)
     const std::string* msg_ptr {nullptr};
+    const std::string* msg_i18n_key_ptr {nullptr};
 
     int strength_pct {0};
 };
