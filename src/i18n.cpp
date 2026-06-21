@@ -207,7 +207,7 @@ std::vector<std::string> available_languages()
 std::string language_name(const std::string& code)
 {
     if (code == "en") {
-        return "English";
+        return get("i18n.language.english", "English");
     }
 
     if (code == "zh_CN") {

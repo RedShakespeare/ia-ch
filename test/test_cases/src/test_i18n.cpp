@@ -43,6 +43,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     messages::init();
 
     REQUIRE(i18n::current_language() == "zh_CN");
+    REQUIRE(i18n::language_name("en") == "英语");
     REQUIRE(i18n::get("main_menu.options", "(O)Options") == "(O)选项");
     REQUIRE(
         i18n::get(
