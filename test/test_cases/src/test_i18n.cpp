@@ -1737,6 +1737,18 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("item_data.flagellant_whip.name_a", "一条苦修鞭");
     require_translation("item_data.flagellant_whip.base_descr_1", "一条残酷的鞭子，上面装有磨尖的骨片和金属尖刺。");
     require_translation("item_data.flagellant_whip.base_descr_2", "被它撕裂血肉的咬噬击中的受害者，可能因痛苦而麻痹（20%几率）。");
+    require_translation("item_data.onyx_drop.name", "缟玛瑙滴坠");
+    require_translation("item_data.onyx_drop.name_a", "缟玛瑙滴坠");
+    require_translation("item_data.onyx_drop.base_descr", "饮用恶性药水时，其效果也会施加到附近所有生物身上（最大距离为6）。");
+    require_translation("item_data.refl_talisman.name", "反射护符");
+    require_translation("item_data.refl_talisman.name_a", "反射护符");
+    require_translation("item_data.refl_talisman.base_descr", "每当因法术抗性阻挡敌对法术时，该法术也会被反射。重新获得法术抗性所需的回合数减半。");
+    require_translation("item_data.resurrect_talisman.name", "复活护符");
+    require_translation("item_data.resurrect_talisman.name_a", "复活护符");
+    require_translation("item_data.resurrect_talisman.base_descr", "这个强大的护符会在持有者肉体死亡时使其复活。不过护符会在过程中被摧毁，因此只能复活一次。");
+    require_translation("item_data.tele_ctrl_talisman.name", "传送控制护符");
+    require_translation("item_data.tele_ctrl_talisman.name_a", "传送控制护符");
+    require_translation("item_data.tele_ctrl_talisman.base_descr", "赋予持有者在传送时控制目的地的能力。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");

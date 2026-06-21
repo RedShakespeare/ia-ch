@@ -2327,12 +2327,14 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::onyx_drop;
     d.base_name = {
-        "Onyx Drop",
+        tr("onyx_drop.name", "Onyx Drop"),
         "",
-        "the Onyx Drop"};
+        tr("onyx_drop.name_a", "the Onyx Drop")};
     d.base_descr = {
-        "Drinking a malign potion also applies its effect "
-        "to all nearby creatures (maximum distance is 6)."};
+        tr(
+            "onyx_drop.base_descr",
+            "Drinking a malign potion also applies its effect "
+            "to all nearby creatures (maximum distance is 6).")};
     d.color = colors::violet();
     d.weight = Weight::extra_light;
     d.tile = gfx::TileId::drop;
@@ -2348,13 +2350,15 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::refl_talisman;
     d.base_name = {
-        "Talisman of Reflection",
+        tr("refl_talisman.name", "Talisman of Reflection"),
         "",
-        "the Talisman of Reflection"};
+        tr("refl_talisman.name_a", "the Talisman of Reflection")};
     d.base_descr = {
-        "Whenever a hostile spell is blocked due to spell resistance, "
-        "it is also reflected. The number of turns to regain spell "
-        "resistance is halved."};
+        tr(
+            "refl_talisman.base_descr",
+            "Whenever a hostile spell is blocked due to spell resistance, "
+            "it is also reflected. The number of turns to regain spell "
+            "resistance is halved.")};
     d.color = colors::light_blue();
     d.weight = Weight::light;
     d.tile = gfx::TileId::amulet;
@@ -2370,13 +2374,15 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::resurrect_talisman;
     d.base_name = {
-        "Talisman of Resurrection",
+        tr("resurrect_talisman.name", "Talisman of Resurrection"),
         "",
-        "the Talisman of Resurrection"};
+        tr("resurrect_talisman.name_a", "the Talisman of Resurrection")};
     d.base_descr = {
-        "This powerful charm brings the owner back to life upon bodily "
-        "death. The talisman is destroyed in the process however, so "
-        "one may only be brought back once."};
+        tr(
+            "resurrect_talisman.base_descr",
+            "This powerful charm brings the owner back to life upon bodily "
+            "death. The talisman is destroyed in the process however, so "
+            "one may only be brought back once.")};
     d.color = colors::light_white();
     d.weight = Weight::light;
     d.tile = gfx::TileId::amulet;
@@ -2392,12 +2398,16 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::tele_ctrl_talisman;
     d.base_name = {
-        "Talisman of Teleportation Control",
+        tr("tele_ctrl_talisman.name", "Talisman of Teleportation Control"),
         "",
-        "the Talisman of Teleportation Control"};
+        tr(
+            "tele_ctrl_talisman.name_a",
+            "the Talisman of Teleportation Control")};
     d.base_descr = {
-        "Grants the owner the ability to control the destination when "
-        "teleporting."};
+        tr(
+            "tele_ctrl_talisman.base_descr",
+            "Grants the owner the ability to control the destination when "
+            "teleporting.")};
     d.color = colors::orange();
     d.weight = Weight::light;
     d.tile = gfx::TileId::amulet;
