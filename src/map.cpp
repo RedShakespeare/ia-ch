@@ -290,7 +290,7 @@ size_t nr_positions()
     return (size_t)s_dims.x * (size_t)s_dims.y;
 }
 
-void update_vision()
+void update_vision(const VisionDraw draw)
 {
     update_light_map();
 
@@ -302,7 +302,9 @@ void update_vision()
 
     minimap::update();
 
-    states::draw();
+    if (draw == VisionDraw::yes) {
+        states::draw();
+    }
 }
 
 void update_player_memory()

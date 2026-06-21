@@ -474,7 +474,7 @@ static void do_move_action_player(Dir dir)
             return;
         }
 
-        map::update_vision();
+        map::update_vision(map::VisionDraw::no);
         actor::make_player_aware_seen_monsters();
     }
 

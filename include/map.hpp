@@ -71,6 +71,12 @@ enum class MinimapSymbol
     rectangle_edge,
 };
 
+enum class VisionDraw
+{
+    no,
+    yes,
+};
+
 struct MinimapAppearance
 {
     Color color {};
@@ -147,7 +153,7 @@ std::vector<P> positions();
 size_t nr_positions();
 
 // Updates light map, player fov (etc).
-void update_vision();
+void update_vision(VisionDraw draw = VisionDraw::yes);
 
 void update_player_memory();
 

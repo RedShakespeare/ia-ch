@@ -80,6 +80,44 @@ static const std::unordered_map<actor::AiId, std::string> s_ai_id_to_tag_name_ma
     {actor::AiId::moves_to_leader, "moves_to_leader"},
     {actor::AiId::moves_randomly_when_unaware, "moves_randomly_when_unaware"}};
 
+struct ActorSessionData
+{
+    int nr_left_allowed_to_spawn {-1};
+    int nr_kills {0};
+    bool has_player_seen {false};
+};
+
+static std::unordered_map<std::string, ActorSessionData> s_initial_session_data;
+
+static void store_initial_session_data()
+{
+    s_initial_session_data.clear();
+
+    for (const auto& [id, data] : actor::g_data) {
+        s_initial_session_data[id] = {
+            data.nr_left_allowed_to_spawn,
+            data.nr_kills,
+            data.has_player_seen};
+    }
+}
+
+static void reset_session_data()
+{
+    for (auto& [id, data] : actor::g_data) {
+        const auto initial_data = s_initial_session_data.find(id);
+
+        ASSERT(initial_data != std::end(s_initial_session_data));
+
+        if (initial_data == std::end(s_initial_session_data)) {
+            continue;
+        }
+
+        data.nr_left_allowed_to_spawn = initial_data->second.nr_left_allowed_to_spawn;
+        data.nr_kills = initial_data->second.nr_kills;
+        data.has_player_seen = initial_data->second.has_player_seen;
+    }
+}
+
 static void dump_i18n_text(
     xml::Element* text_e,
     const std::string& tag_name,
@@ -828,7 +866,13 @@ void init()
 {
     TRACE_FUNC_BEGIN;
 
-    read_actor_definitions_xml();
+    if (g_data.empty()) {
+        read_actor_definitions_xml();
+        store_initial_session_data();
+    }
+    else {
+        reset_session_data();
+    }
 
     TRACE_FUNC_END;
 }

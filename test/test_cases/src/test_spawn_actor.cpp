@@ -47,6 +47,24 @@ static void init_map()
 // -----------------------------------------------------------------------------
 // Test cases
 // -----------------------------------------------------------------------------
+TEST_CASE("Actor data init resets session fields")
+{
+    test_utils::init_all();
+
+    actor::g_data.at("MON_ZOMBIE").nr_kills = 42;
+    actor::g_data.at("MON_ZOMBIE").has_player_seen = true;
+    actor::g_data.at("MON_ZUUL").nr_left_allowed_to_spawn = 0;
+
+    test_utils::cleanup_all();
+    test_utils::init_all();
+
+    REQUIRE(actor::g_data.at("MON_ZOMBIE").nr_kills == 0);
+    REQUIRE(!actor::g_data.at("MON_ZOMBIE").has_player_seen);
+    REQUIRE(actor::g_data.at("MON_ZUUL").nr_left_allowed_to_spawn == 1);
+
+    test_utils::cleanup_all();
+}
+
 TEST_CASE("Spawn one actor, close to position")
 {
     test_utils::init_all();

@@ -128,6 +128,7 @@ void init_game()
     saving::init();
     messages::init();
     line_calc::init();
+    actor::init();
     map_templates::init();
 
     TRACE_FUNC_END;

@@ -734,8 +734,15 @@ namespace draw_map
 {
 void run()
 {
-    // NOTE: This will also setup the whole array with default values.
-    s_bg_color_obscured.resize(map::dims());
+    if (s_bg_color_obscured.dims() != map::dims()) {
+        s_bg_color_obscured.resize(map::dims());
+    }
+    else {
+        std::fill(
+            std::begin(s_bg_color_obscured),
+            std::end(s_bg_color_obscured),
+            std::nullopt);
+    }
 
     draw_unseen_cells_from_player_memory();
     draw_terrains();
