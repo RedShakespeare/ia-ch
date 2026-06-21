@@ -1421,6 +1421,18 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         "item_data.item_type.scroll.base_descr_1",
         "一份奥秘咒文的简短抄本。纸张上有一种奇异灵光，仿佛某种力量被灌注在纸张本身之中。");
     require_translation("item_data.item_type.scroll.base_descr_2", "它应该可以被正确念出，但用途并不明朗。");
+    require_translation("item_scroll.manuscript_titled_prefix", "题为");
+    require_translation("item_scroll.manuscript_titled_suffix", "的手稿");
+    require_translation("item_scroll.manuscripts_titled_prefix", "题为");
+    require_translation("item_scroll.manuscripts_titled_suffix", "的手稿");
+    require_translation("item_scroll.a_manuscript_titled_prefix", "一份题为");
+    require_translation("item_scroll.a_manuscript_titled_suffix", "的手稿");
+    require_translation("item_scroll.manuscript_of_prefix", "");
+    require_translation("item_scroll.manuscript_of_suffix", "手稿");
+    require_translation("item_scroll.manuscripts_of_prefix", "");
+    require_translation("item_scroll.manuscripts_of_suffix", "手稿");
+    require_translation("item_scroll.a_manuscript_of_prefix", "一份");
+    require_translation("item_scroll.a_manuscript_of_suffix", "手稿");
     require_translation("item_data.item_type.potion.base_descr", "一个小玻璃瓶，里面装着神秘调合物。");
     require_translation("item_data.item_type.device.unidentified_name", "奇异装置");
     require_translation("item_data.item_type.device.unidentified_name_plural", "奇异装置");

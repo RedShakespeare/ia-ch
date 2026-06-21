@@ -151,9 +151,24 @@ void init()
 
         const std::string& title = s_fake_names[idx];
 
-        d->base_name_un_id.names[(size_t)ItemNameType::plain] = "Manuscript titled " + title;
-        d->base_name_un_id.names[(size_t)ItemNameType::plural] = "Manuscripts titled " + title;
-        d->base_name_un_id.names[(size_t)ItemNameType::a] = "a Manuscript titled " + title;
+        d->base_name_un_id.names[(size_t)ItemNameType::plain] =
+            i18n::get(
+                "item_scroll.manuscript_titled_prefix",
+                "Manuscript titled ") +
+            title +
+            i18n::get("item_scroll.manuscript_titled_suffix", "");
+        d->base_name_un_id.names[(size_t)ItemNameType::plural] =
+            i18n::get(
+                "item_scroll.manuscripts_titled_prefix",
+                "Manuscripts titled ") +
+            title +
+            i18n::get("item_scroll.manuscripts_titled_suffix", "");
+        d->base_name_un_id.names[(size_t)ItemNameType::a] =
+            i18n::get(
+                "item_scroll.a_manuscript_titled_prefix",
+                "a Manuscript titled ") +
+            title +
+            i18n::get("item_scroll.a_manuscript_titled_suffix", "");
 
         s_fake_names.erase(s_fake_names.begin() + (int)idx);
 
@@ -163,9 +178,18 @@ void init()
 
         const std::string real_type_name = scroll->real_name();
 
-        const std::string real_name = "Manuscript of " + real_type_name;
-        const std::string real_name_plural = "Manuscripts of " + real_type_name;
-        const std::string real_name_a = "a Manuscript of " + real_type_name;
+        const std::string real_name =
+            i18n::get("item_scroll.manuscript_of_prefix", "Manuscript of ") +
+            real_type_name +
+            i18n::get("item_scroll.manuscript_of_suffix", "");
+        const std::string real_name_plural =
+            i18n::get("item_scroll.manuscripts_of_prefix", "Manuscripts of ") +
+            real_type_name +
+            i18n::get("item_scroll.manuscripts_of_suffix", "");
+        const std::string real_name_a =
+            i18n::get("item_scroll.a_manuscript_of_prefix", "a Manuscript of ") +
+            real_type_name +
+            i18n::get("item_scroll.a_manuscript_of_suffix", "");
 
         d->base_name.names[(size_t)ItemNameType::plain] = real_name;
         d->base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
