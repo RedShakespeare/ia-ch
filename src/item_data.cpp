@@ -2423,21 +2423,25 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::holy_symbol;
     d.base_name = {
-        "Holy Symbol",
+        tr("holy_symbol.name", "Holy Symbol"),
         "",
-        "a Holy Symbol",
+        tr("holy_symbol.name_a", "a Holy Symbol"),
     };
     d.base_descr = {
-        "A focal point providing strength and guidance for the "
-        "spirit and mind. "
-        "Praying over the symbol grants 1-4 spirit points, and "
-        "resistance against shock and fear for 6-12 turns.",
+        tr(
+            "holy_symbol.base_descr_1",
+            "A focal point providing strength and guidance for the "
+            "spirit and mind. "
+            "Praying over the symbol grants 1-4 spirit points, and "
+            "resistance against shock and fear for 6-12 turns."),
 
-        "Some time must pass before the prayer is guaranteed to have "
-        "an effect again, however it can be attempted before this "
-        "time has passed (with 25% chance to succeed). If an early "
-        "attempt fails, faith in the symbol is temporarily lost, and "
-        "much time must pass before the symbol can be used again."};
+        tr(
+            "holy_symbol.base_descr_2",
+            "Some time must pass before the prayer is guaranteed to have "
+            "an effect again, however it can be attempted before this "
+            "time has passed (with 25% chance to succeed). If an early "
+            "attempt fails, faith in the symbol is temporarily lost, and "
+            "much time must pass before the symbol can be used again.")};
     d.color = colors::gold();
     d.weight = Weight::extra_light;
     d.tile = gfx::TileId::holy_symbol;
@@ -2452,14 +2456,16 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::clockwork;
     d.base_name = {
-        "Arcane Clockwork",
+        tr("clockwork.name", "Arcane Clockwork"),
         "",
-        "the Arcane Clockwork",
+        tr("clockwork.name_a", "the Arcane Clockwork"),
     };
     d.base_descr = {
-        "A mainspring-powered clockwork of unreal quality and beauty. "
-        "When wound up, it causes the owner to move very swiftly for a "
-        "brief time."};
+        tr(
+            "clockwork.base_descr",
+            "A mainspring-powered clockwork of unreal quality and beauty. "
+            "When wound up, it causes the owner to move very swiftly for a "
+            "brief time.")};
     d.color = colors::yellow();
     d.weight = Weight::extra_light;
     d.tile = gfx::TileId::clockwork;

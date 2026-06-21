@@ -1749,6 +1749,17 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("item_data.tele_ctrl_talisman.name", "传送控制护符");
     require_translation("item_data.tele_ctrl_talisman.name_a", "传送控制护符");
     require_translation("item_data.tele_ctrl_talisman.base_descr", "赋予持有者在传送时控制目的地的能力。");
+    require_translation("item_data.holy_symbol.name", "圣符");
+    require_translation("item_data.holy_symbol.name_a", "圣符");
+    require_translation(
+        "item_data.holy_symbol.base_descr_1",
+        "为灵魂与心智提供力量和指引的焦点。对圣符祈祷会获得1-4点精神点，并获得对精神震惊和恐惧的抗性，持续6-12回合。");
+    require_translation(
+        "item_data.holy_symbol.base_descr_2",
+        "祈祷要经过一段时间才保证再次生效，但也可以在这段时间过去前尝试（有25%几率成功）。如果提前尝试失败，会暂时失去对圣符的信心，并且必须经过很长时间才能再次使用。");
+    require_translation("item_data.clockwork.name", "奥术发条装置");
+    require_translation("item_data.clockwork.name_a", "奥术发条装置");
+    require_translation("item_data.clockwork.base_descr", "一件由主发条驱动、品质与美感都超乎现实的发条装置。上紧发条后，会使持有者在短时间内行动极为迅速。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");
