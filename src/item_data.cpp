@@ -2098,7 +2098,11 @@ void init()
 
     reset_data(d, ItemType::device);
     d.id = Id::device_blaster;
-    d.base_name = {"Blaster Device", "Blaster Devices", "a Blaster Device"};
+    d.base_name = item_name(
+        "device_blaster",
+        "Blaster Device",
+        "Blaster Devices",
+        "a Blaster Device");
     d.color = colors::gray();
     d.native_containers.push_back(terrain::Id::chest);
     d.native_containers.push_back(terrain::Id::tomb);
@@ -2107,10 +2111,11 @@ void init()
 
     reset_data(d, ItemType::device);
     d.id = Id::device_rejuvenator;
-    d.base_name = {
+    d.base_name = item_name(
+        "device_rejuvenator",
         "Rejuvenator Device",
         "Rejuvenator Devices",
-        "a Rejuvenator Device"};
+        "a Rejuvenator Device");
     d.color = colors::gray();
     d.native_containers.push_back(terrain::Id::chest);
     d.native_containers.push_back(terrain::Id::tomb);
@@ -2119,10 +2124,11 @@ void init()
 
     reset_data(d, ItemType::device);
     d.id = Id::device_translocator;
-    d.base_name = {
+    d.base_name = item_name(
+        "device_translocator",
         "Translocator Device",
         "Translocator Devices",
-        "a Translocator Device"};
+        "a Translocator Device");
     d.color = colors::gray();
     d.native_containers.push_back(terrain::Id::chest);
     d.native_containers.push_back(terrain::Id::tomb);
@@ -2131,10 +2137,11 @@ void init()
 
     reset_data(d, ItemType::device);
     d.id = Id::device_sentry_drone;
-    d.base_name = {
+    d.base_name = item_name(
+        "device_sentry_drone",
         "Sentry Drone Device",
         "Sentry Drone Devices",
-        "a Sentry Drone Device"};
+        "a Sentry Drone Device");
     d.color = colors::gray();
     d.native_containers.push_back(terrain::Id::chest);
     d.native_containers.push_back(terrain::Id::tomb);
@@ -2143,10 +2150,11 @@ void init()
 
     reset_data(d, ItemType::device);
     d.id = Id::device_force_field;
-    d.base_name = {
+    d.base_name = item_name(
+        "device_force_field",
         "Force Field Device",
         "Force Field Devices",
-        "a Force Field Device"};
+        "a Force Field Device");
     d.color = colors::gray();
     d.native_containers.push_back(terrain::Id::chest);
     d.native_containers.push_back(terrain::Id::tomb);
