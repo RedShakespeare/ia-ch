@@ -19,6 +19,7 @@
 #include "game.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "io.hpp"
 #include "item.hpp"
@@ -45,6 +46,11 @@ static Color label_color()
 static Color info_color()
 {
     return colors::text();
+}
+
+static std::string tr(const std::string& key, const std::string& fallback)
+{
+    return i18n::get("map_mode_gui." + key, fallback);
 }
 
 static std::string make_wpn_stats_str(const item::Item& wpn)
@@ -75,7 +81,7 @@ static std::string make_wpn_stats_str(const item::Item& wpn)
 
 static void draw_wielded_wpn(const int y, const Panel panel)
 {
-    const std::string label = "Wpn";
+    const std::string label = tr("wpn_label", "Wpn");
 
     io::draw_text(
         label,
@@ -115,7 +121,7 @@ static void draw_wielded_wpn(const int y, const Panel panel)
 
 static void draw_alt_wpn(const int y, const Panel panel)
 {
-    const std::string label = "Alt";
+    const std::string label = tr("alt_wpn_label", "Alt");
 
     io::draw_text(
         label,
@@ -160,7 +166,7 @@ static void draw_hp(const int y, const Panel panel)
     const int hp_pct = (hp * 100) / max_hp;
 
     io::draw_text(
-        "Health",
+        tr("health_label", "Health"),
         panel,
         {0, y},
         label_color(),
@@ -198,7 +204,7 @@ static void draw_sp(const int y, const Panel panel)
     const int sp_pct = (sp * 100) / max_sp;
 
     io::draw_text(
-        "Spirit",
+        tr("spirit_label", "Spirit"),
         panel,
         {0, y},
         label_color(),
@@ -236,7 +242,7 @@ static void draw_exorcist_fervor(const int y, const Panel panel)
     const int fervor_pct_of_max_possible = (fervor * 100) / max_fervor;
 
     io::draw_text(
-        "Fervor",
+        tr("fervor_label", "Fervor"),
         panel,
         {0, y},
         label_color(),
@@ -272,7 +278,7 @@ static void draw_shock(const int y, const Panel panel)
     const int shock_pct = std::min(999, map::g_player->shock_tot());
 
     io::draw_text(
-        "Shock",
+        tr("shock_label", "Shock"),
         panel,
         {0, y},
         label_color(),
@@ -293,7 +299,7 @@ static void draw_insanity(const int y, const Panel panel)
     const int ins_pct = map::g_player->insanity();
 
     io::draw_text(
-        "Insanity",
+        tr("insanity_label", "Insanity"),
         panel,
         {0, y},
         label_color(),
@@ -314,7 +320,7 @@ static void draw_weight(const int y, const Panel panel)
     const int weight_pct = map::g_player->enc_percent();
 
     io::draw_text(
-        "Weight",
+        tr("weight_label", "Weight"),
         panel,
         {0, y},
         label_color(),
@@ -345,7 +351,7 @@ static void draw_weight(const int y, const Panel panel)
 static void draw_turn_number(const int y, const Panel panel)
 {
     io::draw_text(
-        "Turn",
+        tr("turn_label", "Turn"),
         panel,
         {0, y},
         label_color(),
@@ -366,7 +372,7 @@ static void draw_turn_number(const int y, const Panel panel)
 static void draw_armor(const int y, const Panel panel)
 {
     io::draw_text(
-        "Armor",
+        tr("armor_label", "Armor"),
         panel,
         {0, y},
         label_color(),
@@ -413,7 +419,7 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
     const int xp_pct = std::clamp(game::xp_pct(), 0, 100);
 
     io::draw_text(
-        "Level",
+        tr("level_label", "Level"),
         panel,
         {0, y},
         label_color(),
@@ -452,7 +458,7 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
 static void draw_dlvl(const int y, const Panel panel)
 {
     io::draw_text(
-        "Depth",
+        tr("depth_label", "Depth"),
         panel,
         {0, y},
         label_color(),
@@ -475,7 +481,7 @@ static void draw_dlvl(const int y, const Panel panel)
 static void draw_lantern(const int y, const Panel panel)
 {
     io::draw_text(
-        "Lantern",
+        tr("lantern_label", "Lantern"),
         panel,
         {0, y},
         label_color(),
@@ -485,7 +491,7 @@ static void draw_lantern(const int y, const Panel panel)
 
     Color color = info_color();
 
-    std::string lantern_str = "None";
+    std::string lantern_str = tr("none", "None");
 
     if (item) {
         const auto* const lantern = static_cast<const item::Lantern*>(item);
@@ -508,7 +514,7 @@ static void draw_lantern(const int y, const Panel panel)
 static void draw_med_suppl(const int y, const Panel panel)
 {
     io::draw_text(
-        "Med Suppl",
+        tr("medical_supplies_label", "Med Suppl"),
         panel,
         {0, y},
         label_color(),
@@ -541,7 +547,7 @@ static void draw_properties(int y, const Panel panel)
     auto property_names = properties.property_names_short();
 
     if (map::g_dark.at(map::g_player->m_pos)) {
-        const ColoredString dark = {"DARK AREA", colors::gray()};
+        const ColoredString dark = {tr("dark_area", "DARK AREA"), colors::gray()};
 
         property_names.push_back(dark);
     }
@@ -639,7 +645,7 @@ void draw()
 
     if (config::is_gj_mode()) {
         draw_text_right(
-            "GJ MODE ENABLED",
+            tr("gj_mode_enabled", "GJ MODE ENABLED"),
             Panel::screen,
             {panels::x1(Panel::screen), 0},
             colors::yellow(),
