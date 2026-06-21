@@ -78,6 +78,12 @@ void draw_text_at_px(
             !msg_w_fit_on_screen &&
             (px_pos.x >= px_x_dots);
 
+        const size_t cp_size = utf8::codepoint_size(str, i);
+
+        if (cp_size == 0) {
+            break;
+        }
+
         if (draw_dots) {
             draw_character_at_px(
                 dots[dots_idx],
@@ -87,23 +93,23 @@ void draw_text_at_px(
                 bg_color);
 
             ++dots_idx;
+            px_pos.x += cell_px_w;
         }
         else {
             // Whole message fits, or we are not yet near the edge
-            const size_t cp_size = utf8::codepoint_size(str, i);
+            const std::string glyph = str.substr(i, cp_size);
 
             draw_glyph_at_px(
-                str.substr(i, cp_size),
+                glyph,
                 px_pos,
                 sdl_color,
                 draw_bg,
                 sdl_bg_color);
+
+            px_pos.x += glyph_advance_px(glyph);
         }
 
-        px_pos.x += draw_dots
-            ? cell_px_w
-            : glyph_advance_px(str.substr(i, utf8::codepoint_size(str, i)));
-        i += utf8::codepoint_size(str, i);
+        i += cp_size;
     }
 }
 

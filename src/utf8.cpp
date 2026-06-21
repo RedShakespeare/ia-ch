@@ -34,6 +34,9 @@ size_t codepoint_size(const std::string& str, const size_t pos)
         return 4;
     }
 
+    // Invalid UTF-8 lead byte (0x80-0xBF continuation bytes as lead,
+    // 0xC0-0xC1 overlong encodings, 0xF5-0xFF out of range).
+    // Treat as single invalid byte and let caller handle corruption.
     return 1;
 }
 

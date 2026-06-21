@@ -40,21 +40,6 @@ static std::string read_and_remove_word(std::string& line)
     return str;
 }
 
-static bool is_word_fit(
-    const std::string& current_string,
-    const std::string& word_to_fit,
-    const size_t max_w)
-{
-    const size_t separator_w = current_string.empty()
-        ? 0
-        : io::text_advance_px(" ");
-
-    return (
-        io::text_advance_px(current_string) +
-        io::text_advance_px(word_to_fit) +
-        separator_w) <= max_w;
-}
-
 static size_t max_text_w_px(const size_t max_w)
 {
     const int cell_px_w = config::gui_cell_px_w();
@@ -128,16 +113,19 @@ static std::vector<std::string> split_paragraph(
     std::vector<std::string> result = {""};
 
     size_t current_row_idx = 0;
+    size_t current_line_px = 0;
 
     while (!current_word.empty()) {
+        const size_t word_px = io::text_advance_px(current_word);
         const bool should_split_word =
-            ((size_t)io::text_advance_px(current_word) > max_w) &&
+            (word_px > max_w) &&
             has_multibyte_codepoint(current_word);
 
         if (should_split_word) {
             if (!result[current_row_idx].empty()) {
                 ++current_row_idx;
                 result.emplace_back("");
+                current_line_px = 0;
             }
 
             const auto split_words = split_utf8_word(current_word, max_w);
@@ -146,26 +134,34 @@ static std::vector<std::string> split_paragraph(
                 if (i > 0) {
                     ++current_row_idx;
                     result.emplace_back("");
+                    current_line_px = 0;
                 }
 
                 result[current_row_idx] += split_words[i];
+                current_line_px += io::text_advance_px(split_words[i]);
             }
         }
         else {
-            if (!is_word_fit(result[current_row_idx], current_word, max_w)) {
+            const size_t separator_px = result[current_row_idx].empty()
+                ? 0
+                : io::text_advance_px(" ");
+
+            if ((current_line_px + separator_px + word_px) > max_w) {
                 // Word did not fit on current line, make a new line
                 ++current_row_idx;
-
                 result.emplace_back("");
+                current_line_px = 0;
             }
 
             // If this is not the first word on the current line, add a
             // space before the word
             if (!result[current_row_idx].empty()) {
                 result[current_row_idx] += " ";
+                current_line_px += separator_px;
             }
 
             result[current_row_idx] += current_word;
+            current_line_px += word_px;
         }
 
         current_word = read_and_remove_word(line);
