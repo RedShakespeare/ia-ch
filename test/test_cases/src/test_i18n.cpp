@@ -1768,6 +1768,24 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("item_data.horn_of_banishment.name", "放逐号角");
     require_translation("item_data.horn_of_banishment.name_a", "放逐号角");
     require_translation("item_data.horn_of_banishment.base_descr", "吹响时，这件乐器会迫使听力范围内所有魔法召唤的生物返回其原本的领域。");
+    require_translation("item_data.shadow_dagger.name", "加哈纳，黑色匕首");
+    require_translation("item_data.shadow_dagger.name_a", "加哈纳，黑色匕首");
+    require_translation("item_data.shadow_dagger.base_descr_1", "一把有精致装饰的漆黑匕首。刀刃显得模糊，仿佛永远笼罩在黑暗雾霭中。");
+    require_translation(
+        "item_data.shadow_dagger.base_descr_2",
+        "被这把武器击中的生物会受到诅咒，永远栖身于黑暗中，否则便承受巨大痛苦（永久变得光敏，并受到来自光的+1额外伤害）。天生发光的生物（如火焰或能量存在）则会改为受到1-4点不可抵抗伤害。");
+    require_translation("item_data.shadow_dagger.base_descr_3", "用匕首攻击未警觉的对手造成+200%伤害（此外还享受潜行攻击通常的+50%伤害）。");
+    require_translation("item_data.orb_of_life.name", "生命之球");
+    require_translation("item_data.orb_of_life.name_a", "生命之球");
+    require_translation("item_data.orb_of_life.base_descr", "+4生命值，获得对毒素和疾病的抗性。");
+    require_translation("item_data.necronomicon.name", "死灵之书");
+    require_translation("item_data.necronomicon.name_a", "死灵之书");
+    require_translation(
+        "item_data.necronomicon.base_descr_1",
+        "这就是令人畏惧的死灵之书——亡者之书！书页中记载着许多关于秘奥事物的可怖知识。携带时，所有法术都会以更高技能等级施放，并且可以达到第四等级“超凡”。");
+    require_translation(
+        "item_data.necronomicon.base_descr_2",
+        "施放法术受到的所有精神震惊加倍，并且查阅这类知识者的存在会被强烈感知（-20%潜行，每回合2%几率惊动附近生物）。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");

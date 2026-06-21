@@ -2532,26 +2532,32 @@ void init()
     reset_data(d, ItemType::melee_wpn);
     d.id = Id::shadow_dagger;
     d.base_name = {
-        "Gahana, The Black Dagger",
+        tr("shadow_dagger.name", "Gahana, The Black Dagger"),
         "",
-        "Gahana, The Black Dagger"};
+        tr("shadow_dagger.name_a", "Gahana, The Black Dagger")};
     d.base_descr = {
-        "A pitch black dagger with elaborate ornaments. The blade "
-        "appears blurry, as if perpetually covered in a dark haze.",
+        tr(
+            "shadow_dagger.base_descr_1",
+            "A pitch black dagger with elaborate ornaments. The blade "
+            "appears blurry, as if perpetually covered in a dark haze."),
 
-        "A creature struck by this weapon is cursed to forever dwell "
-        "in darkness, or suffer great agony (becomes permanently "
-        "light sensitive, and takes +1 extra damage from light). "
-        "Creatures which naturally emit light (such as beings of "
-        "fire or energy) takes 1-4 irresistible damage instead.",
+        tr(
+            "shadow_dagger.base_descr_2",
+            "A creature struck by this weapon is cursed to forever dwell "
+            "in darkness, or suffer great agony (becomes permanently "
+            "light sensitive, and takes +1 extra damage from light). "
+            "Creatures which naturally emit light (such as beings of "
+            "fire or energy) takes 1-4 irresistible damage instead."),
 
-        "Attacking an unaware opponent with a dagger does +200% damage "
-        "(in addition to the normal +50% damage from stealth attacks).",
+        tr(
+            "shadow_dagger.base_descr_3",
+            "Attacking an unaware opponent with a dagger does +200% damage "
+            "(in addition to the normal +50% damage from stealth attacks)."),
     };
     d.weight = Weight::light;
     d.tile = gfx::TileId::dagger;
     d.color = colors::violet();
-    d.melee.attack_msgs = {"stab", "stabs"};
+    d.melee.attack_msgs = attack_msgs("attack.stab", "stab", "stabs");
     d.melee.dmg = WpnDmg(4, 8);
     d.melee.hit_chance_mod = 20;
     d.melee.is_noisy = false;
@@ -2571,11 +2577,13 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::orb_of_life;
     d.base_name = {
-        "Orb of Life",
+        tr("orb_of_life.name", "Orb of Life"),
         "",
-        "the Orb of Life"};
+        tr("orb_of_life.name_a", "the Orb of Life")};
     d.base_descr = {
-        "+4 hit points, grants resistance against poison and disease."};
+        tr(
+            "orb_of_life.base_descr",
+            "+4 hit points, grants resistance against poison and disease.")};
     d.color = colors::light_white();
     d.weight = Weight::light;
     d.tile = gfx::TileId::orb;
@@ -2591,19 +2599,23 @@ void init()
     reset_data(d, ItemType::general);
     d.id = Id::necronomicon;
     d.base_name = {
-        "Necronomicon",
+        tr("necronomicon.name", "Necronomicon"),
         "",
-        "the Necronomicon"};
+        tr("necronomicon.name_a", "the Necronomicon")};
     d.base_descr = {
-        "This is the dreaded Necronomicon - the Book of the Dead! "
-        "Its pages contain much dire knowledge on esoteric matters. "
-        "While carried, all spells are cast at a higher skill level, "
-        "and it is possible to reach a fourth level, \"Transcendent\".",
+        tr(
+            "necronomicon.base_descr_1",
+            "This is the dreaded Necronomicon - the Book of the Dead! "
+            "Its pages contain much dire knowledge on esoteric matters. "
+            "While carried, all spells are cast at a higher skill level, "
+            "and it is possible to reach a fourth level, \"Transcendent\"."),
 
-        "All shock taken from spell casting is doubled, and "
-        "the presence of one who is consulting such knowledge "
-        "is felt strongly (-20% stealth, 2% chance per turn of "
-        "alerting nearby creatures)."};
+        tr(
+            "necronomicon.base_descr_2",
+            "All shock taken from spell casting is doubled, and "
+            "the presence of one who is consulting such knowledge "
+            "is felt strongly (-20% stealth, 2% chance per turn of "
+            "alerting nearby creatures).")};
     d.color = colors::dark_sepia();
     d.weight = Weight::light;
     d.tile = gfx::TileId::tome;
