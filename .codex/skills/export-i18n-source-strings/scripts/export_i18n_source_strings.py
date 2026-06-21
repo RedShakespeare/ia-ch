@@ -14,7 +14,10 @@ from typing import Iterable, TextIO
 
 
 SOURCE_EXTS = {".cpp", ".hpp", ".h", ".cc", ".cxx"}
-I18N_CALLS = ("i18n::get", "insanity_i18n::get")
+BASE_CALL_SPECS = (
+    ("i18n::get", ""),
+    ("insanity_i18n::get", "insanity."),
+)
 
 
 @dataclass(frozen=True)
@@ -218,6 +221,198 @@ def literal_value(arg: str) -> str | None:
     return "".join(values) if values else None
 
 
+def find_next_call(text: str, name: str, start: int) -> tuple[int, int]:
+    pattern = re.compile(rf"(?<![A-Za-z0-9_]){re.escape(name)}\s*\(")
+    match = pattern.search(text, start)
+    if not match:
+        return -1, -1
+    open_pos = match.end() - 1
+    return match.start(), open_pos
+
+
+def call_specs_for_path(path: Path) -> list[tuple[str, str]]:
+    specs = list(BASE_CALL_SPECS)
+
+    if path.name == "item_data.cpp":
+        specs.append(("tr", "item_data."))
+    elif path.name == "map_mode_gui.cpp":
+        specs.append(("tr", "map_mode_gui."))
+    elif path.name == "i18n.cpp":
+        specs.append(("get", ""))
+
+    return specs
+
+
+def find_line_containing(text: str, needle: str) -> int:
+    pos = text.find(needle)
+    return line_number(text, pos) if pos >= 0 else 1
+
+
+def scan_gods_file(raw_text: str, path: Path) -> list[Entry]:
+    pattern = re.compile(
+        r'\{\s*"[^"]+"\s*,\s*"([^"]+)"\s*,\s*("(?:(?:\\.)|[^"\\])*")\s*\}'
+    )
+    entries: list[Entry] = []
+
+    for key, fallback_token in pattern.findall(raw_text):
+        entries.append(
+            Entry(
+                key,
+                decode_cpp_string(fallback_token),
+                str(path),
+                find_line_containing(raw_text, key),
+            )
+        )
+
+    return entries
+
+
+def scan_item_data_file(raw_text: str, path: Path) -> list[Entry]:
+    string_token = r'"(?:(?:\\.)|[^"\\])*"'
+    item_name_pattern = re.compile(
+        rf'item_name\(\s*({string_token})\s*,\s*({string_token})\s*,\s*({string_token})\s*,\s*({string_token})\s*\)',
+        re.DOTALL,
+    )
+    attack_msgs_pattern = re.compile(
+        rf'attack_msgs\(\s*({string_token})\s*,\s*({string_token})\s*,\s*({string_token})\s*\)',
+        re.DOTALL,
+    )
+
+    entries: list[Entry] = []
+
+    for key_token, name_token, plural_token, a_token in item_name_pattern.findall(raw_text):
+        key = decode_cpp_string(key_token)
+        entries.extend(
+            [
+                Entry(
+                    f"item_data.{key}.name",
+                    decode_cpp_string(name_token),
+                    str(path),
+                    find_line_containing(raw_text, key_token),
+                ),
+                Entry(
+                    f"item_data.{key}.name_plural",
+                    decode_cpp_string(plural_token),
+                    str(path),
+                    find_line_containing(raw_text, key_token),
+                ),
+                Entry(
+                    f"item_data.{key}.name_a",
+                    decode_cpp_string(a_token),
+                    str(path),
+                    find_line_containing(raw_text, key_token),
+                ),
+            ]
+        )
+
+    for key_token, player_token, other_token in attack_msgs_pattern.findall(raw_text):
+        key = decode_cpp_string(key_token)
+        entries.extend(
+            [
+                Entry(
+                    f"item_data.{key}.player",
+                    decode_cpp_string(player_token),
+                    str(path),
+                    find_line_containing(raw_text, key_token),
+                ),
+                Entry(
+                    f"item_data.{key}.other",
+                    decode_cpp_string(other_token),
+                    str(path),
+                    find_line_containing(raw_text, key_token),
+                ),
+            ]
+        )
+
+    return entries
+
+
+def scan_view_actor_descr_file(raw_text: str, path: Path) -> list[Entry]:
+    pattern = re.compile(
+        r'"(view_actor_descr\.[^"]+)"\s*,\s*("(?:(?:\\.)|[^"\\])*")'
+    )
+    entries: list[Entry] = []
+
+    for key, fallback_token in pattern.findall(raw_text):
+        entries.append(
+            Entry(
+                key,
+                decode_cpp_string(fallback_token),
+                str(path),
+                find_line_containing(raw_text, key),
+            )
+        )
+
+    return entries
+
+
+def scan_version_file(raw_text: str, path: Path) -> list[Entry]:
+    key_by_const = {
+        "g_copyright_str": "version.copyright",
+        "g_license_str": "version.license",
+    }
+    pattern = re.compile(
+        r'const std::string (g_copyright_str|g_license_str)\s*=\s*("(?:(?:\\.)|[^"\\])*")\s*;'
+    )
+    entries: list[Entry] = []
+
+    for const_name, fallback_token in pattern.findall(raw_text):
+        key = key_by_const[const_name]
+        entries.append(
+            Entry(
+                key,
+                decode_cpp_string(fallback_token),
+                str(path),
+                find_line_containing(raw_text, const_name),
+            )
+        )
+
+    return entries
+
+
+def scan_config_file(raw_text: str, path: Path) -> list[Entry]:
+    if "option.any_key_confirm_more.descr" not in raw_text:
+        return []
+
+    msg_more_match = re.search(
+        r'const std::string g_more_str = ("(?:(?:\\.)|[^"\\])*");',
+        (path.parent.parent / "include" / "msg_log.hpp").read_text(encoding="utf-8"),
+    )
+    if not msg_more_match:
+        return []
+
+    more_str = decode_cpp_string(msg_more_match.group(1))
+    source = (
+        f'Any key confirms "{more_str}" prompts in the message log '
+        "(which can happen for example when a monster appears as a warning to the player), "
+        "otherwise only space (and a few other keys) confirms these prompts. "
+        "Keeping the option disabled is safer."
+    )
+
+    return [
+        Entry(
+            "option.any_key_confirm_more.descr",
+            source,
+            str(path),
+            find_line_containing(raw_text, "option.any_key_confirm_more.descr"),
+        )
+    ]
+
+
+def repo_specific_entries(raw_text: str, path: Path) -> list[Entry]:
+    if path.name == "item_data.cpp":
+        return scan_item_data_file(raw_text, path)
+    if path.name == "gods.cpp":
+        return scan_gods_file(raw_text, path)
+    if path.name == "view_actor_descr.cpp":
+        return scan_view_actor_descr_file(raw_text, path)
+    if path.name == "version.cpp":
+        return scan_version_file(raw_text, path)
+    if path.name == "config.cpp":
+        return scan_config_file(raw_text, path)
+    return []
+
+
 def scan_file(path: Path) -> tuple[list[Entry], list[Skipped]]:
     try:
         raw_text = path.read_text(encoding="utf-8")
@@ -225,22 +420,24 @@ def scan_file(path: Path) -> tuple[list[Entry], list[Skipped]]:
         raw_text = path.read_text(encoding="latin-1")
 
     text = strip_comments(raw_text)
-    entries: list[Entry] = []
+    entries = repo_specific_entries(raw_text, path)
     skipped: list[Skipped] = []
     search_pos = 0
+    call_specs = call_specs_for_path(path)
 
     while True:
         call_pos = -1
-        call_name = ""
-        for candidate in I18N_CALLS:
-            pos = text.find(candidate, search_pos)
+        open_pos = -1
+        key_prefix = ""
+        for candidate, candidate_prefix in call_specs:
+            pos, candidate_open_pos = find_next_call(text, candidate, search_pos)
             if pos >= 0 and (call_pos < 0 or pos < call_pos):
                 call_pos = pos
-                call_name = candidate
+                open_pos = candidate_open_pos
+                key_prefix = candidate_prefix
         if call_pos < 0:
             break
 
-        open_pos = text.find("(", call_pos + len(call_name))
         if open_pos < 0:
             break
 
@@ -263,6 +460,9 @@ def scan_file(path: Path) -> tuple[list[Entry], list[Skipped]]:
             skipped.append(Skipped(str(path), line, "nonliteral key or source", text[call_pos : close_pos + 1].strip()))
             search_pos = close_pos + 1
             continue
+
+        if key_prefix and not key.startswith(key_prefix):
+            key = f"{key_prefix}{key}"
 
         entries.append(Entry(key, source, str(path), line))
         search_pos = close_pos + 1
