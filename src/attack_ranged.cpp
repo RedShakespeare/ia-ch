@@ -273,7 +273,7 @@ static void print_projectile_hit_player_msg(const Projectile& projectile)
 
 static void print_projectile_hit_mon_msg(const Projectile& projectile)
 {
-    std::string other_name = "It";
+    std::string other_name = i18n::get("attack_ranged.it", "It");
 
     const actor::Actor& defender = *projectile.att_data->defender;
 

@@ -922,6 +922,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(
         i18n::get("attack_melee.stopped_at_boundary_suffix", " is stopped at the boundary.") ==
         "被挡在边界处。");
+    require_translation("attack_ranged.it", "它");
     REQUIRE(i18n::get("property.wounded_open", "Wounded(") == "受伤（");
     REQUIRE(i18n::get("property.close_paren", ")") == "）");
     require_translation("property_handler.ending_suffix", "（即将结束）");
