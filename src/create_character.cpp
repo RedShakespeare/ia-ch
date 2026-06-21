@@ -1045,7 +1045,8 @@ void EnterNameState::update()
     if (config::is_bot_playing()) {
         auto& d = *map::g_player->m_data;
 
-        d.name_a = d.name_the = "Bot";
+        d.name_a = d.name_the =
+            i18n::get("create_character.bot_name", "Bot");
 
         states::pop();
 
@@ -1061,7 +1062,8 @@ void EnterNameState::update()
 
     if (input.key == SDLK_RETURN) {
         if (m_current_str.empty()) {
-            m_current_str = "Player";
+            m_current_str =
+                i18n::get("create_character.default_player_name", "Player");
         }
         else {
             // Player has entered a string

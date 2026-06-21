@@ -178,6 +178,8 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         "\n\n站在明亮光线中同样会降低你的震惊值，直到你回到地下环境的昏暗之中。"
         "\n\n看见怪物、施放法术、花费时间等会造成“永久”震惊，它不会消失，直到抵达下一层、震惊达到 100% 导致疯狂上升，或通过某种方式治愈震惊。");
     REQUIRE(i18n::get("create_character.background_title", "What is your background?") == "你的背景是什么？");
+    REQUIRE(i18n::get("create_character.bot_name", "Bot") == "机器人");
+    REQUIRE(i18n::get("create_character.default_player_name", "Player") == "玩家");
     REQUIRE(i18n::get("spells.domain.channeling", "Channeling") == "导能");
     REQUIRE(i18n::get("spells.domain.corruption", "Corruption") == "腐化");
     REQUIRE(i18n::get("spells.domain.illusion", "Illusion") == "幻象");
