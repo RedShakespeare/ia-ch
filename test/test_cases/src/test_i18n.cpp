@@ -1786,6 +1786,16 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation(
         "item_data.necronomicon.base_descr_2",
         "施放法术受到的所有精神震惊加倍，并且查阅这类知识者的存在会被强烈感知（-20%潜行，每回合2%几率惊动附近生物）。");
+    require_translation("item_data.zombie_dust.name", "僵尸尘");
+    require_translation("item_data.zombie_dust.name_plural", "一把把僵尸尘");
+    require_translation("item_data.zombie_dust.name_a", "一把僵尸尘");
+    require_translation("item_data.zombie_dust.base_descr", "投向活着的（非不死）生物时，这种粉末会导致麻痹。");
+    require_translation("item_data.witch_eye.name", "女巫之眼");
+    require_translation("item_data.witch_eye.name_plural", "女巫之眼");
+    require_translation("item_data.witch_eye.name_a", "一只女巫之眼");
+    require_translation(
+        "item_data.witch_eye.base_descr",
+        "一位强大女巫的眼睛。把它攥在手中会暂时获得魔法视觉——门、陷阱、楼梯和周围其他有趣地点会被侦测到，并且物品和生物的存在也会显露。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");

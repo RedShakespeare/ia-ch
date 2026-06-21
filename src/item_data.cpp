@@ -2630,13 +2630,16 @@ void init()
 
     reset_data(d, ItemType::throwing_wpn);
     d.id = Id::zombie_dust;
-    d.base_name = {
+    d.base_name = item_name(
+        "zombie_dust",
         "Zombie Dust",
         "Handfuls of Zombie Dust",
-        "a handful of Zombie Dust"};
+        "a handful of Zombie Dust");
     d.base_descr = {
-        "When thrown at a living (non-undead) creature, this powder "
-        "causes paralyzation."};
+        tr(
+            "zombie_dust.base_descr",
+            "When thrown at a living (non-undead) creature, this powder "
+            "causes paralyzation.")};
     d.spawn_std_range.max = g_dlvl_last;
     d.weight = Weight::extra_light;
     d.tile = gfx::TileId::zombie_dust;
@@ -2657,12 +2660,18 @@ void init()
 
     reset_data(d, ItemType::general);
     d.id = Id::witch_eye;
-    d.base_name = {"Witch's Eye", "Witch's Eyes", "a Witch's Eye"};
+    d.base_name = item_name(
+        "witch_eye",
+        "Witch's Eye",
+        "Witch's Eyes",
+        "a Witch's Eye");
     d.base_descr = {
-        "The eye of a powerful witch. Clutching it in one's hand will "
-        "temporarily grant magical vision - doors, traps, stairs, and "
-        "other locations of interest are detected in the surrounding area, "
-        "and the presence of items and creatures is revealed."};
+        tr(
+            "witch_eye.base_descr",
+            "The eye of a powerful witch. Clutching it in one's hand will "
+            "temporarily grant magical vision - doors, traps, stairs, and "
+            "other locations of interest are detected in the surrounding area, "
+            "and the presence of items and creatures is revealed.")};
     d.type = ItemType::general;
     d.value = item::Value::major_treasure;
     d.weight = Weight::extra_light;
