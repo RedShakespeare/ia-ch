@@ -2202,10 +2202,12 @@ void init()
     d.id = Id::medical_bag;
     d.has_std_activate = true;
     d.is_prio_in_backpack_list = true;
-    d.base_name = {"Medical Bag", "Medical Bags", "a Medical Bag"};
+    d.base_name = item_name("medical_bag", "Medical Bag", "Medical Bags", "a Medical Bag");
     d.base_descr = {
-        "A portable bag of medical supplies. Can be used to treat "
-        "Wounds or Infections."};
+        tr(
+            "medical_bag.base_descr",
+            "A portable bag of medical supplies. Can be used to treat "
+            "Wounds or Infections.")};
     d.weight = Weight::medium;
     d.spawn_std_range = Range(1, g_dlvl_last_mid_game);
     d.is_stackable = false;
@@ -2218,10 +2220,13 @@ void init()
     d.id = Id::lantern;
     d.has_std_activate = true;
     d.is_prio_in_backpack_list = true;
-    d.base_name = {
-        "Electric Lantern", "Electric Lanterns", "an Electric Lantern"};
+    d.base_name = item_name(
+        "lantern",
+        "Electric Lantern",
+        "Electric Lanterns",
+        "an Electric Lantern");
     d.base_descr = {
-        "A portable light source."};
+        tr("lantern.base_descr", "A portable light source.")};
     d.weight = item::Weight::light;
     d.character = '%';
     d.spawn_std_range = Range(1, 10);
@@ -2229,7 +2234,9 @@ void init()
     d.chance_to_incl_in_spawn_list = 100;
     d.tile = gfx::TileId::lantern;
     d.color = colors::yellow();
-    d.land_on_hard_snd_msg = "I hear a clanking sound.";
+    d.land_on_hard_snd_msg = tr(
+        "lantern.land_on_hard_snd_msg",
+        "I hear a clanking sound.");
     d.land_on_hard_sfx = audio::SfxId::metal_clank;
     d.native_containers.push_back(terrain::Id::chest);
     d.native_containers.push_back(terrain::Id::cabinet);

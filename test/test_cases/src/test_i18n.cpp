@@ -1716,6 +1716,15 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation("item_data.device_force_field.name", "力场装置");
     require_translation("item_data.device_force_field.name_plural", "力场装置");
     require_translation("item_data.device_force_field.name_a", "一个力场装置");
+    require_translation("item_data.medical_bag.name", "医疗包");
+    require_translation("item_data.medical_bag.name_plural", "医疗包");
+    require_translation("item_data.medical_bag.name_a", "一个医疗包");
+    require_translation("item_data.medical_bag.base_descr", "一个便携式医疗用品包。可用于处理伤口或感染。");
+    require_translation("item_data.lantern.name", "电提灯");
+    require_translation("item_data.lantern.name_plural", "电提灯");
+    require_translation("item_data.lantern.name_a", "一盏电提灯");
+    require_translation("item_data.lantern.base_descr", "一个便携式光源。");
+    require_translation("item_data.lantern.land_on_hard_snd_msg", "我听到一阵金属叮当声。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");
