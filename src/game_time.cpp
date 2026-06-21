@@ -26,6 +26,7 @@
 #include "colors.hpp"
 #include "debug.hpp"
 #include "global.hpp"
+#include "i18n.hpp"
 #include "inventory.hpp"
 #include "item.hpp"
 #include "map.hpp"
@@ -165,7 +166,7 @@ static void run_std_turn_events()
         map::g_player->m_properties.end_prop(prop::Id::stuck, prop_end_config);
 
         msg_log::add(
-            "I sink downwards!",
+            i18n::get("game_time.sink_downwards", "I sink downwards!"),
             colors::white(),
             MsgInterruptPlayer::yes,
             MorePromptOnMsg::yes);

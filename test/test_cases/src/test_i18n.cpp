@@ -345,6 +345,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "{color_reset}: ") == "{color_reset}：");
     REQUIRE(i18n::get("game_over_summary.title", "Game summary") == "游戏总结");
     REQUIRE(i18n::get("game.death_message", "-I AM DEAD!-") == "-我死了！-");
+    REQUIRE(i18n::get("game_time.sink_downwards", "I sink downwards!") == "我向下沉去！");
     require_translation(
         "game.intro_default",
         "我站在一条鹅卵石森林小径的尽头，面前是一座被人避讳、破败古老的教堂建筑。"
