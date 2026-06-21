@@ -119,8 +119,8 @@ struct TerrainData
     bool can_have_trap {false};
     bool can_have_item {true};
     Material material_type {Material::stone};
-    std::string msg_on_player_blocked {"The way is blocked."};
-    std::string msg_on_player_blocked_blind {"I bump into something."};
+    std::string msg_on_player_blocked {};
+    std::string msg_on_player_blocked_blind {};
     int shock_when_adjacent {0};
     TerrainPlacement auto_spawn_placement {TerrainPlacement::either};
 };

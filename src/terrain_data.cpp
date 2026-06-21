@@ -36,6 +36,10 @@ static terrain::TerrainData s_data[(size_t)terrain::Id::END];
 static void reset_data(terrain::TerrainData& d)
 {
     d = {};
+    d.msg_on_player_blocked =
+        i18n::get("terrain.way_blocked", "The way is blocked.");
+    d.msg_on_player_blocked_blind =
+        i18n::get("terrain.bump_into_something", "I bump into something.");
 }
 
 static void add_to_list_and_reset(terrain::TerrainData& d)

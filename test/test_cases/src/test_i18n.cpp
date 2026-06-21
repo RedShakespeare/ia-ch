@@ -392,6 +392,8 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         "地上万物，无论生者或死者，其命运皆归于我。");
     REQUIRE(i18n::get("inventory.slot.weapon", "Weapon") == "武器");
     REQUIRE(i18n::get("inventory.browsing_title", "Browsing inventory") == "浏览物品栏");
+    REQUIRE(i18n::get("inventory.empty_slot", "<empty>") == "<空>");
+    REQUIRE(i18n::get("inventory.drop_how_many_suffix", "- drop how many?") == "- 丢弃多少？");
     REQUIRE(i18n::get("inventory.throw.title", "Throw which item?") == "投掷哪件物品？");
     REQUIRE(i18n::get("inventory.not_while_burning", "Not while burning.") == "燃烧时不能这么做。");
     REQUIRE(i18n::get("item_armor.damage_prefix", "My ") == "我的");
@@ -413,6 +415,8 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
             "terrain_event.rats_discovery_title",
             "A gruesome discovery...") == "可怖的发现……");
     REQUIRE(i18n::get("terrain.hear_crash", "I hear a crash.") == "我听到一声撞击。");
+    REQUIRE(i18n::get("terrain.way_blocked", "The way is blocked.") == "去路被挡住了。");
+    REQUIRE(i18n::get("terrain.bump_into_something", "I bump into something.") == "我撞到了什么东西。");
     REQUIRE(i18n::get("terrain.chasm_in_way", "A chasm lies in my way.") == "一道深渊挡住了我的路。");
     REQUIRE(
         i18n::get(

@@ -83,7 +83,8 @@ static bool run_drop_query(
 
     const std::string title =
         item.name(ItemNameType::plural) +
-        " - drop how many?";
+        " " +
+        i18n::get("inventory.drop_how_many_suffix", "- drop how many?");
 
     query::QueryNumberConfig query_config;
 
@@ -409,7 +410,7 @@ void InvState::draw_slot(
         p.x += 2;
 
         io::draw_text(
-            "<empty>",
+            i18n::get("inventory.empty_slot", "<empty>"),
             Panel::inventory_menu,
             p,
             color);
