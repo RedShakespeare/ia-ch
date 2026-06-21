@@ -828,7 +828,11 @@ void PossessedByZuul::on_death()
             text_format::first_to_upper(
                 actor::name_the(*m_owner));
 
-        const std::string& name2 = actor::g_data["MON_ZUUL"].name_the;
+        const actor::ActorData& zuul_data = actor::g_data["MON_ZUUL"];
+        const std::string name2 =
+            actor::localized_text(
+                zuul_data.name_the_i18n_key,
+                zuul_data.name_the);
 
         msg_log::add(
             name1 +
@@ -2933,7 +2937,9 @@ PropActResult CorpseRises::on_act()
 
         const std::string name =
             text_format::first_to_upper(
-                m_owner->m_data->corpse_name_the);
+                actor::localized_text(
+                    m_owner->m_data->corpse_name_the_i18n_key,
+                    m_owner->m_data->corpse_name_the));
 
         msg_log::add(
             name + i18n::get("property.rises_again_suffix", " rises again!!"),

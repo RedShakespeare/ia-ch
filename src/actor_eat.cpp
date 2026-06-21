@@ -94,7 +94,10 @@ static void print_feed_msg(
     const actor::Actor& actor,
     const actor::Actor& corpse)
 {
-    const std::string corpse_name_the = corpse.m_data->corpse_name_the;
+    const std::string corpse_name_the =
+        actor::localized_text(
+            corpse.m_data->corpse_name_the_i18n_key,
+            corpse.m_data->corpse_name_the);
 
     if (actor::is_player(&actor)) {
         msg_log::add(
@@ -121,7 +124,9 @@ static void print_corpse_destroyed_msg(const actor::Actor& corpse)
 {
     const std::string name =
         text_format::first_to_upper(
-            corpse.m_data->corpse_name_the);
+            actor::localized_text(
+                corpse.m_data->corpse_name_the_i18n_key,
+                corpse.m_data->corpse_name_the));
 
     msg_log::add(
         name +
@@ -150,8 +155,9 @@ static void print_corpses_remaining(const P& p)
     for (auto* const other_corpse : corpses_here) {
         const std::string name =
             text_format::first_to_upper(
-                other_corpse->m_data
-                    ->corpse_name_a);
+                actor::localized_text(
+                    other_corpse->m_data->corpse_name_a_i18n_key,
+                    other_corpse->m_data->corpse_name_a));
 
         msg_log::add(name + i18n::get("actor_eat.period", "."));
     }

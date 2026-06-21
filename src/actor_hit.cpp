@@ -140,7 +140,9 @@ static void hit_corpse_destroy_success(
     if (map::g_seen.at(actor.m_pos)) {
         const auto name =
             text_format::first_to_upper(
-                actor.m_data->corpse_name_the);
+                actor::localized_text(
+                    actor.m_data->corpse_name_the_i18n_key,
+                    actor.m_data->corpse_name_the));
 
         msg_log::add(
             name +

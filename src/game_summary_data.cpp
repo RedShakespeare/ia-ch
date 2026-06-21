@@ -65,7 +65,10 @@ static void collect_unique_monsters_killed(
 
         if ((actor_data.id != "MON_PLAYER") && (actor_data.nr_kills > 0)) {
             if (actor_data.is_unique) {
-                d.unique_monsters_killed.push_back(actor_data.name_a);
+                d.unique_monsters_killed.push_back(
+                    actor::localized_text(
+                        actor_data.name_a_i18n_key,
+                        actor_data.name_a));
             }
         }
     }

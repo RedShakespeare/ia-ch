@@ -360,7 +360,9 @@ char character(const Actor& actor)
 std::string name_the(const Actor& actor)
 {
     if (actor.m_hallucination_mimic_data) {
-        return actor.m_hallucination_mimic_data->name_the;
+        return actor::localized_text(
+            actor.m_hallucination_mimic_data->name_the_i18n_key,
+            actor.m_hallucination_mimic_data->name_the);
     }
 
     const auto name_override = actor.m_properties.override_actor_name_the();
@@ -369,13 +371,17 @@ std::string name_the(const Actor& actor)
         return name_override.value();
     }
 
-    return actor.m_data->name_the;
+    return actor::localized_text(
+        actor.m_data->name_the_i18n_key,
+        actor.m_data->name_the);
 }
 
 std::string name_a(const Actor& actor)
 {
     if (actor.m_hallucination_mimic_data) {
-        return actor.m_hallucination_mimic_data->name_a;
+        return actor::localized_text(
+            actor.m_hallucination_mimic_data->name_a_i18n_key,
+            actor.m_hallucination_mimic_data->name_a);
     }
 
     const auto name_override = actor.m_properties.override_actor_name_a();
@@ -384,13 +390,17 @@ std::string name_a(const Actor& actor)
         return name_override.value();
     }
 
-    return actor.m_data->name_a;
+    return actor::localized_text(
+        actor.m_data->name_a_i18n_key,
+        actor.m_data->name_a);
 }
 
 std::string descr(const Actor& actor)
 {
     if (actor.m_hallucination_mimic_data) {
-        return actor.m_hallucination_mimic_data->descr;
+        return actor::localized_text(
+            actor.m_hallucination_mimic_data->descr_i18n_key,
+            actor.m_hallucination_mimic_data->descr);
     }
 
     const auto descr_override = actor.m_properties.override_actor_descr();
@@ -399,7 +409,9 @@ std::string descr(const Actor& actor)
         return descr_override.value();
     }
 
-    return actor.m_data->descr;
+    return actor::localized_text(
+        actor.m_data->descr_i18n_key,
+        actor.m_data->descr);
 }
 
 int max_hp(const Actor& actor)
@@ -510,7 +522,7 @@ bool restore_hp(
         else if (can_player_see_actor(actor)) {
             const std::string actor_name_the =
                 text_format::first_to_upper(
-                    actor.m_data->name_the);
+                    actor::name_the(actor));
 
             msg_log::add(
                 actor_name_the +
@@ -549,7 +561,7 @@ bool restore_sp(
             if (can_player_see_actor(actor)) {
                 const std::string actor_name_the =
                     text_format::first_to_upper(
-                        actor.m_data->name_the);
+                        actor::name_the(actor));
 
                 msg_log::add(
                     actor_name_the +
@@ -669,7 +681,9 @@ std::string death_msg(const actor::Actor& actor)
         msg_end = i18n::get("actor_common.dies", "dies.");
     }
     else {
-        msg_end = actor.m_data->death_msg_override;
+        msg_end = actor::localized_text(
+            actor.m_data->death_msg_override_i18n_key,
+            actor.m_data->death_msg_override);
     }
 
     return actor_name_the + " " + msg_end;

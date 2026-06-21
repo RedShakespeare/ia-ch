@@ -783,7 +783,9 @@ static void end_properties_for_casting_spell(
 
 static std::string generate_mon_cast_sound_msg(const actor::Actor& caster)
 {
-    std::string spell_msg = caster.m_data->spell_msg_sound;
+    std::string spell_msg = actor::localized_text(
+        caster.m_data->spell_msg_sound_i18n_key,
+        caster.m_data->spell_msg_sound);
 
     if (spell_msg.empty()) {
         return "";
@@ -807,7 +809,9 @@ static std::string generate_mon_cast_visual_msg(const actor::Actor& caster)
 {
     // NOTE: This assumes that the monster is seen.
 
-    std::string spell_msg = caster.m_data->spell_msg_visual;
+    std::string spell_msg = actor::localized_text(
+        caster.m_data->spell_msg_visual_i18n_key,
+        caster.m_data->spell_msg_visual);
 
     if (spell_msg.empty()) {
         return "";

@@ -16,6 +16,7 @@
 
 #include "colors.hpp"
 #include "debug.hpp"
+#include "i18n.hpp"
 #include "item_att_property.hpp"
 #include "item_data.hpp"
 #include "misc.hpp"
@@ -79,37 +80,37 @@ static const std::unordered_map<actor::AiId, std::string> s_ai_id_to_tag_name_ma
     {actor::AiId::moves_to_leader, "moves_to_leader"},
     {actor::AiId::moves_randomly_when_unaware, "moves_randomly_when_unaware"}};
 
+static void dump_i18n_text(
+    xml::Element* text_e,
+    const std::string& tag_name,
+    std::string& fallback,
+    std::string& i18n_key)
+{
+    auto* element = xml::first_child(text_e, tag_name);
+
+    fallback = xml::get_text_str(element);
+
+    xml::try_get_attribute_str(
+        element,
+        "i18n_key",
+        i18n_key);
+}
+
 static void dump_text(xml::Element* text_e, actor::ActorData& data)
 {
-    data.name_a =
-        xml::get_text_str(
-            xml::first_child(
-                text_e,
-                "name_a"));
-
-    data.name_the =
-        xml::get_text_str(
-            xml::first_child(
-                text_e,
-                "name_the"));
-
-    data.corpse_name_a =
-        xml::get_text_str(
-            xml::first_child(
-                text_e,
-                "corpse_name_a"));
-
-    data.corpse_name_the =
-        xml::get_text_str(
-            xml::first_child(
-                text_e,
-                "corpse_name_the"));
-
-    data.descr =
-        xml::get_text_str(
-            xml::first_child(
-                text_e,
-                "description"));
+    dump_i18n_text(text_e, "name_a", data.name_a, data.name_a_i18n_key);
+    dump_i18n_text(text_e, "name_the", data.name_the, data.name_the_i18n_key);
+    dump_i18n_text(
+        text_e,
+        "corpse_name_a",
+        data.corpse_name_a,
+        data.corpse_name_a_i18n_key);
+    dump_i18n_text(
+        text_e,
+        "corpse_name_the",
+        data.corpse_name_the,
+        data.corpse_name_the_i18n_key);
+    dump_i18n_text(text_e, "description", data.descr, data.descr_i18n_key);
 
     data.allow_wielded_wpn_descr =
         xml::get_text_bool(
@@ -132,11 +133,7 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
         "i18n_key",
         data.smell_msg_i18n_key);
 
-    data.wary_msg =
-        xml::get_text_str(
-            xml::first_child(
-                text_e,
-                "wary_message"));
+    dump_i18n_text(text_e, "wary_message", data.wary_msg, data.wary_msg_i18n_key);
 
     auto* aware_msg_seen_e =
         xml::first_child(
@@ -145,6 +142,11 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
 
     data.aware_msg_mon_seen =
         xml::get_text_str(aware_msg_seen_e);
+
+    xml::try_get_attribute_str(
+        aware_msg_seen_e,
+        "i18n_key",
+        data.aware_msg_mon_seen_i18n_key);
 
     xml::try_get_attribute_bool(
         aware_msg_seen_e,
@@ -158,27 +160,36 @@ static void dump_text(xml::Element* text_e, actor::ActorData& data)
 
     data.aware_msg_mon_hidden = xml::get_text_str(aware_msg_hidden_e);
 
+    xml::try_get_attribute_str(
+        aware_msg_hidden_e,
+        "i18n_key",
+        data.aware_msg_mon_hidden_i18n_key);
+
     xml::try_get_attribute_bool(
         aware_msg_hidden_e,
         "use_cultist_messages",
         data.use_cultist_aware_msg_mon_hidden);
 
-    data.spell_msg_sound =
-        xml::get_text_str(
-            xml::first_child(
-                text_e,
-                "spell_message_sound"));
-
-    data.spell_msg_visual =
-        xml::get_text_str(
-            xml::first_child(
-                text_e,
-                "spell_message_visual"));
+    dump_i18n_text(
+        text_e,
+        "spell_message_sound",
+        data.spell_msg_sound,
+        data.spell_msg_sound_i18n_key);
+    dump_i18n_text(
+        text_e,
+        "spell_message_visual",
+        data.spell_msg_visual,
+        data.spell_msg_visual_i18n_key);
 
     auto* death_msg_e = xml::first_child(text_e, "death_message");
 
     if (death_msg_e) {
         data.death_msg_override = xml::get_text_str(death_msg_e);
+
+        xml::try_get_attribute_str(
+            death_msg_e,
+            "i18n_key",
+            data.death_msg_override_i18n_key);
     }
 }
 
@@ -711,6 +722,13 @@ static void read_actor_definitions_xml()
 // -----------------------------------------------------------------------------
 namespace actor
 {
+std::string localized_text(
+    const std::string& key,
+    const std::string& fallback)
+{
+    return key.empty() ? fallback : i18n::get(key, fallback);
+}
+
 // -----------------------------------------------------------------------------
 // ActorData
 // -----------------------------------------------------------------------------
@@ -718,9 +736,13 @@ void ActorData::reset()
 {
     id = "";
     name_a = "";
+    name_a_i18n_key = "";
     name_the = "";
+    name_the_i18n_key = "";
     corpse_name_a = "";
+    corpse_name_a_i18n_key = "";
     corpse_name_the = "";
+    corpse_name_the_i18n_key = "";
     tile = gfx::TileId::END;
     character = 'X';
     color = colors::yellow();
@@ -760,8 +782,11 @@ void ActorData::reset()
     is_unique = false;
     is_auto_spawn_allowed = true;
     wary_msg = "";
+    wary_msg_i18n_key = "";
     aware_msg_mon_seen = "";
+    aware_msg_mon_seen_i18n_key = "";
     aware_msg_mon_hidden = "";
+    aware_msg_mon_hidden_i18n_key = "";
     use_cultist_aware_msg_mon_seen = false;
     use_cultist_aware_msg_mon_hidden = false;
     smell_msg = "";
@@ -769,7 +794,11 @@ void ActorData::reset()
     aware_sfx_mon_seen = audio::SfxId::END;
     aware_sfx_mon_hidden = audio::SfxId::END;
     spell_msg_sound = "";
+    spell_msg_sound_i18n_key = "";
     spell_msg_visual = "";
+    spell_msg_visual_i18n_key = "";
+    death_msg_override = "";
+    death_msg_override_i18n_key = "";
     erratic_move_pct = 0;
     mon_shock_lvl = MonShockLvl::none;
     is_humanoid = false;
@@ -790,6 +819,7 @@ void ActorData::reset()
     native_rooms.clear();
     starting_allies.clear();
     descr = "";
+    descr_i18n_key = "";
 }
 
 std::unordered_map<std::string, ActorData> g_data;

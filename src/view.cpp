@@ -155,7 +155,9 @@ void print_location_info_msgs(const P& pos)
                 ASSERT(!actor->m_data->corpse_name_a.empty());
 
                 str = text_format::first_to_upper(
-                    actor->m_data->corpse_name_a);
+                    actor::localized_text(
+                        actor->m_data->corpse_name_a_i18n_key,
+                        actor->m_data->corpse_name_a));
 
                 msg_log::add(
                     str + ".",

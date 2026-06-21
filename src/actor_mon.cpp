@@ -340,7 +340,9 @@ std::string Actor::aware_msg_mon_seen() const
         return get_cultist_aware_msg_seen(*this);
     }
 
-    std::string msg_end = m_data->aware_msg_mon_seen;
+    std::string msg_end = actor::localized_text(
+        m_data->aware_msg_mon_seen_i18n_key,
+        m_data->aware_msg_mon_seen);
 
     if (msg_end.empty()) {
         return "";
@@ -357,7 +359,9 @@ std::string Actor::aware_msg_mon_hidden() const
         return get_cultist_aware_msg_hidden();
     }
 
-    return m_data->aware_msg_mon_hidden;
+    return actor::localized_text(
+        m_data->aware_msg_mon_hidden_i18n_key,
+        m_data->aware_msg_mon_hidden);
 }
 
 int Actor::nr_turns_to_be_aware(const int factor) const
@@ -472,13 +476,17 @@ void Actor::print_player_see_mon_become_aware_msg() const
 
 void Actor::print_player_see_mon_become_wary_msg() const
 {
-    if (m_data->wary_msg.empty()) {
+    const std::string wary_msg = actor::localized_text(
+        m_data->wary_msg_i18n_key,
+        m_data->wary_msg);
+
+    if (wary_msg.empty()) {
         return;
     }
 
     std::string msg = text_format::first_to_upper(name_the(*this));
 
-    msg += " " + m_data->wary_msg;
+    msg += " " + wary_msg;
 
     msg += "(";
     msg += dir_utils::compass_dir_name(map::g_player->m_pos, m_pos);

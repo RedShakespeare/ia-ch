@@ -129,9 +129,13 @@ struct ActorData
 
     std::string id;
     std::string name_a;
+    std::string name_a_i18n_key;
     std::string name_the;
+    std::string name_the_i18n_key;
     std::string corpse_name_a;
+    std::string corpse_name_a_i18n_key;
     std::string corpse_name_the;
+    std::string corpse_name_the_i18n_key;
     gfx::TileId tile;
     char character;
     Color color;
@@ -164,18 +168,25 @@ struct ActorData
     bool is_unique;
     bool is_auto_spawn_allowed;
     std::string descr;
+    std::string descr_i18n_key;
     std::string smell_msg;
     std::string smell_msg_i18n_key;
     std::string wary_msg;
+    std::string wary_msg_i18n_key;
     std::string aware_msg_mon_seen;
+    std::string aware_msg_mon_seen_i18n_key;
     std::string aware_msg_mon_hidden;
+    std::string aware_msg_mon_hidden_i18n_key;
     bool use_cultist_aware_msg_mon_seen;
     bool use_cultist_aware_msg_mon_hidden;
     audio::SfxId aware_sfx_mon_seen;
     audio::SfxId aware_sfx_mon_hidden;
     std::string spell_msg_sound;
+    std::string spell_msg_sound_i18n_key;
     std::string spell_msg_visual;
+    std::string spell_msg_visual_i18n_key;
     std::string death_msg_override;
+    std::string death_msg_override_i18n_key;
     int erratic_move_pct;
     MonShockLvl mon_shock_lvl;
     bool is_humanoid;
@@ -200,6 +211,10 @@ struct ActorData
 extern std::unordered_map<std::string, ActorData> g_data;
 
 void init();
+
+std::string localized_text(
+    const std::string& key,
+    const std::string& fallback);
 
 void save();
 void load();

@@ -375,7 +375,9 @@ void attack_corpse(actor::Actor& mon, const item::Item& wpn)
 
     std::string corpse_name =
         map::g_seen.at(mon.m_pos)
-        ? mon.m_data->corpse_name_the
+        ? actor::localized_text(
+              mon.m_data->corpse_name_the_i18n_key,
+              mon.m_data->corpse_name_the)
         : "a corpse";
 
     corpse_name = text_format::first_to_lower(corpse_name);
@@ -417,9 +419,9 @@ void attack_corpse(actor::Actor& mon, const item::Item& wpn)
         for (actor::Actor* const other_corpse : corpses_here) {
             const std::string name =
                 text_format::first_to_upper(
-                    other_corpse
-                        ->m_data
-                        ->corpse_name_a);
+                    actor::localized_text(
+                        other_corpse->m_data->corpse_name_a_i18n_key,
+                        other_corpse->m_data->corpse_name_a));
 
             msg_log::add(name + ".");
         }

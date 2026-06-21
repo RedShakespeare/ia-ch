@@ -6,7 +6,9 @@
 
 #include <filesystem>
 #include <fstream>
+#include <regex>
 #include <string>
+#include <vector>
 
 #include "catch.hpp"
 #include "common_text.hpp"
@@ -3988,6 +3990,66 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     std::string title_line;
     std::getline(manual_file, title_line);
     REQUIRE(title_line == "游戏命令");
+}
+
+TEST_CASE("Monster XML player-facing text has i18n keys")
+{
+    config::set_language("zh_CN");
+    i18n::reload();
+
+    const std::vector<std::string> tags = {
+        "name_a",
+        "name_the",
+        "corpse_name_a",
+        "corpse_name_the",
+        "description",
+        "wary_message",
+        "smell_message",
+        "aware_message_seen",
+        "aware_message_hidden",
+        "spell_message_sound",
+        "spell_message_visual",
+        "death_message"};
+
+    std::ifstream file(paths::data_dir() + "monsters.xml");
+    REQUIRE(file.is_open());
+
+    int nr_keyed_entries = 0;
+    std::string line;
+
+    while (std::getline(file, line)) {
+        for (const auto& tag : tags) {
+            const std::regex text_tag_regex(
+                "^\\s*<" + tag + "([^>]*)>(.*)</" + tag + ">$");
+
+            std::smatch match;
+
+            if (!std::regex_match(line, match, text_tag_regex)) {
+                continue;
+            }
+
+            if (match[2].str().empty()) {
+                break;
+            }
+
+            const std::string attrs = match[1].str();
+            const std::regex key_regex("i18n_key=\"([^\"]+)\"");
+            std::smatch key_match;
+
+            INFO("monster XML line: " << line);
+            REQUIRE(std::regex_search(attrs, key_match, key_regex));
+
+            const std::string key = key_match[1].str();
+
+            INFO("i18n key: " << key);
+            REQUIRE(i18n::get(key, "__missing_translation__") != "__missing_translation__");
+
+            ++nr_keyed_entries;
+            break;
+        }
+    }
+
+    REQUIRE(nr_keyed_entries > 0);
 }
 
 TEST_CASE("I18n falls back to base message file when localized file is missing")
