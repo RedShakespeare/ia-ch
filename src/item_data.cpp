@@ -2689,18 +2689,28 @@ void init()
 
     reset_data(d, ItemType::general);
     d.id = Id::bone_charm;
-    d.base_name = {"Bone Charm", "Bone Charms", "a Bone Charm"};
+    d.base_name = item_name(
+        "bone_charm",
+        "Bone Charm",
+        "Bone Charms",
+        "a Bone Charm");
     d.base_descr = {
-        "An old finger bone, carved with tiny symbols.",
+        tr(
+            "bone_charm.base_descr_1",
+            "An old finger bone, carved with tiny symbols."),
 
-        "Snapping it in two "
-        "grants protection against harmful spells "
-        "for 6-12 turns, or until a spell is blocked.",
+        tr(
+            "bone_charm.base_descr_2",
+            "Snapping it in two "
+            "grants protection against harmful spells "
+            "for 6-12 turns, or until a spell is blocked."),
 
-        "It also dispels all seen sigils "
-        "(\"strange shape\" on the floor). "
-        "For each trap dispelled, 1-6 spirit points are gained, "
-        "which may raise spirit above maximum level."};
+        tr(
+            "bone_charm.base_descr_3",
+            "It also dispels all seen sigils "
+            "(\"strange shape\" on the floor). "
+            "For each trap dispelled, 1-6 spirit points are gained, "
+            "which may raise spirit above maximum level.")};
     d.type = ItemType::general;
     d.value = item::Value::minor_treasure;
     d.weight = Weight::extra_light;
@@ -2720,19 +2730,24 @@ void init()
 
     reset_data(d, ItemType::general);
     d.id = Id::fluctuating_material;
-    d.base_name = {
+    d.base_name = item_name(
+        "fluctuating_material",
         "Fluctuating Material",
         "Pieces of Fluctuating Material",
-        "a Fluctuating Material"};
+        "a Fluctuating Material");
     d.base_descr = {
-        "It is difficult to tell whether it is stone, metal, "
-        "or perhaps even something organic. It seems to be "
-        "ever-changing, internally twisting, turning, and flowing.",
+        tr(
+            "fluctuating_material.base_descr_1",
+            "It is difficult to tell whether it is stone, metal, "
+            "or perhaps even something organic. It seems to be "
+            "ever-changing, internally twisting, turning, and flowing."),
 
-        "Glancing at the material is like looking into a "
-        "kaleidoscope - and it feels like gazing too deep will "
-        "transmute the very nature of the observer (choose one trait "
-        "to remove, and then pick a new one)."};
+        tr(
+            "fluctuating_material.base_descr_2",
+            "Glancing at the material is like looking into a "
+            "kaleidoscope - and it feels like gazing too deep will "
+            "transmute the very nature of the observer (choose one trait "
+            "to remove, and then pick a new one).")};
     d.type = ItemType::general;
     d.value = item::Value::minor_treasure;
     d.weight = Weight::extra_light;
@@ -2745,23 +2760,29 @@ void init()
     d.spawn_std_range = Range(-1, -1);
     d.allow_spawn = false;
     d.is_stackable = true;
-    d.land_on_hard_snd_msg = "I hear a thud.";
+    d.land_on_hard_snd_msg =
+        tr("fluctuating_material.land_on_hard_snd_msg", "I hear a thud.");
     g_data[(size_t)d.id] = d;
 
     reset_data(d, ItemType::general);
     d.id = Id::astral_opium;
-    d.base_name = {
+    d.base_name = item_name(
+        "astral_opium",
         "Astral Opium",
         "Astral Opium Doses",
-        "an Astral Opium Dose"};
+        "an Astral Opium Dose");
     d.base_descr = {
-        "A drug extracted from plants of extraterrestrial origin. "
-        "It leaves the user in a perfectly serene state, free from all "
-        "fear.",
+        tr(
+            "astral_opium.base_descr_1",
+            "A drug extracted from plants of extraterrestrial origin. "
+            "It leaves the user in a perfectly serene state, free from all "
+            "fear."),
 
-        "There is a price for this however, since it causes "
-        "intense hallucinogenic delusions, and it is also severely "
-        "addictive."};
+        tr(
+            "astral_opium.base_descr_2",
+            "There is a price for this however, since it causes "
+            "intense hallucinogenic delusions, and it is also severely "
+            "addictive.")};
     d.type = ItemType::general;
     d.is_stackable = true;
     d.chance_to_incl_in_spawn_list = 40;
@@ -2773,7 +2794,8 @@ void init()
     d.color = colors::white();
     d.tile = gfx::TileId::astral_opium;
     d.character = '%';
-    d.land_on_hard_snd_msg = "I hear a clanking sound.";
+    d.land_on_hard_snd_msg =
+        tr("astral_opium.land_on_hard_snd_msg", "I hear a clanking sound.");
     d.native_containers.push_back(terrain::Id::chest);
     d.native_containers.push_back(terrain::Id::cabinet);
     d.native_containers.push_back(terrain::Id::cocoon);

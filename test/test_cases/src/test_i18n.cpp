@@ -1796,6 +1796,28 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     require_translation(
         "item_data.witch_eye.base_descr",
         "一位强大女巫的眼睛。把它攥在手中会暂时获得魔法视觉——门、陷阱、楼梯和周围其他有趣地点会被侦测到，并且物品和生物的存在也会显露。");
+    require_translation("item_data.bone_charm.name", "骨符");
+    require_translation("item_data.bone_charm.name_plural", "骨符");
+    require_translation("item_data.bone_charm.name_a", "一枚骨符");
+    require_translation("item_data.bone_charm.base_descr_1", "一截刻着细小符号的古老指骨。");
+    require_translation("item_data.bone_charm.base_descr_2", "将它折成两半可获得对有害法术的保护，持续6-12回合，或直到阻挡一个法术为止。");
+    require_translation(
+        "item_data.bone_charm.base_descr_3",
+        "它还会驱散所有已看见的符印（地面上的“奇异形状”）。每驱散一个陷阱，便获得1-6点精神点，这可能使精神超过最大值。");
+    require_translation("item_data.fluctuating_material.name", "波动物质");
+    require_translation("item_data.fluctuating_material.name_plural", "波动物质块");
+    require_translation("item_data.fluctuating_material.name_a", "一块波动物质");
+    require_translation("item_data.fluctuating_material.base_descr_1", "很难判断它究竟是石头、金属，还是某种有机物。它似乎永远在变化，内部不断扭动、转动并流动。");
+    require_translation(
+        "item_data.fluctuating_material.base_descr_2",
+        "瞥一眼这种物质就像望进万花筒——并且感觉凝视太深会转化观察者的本质（选择移除一个特质，然后选择一个新特质）。");
+    require_translation("item_data.fluctuating_material.land_on_hard_snd_msg", "我听到一声闷响。");
+    require_translation("item_data.astral_opium.name", "星界鸦片");
+    require_translation("item_data.astral_opium.name_plural", "星界鸦片剂");
+    require_translation("item_data.astral_opium.name_a", "一剂星界鸦片");
+    require_translation("item_data.astral_opium.base_descr_1", "一种从源自外星的植物中提取的药物。它让使用者处于完全宁静、无所畏惧的状态。");
+    require_translation("item_data.astral_opium.base_descr_2", "然而这是有代价的，因为它会导致强烈的致幻妄想，而且也极易成瘾。");
+    require_translation("item_data.astral_opium.land_on_hard_snd_msg", "我听到一阵叮当声。");
     REQUIRE(i18n::get("spells.unexpected_effect", "An unexpected effect was induced by the spell.") == "法术引发了意想不到的效果。");
     REQUIRE(i18n::get("spells.resist_player", "I resist the spell!") == "我抵抗了法术！");
     REQUIRE(i18n::get("spells.resists_suffix", " resists the spell!") == "抵抗了法术！");
