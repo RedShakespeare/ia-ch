@@ -245,9 +245,13 @@ void MainMenuState::draw()
     io::draw_text_center(
         std::string(
             " " +
-            version_info::g_copyright_str +
+            i18n::get(
+                "version.copyright",
+                version_info::g_copyright_str) +
             ", " +
-            version_info::g_license_str +
+            i18n::get(
+                "version.license",
+                version_info::g_license_str) +
             " "),
         Panel::screen,
         {panels::center_x(Panel::screen), panels::y1(Panel::screen)},

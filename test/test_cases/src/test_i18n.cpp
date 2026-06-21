@@ -44,6 +44,15 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
 
     REQUIRE(i18n::current_language() == "zh_CN");
     REQUIRE(i18n::get("main_menu.options", "(O)Options") == "(O)选项");
+    REQUIRE(
+        i18n::get(
+            "version.copyright",
+            "(c) 2011-2025 Martin Tornqvist") == "(c) 2011-2025 Martin Tornqvist");
+    REQUIRE(
+        i18n::get(
+            "version.license",
+            "Infra Arcana is free software, see LICENSE.txt.") ==
+        "Infra Arcana 是自由软件，详见 LICENSE.txt。");
     REQUIRE(common_text::g_screen_exit_hint == "[space, esc] 退出");
     REQUIRE(i18n::get("option.base_delay.query_title", "Projectile delay") == "投射物延迟");
     REQUIRE(i18n::get("hints.title_prefix", "Hint: ") == "提示：");
