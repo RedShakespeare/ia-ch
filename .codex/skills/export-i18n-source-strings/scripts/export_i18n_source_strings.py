@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Export i18n::get source strings as Paratranz-compatible CSV."""
+"""Export Infra Arcana i18n source strings as Paratranz-compatible CSV."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from typing import Iterable, TextIO
 
 
 SOURCE_EXTS = {".cpp", ".hpp", ".h", ".cc", ".cxx"}
-I18N_CALL = "i18n::get"
+I18N_CALLS = ("i18n::get", "insanity_i18n::get")
 
 
 @dataclass(frozen=True)
@@ -230,11 +230,17 @@ def scan_file(path: Path) -> tuple[list[Entry], list[Skipped]]:
     search_pos = 0
 
     while True:
-        call_pos = text.find(I18N_CALL, search_pos)
+        call_pos = -1
+        call_name = ""
+        for candidate in I18N_CALLS:
+            pos = text.find(candidate, search_pos)
+            if pos >= 0 and (call_pos < 0 or pos < call_pos):
+                call_pos = pos
+                call_name = candidate
         if call_pos < 0:
             break
 
-        open_pos = text.find("(", call_pos + len(I18N_CALL))
+        open_pos = text.find("(", call_pos + len(call_name))
         if open_pos < 0:
             break
 
@@ -366,7 +372,7 @@ def write_json(entries: list[Entry], translations: dict[str, str], out: TextIO) 
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Export i18n::get source text as Paratranz-compatible CSV."
+        description="Export Infra Arcana i18n source text as Paratranz-compatible CSV."
     )
     parser.add_argument(
         "paths",
@@ -405,7 +411,7 @@ def main() -> int:
             print(f"warning: missing {args.locale} translations: {missing}", file=sys.stderr)
 
     if skipped and not args.quiet:
-        print(f"warning: skipped i18n::get calls: {len(skipped)}", file=sys.stderr)
+        print(f"warning: skipped i18n calls: {len(skipped)}", file=sys.stderr)
         for skipped_call in skipped[:20]:
             print(
                 f"  {skipped_call.file}:{skipped_call.line}: {skipped_call.reason}: {skipped_call.snippet}",
