@@ -1,4 +1,4 @@
 interface:
   display_name: "Export i18n Source Strings"
-  short_description: "Export i18n and manual source text"
-  default_prompt: "Use $export-i18n-source-strings to export i18n::get keys, manual.txt entries, and English source text for a translation platform."
+  short_description: "Export i18n/manual/message CSVs"
+  default_prompt: "Use $export-i18n-source-strings to export i18n::get keys, manual.txt entries, message text files, and English source text for a translation platform."

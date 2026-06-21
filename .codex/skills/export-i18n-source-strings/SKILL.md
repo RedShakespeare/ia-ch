@@ -1,13 +1,13 @@
 ---
 name: export-i18n-source-strings
-description: Export existing Infra Arcana i18n keys, English fallback strings, and manual.txt chapter/paragraph entries as Paratranz-compatible CSV. Use when the user asks to scan all i18n-ed strings, extract English source text, split the Tome of Wisdom/manual into translation-platform entries, build translation platform import files with index/source/translation columns, populate translation from an existing locale, or audit duplicate i18n keys.
+description: Export existing Infra Arcana i18n keys, English fallback strings, manual.txt chapter/paragraph entries, and data/messages/*.txt files as Paratranz-compatible CSV. Use when the user asks to scan all i18n-ed strings, extract English source text, split the Tome of Wisdom/manual into translation-platform entries, export message text files, build translation platform import files with index/source/translation columns, populate translation from an existing locale, or audit duplicate i18n keys.
 ---
 
 # Export i18n source strings
 
 Use this skill to extract the English source catalog from existing Infra Arcana
-i18n calls in C++ source and the Tome of Wisdom `manual.txt`, then write a
-Paratranz-compatible CSV.
+i18n calls in C++ source, the Tome of Wisdom `manual.txt`, and
+`data/messages/*.txt`, then write Paratranz-compatible CSV.
 
 The bundled exporter handles both direct calls like
 `i18n::get("key", "English fallback")` and the local insanity wrapper
@@ -25,6 +25,10 @@ The exporter also splits `installed_files/manual.txt` into stable manual keys:
 
 Manual body blocks preserve internal newlines for command tables, movement
 diagrams, and bullet lists.
+
+Message files under `installed_files/data/messages/*.txt` can be exported as
+separate CSV files. The exporter follows the runtime loader: non-empty lines
+whose first character is not a space and not `#` are message entries.
 
 ## Paratranz CSV
 
@@ -53,9 +57,19 @@ python3 .codex/skills/export-i18n-source-strings/scripts/export_i18n_source_stri
 # Export only manual entries
 python3 .codex/skills/export-i18n-source-strings/scripts/export_i18n_source_strings.py --manual always installed_files/manual.txt --output /tmp/manual.csv
 
+# Export an upload bundle: ia-paratranz-zh_CN.csv, manual.csv, and one CSV per message txt
+python3 .codex/skills/export-i18n-source-strings/scripts/export_i18n_source_strings.py --locale zh_CN --output-dir /tmp/ia-paratranz
+
 # Debug parsed entries as JSON
 python3 .codex/skills/export-i18n-source-strings/scripts/export_i18n_source_strings.py --format json src/item_misc.cpp
 ```
+
+`--output-dir` writes separate Paratranz CSV files:
+
+- `ia-paratranz.csv`, or `ia-paratranz-<locale>.csv` when `--locale` is used:
+  C++ `i18n::get`/wrapper entries intended for `text.ini`.
+- `manual.csv`: `installed_files/manual.txt` chapter and paragraph entries.
+- `<message-file-stem>.csv`: one CSV for each `installed_files/data/messages/*.txt`.
 
 Manual export defaults to `--manual auto`: include `manual.txt` in the default
 full export, and include it for restricted exports only when a supplied path is
@@ -76,6 +90,9 @@ After exporting, inspect the script diagnostics:
 - manual chapter/paragraph count mismatch when `--locale` is used: inspect the
   localized `manual.txt`; manual translations are paired to English keys by
   chapter order and paragraph order.
+- message count mismatch when `--locale` is used: inspect the localized message
+  file; message translations are paired by line order only when source and
+  localized files have the same number of runtime-visible lines.
 
 Keep `index` stable. Translators should edit only the `translation` column.
 

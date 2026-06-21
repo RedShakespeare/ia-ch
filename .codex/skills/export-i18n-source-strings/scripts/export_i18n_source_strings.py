@@ -17,6 +17,7 @@ SOURCE_EXTS = {".cpp", ".hpp", ".h", ".cc", ".cxx"}
 MANUAL_REL_PATH = Path("installed_files") / "manual.txt"
 MANUAL_LOCALE_REL_PATH = Path("installed_files") / "data" / "locale"
 MANUAL_DELIM = "-" * 80
+MESSAGES_REL_DIR = Path("installed_files") / "data" / "messages"
 BASE_CALL_SPECS = (
     ("i18n::get", ""),
     ("insanity_i18n::get", "insanity."),
@@ -412,6 +413,66 @@ def manual_translation_entries(repo: Path, locale: str, quiet: bool) -> dict[str
     return translations
 
 
+def read_runtime_message_lines(path: Path) -> list[tuple[str, int]]:
+    result: list[tuple[str, int]] = []
+
+    for line_nr, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if line and line[0] != " " and line[0] != "#":
+            result.append((line, line_nr))
+
+    return result
+
+
+def message_file_entries(path: Path) -> list[Entry]:
+    entries: list[Entry] = []
+    stem = path.stem
+
+    for nr, (line, line_nr) in enumerate(read_runtime_message_lines(path), start=1):
+        entries.append(
+            Entry(
+                f"messages.{stem}.l{nr:03d}",
+                line,
+                str(path),
+                line_nr,
+            )
+        )
+
+    return entries
+
+
+def message_source_files(repo: Path) -> list[Path]:
+    messages_dir = repo / MESSAGES_REL_DIR
+    if not messages_dir.exists():
+        return []
+
+    return sorted(messages_dir.glob("*.txt"))
+
+
+def message_file_translations(repo: Path, locale: str, source_path: Path, quiet: bool) -> dict[str, str]:
+    locale_path = repo / "installed_files" / "data" / "locale" / locale / "messages" / source_path.name
+    if not locale_path.exists():
+        return {}
+
+    source_lines = read_runtime_message_lines(source_path)
+    locale_lines = read_runtime_message_lines(locale_path)
+    if len(source_lines) != len(locale_lines):
+        if not quiet:
+            print(
+                f"warning: message count differs for {locale} {source_path.name}: "
+                f"{len(source_lines)} source, {len(locale_lines)} localized; "
+                "leaving translations blank for this file",
+                file=sys.stderr,
+            )
+        return {}
+
+    stem = source_path.stem
+    translations: dict[str, str] = {}
+    for nr, (line, _line_nr) in enumerate(locale_lines, start=1):
+        translations[f"messages.{stem}.l{nr:03d}"] = line
+
+    return translations
+
+
 def scan_gods_file(raw_text: str, path: Path) -> list[Entry]:
     pattern = re.compile(
         r'\{\s*"[^"]+"\s*,\s*"([^"]+)"\s*,\s*("(?:(?:\\.)|[^"\\])*")\s*\}'
@@ -764,6 +825,89 @@ def should_include_manual(repo: Path, paths: list[str], mode: str) -> bool:
     return any(path_includes_manual(repo, path) for path in paths)
 
 
+def catalog_entries_for_args(
+    repo: Path,
+    paths: list[str],
+    manual_mode: str,
+) -> tuple[list[Entry], list[Skipped]]:
+    entries: list[Entry] = []
+    skipped: list[Skipped] = []
+    scan_paths = paths or ["src", "include"]
+    for path in source_files(scan_paths):
+        file_entries, file_skipped = scan_file(path)
+        entries.extend(file_entries)
+        skipped.extend(file_skipped)
+
+    if should_include_manual(repo, paths, manual_mode):
+        entries.extend(manual_entries(repo))
+
+    return entries, skipped
+
+
+def catalog_translations_for_args(
+    repo: Path,
+    locale: str | None,
+    paths: list[str],
+    manual_mode: str,
+    quiet: bool,
+) -> dict[str, str]:
+    if not locale:
+        return {}
+
+    translations = load_locale(repo, locale)
+    if should_include_manual(repo, paths, manual_mode):
+        translations.update(manual_translation_entries(repo, locale, quiet))
+
+    return translations
+
+
+def write_csv_file(path: Path, entries: list[Entry], translations: dict[str, str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8", newline="") as out_file:
+        write_paratranz_csv(entries, translations, out_file)
+
+
+def catalog_csv_name(locale: str | None) -> str:
+    if locale:
+        return f"ia-paratranz-{locale}.csv"
+    return "ia-paratranz.csv"
+
+
+def write_output_dir(
+    repo: Path,
+    out_dir: Path,
+    paths: list[str],
+    manual_mode: str,
+    locale: str | None,
+    quiet: bool,
+) -> tuple[int, list[Skipped]]:
+    entries, skipped = catalog_entries_for_args(repo, paths, "never")
+    entries, duplicate_diff_count = unique_entries(entries, quiet)
+    translations = catalog_translations_for_args(repo, locale, paths, "never", quiet)
+
+    write_csv_file(out_dir / catalog_csv_name(locale), entries, translations)
+
+    if should_include_manual(repo, paths, manual_mode):
+        manual_file_entries = manual_entries(repo)
+        manual_translations = (
+            manual_translation_entries(repo, locale, quiet)
+            if locale
+            else {}
+        )
+        write_csv_file(out_dir / "manual.csv", manual_file_entries, manual_translations)
+
+    for message_path in message_source_files(repo):
+        message_entries = message_file_entries(message_path)
+        message_translations = (
+            message_file_translations(repo, locale, message_path, quiet)
+            if locale
+            else {}
+        )
+        write_csv_file(out_dir / f"{message_path.stem}.csv", message_entries, message_translations)
+
+    return duplicate_diff_count, skipped
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Export Infra Arcana i18n source text as Paratranz-compatible CSV."
@@ -793,29 +937,49 @@ def main() -> int:
         help="Output format. CSV uses index,source,translation columns.",
     )
     parser.add_argument("--output", help="Write output to this file instead of stdout.")
+    parser.add_argument(
+        "--output-dir",
+        help=(
+            "Write a Paratranz CSV bundle to this directory: ia-paratranz*.csv, "
+            "manual.csv, plus one CSV per installed_files/data/messages/*.txt file."
+        ),
+    )
     parser.add_argument("--quiet", action="store_true", help="Suppress diagnostics.")
     args = parser.parse_args()
 
     repo = Path.cwd()
-    entries: list[Entry] = []
-    skipped: list[Skipped] = []
-    scan_paths = args.paths or ["src", "include"]
-    for path in source_files(scan_paths):
-        file_entries, file_skipped = scan_file(path)
-        entries.extend(file_entries)
-        skipped.extend(file_skipped)
 
-    include_manual = should_include_manual(repo, args.paths, args.manual)
-    if include_manual:
-        entries.extend(manual_entries(repo))
+    if args.output and args.output_dir:
+        raise SystemExit("--output and --output-dir cannot be used together")
 
-    entries, duplicate_diff_count = unique_entries(entries, args.quiet)
-    translations = load_locale(repo, args.locale) if args.locale else {}
-    if args.locale and include_manual:
-        translations.update(manual_translation_entries(repo, args.locale, args.quiet))
+    if args.output_dir:
+        duplicate_diff_count, skipped = write_output_dir(
+            repo,
+            Path(args.output_dir),
+            args.paths,
+            args.manual,
+            args.locale,
+            args.quiet,
+        )
+        entries_for_missing_check: list[Entry] = []
+        translations_for_missing_check: dict[str, str] = {}
+    else:
+        entries, skipped = catalog_entries_for_args(repo, args.paths, args.manual)
+        entries, duplicate_diff_count = unique_entries(entries, args.quiet)
+        translations = catalog_translations_for_args(
+            repo,
+            args.locale,
+            args.paths,
+            args.manual,
+            args.quiet,
+        )
+        entries_for_missing_check = entries
+        translations_for_missing_check = translations
 
-    if args.locale and not args.quiet:
-        missing = sum(1 for entry in entries if entry.index not in translations)
+    if args.locale and not args.quiet and entries_for_missing_check:
+        missing = sum(
+            1 for entry in entries_for_missing_check if entry.index not in translations_for_missing_check
+        )
         if missing:
             print(f"warning: missing {args.locale} translations: {missing}", file=sys.stderr)
 
@@ -829,16 +993,17 @@ def main() -> int:
         if len(skipped) > 20:
             print(f"  ... {len(skipped) - 20} more", file=sys.stderr)
 
-    out_path = Path(args.output) if args.output else None
-    out_file = out_path.open("w", encoding="utf-8", newline="") if out_path else sys.stdout
-    try:
-        if args.format == "json":
-            write_json(entries, translations, out_file)
-        else:
-            write_paratranz_csv(entries, translations, out_file)
-    finally:
-        if out_path:
-            out_file.close()
+    if not args.output_dir:
+        out_path = Path(args.output) if args.output else None
+        out_file = out_path.open("w", encoding="utf-8", newline="") if out_path else sys.stdout
+        try:
+            if args.format == "json":
+                write_json(entries, translations, out_file)
+            else:
+                write_paratranz_csv(entries, translations, out_file)
+        finally:
+            if out_path:
+                out_file.close()
 
     return 1 if duplicate_diff_count else 0
 
