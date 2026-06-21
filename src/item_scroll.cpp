@@ -75,57 +75,57 @@ void init()
     s_fake_names.clear();
 
     // Fixed fake names:
-    s_fake_names.emplace_back("Cruensseasrjit");
-    s_fake_names.emplace_back("Rudsceleratus");
-    s_fake_names.emplace_back("Rudminuox");
-    s_fake_names.emplace_back("Cruo stragara-na");
-    s_fake_names.emplace_back("Praya navita");
-    s_fake_names.emplace_back("Pretia Cruento");
-    s_fake_names.emplace_back("Pestis Cruento");
-    s_fake_names.emplace_back("Cruento Pestis");
-    s_fake_names.emplace_back("Domus-bhaava");
-    s_fake_names.emplace_back("Acerbus-shatruex");
-    s_fake_names.emplace_back("Pretaanluxis");
-    s_fake_names.emplace_back("Praansilenux");
-    s_fake_names.emplace_back("Quodpipax");
-    s_fake_names.emplace_back("Lokemundux");
-    s_fake_names.emplace_back("Profanuxes");
-    s_fake_names.emplace_back("Shaantitus");
-    s_fake_names.emplace_back("Geropayati");
-    s_fake_names.emplace_back("Vilomaxus");
-    s_fake_names.emplace_back("Bhuudesco");
-    s_fake_names.emplace_back("Durbentia");
-    s_fake_names.emplace_back("Bhuuesco");
-    s_fake_names.emplace_back("Maravita");
-    s_fake_names.emplace_back("Infirmux");
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.cruensseasrjit", "Cruensseasrjit"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.rudsceleratus", "Rudsceleratus"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.rudminuox", "Rudminuox"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.cruo_stragara_na", "Cruo stragara-na"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.praya_navita", "Praya navita"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.pretia_cruento", "Pretia Cruento"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.pestis_cruento", "Pestis Cruento"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.cruento_pestis", "Cruento Pestis"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.domus_bhaava", "Domus-bhaava"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.acerbus_shatruex", "Acerbus-shatruex"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.pretaanluxis", "Pretaanluxis"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.praansilenux", "Praansilenux"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.quodpipax", "Quodpipax"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.lokemundux", "Lokemundux"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.profanuxes", "Profanuxes"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.shaantitus", "Shaantitus"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.geropayati", "Geropayati"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.vilomaxus", "Vilomaxus"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.bhuudesco", "Bhuudesco"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.durbentia", "Durbentia"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.bhuuesco", "Bhuuesco"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.maravita", "Maravita"));
+    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.infirmux", "Infirmux"));
 
     // Words that can be combined into names:
     std::vector<std::string> combinable_names;
     combinable_names.clear();
-    combinable_names.emplace_back("Cruo");
-    combinable_names.emplace_back("Cruonit");
-    combinable_names.emplace_back("Cruentu");
-    combinable_names.emplace_back("Marana");
-    combinable_names.emplace_back("Domus");
-    combinable_names.emplace_back("Malax");
-    combinable_names.emplace_back("Caecux");
-    combinable_names.emplace_back("Eximha");
-    combinable_names.emplace_back("Vorox");
-    combinable_names.emplace_back("Bibox");
-    combinable_names.emplace_back("Pallex");
-    combinable_names.emplace_back("Profanx");
-    combinable_names.emplace_back("Invisuu");
-    combinable_names.emplace_back("Invisux");
-    combinable_names.emplace_back("Odiosuu");
-    combinable_names.emplace_back("Odiosux");
-    combinable_names.emplace_back("Vigra");
-    combinable_names.emplace_back("Crudux");
-    combinable_names.emplace_back("Desco");
-    combinable_names.emplace_back("Esco");
-    combinable_names.emplace_back("Gero");
-    combinable_names.emplace_back("Klaatu");
-    combinable_names.emplace_back("Barada");
-    combinable_names.emplace_back("Nikto");
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.cruo", "Cruo"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.cruonit", "Cruonit"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.cruentu", "Cruentu"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.marana", "Marana"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.domus", "Domus"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.malax", "Malax"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.caecux", "Caecux"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.eximha", "Eximha"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.vorox", "Vorox"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.bibox", "Bibox"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.pallex", "Pallex"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.profanx", "Profanx"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.invisuu", "Invisuu"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.invisux", "Invisux"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.odiosuu", "Odiosuu"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.odiosux", "Odiosux"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.vigra", "Vigra"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.crudux", "Crudux"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.desco", "Desco"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.esco", "Esco"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.gero", "Gero"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.klaatu", "Klaatu"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.barada", "Barada"));
+    combinable_names.emplace_back(i18n::get("item_scroll.fake_word.nikto", "Nikto"));
 
     const size_t nr_combinable_names = combinable_names.size();
 
@@ -278,8 +278,10 @@ std::vector<std::string> Scroll::descr_hook() const
         }
         else {
             lines.emplace_back(
-                "Perhaps keeping it for a while will reveal "
-                "something about it.");
+                i18n::get(
+                    "item_scroll.keep_to_reveal",
+                    "Perhaps keeping it for a while will reveal "
+                    "something about it."));
         }
 
         return lines;
@@ -310,11 +312,11 @@ void Scroll::reveal_domain() const
         if (!domain_str.empty()) {
             msg_log::add(
                 std::string(
-                    "I feel like " +
+                    i18n::get("item_scroll.domain_reveal_prefix", "I feel like ") +
                     name_plural +
-                    " belong to the " +
+                    i18n::get("item_scroll.domain_reveal_mid", " belong to the ") +
                     domain_str +
-                    " domain."));
+                    i18n::get("item_scroll.domain_reveal_suffix", " domain.")));
         }
     }
 
