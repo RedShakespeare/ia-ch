@@ -14,6 +14,9 @@ from typing import Iterable, TextIO
 
 
 SOURCE_EXTS = {".cpp", ".hpp", ".h", ".cc", ".cxx"}
+MANUAL_REL_PATH = Path("installed_files") / "manual.txt"
+MANUAL_LOCALE_REL_PATH = Path("installed_files") / "data" / "locale"
+MANUAL_DELIM = "-" * 80
 BASE_CALL_SPECS = (
     ("i18n::get", ""),
     ("insanity_i18n::get", "insanity."),
@@ -34,6 +37,15 @@ class Skipped:
     line: int
     reason: str
     snippet: str
+
+
+@dataclass(frozen=True)
+class ManualBlock:
+    chapter_slug: str
+    title: str
+    paragraphs: tuple[str, ...]
+    title_line: int
+    paragraph_lines: tuple[int, ...]
 
 
 def source_files(paths: Iterable[str]) -> list[Path]:
@@ -246,6 +258,158 @@ def call_specs_for_path(path: Path) -> list[tuple[str, str]]:
 def find_line_containing(text: str, needle: str) -> int:
     pos = text.find(needle)
     return line_number(text, pos) if pos >= 0 else 1
+
+
+def slugify_manual_chapter(title: str) -> str:
+    slug = re.sub(r"[^A-Za-z0-9]+", "_", title.strip().lower()).strip("_")
+    return slug or "chapter"
+
+
+def split_manual_paragraphs(lines: list[str], start_line: int) -> tuple[tuple[str, ...], tuple[int, ...]]:
+    paragraphs: list[str] = []
+    paragraph_lines: list[int] = []
+    current: list[str] = []
+    current_line = start_line
+
+    def flush() -> None:
+        nonlocal current
+        if not current:
+            return
+        paragraphs.append("\n".join(current).rstrip())
+        paragraph_lines.append(current_line)
+        current = []
+
+    for offset, line in enumerate(lines):
+        if not line:
+            flush()
+            continue
+        if not current:
+            current_line = start_line + offset
+        current.append(line)
+
+    flush()
+
+    return tuple(paragraphs), tuple(paragraph_lines)
+
+
+def parse_manual_blocks(path: Path) -> list[ManualBlock]:
+    raw_lines = path.read_text(encoding="utf-8").splitlines()
+    blocks: list[ManualBlock] = []
+    idx = 0
+
+    while idx < len(raw_lines):
+        if raw_lines[idx] != MANUAL_DELIM:
+            idx += 1
+            continue
+
+        title_idx = idx + 1
+        delim_idx = idx + 2
+        if delim_idx >= len(raw_lines) or raw_lines[delim_idx] != MANUAL_DELIM:
+            raise ValueError(f"invalid manual chapter header at {path}:{idx + 1}")
+
+        title = raw_lines[title_idx]
+        content_start = delim_idx + 1
+        content_end = content_start
+        while content_end < len(raw_lines) and raw_lines[content_end] != MANUAL_DELIM:
+            content_end += 1
+
+        paragraphs, paragraph_lines = split_manual_paragraphs(
+            raw_lines[content_start:content_end],
+            content_start + 1,
+        )
+        blocks.append(
+            ManualBlock(
+                slugify_manual_chapter(title),
+                title,
+                paragraphs,
+                title_idx + 1,
+                paragraph_lines,
+            )
+        )
+
+        idx = content_end
+
+    return blocks
+
+
+def manual_entries(repo: Path) -> list[Entry]:
+    path = repo / MANUAL_REL_PATH
+    if not path.exists():
+        return []
+
+    entries: list[Entry] = []
+    slug_counts: dict[str, int] = {}
+
+    for block in parse_manual_blocks(path):
+        slug_counts[block.chapter_slug] = slug_counts.get(block.chapter_slug, 0) + 1
+        slug = block.chapter_slug
+        if slug_counts[block.chapter_slug] > 1:
+            slug = f"{block.chapter_slug}_{slug_counts[block.chapter_slug]}"
+
+        entries.append(
+            Entry(
+                f"manual.{slug}.title",
+                block.title,
+                str(path),
+                block.title_line,
+            )
+        )
+
+        for nr, paragraph in enumerate(block.paragraphs, start=1):
+            entries.append(
+                Entry(
+                    f"manual.{slug}.p{nr:03d}",
+                    paragraph,
+                    str(path),
+                    block.paragraph_lines[nr - 1],
+                )
+            )
+
+    return entries
+
+
+def manual_translation_entries(repo: Path, locale: str, quiet: bool) -> dict[str, str]:
+    source_path = repo / MANUAL_REL_PATH
+    locale_path = repo / MANUAL_LOCALE_REL_PATH / locale / "manual.txt"
+    if not source_path.exists() or not locale_path.exists():
+        return {}
+
+    source_blocks = parse_manual_blocks(source_path)
+    locale_blocks = parse_manual_blocks(locale_path)
+    translations: dict[str, str] = {}
+    slug_counts: dict[str, int] = {}
+
+    if len(source_blocks) != len(locale_blocks) and not quiet:
+        print(
+            f"warning: manual chapter count differs for {locale}: "
+            f"{len(source_blocks)} source, {len(locale_blocks)} localized",
+            file=sys.stderr,
+        )
+
+    for block_idx, source_block in enumerate(source_blocks):
+        if block_idx >= len(locale_blocks):
+            break
+
+        locale_block = locale_blocks[block_idx]
+        slug_counts[source_block.chapter_slug] = slug_counts.get(source_block.chapter_slug, 0) + 1
+        slug = source_block.chapter_slug
+        if slug_counts[source_block.chapter_slug] > 1:
+            slug = f"{source_block.chapter_slug}_{slug_counts[source_block.chapter_slug]}"
+
+        translations[f"manual.{slug}.title"] = locale_block.title
+
+        if len(source_block.paragraphs) != len(locale_block.paragraphs) and not quiet:
+            print(
+                f"warning: manual paragraph count differs for {locale} chapter "
+                f"{source_block.title!r}: {len(source_block.paragraphs)} source, "
+                f"{len(locale_block.paragraphs)} localized",
+                file=sys.stderr,
+            )
+
+        for nr, paragraph in enumerate(locale_block.paragraphs[: len(source_block.paragraphs)], start=1):
+            translations[f"manual.{slug}.p{nr:03d}"] = paragraph
+
+    return translations
 
 
 def scan_gods_file(raw_text: str, path: Path) -> list[Entry]:
@@ -570,6 +734,36 @@ def write_json(entries: list[Entry], translations: dict[str, str], out: TextIO) 
     out.write("\n")
 
 
+def path_includes_manual(repo: Path, raw_path: str) -> bool:
+    path = Path(raw_path)
+    if not path.is_absolute():
+        path = repo / path
+
+    manual_path = repo / MANUAL_REL_PATH
+    try:
+        if path.is_file():
+            return path.resolve() == manual_path.resolve()
+        if path.is_dir():
+            manual_path.resolve().relative_to(path.resolve())
+            return True
+    except OSError:
+        return False
+    except ValueError:
+        return False
+
+    return False
+
+
+def should_include_manual(repo: Path, paths: list[str], mode: str) -> bool:
+    if mode == "always":
+        return True
+    if mode == "never":
+        return False
+    if not paths:
+        return True
+    return any(path_includes_manual(repo, path) for path in paths)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Export Infra Arcana i18n source text as Paratranz-compatible CSV."
@@ -577,12 +771,20 @@ def main() -> int:
     parser.add_argument(
         "paths",
         nargs="*",
-        default=["src", "include"],
         help="Files or directories to scan. Defaults to src/ and include/.",
     )
     parser.add_argument(
         "--locale",
-        help="Populate translation from installed_files/data/locale/<locale>/text.ini.",
+        help="Populate translation from installed_files/data/locale/<locale>/text.ini and manual.txt.",
+    )
+    parser.add_argument(
+        "--manual",
+        choices=("auto", "always", "never"),
+        default="auto",
+        help=(
+            "Include installed_files/manual.txt entries. "
+            "auto includes them for the default full export or when a supplied path contains manual.txt."
+        ),
     )
     parser.add_argument(
         "--format",
@@ -597,13 +799,20 @@ def main() -> int:
     repo = Path.cwd()
     entries: list[Entry] = []
     skipped: list[Skipped] = []
-    for path in source_files(args.paths):
+    scan_paths = args.paths or ["src", "include"]
+    for path in source_files(scan_paths):
         file_entries, file_skipped = scan_file(path)
         entries.extend(file_entries)
         skipped.extend(file_skipped)
 
+    include_manual = should_include_manual(repo, args.paths, args.manual)
+    if include_manual:
+        entries.extend(manual_entries(repo))
+
     entries, duplicate_diff_count = unique_entries(entries, args.quiet)
     translations = load_locale(repo, args.locale) if args.locale else {}
+    if args.locale and include_manual:
+        translations.update(manual_translation_entries(repo, args.locale, args.quiet))
 
     if args.locale and not args.quiet:
         missing = sum(1 for entry in entries if entry.index not in translations)
