@@ -874,7 +874,9 @@ void ThrowingExplosive::on_moved()
     const std::string name = m_explosive.name(ItemNameType::a, ItemNameInfo::none);
 
     msg_log::add(
-        "Throwing " + name + ".",
+        i18n::get("marker.throwing_prefix", "Throwing ") +
+            name +
+            i18n::get("marker.period", "."),
         colors::text(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::no,
@@ -885,7 +887,7 @@ void ThrowingExplosive::on_moved()
     const std::string msg =
         std::string("[") +
         game_commands::throw_key() +
-        std::string("] to throw ") +
+        i18n::get("marker.throw_prompt_suffix", "] to throw ") +
         common_text::g_cancel_hint;
 
     msg_log::add(
@@ -948,7 +950,9 @@ int CtrlTele::chance_of_success_pct() const
 void CtrlTele::on_start_hook()
 {
     msg_log::add(
-        "I can control where I teleport.",
+        i18n::get(
+            "marker.ctrl_tele.control_where",
+            "I can control where I teleport."),
         colors::white(),
         MsgInterruptPlayer::no,
         MorePromptOnMsg::yes,
@@ -963,14 +967,19 @@ void CtrlTele::on_moved()
         const int chance_pct = chance_of_success_pct();
 
         msg_log::add(
-            std::to_string(chance_pct) + "% chance of success.",
+            std::to_string(chance_pct) +
+                i18n::get(
+                    "marker.ctrl_tele.chance_success_suffix",
+                    "% chance of success."),
             colors::light_white(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::no,
             CopyToMsgHistory::no);
 
         msg_log::add(
-            "[enter] to try teleporting here",
+            i18n::get(
+                "marker.ctrl_tele.try_teleport_here",
+                "[enter] to try teleporting here"),
             colors::light_white(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::no,
@@ -1009,7 +1018,9 @@ void CtrlTele::handle_input(const io::InputData& input)
     else {
         // Failed to teleport (blocked or roll failed)
         msg_log::add(
-            "I failed to go there...",
+            i18n::get(
+                "marker.ctrl_tele.failed",
+                "I failed to go there..."),
             colors::white(),
             MsgInterruptPlayer::no,
             MorePromptOnMsg::yes,

@@ -730,6 +730,22 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("terrain.it_is_empty", "It is empty.") == "它是空的。");
     REQUIRE(i18n::get("terrain.cocoon_opens", "The cocoon opens.") == "茧打开了。");
     REQUIRE(i18n::get("map.item_legend", "Item") == "物品");
+    REQUIRE(i18n::get("marker.throwing_prefix", "Throwing ") == "正在投掷");
+    REQUIRE(i18n::get("marker.period", ".") == "。");
+    REQUIRE(i18n::get("marker.throw_prompt_suffix", "] to throw ") == "] 投掷：");
+    REQUIRE(
+        i18n::get(
+            "marker.ctrl_tele.control_where",
+            "I can control where I teleport.") == "我可以控制传送的位置。");
+    REQUIRE(
+        i18n::get(
+            "marker.ctrl_tele.chance_success_suffix",
+            "% chance of success.") == "% 成功率。");
+    REQUIRE(
+        i18n::get(
+            "marker.ctrl_tele.try_teleport_here",
+            "[enter] to try teleporting here") == "[enter] 尝试传送到这里");
+    REQUIRE(i18n::get("marker.ctrl_tele.failed", "I failed to go there...") == "我没能去到那里……");
     REQUIRE(i18n::get("marker.control_object.jammed_suffix", " is jammed.") == "被堵住了。");
     REQUIRE(i18n::get("marker.control_object.jam_prefix", "(c) Jam ") == "(c)堵住");
     REQUIRE(i18n::get("marker.control_object.open_prefix", "(o) Open ") == "(o)打开");
