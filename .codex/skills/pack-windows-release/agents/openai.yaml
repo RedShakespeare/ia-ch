@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pack Windows Release"
+  short_description: "Build and package a Windows release"
+  default_prompt: "Use $pack-windows-release to clean, cross-compile, package, and verify a Windows release archive."
