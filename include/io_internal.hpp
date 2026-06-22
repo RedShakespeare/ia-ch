@@ -7,6 +7,8 @@
 #ifndef IO_INTERNAL_HPP
 #define IO_INTERNAL_HPP
 
+#include <cstdint>
+
 #include "io.hpp"
 
 #include "colors.hpp"
@@ -94,9 +96,20 @@ void draw_glyph_at_px(
     io::DrawBg draw_bg = io::DrawBg::yes,
     const Color& bg_color = {0, 0, 0});
 
+void draw_glyph_at_px(
+    uint32_t codepoint,
+    P px_pos,
+    const Color& color,
+    io::DrawBg draw_bg = io::DrawBg::yes,
+    const Color& bg_color = {0, 0, 0});
+
 int glyph_advance_px(const std::string& glyph);
 
+int glyph_advance_px(uint32_t codepoint);
+
 int text_advance_px(const std::string& str);
+
+void clear_text_width_cache();
 
 void draw_text_at_px(
     const std::string& str,

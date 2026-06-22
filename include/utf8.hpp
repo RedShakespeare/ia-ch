@@ -8,12 +8,16 @@
 #define UTF8_HPP
 
 #include <cstddef>
+#include <cstdint>
+#include <optional>
 #include <string>
 
 namespace utf8
 {
 
 size_t codepoint_size(const std::string& str, size_t pos);
+
+std::optional<uint32_t> codepoint_at(const std::string& str, size_t pos);
 
 bool is_valid(const std::string& str);
 

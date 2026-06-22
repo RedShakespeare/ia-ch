@@ -7,6 +7,8 @@
 #include "utf8.hpp"
 
 #include <algorithm>
+#include <cstdint>
+#include <optional>
 
 namespace utf8
 {
@@ -38,6 +40,52 @@ size_t codepoint_size(const std::string& str, const size_t pos)
     // 0xC0-0xC1 overlong encodings, 0xF5-0xFF out of range).
     // Treat as single invalid byte and let caller handle corruption.
     return 1;
+}
+
+std::optional<uint32_t> codepoint_at(const std::string& str, const size_t pos)
+{
+    const size_t cp_size = codepoint_size(str, pos);
+
+    if ((cp_size == 0) || ((pos + cp_size) > str.size())) {
+        return std::nullopt;
+    }
+
+    const auto c0 = static_cast<unsigned char>(str[pos]);
+
+    if (cp_size == 1) {
+        return c0;
+    }
+
+    uint32_t codepoint = 0;
+
+    switch (cp_size) {
+    case 2:
+        codepoint = c0 & 0x1f;
+        break;
+
+    case 3:
+        codepoint = c0 & 0x0f;
+        break;
+
+    case 4:
+        codepoint = c0 & 0x07;
+        break;
+
+    default:
+        return std::nullopt;
+    }
+
+    for (size_t i = 1; i < cp_size; ++i) {
+        const auto c = static_cast<unsigned char>(str[pos + i]);
+
+        if ((c & 0xc0) != 0x80) {
+            return std::nullopt;
+        }
+
+        codepoint = (codepoint << 6) | (c & 0x3f);
+    }
+
+    return codepoint;
 }
 
 bool is_valid(const std::string& str)

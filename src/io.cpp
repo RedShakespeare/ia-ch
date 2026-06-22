@@ -7,8 +7,10 @@
 #include "io.hpp"
 
 #include <algorithm>
-#include <cstddef>
+#include <array>
 #include <charconv>
+#include <cstddef>
+#include <cstdint>
 #include <fstream>
 #include <iterator>
 #include <optional>
@@ -39,6 +41,7 @@
 #include "paths.hpp"
 #include "state.hpp"
 #include "text_format.hpp"
+#include "utf8.hpp"
 #include "version.hpp"
 
 // -----------------------------------------------------------------------------
@@ -62,7 +65,7 @@ static SDL_Surface* load_surface(const std::string& path)
     return surface;
 }
 
-static std::unordered_map<std::string, int> s_font_glyph_indices;
+static std::unordered_map<uint32_t, int> s_font_glyph_indices;
 static int s_font_glyph_columns = 95;
 
 struct FontGlyph
@@ -75,7 +78,8 @@ struct FontGlyph
     int render_offset_y {};
 };
 
-static std::unordered_map<std::string, FontGlyph> s_font_glyphs;
+static std::array<std::optional<FontGlyph>, 128> s_font_glyphs_ascii;
+static std::unordered_map<uint32_t, FontGlyph> s_font_glyphs;
 
 static std::string font_map_path_from_img_path(const std::string& img_path)
 {
@@ -403,36 +407,15 @@ static std::optional<std::vector<int>> parse_json_int_array(
     }
 }
 
-static std::string codepoint_to_utf8(const int codepoint)
-{
-    std::string result;
-
-    if (codepoint <= 0x7f) {
-        result.push_back(static_cast<char>(codepoint));
-    }
-    else if (codepoint <= 0x7ff) {
-        result.push_back(static_cast<char>(0xc0 | ((codepoint >> 6) & 0x1f)));
-        result.push_back(static_cast<char>(0x80 | (codepoint & 0x3f)));
-    }
-    else if (codepoint <= 0xffff) {
-        result.push_back(static_cast<char>(0xe0 | ((codepoint >> 12) & 0x0f)));
-        result.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
-        result.push_back(static_cast<char>(0x80 | (codepoint & 0x3f)));
-    }
-    else {
-        result.push_back(static_cast<char>(0xf0 | ((codepoint >> 18) & 0x07)));
-        result.push_back(static_cast<char>(0x80 | ((codepoint >> 12) & 0x3f)));
-        result.push_back(static_cast<char>(0x80 | ((codepoint >> 6) & 0x3f)));
-        result.push_back(static_cast<char>(0x80 | (codepoint & 0x3f)));
-    }
-
-    return result;
-}
-
 static void load_font_map(const std::string& img_path)
 {
+    io::clear_text_width_cache();
+
     s_font_glyph_indices.clear();
     s_font_glyphs.clear();
+    for (auto& glyph : s_font_glyphs_ascii) {
+        glyph.reset();
+    }
     s_font_glyph_columns = 95;
 
     const std::string map_path = font_map_path_from_img_path(img_path);
@@ -490,9 +473,8 @@ static void load_font_map(const std::string& img_path)
         const int advance,
         const int render_offset_x,
         const int render_offset_y) {
-        const std::string glyph = codepoint_to_utf8(codepoint);
-
-        s_font_glyphs[glyph] = FontGlyph {
+        const auto codepoint_u = static_cast<uint32_t>(codepoint);
+        const FontGlyph glyph {
             {source_x, source_y, source_w, source_h},
             logical_w,
             logical_h,
@@ -500,11 +482,12 @@ static void load_font_map(const std::string& img_path)
             render_offset_x,
             render_offset_y};
 
-        const bool is_non_ascii =
-            static_cast<unsigned char>(glyph[0]) >= 0x80;
-
-        if (is_non_ascii) {
-            s_font_glyph_indices[glyph] = index;
+        if (codepoint_u < s_font_glyphs_ascii.size()) {
+            s_font_glyphs_ascii[codepoint_u] = glyph;
+        }
+        else {
+            s_font_glyphs[codepoint_u] = glyph;
+            s_font_glyph_indices[codepoint_u] = index;
         }
     };
 
@@ -512,9 +495,6 @@ static void load_font_map(const std::string& img_path)
         if (current_glyph.empty()) {
             return;
         }
-
-        const std::string glyph =
-            current_codepoint ? codepoint_to_utf8(*current_codepoint) : current_glyph;
 
         int source_x = 0;
         int source_y = 0;
@@ -567,7 +547,8 @@ static void load_font_map(const std::string& img_path)
 
             add_glyph(
                 current_codepoint.value_or(
-                    static_cast<unsigned char>(glyph[0])),
+                    static_cast<int>(
+                        utf8::codepoint_at(current_glyph, 0).value_or('?'))),
                 current_index.value_or(0),
                 source_x,
                 source_y,
@@ -734,17 +715,18 @@ static void load_font_map(const std::string& img_path)
     finish_glyph();
 }
 
-static int glyph_index(const std::string& glyph)
+static uint32_t glyph_codepoint(const std::string& glyph)
 {
-    if (glyph.size() == 1) {
-        const auto c = static_cast<unsigned char>(glyph[0]);
+    return utf8::codepoint_at(glyph, 0).value_or('?');
+}
 
-        if ((c >= ' ') && (c <= '~')) {
-            return c - ' ';
-        }
+static int glyph_index(const uint32_t codepoint)
+{
+    if ((codepoint >= ' ') && (codepoint <= '~')) {
+        return static_cast<int>(codepoint) - ' ';
     }
 
-    const auto it = s_font_glyph_indices.find(glyph);
+    const auto it = s_font_glyph_indices.find(codepoint);
 
     if (it != std::end(s_font_glyph_indices)) {
         return it->second;
@@ -753,15 +735,23 @@ static int glyph_index(const std::string& glyph)
     return '?' - ' ';
 }
 
-static std::optional<FontGlyph> glyph_metadata(const std::string& glyph)
+static const FontGlyph* glyph_metadata(const uint32_t codepoint)
 {
-    const auto it = s_font_glyphs.find(glyph);
+    if (codepoint < s_font_glyphs_ascii.size()) {
+        const auto& glyph = s_font_glyphs_ascii[codepoint];
 
-    if (it != std::end(s_font_glyphs)) {
-        return it->second;
+        if (glyph) {
+            return &(*glyph);
+        }
     }
 
-    return std::nullopt;
+    const auto it = s_font_glyphs.find(codepoint);
+
+    if (it != std::end(s_font_glyphs)) {
+        return &it->second;
+    }
+
+    return nullptr;
 }
 
 static void swap_surface_color(
@@ -1492,7 +1482,12 @@ void draw_character_at_px(
     const io::DrawBg draw_bg,
     const Color& bg_color)
 {
-    draw_glyph_at_px(std::string(1, character), px_pos, color, draw_bg, bg_color);
+    draw_glyph_at_px(
+        static_cast<uint32_t>(static_cast<unsigned char>(character)),
+        px_pos,
+        color,
+        draw_bg,
+        bg_color);
 }
 
 void draw_glyph_at_px(
@@ -1502,7 +1497,17 @@ void draw_glyph_at_px(
     const io::DrawBg draw_bg,
     const Color& bg_color)
 {
-    if (const auto metadata = glyph_metadata(glyph)) {
+    draw_glyph_at_px(glyph_codepoint(glyph), px_pos, color, draw_bg, bg_color);
+}
+
+void draw_glyph_at_px(
+    const uint32_t codepoint,
+    P px_pos,
+    const Color& color,
+    const io::DrawBg draw_bg,
+    const Color& bg_color)
+{
+    if (const auto* metadata = glyph_metadata(codepoint)) {
         draw_glyph_metadata_at_px(
             *metadata,
             px_pos,
@@ -1514,7 +1519,7 @@ void draw_glyph_at_px(
     }
 
     draw_glyph_index_at_px(
-        glyph_index(glyph),
+        glyph_index(codepoint),
         px_pos,
         color,
         draw_bg,
@@ -1523,7 +1528,12 @@ void draw_glyph_at_px(
 
 int glyph_advance_px(const std::string& glyph)
 {
-    if (const auto metadata = glyph_metadata(glyph)) {
+    return glyph_advance_px(glyph_codepoint(glyph));
+}
+
+int glyph_advance_px(const uint32_t codepoint)
+{
+    if (const auto* metadata = glyph_metadata(codepoint)) {
         return metadata->advance;
     }
 

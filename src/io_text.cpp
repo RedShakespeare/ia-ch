@@ -7,8 +7,10 @@
 #include <algorithm>
 #include <cctype>
 #include <cstddef>
+#include <cstdint>
 #include <optional>
 #include <string>
+#include <unordered_map>
 
 #include "colors.hpp"
 #include "config.hpp"
@@ -21,6 +23,16 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+namespace
+{
+std::unordered_map<std::string, int> s_text_width_cache;
+constexpr size_t max_text_width_cache_entries = 1024;
+
+uint32_t codepoint_at_or_fallback(const std::string& str, const size_t pos)
+{
+    return utf8::codepoint_at(str, pos).value_or('?');
+}
+}  // namespace
 
 // -----------------------------------------------------------------------------
 // io
@@ -29,15 +41,35 @@ namespace io
 {
 int text_advance_px(const std::string& str)
 {
+    if (const auto it = s_text_width_cache.find(str);
+        it != s_text_width_cache.end()) {
+        return it->second;
+    }
+
     int w = 0;
 
     for (size_t i = 0; i < str.size();) {
         const size_t cp_size = utf8::codepoint_size(str, i);
-        w += glyph_advance_px(str.substr(i, cp_size));
+        if (cp_size == 0) {
+            break;
+        }
+
+        w += glyph_advance_px(codepoint_at_or_fallback(str, i));
         i += cp_size;
     }
 
+    if (s_text_width_cache.size() >= max_text_width_cache_entries) {
+        s_text_width_cache.clear();
+    }
+
+    s_text_width_cache[str] = w;
+
     return w;
+}
+
+void clear_text_width_cache()
+{
+    s_text_width_cache.clear();
 }
 
 void draw_text_at_px(
@@ -97,16 +129,16 @@ void draw_text_at_px(
         }
         else {
             // Whole message fits, or we are not yet near the edge
-            const std::string glyph = str.substr(i, cp_size);
+            const uint32_t codepoint = codepoint_at_or_fallback(str, i);
 
             draw_glyph_at_px(
-                glyph,
+                codepoint,
                 px_pos,
                 sdl_color,
                 draw_bg,
                 sdl_bg_color);
 
-            px_pos.x += glyph_advance_px(glyph);
+            px_pos.x += glyph_advance_px(codepoint);
         }
 
         i += cp_size;

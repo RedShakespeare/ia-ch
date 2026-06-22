@@ -15,6 +15,7 @@
 #include "config.hpp"
 #include "debug.hpp"
 #include "ini.h"
+#include "io_internal.hpp"
 #include "paths.hpp"
 
 // -----------------------------------------------------------------------------
@@ -117,6 +118,7 @@ void reload()
 {
     s_ui_ini.clear();
     s_grammar_ini.clear();
+    io::clear_text_width_cache();
 
     s_current_language = config::language();
 

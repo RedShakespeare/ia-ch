@@ -16,6 +16,14 @@ TEST_CASE("UTF-8 Chinese text display width")
     REQUIRE(utf8::display_width("A玩家7") == 4);
 }
 
+TEST_CASE("UTF-8 codepoint decoding")
+{
+    REQUIRE(utf8::codepoint_at("A玩家", 0) == 0x41);
+    REQUIRE(utf8::codepoint_at("A玩家", 1) == 0x73a9);
+    REQUIRE(utf8::codepoint_at("A玩家", 4) == 0x5bb6);
+    REQUIRE_FALSE(utf8::codepoint_at("玩家", 6));
+}
+
 TEST_CASE("UTF-8 Chinese text truncation preserves codepoint boundaries")
 {
     REQUIRE(utf8::truncate_to_display_width("玩家角色", 3) == "玩家角");

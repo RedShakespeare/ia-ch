@@ -180,6 +180,8 @@ int text_advance_px(const std::string& str)
            std::max(1, config::gui_cell_px_w());
 }
 
+void clear_text_width_cache() {}
+
 void cover_cell(const Panel, const P&) {}
 
 void cover_panel(
