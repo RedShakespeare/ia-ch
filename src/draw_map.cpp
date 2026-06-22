@@ -25,6 +25,7 @@
 #include "item.hpp"
 #include "item_data.hpp"
 #include "map.hpp"
+#include "map_render_batch.hpp"
 #include "misc.hpp"
 #include "msg_log.hpp"
 #include "player_bon.hpp"
@@ -744,6 +745,9 @@ void run()
             std::nullopt);
     }
 
+    // Begin batching map rendering calls
+    map_render_batch::begin_frame();
+
     draw_unseen_cells_from_player_memory();
     draw_terrains();
     draw_dead_actors();
@@ -753,6 +757,10 @@ void run()
 
     draw_player_character();
 
+    // Flush all batched rendering calls before drawing immediate overlays
+    map_render_batch::flush();
+
+    // Draw player pending direction AFTER flush so it renders on top
     if (config::input_mode() == InputMode::controller_support &&
         states::is_current_state(StateId::game) &&
         !msg_log::is_waiting_more_prompt() &&

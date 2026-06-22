@@ -351,6 +351,9 @@ set(COMMON_SRC
 SET(SRC
         ${COMMON_SRC}
 
+        include/map_render_batch.hpp
+        src/map_render_batch.cpp
+
         src/audio.cpp
         src/io.cpp
         src/io_animation.cpp
