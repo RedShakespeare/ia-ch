@@ -334,10 +334,15 @@ static void draw_terrains()
         }
 
         const terrain::Terrain* const t = map::g_terrain.at(i);
+        const P& pos = t->pos();
+
+        if (!viewport::is_in_view(pos)) {
+            continue;
+        }
 
         io::MapDrawObj draw_obj;
 
-        draw_obj.pos = viewport::to_view_pos(t->pos());
+        draw_obj.pos = viewport::to_view_pos(pos);
 
         auto gore_tile = gfx::TileId::END;
         char gore_character = 0;
@@ -392,7 +397,7 @@ static void draw_terrains()
 
         adapt_color_for_light_level(draw_obj.color, i);
 
-        adapt_color_for_distance_to_player(draw_obj.color, t->pos());
+        adapt_color_for_distance_to_player(draw_obj.color, pos);
 
         draw_obj.draw();
     }
@@ -403,7 +408,9 @@ static void draw_dead_actors()
     for (actor::Actor* actor : game_time::g_actors) {
         const P& p = actor->m_pos;
 
-        if (!map::g_seen.at(p) || !actor::is_corpse(*actor)) {
+        if (!map::g_seen.at(p) ||
+            !viewport::is_in_view(p) ||
+            !actor::is_corpse(*actor)) {
             continue;
         }
 
@@ -433,6 +440,10 @@ static void draw_items()
             const P p(x, y);
 
             if (!map::g_seen.at(p)) {
+                continue;
+            }
+
+            if (!viewport::is_in_view(p)) {
                 continue;
             }
 
@@ -466,6 +477,7 @@ static void draw_mobiles()
         const char mob_character = mob->character();
 
         if (!map::g_seen.at(p) ||
+            !viewport::is_in_view(p) ||
             (mob_tile == gfx::TileId::END) ||
             (mob_character == 0) ||
             (mob_character == ' ')) {
@@ -561,6 +573,10 @@ static void draw_living_monsters()
 {
     for (actor::Actor* actor : game_time::g_actors) {
         if (actor::is_player(actor) || !actor::is_alive(*actor)) {
+            continue;
+        }
+
+        if (!viewport::is_in_view(actor->m_pos)) {
             continue;
         }
 

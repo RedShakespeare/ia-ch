@@ -1056,6 +1056,7 @@ static void init_renderer()
     TRACE_FUNC_BEGIN;
 
     if (io::g_sdl_renderer) {
+        io::clear_text_width_cache();
         io::clear_texture_color_mod_cache();
         SDL_DestroyRenderer(io::g_sdl_renderer);
     }
@@ -1313,6 +1314,7 @@ void cleanup_other()
     TRACE_FUNC_BEGIN;
 
     if (g_sdl_renderer) {
+        clear_text_width_cache();
         clear_texture_color_mod_cache();
         SDL_DestroyRenderer(g_sdl_renderer);
         g_sdl_renderer = nullptr;

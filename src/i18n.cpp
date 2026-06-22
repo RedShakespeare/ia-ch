@@ -7,6 +7,7 @@
 #include "i18n.hpp"
 
 #include <algorithm>
+#include <cctype>
 #include <filesystem>
 #include <string>
 #include <unordered_map>
@@ -23,6 +24,7 @@
 // -----------------------------------------------------------------------------
 static mINI::INIStructure s_ui_ini;
 static mINI::INIStructure s_grammar_ini;
+static std::unordered_map<std::string, std::string> s_decoded_text;
 static std::string s_current_language = "en";
 
 static std::string locale_root_dir()
@@ -104,6 +106,38 @@ static std::string decode_locale_escapes(const std::string& value)
     return result;
 }
 
+static std::string normalized_key(std::string key)
+{
+    key.erase(
+        std::begin(key),
+        std::find_if(
+            std::begin(key),
+            std::end(key),
+            [](const unsigned char c) {
+                return !std::isspace(c);
+            }));
+
+    key.erase(
+        std::find_if(
+            key.rbegin(),
+            key.rend(),
+            [](const unsigned char c) {
+                return !std::isspace(c);
+            })
+            .base(),
+        std::end(key));
+
+    std::transform(
+        std::begin(key),
+        std::end(key),
+        std::begin(key),
+        [](const unsigned char c) {
+            return (char)std::tolower(c);
+        });
+
+    return key;
+}
+
 // -----------------------------------------------------------------------------
 // i18n
 // -----------------------------------------------------------------------------
@@ -118,6 +152,7 @@ void reload()
 {
     s_ui_ini.clear();
     s_grammar_ini.clear();
+    s_decoded_text.clear();
     io::clear_text_width_cache();
 
     s_current_language = config::language();
@@ -152,6 +187,24 @@ void reload()
         return;
     }
 
+    if (s_ui_ini.has("text")) {
+        const auto section = s_ui_ini.get("text");
+
+        for (const auto& entry : section) {
+            const std::string& key = entry.first;
+            const std::string& value = entry.second;
+
+            if (value.empty()) {
+                continue;
+            }
+
+            s_decoded_text[key] =
+                (value == kEmptyLocaleValue)
+                ? ""
+                : decode_locale_escapes(value);
+        }
+    }
+
     // Load grammar.ini if it exists
     const auto grammar_path = locale_dir(s_current_language) + "grammar.ini";
 
@@ -169,27 +222,21 @@ void reload()
 
 std::string get(const std::string& key, const std::string& fallback)
 {
-    if (!s_ui_ini.has("text")) {
-        return fallback;
+    if (const auto it = s_decoded_text.find(key);
+        it != std::end(s_decoded_text)) {
+        return it->second;
     }
 
-    const auto section = s_ui_ini.get("text");
+    const std::string normalized = normalized_key(key);
 
-    if (!section.has(key)) {
-        return fallback;
+    if (normalized != key) {
+        if (const auto it = s_decoded_text.find(normalized);
+            it != std::end(s_decoded_text)) {
+            return it->second;
+        }
     }
 
-    const auto value = section.get(key);
-
-    if (value.empty()) {
-        return fallback;
-    }
-
-    if (value == kEmptyLocaleValue) {
-        return "";
-    }
-
-    return decode_locale_escapes(value);
+    return fallback;
 }
 
 std::string current_language()
