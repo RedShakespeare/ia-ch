@@ -26,6 +26,7 @@
 #include "query.hpp"
 #include "saving.hpp"
 #include "text_format.hpp"
+#include "utf8.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -121,7 +122,7 @@ static int x_after_msg(const Msg* const msg)
 
     const std::string str = msg->text_with_repeats();
 
-    return msg->x_pos() + (int)str.size() + 1;
+    return msg->x_pos() + (int)utf8::display_width(str) + 1;
 }
 
 static int worst_case_msg_w_for_line_nr(
@@ -134,7 +135,7 @@ static int worst_case_msg_w_for_line_nr(
         : 0;
 
     const int max_w =
-        (int)text.size() +
+        (int)utf8::display_width(text) +
         s_repeat_str_len +
         space_reserved_for_more_prompt_this_line;
 
