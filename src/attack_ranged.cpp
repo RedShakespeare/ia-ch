@@ -225,12 +225,15 @@ static void print_mon_fire_ranged_msg(const RangedAttData& att_data)
         wpn_used_str = " " + wpn_name_a;
     }
 
-    const std::string msg =
-        attacker_name_the +
-        " " +
-        attack_verb +
-        wpn_used_str +
-        ".";
+    const std::string msg = i18n::format(
+        "attack_ranged.monster_fire",
+        "{attacker} {verb}{weapon}.",
+        {
+            {"attacker", attacker_name_the},
+            {"verb", attack_verb},
+            {"weapon", wpn_used_str}
+        }
+    );
 
     const auto interrupt =
         (actor::is_player(att_data.defender))
@@ -287,9 +290,11 @@ static void print_projectile_hit_mon_msg(const Projectile& projectile)
                 projectile.att_data->dmg));
 
     msg_log::add(
-        other_name +
-        i18n::get("attack_ranged.is_hit", " is hit") +
-        dmg_punct,
+        i18n::format(
+            "attack_ranged.projectile_hit",
+            "{target} is hit{punct}",
+            {{"target", other_name}, {"punct", dmg_punct}}
+        ),
         colors::msg_good());
 }
 

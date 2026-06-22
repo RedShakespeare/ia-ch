@@ -98,11 +98,11 @@ static void print_mon_melee_miss_actor_msg(const MeleeAttData& att_data)
         }
     }
 
-    const std::string msg =
-        attacker_name +
-        i18n::get("attack_melee.misses", " misses ") +
-        defender_name +
-        i18n::get("attack_melee.period", ".");
+    const std::string msg = i18n::format(
+        "attack_melee.monster_miss",
+        "{attacker} misses {defender}.",
+        {{"attacker", attacker_name}, {"defender", defender_name}}
+    );
 
     const auto interrupt =
         actor::is_player(att_data.defender)
@@ -231,28 +231,40 @@ static void print_mon_melee_hit_actor_msg(const int dmg, const MeleeAttData& att
 
     const std::string dmg_punct = hit_size_punctuation_str(attack::relative_hit_size(dmg));
 
-    std::string used_wpn_str;
+    std::string msg;
 
-    if (!att_data.att_item->data().is_intr) {
+    if (att_data.att_item->data().is_intr) {
+        // Intrinsic attack (unarmed)
+        msg = i18n::format(
+            "attack_melee.monster_hit_intrinsic",
+            "{attacker} {verb} {defender}{punct}",
+            {
+                {"attacker", attacker_name},
+                {"verb", wpn_verb},
+                {"defender", defender_name},
+                {"punct", dmg_punct}
+            }
+        );
+    } else {
+        // Weapon attack
         const std::string wpn_name_a =
             att_data.att_item->name(
                 ItemNameType::a,
                 ItemNameInfo::none,
                 ItemNameAttackInfo::none);
 
-        used_wpn_str =
-            i18n::get("attack_melee.with_spaced", " with ") +
-            wpn_name_a;
+        msg = i18n::format(
+            "attack_melee.monster_hit_weapon",
+            "{attacker} {verb} {defender} with {weapon}{punct}",
+            {
+                {"attacker", attacker_name},
+                {"verb", wpn_verb},
+                {"defender", defender_name},
+                {"weapon", wpn_name_a},
+                {"punct", dmg_punct}
+            }
+        );
     }
-
-    const std::string msg =
-        attacker_name +
-        i18n::get("attack_melee.word_separator", " ") +
-        wpn_verb +
-        i18n::get("attack_melee.word_separator", " ") +
-        defender_name +
-        used_wpn_str +
-        dmg_punct;
 
     const Color color =
         actor::is_player(att_data.defender)
@@ -294,9 +306,11 @@ static void print_no_attacker_hit_mon_melee_msg(
     const std::string dmg_punct = hit_size_punctuation_str(attack::relative_hit_size(dmg));
 
     msg_log::add(
-        other_name +
-            i18n::get("attack_melee.is_hit_suffix", " is hit") +
-            dmg_punct,
+        i18n::format(
+            "attack_melee.no_attacker_hit",
+            "{target} is hit{punct}",
+            {{"target", other_name}, {"punct", dmg_punct}}
+        ),
         msg_color,
         MsgInterruptPlayer::yes);
 }
