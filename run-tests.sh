@@ -6,7 +6,7 @@ root_dir=${PWD}
 
 ./build-tests.sh
 
-cd build
+cd build-linux-tests
 
 # Define as "--use-colour=no" do disable colors
 color_opt=""

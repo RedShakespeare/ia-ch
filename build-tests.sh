@@ -2,6 +2,6 @@
 
 set -xue
 
-cmake -B build
+cmake -B build-linux-tests
 
-cmake --build build --target ia-test -- -j$(nproc)
+cmake --build build-linux-tests --target ia-test -- -j$(nproc)
