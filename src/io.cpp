@@ -65,6 +65,23 @@ static SDL_Surface* load_surface(const std::string& path)
     return surface;
 }
 
+static SDL_Surface* duplicate_surface(SDL_Surface& surface)
+{
+    SDL_Surface* const result =
+        SDL_ConvertSurface(&surface, surface.format, 0);
+
+    if (!result) {
+        TRACE_ERROR_RELEASE
+            << "Failed to duplicate surface: "
+            << SDL_GetError()
+            << "\n";
+
+        PANIC;
+    }
+
+    return result;
+}
+
 static std::unordered_map<uint32_t, int> s_font_glyph_indices;
 static int s_font_glyph_columns = 95;
 
@@ -754,6 +771,44 @@ static const FontGlyph* glyph_metadata(const uint32_t codepoint)
     return nullptr;
 }
 
+namespace io
+{
+GlyphDrawData glyph_draw_data(const uint32_t codepoint)
+{
+    if (const auto* const metadata = glyph_metadata(codepoint)) {
+        return {
+            metadata->source_rect,
+            metadata->logical_w,
+            metadata->logical_h,
+            metadata->advance,
+            metadata->render_offset_x,
+            metadata->render_offset_y};
+    }
+
+    const P gui_cell_px_dims(config::gui_cell_px_w(), config::gui_cell_px_h());
+    const int glyph_idx = glyph_index(codepoint);
+
+    P char_px_pos(
+        glyph_idx % s_font_glyph_columns,
+        glyph_idx / s_font_glyph_columns);
+
+    char_px_pos.x *= (gui_cell_px_dims.x + 1);
+    char_px_pos.y *= gui_cell_px_dims.y;
+
+    return {
+        {
+            char_px_pos.x,
+            char_px_pos.y,
+            gui_cell_px_dims.x,
+            gui_cell_px_dims.y},
+        gui_cell_px_dims.x,
+        gui_cell_px_dims.y,
+        std::max(1, gui_cell_px_dims.x),
+        0,
+        0};
+}
+}  // namespace io
+
 static void swap_surface_color(
     SDL_Surface& surface,
     const Color& color_before,
@@ -1077,6 +1132,19 @@ static void load_logo()
     TRACE_FUNC_END;
 }
 
+static void free_font_surfaces()
+{
+    if (io::g_font_surface) {
+        SDL_FreeSurface(io::g_font_surface);
+        io::g_font_surface = nullptr;
+    }
+
+    if (io::g_font_surface_with_contours) {
+        SDL_FreeSurface(io::g_font_surface_with_contours);
+        io::g_font_surface_with_contours = nullptr;
+    }
+}
+
 static void load_font()
 {
     TRACE_FUNC_BEGIN;
@@ -1084,6 +1152,8 @@ static void load_font()
     const std::string img_path = paths::fonts_dir() + config::font_name();
 
     TRACE << "Loading font image: " << img_path << "\n";
+
+    free_font_surfaces();
 
     load_font_map(img_path);
 
@@ -1097,6 +1167,7 @@ static void load_font()
     SDL_Texture* texture = create_texture_from_surface(*surface);
 
     io::g_font_texture = texture;
+    io::g_font_surface = duplicate_surface(*surface);
 
     draw_black_contour_for_surface(*surface, colors::magenta());
 
@@ -1104,6 +1175,7 @@ static void load_font()
     texture = create_texture_from_surface(*surface);
 
     io::g_font_texture_with_contours = texture;
+    io::g_font_surface_with_contours = duplicate_surface(*surface);
 
     SDL_FreeSurface(surface);
 
@@ -1163,6 +1235,8 @@ namespace io
 {
 SDL_Texture* g_font_texture_with_contours = nullptr;
 SDL_Texture* g_font_texture = nullptr;
+SDL_Surface* g_font_surface_with_contours = nullptr;
+SDL_Surface* g_font_surface = nullptr;
 SDL_Texture* g_tile_textures[(size_t)gfx::TileId::END] = {};
 SDL_Texture* g_tile_textures_with_contours[(size_t)gfx::TileId::END] = {};
 SDL_Texture* g_logo_texture = nullptr;
@@ -1315,10 +1389,13 @@ void cleanup_other()
 
     if (g_sdl_renderer) {
         clear_text_width_cache();
+        free_font_surfaces();
         clear_texture_color_mod_cache();
         SDL_DestroyRenderer(g_sdl_renderer);
         g_sdl_renderer = nullptr;
     }
+
+    free_font_surfaces();
 
     if (g_sdl_window) {
         SDL_DestroyWindow(g_sdl_window);

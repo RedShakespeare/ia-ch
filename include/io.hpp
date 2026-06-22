@@ -159,6 +159,31 @@ void draw_text(
     DrawBg draw_bg = DrawBg::yes,
     const Color& bg_color = colors::black());
 
+void draw_text_plain(
+    const std::string& str,
+    Panel panel,
+    P pos,
+    const Color& color,
+    DrawBg draw_bg = DrawBg::yes,
+    const Color& bg_color = colors::black());
+
+void draw_text_plain_center(
+    const std::string& str,
+    Panel panel,
+    P pos,
+    const Color& color,
+    DrawBg draw_bg = DrawBg::yes,
+    const Color& bg_color = colors::black(),
+    bool is_pixel_pos_adj_allowed = true);
+
+void draw_text_plain_right(
+    const std::string& str,
+    Panel panel,
+    P pos,
+    const Color& color,
+    DrawBg draw_bg = DrawBg::yes,
+    const Color& bg_color = colors::black());
+
 void draw_text_center(
     const std::string& str,
     Panel panel,

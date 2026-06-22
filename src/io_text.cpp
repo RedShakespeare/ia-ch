@@ -18,6 +18,7 @@
 #include "SDL_pixels.h"
 #include "SDL_rect.h"
 #include "SDL_render.h"
+#include "SDL_surface.h"
 #include "colors.hpp"
 #include "config.hpp"
 #include "io.hpp"
@@ -47,6 +48,7 @@ struct RenderedTextKey
 {
     std::string text;
     Color color;
+    bool use_contours {};
     int scale_factor {};
     int brightness_pct {};
 
@@ -54,6 +56,7 @@ struct RenderedTextKey
     {
         return (text == other.text) &&
             (color == other.color) &&
+            (use_contours == other.use_contours) &&
             (scale_factor == other.scale_factor) &&
             (brightness_pct == other.brightness_pct);
     }
@@ -67,8 +70,9 @@ struct RenderedTextKeyHash
         result ^= ((size_t)key.color.r() << 1U);
         result ^= ((size_t)key.color.g() << 9U);
         result ^= ((size_t)key.color.b() << 17U);
-        result ^= ((size_t)key.scale_factor << 25U);
-        result ^= ((size_t)key.brightness_pct << 29U);
+        result ^= ((size_t)key.use_contours << 25U);
+        result ^= ((size_t)key.scale_factor << 26U);
+        result ^= ((size_t)key.brightness_pct << 30U);
         return result;
     }
 };
@@ -133,6 +137,134 @@ void clear_rendered_text_cache()
     s_rendered_text_cache.clear();
 }
 
+bool use_contour_font_surface(const Color& bg_color)
+{
+    return bg_color != colors::black();
+}
+
+SDL_Surface* font_surface_for_bg(const Color& bg_color)
+{
+    return use_contour_font_surface(bg_color)
+        ? io::g_font_surface_with_contours
+        : io::g_font_surface;
+}
+
+void put_px_rgba(SDL_Surface& surface, const P& px_pos, const Uint32 px)
+{
+    auto* const p =
+        (Uint8*)surface.pixels +
+        (px_pos.y * surface.pitch) +
+        (px_pos.x * surface.format->BytesPerPixel);
+
+    *(Uint32*)p = px;
+}
+
+void put_scaled_px(
+    SDL_Surface& surface,
+    const P& px_pos,
+    const int scale_factor,
+    const Uint32 px)
+{
+    const P scaled_pos = px_pos.scaled_up(scale_factor);
+
+    for (int x = 0; x < scale_factor; ++x) {
+        for (int y = 0; y < scale_factor; ++y) {
+            const P dst_pos = scaled_pos.with_offsets(x, y);
+
+            if ((dst_pos.x < 0) ||
+                (dst_pos.y < 0) ||
+                (dst_pos.x >= surface.w) ||
+                (dst_pos.y >= surface.h)) {
+                continue;
+            }
+
+            put_px_rgba(surface, dst_pos, px);
+        }
+    }
+}
+
+SDL_Surface* make_text_surface(
+    const TextRun& run,
+    const Color& color,
+    const Color& bg_color)
+{
+    SDL_Surface* const font_surface = font_surface_for_bg(bg_color);
+
+    if (!font_surface) {
+        return nullptr;
+    }
+
+    const int scale_factor = config::video_scale_factor();
+    const int surface_w = run.advance_px * scale_factor;
+    const int surface_h = config::gui_cell_px_h() * scale_factor;
+
+    SDL_Surface* const surface =
+        SDL_CreateRGBSurfaceWithFormat(
+            0,
+            surface_w,
+            surface_h,
+            32,
+            SDL_PIXELFORMAT_RGBA8888);
+
+    if (!surface) {
+        return nullptr;
+    }
+
+    SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_BLEND);
+
+    const Uint32 transparent =
+        SDL_MapRGBA(surface->format, 0, 0, 0, 0);
+    SDL_FillRect(surface, nullptr, transparent);
+
+    const Color color_adapted = color.with_brightness(config::brightness_pct());
+    const Color transparent_src_color = colors::magenta();
+
+    int pen_x = 0;
+
+    for (const TextGlyph& glyph : run.glyphs) {
+        const auto glyph_data = io::glyph_draw_data(glyph.codepoint);
+        const SDL_Rect& src_rect = glyph_data.source_rect;
+
+        for (int x = 0; x < src_rect.w; ++x) {
+            for (int y = 0; y < src_rect.h; ++y) {
+                const P src_pos(src_rect.x + x, src_rect.y + y);
+
+                const Color src_color =
+                    io::read_px_on_surface(*font_surface, src_pos);
+
+                if (src_color == transparent_src_color) {
+                    continue;
+                }
+
+                const P dst_pos(
+                    pen_x + glyph_data.render_offset_x + x,
+                    glyph_data.render_offset_y + y);
+
+                if ((dst_pos.x < 0) ||
+                    (dst_pos.y < 0) ||
+                    (dst_pos.x >= run.advance_px) ||
+                    (dst_pos.y >= config::gui_cell_px_h())) {
+                    continue;
+                }
+
+                const Uint32 px =
+                    SDL_MapRGBA(
+                        surface->format,
+                        (Uint8)((src_color.r() * color_adapted.r()) / 255),
+                        (Uint8)((src_color.g() * color_adapted.g()) / 255),
+                        (Uint8)((src_color.b() * color_adapted.b()) / 255),
+                        255);
+
+                put_scaled_px(*surface, dst_pos, scale_factor, px);
+            }
+        }
+
+        pen_x += glyph.advance_px;
+    }
+
+    return surface;
+}
+
 void draw_text_glyphs_uncached(
     const TextRun& run,
     P px_pos,
@@ -191,11 +323,13 @@ void draw_text_glyphs_uncached(
 
 const RenderedText* find_rendered_text(
     const std::string& str,
-    const Color& color)
+    const Color& color,
+    const Color& bg_color)
 {
     const RenderedTextKey key {
         str,
         color,
+        use_contour_font_surface(bg_color),
         config::video_scale_factor(),
         config::brightness_pct()};
 
@@ -210,16 +344,10 @@ const RenderedText* find_rendered_text(
 const RenderedText* make_rendered_text(
     const std::string& str,
     const TextRun& run,
-    const Color& color)
+    const Color& color,
+    const Color& bg_color)
 {
     if (!io::g_sdl_renderer || str.empty() || run.advance_px <= 0) {
-        return nullptr;
-    }
-
-    SDL_RendererInfo renderer_info {};
-
-    if ((SDL_GetRendererInfo(io::g_sdl_renderer, &renderer_info) != 0) ||
-        !(renderer_info.flags & SDL_RENDERER_TARGETTEXTURE)) {
         return nullptr;
     }
 
@@ -227,83 +355,34 @@ const RenderedText* make_rendered_text(
         clear_rendered_text_cache();
     }
 
-    const int scale_factor = config::video_scale_factor();
-    const int texture_w = run.advance_px * scale_factor;
-    const int texture_h = config::gui_cell_px_h() * scale_factor;
+    SDL_Surface* const surface = make_text_surface(run, color, bg_color);
+
+    if (!surface) {
+        return nullptr;
+    }
 
     SDL_Texture* const texture =
-        SDL_CreateTexture(
-            io::g_sdl_renderer,
-            SDL_PIXELFORMAT_RGBA8888,
-            SDL_TEXTUREACCESS_TARGET,
-            texture_w,
-            texture_h);
+        SDL_CreateTextureFromSurface(io::g_sdl_renderer, surface);
 
     if (!texture) {
+        SDL_FreeSurface(surface);
         return nullptr;
     }
 
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
-    SDL_Texture* const prev_target = SDL_GetRenderTarget(io::g_sdl_renderer);
-
-    SDL_Rect prev_clip {};
-    const SDL_bool was_clip_enabled =
-        SDL_RenderIsClipEnabled(io::g_sdl_renderer);
-    SDL_RenderGetClipRect(io::g_sdl_renderer, &prev_clip);
-
-    Uint8 prev_r = 0;
-    Uint8 prev_g = 0;
-    Uint8 prev_b = 0;
-    Uint8 prev_a = 0;
-    SDL_GetRenderDrawColor(
-        io::g_sdl_renderer,
-        &prev_r,
-        &prev_g,
-        &prev_b,
-        &prev_a);
-
-    SDL_BlendMode prev_blend_mode = SDL_BLENDMODE_NONE;
-    SDL_GetRenderDrawBlendMode(io::g_sdl_renderer, &prev_blend_mode);
-
-    const P prev_rendering_px_offset = io::g_rendering_px_offset;
-
-    SDL_SetRenderTarget(io::g_sdl_renderer, texture);
-    SDL_RenderSetClipRect(io::g_sdl_renderer, nullptr);
-    SDL_SetRenderDrawBlendMode(io::g_sdl_renderer, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderDrawColor(io::g_sdl_renderer, 0, 0, 0, 0);
-    SDL_RenderClear(io::g_sdl_renderer);
-
-    io::g_rendering_px_offset = {};
-
-    draw_text_glyphs_uncached(
-        run,
-        {},
-        color,
-        io::DrawBg::no,
-        colors::black(),
-        true);
-
-    io::g_rendering_px_offset = prev_rendering_px_offset;
-
-    SDL_SetRenderTarget(io::g_sdl_renderer, prev_target);
-    SDL_RenderSetClipRect(
-        io::g_sdl_renderer,
-        was_clip_enabled ? &prev_clip : nullptr);
-    SDL_SetRenderDrawBlendMode(io::g_sdl_renderer, prev_blend_mode);
-    SDL_SetRenderDrawColor(io::g_sdl_renderer, prev_r, prev_g, prev_b, prev_a);
-
-    io::clear_texture_color_mod_cache();
-
     const RenderedTextKey key {
         str,
         color,
+        use_contour_font_surface(bg_color),
         config::video_scale_factor(),
         config::brightness_pct()};
     const auto inserted =
         s_rendered_text_cache.emplace(
             key,
-            RenderedText {texture, texture_w, texture_h});
+            RenderedText {texture, surface->w, surface->h});
+
+    SDL_FreeSurface(surface);
 
     return &inserted.first->second;
 }
@@ -313,16 +392,17 @@ bool draw_cached_text_at_px(
     const TextRun& run,
     P px_pos,
     const Color& color,
+    const Color& bg_color,
     const bool msg_w_fit_on_screen)
 {
     if (!msg_w_fit_on_screen || (px_pos.x < 0)) {
         return false;
     }
 
-    const auto* rendered = find_rendered_text(str, color);
+    const auto* rendered = find_rendered_text(str, color, bg_color);
 
     if (!rendered) {
-        rendered = make_rendered_text(str, run, color);
+        rendered = make_rendered_text(str, run, color, bg_color);
     }
 
     if (!rendered) {
@@ -381,7 +461,13 @@ void draw_text_at_px(
     const bool msg_w_fit_on_screen = msg_px_x1 < screen_px_w;
 
     if ((draw_bg == io::DrawBg::no) &&
-        draw_cached_text_at_px(str, run, px_pos, color, msg_w_fit_on_screen)) {
+        draw_cached_text_at_px(
+            str,
+            run,
+            px_pos,
+            color,
+            bg_color,
+            msg_w_fit_on_screen)) {
         return;
     }
 
@@ -436,7 +522,23 @@ void draw_text(
     }
 }
 
-void draw_text_center(
+void draw_text_plain(
+    const std::string& str,
+    const Panel panel,
+    const P pos,
+    const Color& color,
+    const DrawBg draw_bg,
+    const Color& bg_color)
+{
+    draw_text_at_px(
+        str,
+        gui_to_px_coords(panel, pos),
+        color,
+        draw_bg,
+        bg_color);
+}
+
+void draw_text_plain_center(
     const std::string& str,
     const Panel panel,
     const P pos,
@@ -461,7 +563,7 @@ void draw_text_center(
     draw_text_at_px(str, px_pos, color, draw_bg, bg_color);
 }
 
-void draw_text_right(
+void draw_text_plain_right(
     const std::string& str,
     const Panel panel,
     const P pos,
@@ -473,6 +575,36 @@ void draw_text_right(
     px_pos.x += config::gui_cell_px_w() - text_advance_px(str);
 
     draw_text_at_px(str, px_pos, color, draw_bg, bg_color);
+}
+
+void draw_text_center(
+    const std::string& str,
+    const Panel panel,
+    const P pos,
+    const Color& color,
+    const DrawBg draw_bg,
+    const Color& bg_color,
+    const bool is_pixel_pos_adj_allowed)
+{
+    draw_text_plain_center(
+        str,
+        panel,
+        pos,
+        color,
+        draw_bg,
+        bg_color,
+        is_pixel_pos_adj_allowed);
+}
+
+void draw_text_right(
+    const std::string& str,
+    const Panel panel,
+    const P pos,
+    const Color& color,
+    const DrawBg draw_bg,
+    const Color& bg_color)
+{
+    draw_text_plain_right(str, panel, pos, color, draw_bg, bg_color);
 }
 
 }  // namespace io

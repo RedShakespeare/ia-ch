@@ -208,7 +208,7 @@ static void draw_line(const std::vector<Msg>& line, const Panel panel, const P& 
         : 0;
 
     for (const Msg& msg : line) {
-        io::draw_text(
+        io::draw_text_plain(
             msg.text_with_repeats(),
             panel,
             pos.with_x_offset(msg.x_pos()),
@@ -246,7 +246,7 @@ static void draw_more_prompt()
 
     ASSERT((more_x0 + (int)msg_log::g_more_str.size()) <= (panels::w(Panel::log)));
 
-    io::draw_text(
+    io::draw_text_plain(
         msg_log::g_more_str,
         Panel::log,
         {more_x0, (int)line_nr},
@@ -770,7 +770,7 @@ void MsgHistoryState::draw()
     for (int i = m_top_idx; i <= m_btm_idx; ++i) {
         const Msg& msg = m_history[i];
 
-        io::draw_text(
+        io::draw_text_plain(
             msg.text_with_repeats(),
             Panel::info_screen_content,
             {0, y},

@@ -9,6 +9,7 @@
 
 #include <cstdint>
 
+#include "SDL_rect.h"
 #include "io.hpp"
 
 #include "colors.hpp"
@@ -46,6 +47,8 @@ extern SDL_Window* g_sdl_window;
 extern SDL_Renderer* g_sdl_renderer;
 extern SDL_Texture* g_font_texture_with_contours;
 extern SDL_Texture* g_font_texture;
+extern SDL_Surface* g_font_surface_with_contours;
+extern SDL_Surface* g_font_surface;
 extern SDL_Texture* g_tile_textures_with_contours[(size_t)gfx::TileId::END];
 extern SDL_Texture* g_tile_textures[(size_t)gfx::TileId::END];
 extern SDL_Texture* g_logo_texture;
@@ -78,6 +81,18 @@ P sdl_window_gui_dims();
 int panel_px_w(Panel panel);
 int panel_px_h(Panel panel);
 P panel_px_dims(Panel panel);
+
+struct GlyphDrawData
+{
+    SDL_Rect source_rect {};
+    int logical_w {};
+    int logical_h {};
+    int advance {};
+    int render_offset_x {};
+    int render_offset_y {};
+};
+
+GlyphDrawData glyph_draw_data(uint32_t codepoint);
 
 void set_clip_rect_to_panel(Panel panel);
 void disable_clip_rect();

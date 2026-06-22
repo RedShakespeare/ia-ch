@@ -83,7 +83,7 @@ static void draw_wielded_wpn(const int y, const Panel panel)
 {
     const std::string label = tr("wpn_label", "Wpn");
 
-    io::draw_text(
+    io::draw_text_plain(
         label,
         panel,
         {0, y},
@@ -111,7 +111,7 @@ static void draw_wielded_wpn(const int y, const Panel panel)
         }
     }
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         wpn_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -123,7 +123,7 @@ static void draw_alt_wpn(const int y, const Panel panel)
 {
     const std::string label = tr("alt_wpn_label", "Alt");
 
-    io::draw_text(
+    io::draw_text_plain(
         label,
         panel,
         {0, y},
@@ -151,7 +151,7 @@ static void draw_alt_wpn(const int y, const Panel panel)
         }
     }
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         wpn_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -165,7 +165,7 @@ static void draw_hp(const int y, const Panel panel)
     const int max_hp = actor::max_hp(*map::g_player);
     const int hp_pct = (hp * 100) / max_hp;
 
-    io::draw_text(
+    io::draw_text_plain(
         tr("health_label", "Health"),
         panel,
         {0, y},
@@ -182,14 +182,14 @@ static void draw_hp(const int y, const Panel panel)
 
     const int tint_pct = std::min(100 - hp_pct, 60);
 
-    io::draw_text(
+    io::draw_text_plain(
         hp_str,
         panel,
         {hp_x, y},
         colors::light_red().tinted(tint_pct),
         io::DrawBg::no);
 
-    io::draw_text(
+    io::draw_text_plain(
         "/" + max_hp_str,
         panel,
         {hp_x + hp_str_w, y},
@@ -203,7 +203,7 @@ static void draw_sp(const int y, const Panel panel)
     const int max_sp = actor::max_sp(*map::g_player);
     const int sp_pct = (sp * 100) / max_sp;
 
-    io::draw_text(
+    io::draw_text_plain(
         tr("spirit_label", "Spirit"),
         panel,
         {0, y},
@@ -220,14 +220,14 @@ static void draw_sp(const int y, const Panel panel)
 
     const int tint_pct = std::min(100 - sp_pct, 60);
 
-    io::draw_text(
+    io::draw_text_plain(
         sp_str,
         panel,
         {sp_x, y},
         colors::light_blue().tinted(tint_pct),
         io::DrawBg::no);
 
-    io::draw_text(
+    io::draw_text_plain(
         "/" + max_sp_str,
         panel,
         {sp_x + sp_str_w, y},
@@ -241,7 +241,7 @@ static void draw_exorcist_fervor(const int y, const Panel panel)
     const int max_fervor = actor::player_exorcist_max_fervor();
     const int fervor_pct_of_max_possible = (fervor * 100) / max_fervor;
 
-    io::draw_text(
+    io::draw_text_plain(
         tr("fervor_label", "Fervor"),
         panel,
         {0, y},
@@ -258,14 +258,14 @@ static void draw_exorcist_fervor(const int y, const Panel panel)
 
     const int tint_pct = std::min(100 - fervor_pct_of_max_possible, 60);
 
-    io::draw_text(
+    io::draw_text_plain(
         fervor_str,
         panel,
         {fervor_x, y},
         colors::red().tinted(tint_pct),
         io::DrawBg::no);
 
-    io::draw_text(
+    io::draw_text_plain(
         "/" + max_fervor_str,
         panel,
         {fervor_x + fervor_str_w, y},
@@ -277,7 +277,7 @@ static void draw_shock(const int y, const Panel panel)
 {
     const int shock_pct = std::min(999, map::g_player->shock_tot());
 
-    io::draw_text(
+    io::draw_text_plain(
         tr("shock_label", "Shock"),
         panel,
         {0, y},
@@ -286,7 +286,7 @@ static void draw_shock(const int y, const Panel panel)
 
     const std::string shock_str = std::to_string(shock_pct) + "%";
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         shock_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -298,7 +298,7 @@ static void draw_insanity(const int y, const Panel panel)
 {
     const int ins_pct = map::g_player->insanity();
 
-    io::draw_text(
+    io::draw_text_plain(
         tr("insanity_label", "Insanity"),
         panel,
         {0, y},
@@ -307,7 +307,7 @@ static void draw_insanity(const int y, const Panel panel)
 
     const std::string ins_str = std::to_string(ins_pct) + "%";
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         ins_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -319,7 +319,7 @@ static void draw_weight(const int y, const Panel panel)
 {
     const int weight_pct = map::g_player->enc_percent();
 
-    io::draw_text(
+    io::draw_text_plain(
         tr("weight_label", "Weight"),
         panel,
         {0, y},
@@ -340,7 +340,7 @@ static void draw_weight(const int y, const Panel panel)
         color = colors::yellow().tinted(25);
     }
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         enc_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -350,7 +350,7 @@ static void draw_weight(const int y, const Panel panel)
 
 static void draw_turn_number(const int y, const Panel panel)
 {
-    io::draw_text(
+    io::draw_text_plain(
         tr("turn_label", "Turn"),
         panel,
         {0, y},
@@ -361,7 +361,7 @@ static void draw_turn_number(const int y, const Panel panel)
 
     const std::string turn_nr_str = std::to_string(turn_nr);
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         turn_nr_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -371,7 +371,7 @@ static void draw_turn_number(const int y, const Panel panel)
 
 static void draw_armor(const int y, const Panel panel)
 {
-    io::draw_text(
+    io::draw_text_plain(
         tr("armor_label", "Armor"),
         panel,
         {0, y},
@@ -380,7 +380,7 @@ static void draw_armor(const int y, const Panel panel)
 
     const std::string armor_str = std::to_string(actor::armor_points(*map::g_player));
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         armor_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -390,7 +390,7 @@ static void draw_armor(const int y, const Panel panel)
 
 static void draw_name(const int y, const Panel panel)
 {
-    io::draw_text_center(
+    io::draw_text_plain_center(
         actor::name_the(*map::g_player),
         panel,
         {panels::w(panel) / 2, y},
@@ -402,7 +402,7 @@ static void draw_class(const int y, const Panel panel)
 {
     const std::string bg_title = player_bon::bg_title(player_bon::bg());
 
-    io::draw_text_center(
+    io::draw_text_plain_center(
         bg_title,
         panel,
         {panels::w(panel) / 2, y},
@@ -418,7 +418,7 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
 
     const int xp_pct = std::clamp(game::xp_pct(), 0, 100);
 
-    io::draw_text(
+    io::draw_text_plain(
         tr("level_label", "Level"),
         panel,
         {0, y},
@@ -438,7 +438,7 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
     const int tot_w = clvl_w + xp_w;
     const int clvl_x = panels::w(panel) - tot_w;
 
-    io::draw_text(
+    io::draw_text_plain(
         clvl_str,
         panel,
         {clvl_x, y},
@@ -446,7 +446,7 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
         io::DrawBg::no);
 
     if (!is_max_lvl) {
-        io::draw_text(
+        io::draw_text_plain(
             xp_str,
             panel,
             {clvl_x + clvl_w, y},
@@ -457,7 +457,7 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
 
 static void draw_dlvl(const int y, const Panel panel)
 {
-    io::draw_text(
+    io::draw_text_plain(
         tr("depth_label", "Depth"),
         panel,
         {0, y},
@@ -470,7 +470,7 @@ static void draw_dlvl(const int y, const Panel panel)
     const int dlvl_pct = std::clamp((map::g_dlvl * 100) / max_dlvl, 0, 100);
     const int shade_pct = (dlvl_pct * 5) / 8;
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         dlvl_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -480,7 +480,7 @@ static void draw_dlvl(const int y, const Panel panel)
 
 static void draw_lantern(const int y, const Panel panel)
 {
-    io::draw_text(
+    io::draw_text_plain(
         tr("lantern_label", "Lantern"),
         panel,
         {0, y},
@@ -503,7 +503,7 @@ static void draw_lantern(const int y, const Panel panel)
         lantern_str = std::to_string(lantern->nr_turns_left());
     }
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         lantern_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -513,7 +513,7 @@ static void draw_lantern(const int y, const Panel panel)
 
 static void draw_med_suppl(const int y, const Panel panel)
 {
-    io::draw_text(
+    io::draw_text_plain(
         tr("medical_supplies_label", "Med Suppl"),
         panel,
         {0, y},
@@ -532,7 +532,7 @@ static void draw_med_suppl(const int y, const Panel panel)
         suppl_str = std::to_string(medical_bag->nr_supplies());
     }
 
-    io::draw_text_right(
+    io::draw_text_plain_right(
         suppl_str,
         panel,
         {panels::w(panel) - 1, y},
@@ -557,7 +557,7 @@ static void draw_properties(int y, const Panel panel)
             break;
         }
 
-        io::draw_text(
+        io::draw_text_plain(
             name.str,
             panel,
             {0, y},
@@ -631,7 +631,7 @@ void draw()
         text_format::append_with_space(debug_str, room::room_type_to_str(room->m_type));
     }
 
-    io::draw_text(
+    io::draw_text_plain(
         debug_str,
         Panel::map_gui_stats,
         {0, y},
@@ -644,7 +644,7 @@ void draw()
     draw_properties(y, panel);
 
     if (config::is_gj_mode()) {
-        draw_text_right(
+        io::draw_text_plain_right(
             tr("gj_mode_enabled", "GJ MODE ENABLED"),
             Panel::screen,
             {panels::x1(Panel::screen), 0},
@@ -668,7 +668,7 @@ void draw()
     // {
     //         const auto name = text_format::first_to_upper(a->name_a());
 
-    //         io::draw_text(
+    //         io::draw_text_plain(
     //                 name,
     //                 Panel::map_gui_descr,
     //                 {0, y},
@@ -698,7 +698,7 @@ void draw()
     //                                 ItemRefInf::yes,
     //                                 ItemRefAttInf::wpn_main_att_mode));
 
-    //         io::draw_text(
+    //         io::draw_text_plain(
     //                 name,
     //                 Panel::map_gui_descr,
     //                 {0, y},

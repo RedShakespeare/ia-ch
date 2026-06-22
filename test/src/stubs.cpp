@@ -196,6 +196,34 @@ void draw_text(
     s_captured_text_draws.push_back({text_to_string(text), panel, pos});
 }
 
+void draw_text_plain(
+    const std::string& str,
+    Panel panel,
+    P pos,
+    const Color&,
+    const DrawBg,
+    const Color&)
+{
+    s_captured_text_draws.push_back({str, panel, pos});
+}
+
+void draw_text_plain_center(
+    const std::string&,
+    const Panel,
+    P,
+    const Color&,
+    const DrawBg,
+    const Color&,
+    const bool) {}
+
+void draw_text_plain_right(
+    const std::string&,
+    const Panel,
+    P,
+    const Color&,
+    const DrawBg,
+    const Color&) {}
+
 void draw_text_center(
     const std::string&,
     const Panel,
