@@ -207,6 +207,13 @@ void draw_text_plain(
     s_captured_text_draws.push_back({str, panel, pos});
 }
 
+void draw_text_plain_at_px(
+    const std::string&,
+    P,
+    const Color&,
+    const DrawBg,
+    const Color&) {}
+
 void draw_text_plain_center(
     const std::string&,
     const Panel,

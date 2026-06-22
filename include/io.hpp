@@ -167,6 +167,15 @@ void draw_text_plain(
     DrawBg draw_bg = DrawBg::yes,
     const Color& bg_color = colors::black());
 
+void draw_text_plain_at_px(
+    const std::string& str,
+    P px_pos,
+    const Color& color,
+    DrawBg draw_bg = DrawBg::yes,
+    const Color& bg_color = colors::black());
+
+int text_advance_px(const std::string& str);
+
 void draw_text_plain_center(
     const std::string& str,
     Panel panel,

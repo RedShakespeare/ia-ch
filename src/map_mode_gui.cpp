@@ -53,6 +53,17 @@ static std::string tr(const std::string& key, const std::string& fallback)
     return i18n::get("map_mode_gui." + key, fallback);
 }
 
+static P right_aligned_px_pos(
+    const Panel panel,
+    const int y,
+    const int text_px_w)
+{
+    P px_pos = io::gui_to_px_coords(panel, {0, y});
+    px_pos.x += (panels::w(panel) * config::gui_cell_px_w()) - text_px_w;
+
+    return px_pos;
+}
+
 static std::string make_wpn_stats_str(const item::Item& wpn)
 {
     const ItemNameAttackInfo att_inf =
@@ -173,26 +184,23 @@ static void draw_hp(const int y, const Panel panel)
         io::DrawBg::no);
 
     const std::string hp_str = std::to_string(hp);
-    const std::string max_hp_str = std::to_string(max_hp);
+    const std::string max_hp_str = "/" + std::to_string(max_hp);
 
-    const int hp_str_w = (int)hp_str.length();
-    const int max_hp_str_w = (int)max_hp_str.length();
-    const int tot_w = hp_str_w + 1 + max_hp_str_w;
-    const int hp_x = panels::w(panel) - tot_w;
+    const int hp_str_px_w = io::text_advance_px(hp_str);
+    const int tot_px_w = hp_str_px_w + io::text_advance_px(max_hp_str);
+    const P hp_px_pos = right_aligned_px_pos(panel, y, tot_px_w);
 
     const int tint_pct = std::min(100 - hp_pct, 60);
 
-    io::draw_text_plain(
+    io::draw_text_plain_at_px(
         hp_str,
-        panel,
-        {hp_x, y},
+        hp_px_pos,
         colors::light_red().tinted(tint_pct),
         io::DrawBg::no);
 
-    io::draw_text_plain(
-        "/" + max_hp_str,
-        panel,
-        {hp_x + hp_str_w, y},
+    io::draw_text_plain_at_px(
+        max_hp_str,
+        hp_px_pos.with_x_offset(hp_str_px_w),
         colors::light_red(),
         io::DrawBg::no);
 }
@@ -211,26 +219,23 @@ static void draw_sp(const int y, const Panel panel)
         io::DrawBg::no);
 
     const std::string sp_str = std::to_string(sp);
-    const std::string max_sp_str = std::to_string(max_sp);
+    const std::string max_sp_str = "/" + std::to_string(max_sp);
 
-    const int sp_str_w = (int)sp_str.length();
-    const int max_sp_str_w = (int)max_sp_str.length();
-    const int tot_w = sp_str_w + 1 + max_sp_str_w;
-    const int sp_x = panels::w(panel) - tot_w;
+    const int sp_str_px_w = io::text_advance_px(sp_str);
+    const int tot_px_w = sp_str_px_w + io::text_advance_px(max_sp_str);
+    const P sp_px_pos = right_aligned_px_pos(panel, y, tot_px_w);
 
     const int tint_pct = std::min(100 - sp_pct, 60);
 
-    io::draw_text_plain(
+    io::draw_text_plain_at_px(
         sp_str,
-        panel,
-        {sp_x, y},
+        sp_px_pos,
         colors::light_blue().tinted(tint_pct),
         io::DrawBg::no);
 
-    io::draw_text_plain(
-        "/" + max_sp_str,
-        panel,
-        {sp_x + sp_str_w, y},
+    io::draw_text_plain_at_px(
+        max_sp_str,
+        sp_px_pos.with_x_offset(sp_str_px_w),
         colors::light_blue(),
         io::DrawBg::no);
 }
@@ -249,26 +254,24 @@ static void draw_exorcist_fervor(const int y, const Panel panel)
         io::DrawBg::no);
 
     const std::string fervor_str = std::to_string(fervor);
-    const std::string max_fervor_str = std::to_string(max_fervor);
+    const std::string max_fervor_str = "/" + std::to_string(max_fervor);
 
-    const int fervor_str_w = (int)fervor_str.length();
-    const int max_fervor_str_w = (int)max_fervor_str.length();
-    const int tot_w = fervor_str_w + 1 + max_fervor_str_w;
-    const int fervor_x = panels::w(panel) - tot_w;
+    const int fervor_str_px_w = io::text_advance_px(fervor_str);
+    const int tot_px_w =
+        fervor_str_px_w + io::text_advance_px(max_fervor_str);
+    const P fervor_px_pos = right_aligned_px_pos(panel, y, tot_px_w);
 
     const int tint_pct = std::min(100 - fervor_pct_of_max_possible, 60);
 
-    io::draw_text_plain(
+    io::draw_text_plain_at_px(
         fervor_str,
-        panel,
-        {fervor_x, y},
+        fervor_px_pos,
         colors::red().tinted(tint_pct),
         io::DrawBg::no);
 
-    io::draw_text_plain(
-        "/" + max_fervor_str,
-        panel,
-        {fervor_x + fervor_str_w, y},
+    io::draw_text_plain_at_px(
+        max_fervor_str,
+        fervor_px_pos.with_x_offset(fervor_str_px_w),
         colors::red(),
         io::DrawBg::no);
 }
@@ -433,23 +436,20 @@ static void draw_char_lvl_and_xp(const int y, const Panel panel)
         xp_str = " (" + std::to_string(xp_pct) + "%)";
     }
 
-    const int clvl_w = (int)clvl_str.length();
-    const int xp_w = (int)xp_str.length();
-    const int tot_w = clvl_w + xp_w;
-    const int clvl_x = panels::w(panel) - tot_w;
+    const int clvl_px_w = io::text_advance_px(clvl_str);
+    const int tot_px_w = clvl_px_w + io::text_advance_px(xp_str);
+    const P clvl_px_pos = right_aligned_px_pos(panel, y, tot_px_w);
 
-    io::draw_text_plain(
+    io::draw_text_plain_at_px(
         clvl_str,
-        panel,
-        {clvl_x, y},
+        clvl_px_pos,
         info_color(),
         io::DrawBg::no);
 
     if (!is_max_lvl) {
-        io::draw_text_plain(
+        io::draw_text_plain_at_px(
             xp_str,
-            panel,
-            {clvl_x + clvl_w, y},
+            clvl_px_pos.with_x_offset(clvl_px_w),
             colors::green().tinted(100 - xp_pct),
             io::DrawBg::no);
     }

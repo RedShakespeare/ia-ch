@@ -1281,7 +1281,10 @@ void init_sdl()
 
     cleanup_sdl();
 
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
+    SDL_SetHintWithPriority(
+        SDL_HINT_RENDER_SCALE_QUALITY,
+        "0",
+        SDL_HINT_OVERRIDE);
 
     const uint32_t sdl_init_flags =
         SDL_INIT_VIDEO |

@@ -42,6 +42,7 @@ struct TextGlyph
 struct TextRun
 {
     int advance_px {};
+    bool has_non_ascii {};
     std::vector<TextGlyph> glyphs;
 };
 
@@ -91,6 +92,14 @@ std::unordered_map<RenderedTextKey, RenderedText, RenderedTextKeyHash>
 constexpr size_t max_text_run_cache_entries = 4096;
 constexpr size_t max_rendered_text_cache_entries = 512;
 
+void draw_text_glyphs_uncached(
+    const TextRun& run,
+    P px_pos,
+    const Color& color,
+    io::DrawBg draw_bg,
+    const Color& bg_color,
+    bool msg_w_fit_on_screen);
+
 uint32_t codepoint_at_or_fallback(const std::string& str, const size_t pos)
 {
     return utf8::codepoint_at(str, pos).value_or('?');
@@ -120,6 +129,7 @@ const TextRun& text_run(const std::string& str)
         const int advance_px = io::glyph_advance_px(codepoint);
 
         run.advance_px += advance_px;
+        run.has_non_ascii = run.has_non_ascii || (codepoint > 0x7f);
         run.glyphs.push_back({codepoint, advance_px});
 
         i += cp_size;
@@ -184,6 +194,27 @@ void put_scaled_px(
     }
 }
 
+void configure_rendered_text_texture(SDL_Texture& texture)
+{
+    SDL_SetTextureBlendMode(&texture, SDL_BLENDMODE_BLEND);
+
+#if SDL_VERSION_ATLEAST(2, 0, 12)
+    SDL_SetTextureScaleMode(&texture, SDL_ScaleModeNearest);
+#endif
+}
+
+SDL_Texture* create_texture_from_text_surface(SDL_Surface& surface)
+{
+    SDL_Texture* const texture =
+        SDL_CreateTextureFromSurface(io::g_sdl_renderer, &surface);
+
+    if (texture) {
+        configure_rendered_text_texture(*texture);
+    }
+
+    return texture;
+}
+
 SDL_Surface* make_text_surface(
     const TextRun& run,
     const Color& color,
@@ -204,19 +235,25 @@ SDL_Surface* make_text_surface(
             0,
             surface_w,
             surface_h,
-            32,
-            SDL_PIXELFORMAT_RGBA8888);
+            font_surface->format->BitsPerPixel,
+            font_surface->format->format);
 
     if (!surface) {
         return nullptr;
     }
 
+    const Color transparent_src_color = colors::magenta();
     const Uint32 transparent =
-        SDL_MapRGBA(surface->format, 0, 0, 0, 0);
+        SDL_MapRGB(
+            surface->format,
+            transparent_src_color.r(),
+            transparent_src_color.g(),
+            transparent_src_color.b());
+
     SDL_FillRect(surface, nullptr, transparent);
+    SDL_SetColorKey(surface, SDL_TRUE, transparent);
 
     const Color color_adapted = color.with_brightness(config::brightness_pct());
-    const Color transparent_src_color = colors::magenta();
 
     int pen_x = 0;
 
@@ -262,6 +299,116 @@ SDL_Surface* make_text_surface(
     }
 
     return surface;
+}
+
+SDL_Texture* make_text_texture_with_surface(
+    const TextRun& run,
+    const Color& color,
+    const Color& bg_color,
+    int& texture_w,
+    int& texture_h)
+{
+    SDL_Surface* const surface = make_text_surface(run, color, bg_color);
+
+    if (!surface) {
+        return nullptr;
+    }
+
+    SDL_Texture* const texture = create_texture_from_text_surface(*surface);
+
+    if (texture) {
+        texture_w = surface->w;
+        texture_h = surface->h;
+    }
+
+    SDL_FreeSurface(surface);
+
+    return texture;
+}
+
+SDL_Texture* make_text_texture_with_render_target(
+    const TextRun& run,
+    const Color& color,
+    const Color& bg_color,
+    int& texture_w,
+    int& texture_h)
+{
+    SDL_RendererInfo renderer_info {};
+
+    if ((SDL_GetRendererInfo(io::g_sdl_renderer, &renderer_info) != 0) ||
+        !(renderer_info.flags & SDL_RENDERER_TARGETTEXTURE)) {
+        return nullptr;
+    }
+
+    const int scale_factor = config::video_scale_factor();
+    texture_w = run.advance_px * scale_factor;
+    texture_h = config::gui_cell_px_h() * scale_factor;
+
+    SDL_Texture* const texture =
+        SDL_CreateTexture(
+            io::g_sdl_renderer,
+            SDL_PIXELFORMAT_RGBA8888,
+            SDL_TEXTUREACCESS_TARGET,
+            texture_w,
+            texture_h);
+
+    if (!texture) {
+        return nullptr;
+    }
+
+    configure_rendered_text_texture(*texture);
+
+    SDL_Texture* const prev_target = SDL_GetRenderTarget(io::g_sdl_renderer);
+
+    SDL_Rect prev_clip {};
+    const SDL_bool was_clip_enabled =
+        SDL_RenderIsClipEnabled(io::g_sdl_renderer);
+    SDL_RenderGetClipRect(io::g_sdl_renderer, &prev_clip);
+
+    Uint8 prev_r = 0;
+    Uint8 prev_g = 0;
+    Uint8 prev_b = 0;
+    Uint8 prev_a = 0;
+    SDL_GetRenderDrawColor(
+        io::g_sdl_renderer,
+        &prev_r,
+        &prev_g,
+        &prev_b,
+        &prev_a);
+
+    SDL_BlendMode prev_blend_mode = SDL_BLENDMODE_NONE;
+    SDL_GetRenderDrawBlendMode(io::g_sdl_renderer, &prev_blend_mode);
+
+    const P prev_rendering_px_offset = io::g_rendering_px_offset;
+
+    SDL_SetRenderTarget(io::g_sdl_renderer, texture);
+    SDL_RenderSetClipRect(io::g_sdl_renderer, nullptr);
+    SDL_SetRenderDrawBlendMode(io::g_sdl_renderer, SDL_BLENDMODE_BLEND);
+    SDL_SetRenderDrawColor(io::g_sdl_renderer, 0, 0, 0, 0);
+    SDL_RenderClear(io::g_sdl_renderer);
+
+    io::g_rendering_px_offset = {};
+
+    draw_text_glyphs_uncached(
+        run,
+        {},
+        color,
+        io::DrawBg::no,
+        bg_color,
+        true);
+
+    io::g_rendering_px_offset = prev_rendering_px_offset;
+
+    SDL_SetRenderTarget(io::g_sdl_renderer, prev_target);
+    SDL_RenderSetClipRect(
+        io::g_sdl_renderer,
+        was_clip_enabled ? &prev_clip : nullptr);
+    SDL_SetRenderDrawBlendMode(io::g_sdl_renderer, prev_blend_mode);
+    SDL_SetRenderDrawColor(io::g_sdl_renderer, prev_r, prev_g, prev_b, prev_a);
+
+    io::clear_texture_color_mod_cache();
+
+    return texture;
 }
 
 void draw_text_glyphs_uncached(
@@ -354,25 +501,30 @@ const RenderedText* make_rendered_text(
         clear_rendered_text_cache();
     }
 
-    SDL_Surface* const surface = make_text_surface(run, color, bg_color);
+    int texture_w = 0;
+    int texture_h = 0;
 
-    if (!surface) {
-        return nullptr;
-    }
-
-    SDL_Texture* const texture =
-        SDL_CreateTextureFromSurface(io::g_sdl_renderer, surface);
+    SDL_Texture* texture =
+        make_text_texture_with_render_target(
+            run,
+            color,
+            bg_color,
+            texture_w,
+            texture_h);
 
     if (!texture) {
-        SDL_FreeSurface(surface);
-        return nullptr;
+        texture =
+            make_text_texture_with_surface(
+                run,
+                color,
+                bg_color,
+                texture_w,
+                texture_h);
     }
 
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-
-#if SDL_VERSION_ATLEAST(2, 0, 12)
-    SDL_SetTextureScaleMode(texture, SDL_ScaleModeNearest);
-#endif
+    if (!texture) {
+        return nullptr;
+    }
 
     const RenderedTextKey key {
         str,
@@ -383,9 +535,7 @@ const RenderedText* make_rendered_text(
     const auto inserted =
         s_rendered_text_cache.emplace(
             key,
-            RenderedText {texture, surface->w, surface->h});
-
-    SDL_FreeSurface(surface);
+            RenderedText {texture, texture_w, texture_h});
 
     return &inserted.first->second;
 }
@@ -398,7 +548,7 @@ bool draw_cached_text_at_px(
     const Color& bg_color,
     const bool msg_w_fit_on_screen)
 {
-    if (!msg_w_fit_on_screen || (px_pos.x < 0)) {
+    if (!run.has_non_ascii || !msg_w_fit_on_screen || (px_pos.x < 0)) {
         return false;
     }
 
@@ -539,6 +689,16 @@ void draw_text_plain(
         color,
         draw_bg,
         bg_color);
+}
+
+void draw_text_plain_at_px(
+    const std::string& str,
+    const P px_pos,
+    const Color& color,
+    const DrawBg draw_bg,
+    const Color& bg_color)
+{
+    draw_text_at_px(str, px_pos, color, draw_bg, bg_color);
 }
 
 void draw_text_plain_center(
