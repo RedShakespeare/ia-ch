@@ -359,6 +359,13 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("game_over_summary.title", "Game summary") == "游戏总结");
     REQUIRE(i18n::get("game.death_message", "-I AM DEAD!-") == "-我死了！-");
     REQUIRE(i18n::get("game_time.sink_downwards", "I sink downwards!") == "我向下沉去！");
+    REQUIRE(i18n::get("msg_log.more_prompt", "[space]") == "[空格]");
+    REQUIRE(
+        i18n::format(
+            "reload.reload_magazine",
+            "I reload {weapon} ({current}/{max}).",
+            {{"weapon", "my pistol"}, {"current", "1"}, {"max", "6"}}) ==
+        "我重新装填my pistol（1/6）。");
     require_translation(
         "game.intro_default",
         "我站在一条鹅卵石森林小径的尽头，面前是一座被人避讳、破败古老的教堂建筑。"
@@ -750,6 +757,15 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("map.item_legend", "Item") == "物品");
     REQUIRE(i18n::get("marker.throwing_prefix", "Throwing ") == "正在投掷");
     REQUIRE(i18n::get("marker.period", ".") == "。");
+    REQUIRE(i18n::get("marker.hit_chance_suffix", "% hit chance.") == "% 命中率。");
+    REQUIRE(i18n::get("marker.description_prompt_suffix", "] for description") == "] 查看描述");
+    REQUIRE(
+        i18n::get(
+            "marker.outside_effective_range",
+            "Aiming outside effective weapon range (50% damage).") ==
+        "瞄准超出武器有效射程（50%伤害）。");
+    REQUIRE(i18n::get("marker.fire_prompt_suffix", "] to fire ") == "] 开火：");
+    REQUIRE(i18n::get("marker.attack_prompt_suffix", "] to attack ") == "] 攻击：");
     REQUIRE(i18n::get("marker.throw_prompt_suffix", "] to throw ") == "] 投掷：");
     REQUIRE(
         i18n::get(

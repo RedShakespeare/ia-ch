@@ -56,6 +56,30 @@
 // -----------------------------------------------------------------------------
 // Private
 // -----------------------------------------------------------------------------
+static std::string hit_chance_msg(const int hit_chance)
+{
+    return std::to_string(hit_chance) +
+           i18n::get("marker.hit_chance_suffix", "% hit chance.");
+}
+
+static std::string marker_action_msg(
+    const char key,
+    const std::string& prompt_suffix_key,
+    const std::string& prompt_suffix_fallback)
+{
+    return std::string("[") + key +
+           i18n::get(prompt_suffix_key, prompt_suffix_fallback) +
+           common_text::g_cancel_hint;
+}
+
+static std::string marker_key_msg(
+    const char key,
+    const std::string& prompt_suffix_key,
+    const std::string& prompt_suffix_fallback)
+{
+    return std::string("[") + key +
+           i18n::get(prompt_suffix_key, prompt_suffix_fallback);
+}
 
 // -----------------------------------------------------------------------------
 // Marker state
@@ -430,9 +454,10 @@ void Viewing::on_moved()
         !actor::is_player(actor) &&
         actor::can_player_see_actor(*actor)) {
         const std::string msg =
-            std::string("[") +
-            game_commands::view_key() +
-            std::string("] for description");
+            marker_key_msg(
+                game_commands::view_key(),
+                "marker.description_prompt_suffix",
+                "] for description");
 
         msg_log::add(
             msg,
@@ -503,7 +528,7 @@ void Aiming::on_moved()
                     att_data.hit_chance_tot);
 
             msg_log::add(
-                std::to_string(hit_chance) + "% hit chance.",
+                hit_chance_msg(hit_chance),
                 colors::light_white(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,
@@ -517,8 +542,9 @@ void Aiming::on_moved()
         if (!is_in_effective_range &&
             (m_wpn.data().ranged.effective_range.max > 0)) {
             msg_log::add(
-                ("Aiming outside effective weapon range "
-                 "(50% damage)."),
+                i18n::get(
+                    "marker.outside_effective_range",
+                    "Aiming outside effective weapon range (50% damage)."),
                 colors::msg_note(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,
@@ -527,10 +553,10 @@ void Aiming::on_moved()
     }
 
     const std::string msg =
-        std::string("[") +
-        game_commands::fire_key() +
-        std::string("] to fire ") +
-        common_text::g_cancel_hint;
+        marker_action_msg(
+            game_commands::fire_key(),
+            "marker.fire_prompt_suffix",
+            "] to fire ");
 
     msg_log::add(
         msg,
@@ -619,7 +645,7 @@ void AimingMeleeWpn::on_moved()
                     att_data.hit_chance_tot);
 
             msg_log::add(
-                std::to_string(hit_chance) + "% hit chance.",
+                hit_chance_msg(hit_chance),
                 colors::light_white(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,
@@ -628,10 +654,10 @@ void AimingMeleeWpn::on_moved()
     }
 
     const std::string msg =
-        std::string("[") +
-        game_commands::fire_key() +
-        std::string("] to attack ") +
-        common_text::g_cancel_hint;
+        marker_action_msg(
+            game_commands::fire_key(),
+            "marker.attack_prompt_suffix",
+            "] to attack ");
 
     msg_log::add(
         msg,
@@ -735,7 +761,7 @@ void Throwing::on_moved()
                     att_data.hit_chance_tot);
 
             msg_log::add(
-                std::to_string(hit_chance) + "% hit chance.",
+                hit_chance_msg(hit_chance),
                 colors::light_white(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,
@@ -749,8 +775,9 @@ void Throwing::on_moved()
         if (!is_in_effective_range &&
             (m_inv_item->data().ranged.effective_range.max > 0)) {
             msg_log::add(
-                ("Aiming outside effective weapon range "
-                 "(50% damage)."),
+                i18n::get(
+                    "marker.outside_effective_range",
+                    "Aiming outside effective weapon range (50% damage)."),
                 colors::msg_note(),
                 MsgInterruptPlayer::no,
                 MorePromptOnMsg::no,
@@ -759,10 +786,10 @@ void Throwing::on_moved()
     }
 
     const std::string msg =
-        std::string("[") +
-        game_commands::throw_key() +
-        std::string("] to throw ") +
-        common_text::g_cancel_hint;
+        marker_action_msg(
+            game_commands::throw_key(),
+            "marker.throw_prompt_suffix",
+            "] to throw ");
 
     msg_log::add(
         msg,

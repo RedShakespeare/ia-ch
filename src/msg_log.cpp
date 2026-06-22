@@ -48,8 +48,6 @@ static const int s_max_nr_repeats = 9;
 // "(xN)" where N is guaranteed to be a single digit, see above.
 static const int s_repeat_str_len = 4;
 
-static const int s_space_reserved_for_more_prompt = (int)msg_log::g_more_str.size() + 1;
-
 static bool s_is_waiting_more_pompt = false;
 
 // When the message log is cleared, the current messages fade out. New messages will interrupt the
@@ -123,6 +121,11 @@ static int msg_text_w_in_cols(const std::string& str)
     return (text_px_w + cell_px_w - 1) / cell_px_w;
 }
 
+static int space_reserved_for_more_prompt()
+{
+    return msg_text_w_in_cols(msg_log::more_prompt_text()) + 1;
+}
+
 static int x_after_msg(const Msg* const msg)
 {
     if (!msg) {
@@ -140,7 +143,7 @@ static int worst_case_msg_w_for_line_nr(
 {
     const int space_reserved_for_more_prompt_this_line =
         (line_nr == (msg_log::g_nr_log_lines - 1))
-        ? s_space_reserved_for_more_prompt
+        ? space_reserved_for_more_prompt()
         : 0;
 
     const int max_w =
@@ -156,7 +159,7 @@ static int msg_area_w_avail_for_text_part()
     const int w_avail =
         panels::w(Panel::log) -
         s_repeat_str_len -
-        s_space_reserved_for_more_prompt;
+        space_reserved_for_more_prompt();
 
     return w_avail;
 }
@@ -219,6 +222,8 @@ static void draw_line(const std::vector<Msg>& line, const Panel panel, const P& 
 
 static void draw_more_prompt()
 {
+    const std::string more_prompt = msg_log::more_prompt_text();
+
     int more_x0 = 0;
 
     size_t line_nr = find_current_line_nr();
@@ -235,7 +240,8 @@ static void draw_more_prompt()
         // line however, the "more" text MUST fit on the line (handled when adding
         // messages).
         if (line_nr != (msg_log::g_nr_log_lines - 1)) {
-            const int more_x1 = more_x0 + (int)msg_log::g_more_str.size() - 1;
+            const int more_x1 =
+                more_x0 + msg_text_w_in_cols(more_prompt) - 1;
 
             if (more_x1 >= panels::w(Panel::log)) {
                 more_x0 = 0;
@@ -244,10 +250,12 @@ static void draw_more_prompt()
         }
     }
 
-    ASSERT((more_x0 + (int)msg_log::g_more_str.size()) <= (panels::w(Panel::log)));
+    ASSERT(
+        (more_x0 + msg_text_w_in_cols(more_prompt)) <=
+        (panels::w(Panel::log)));
 
     io::draw_text_plain(
-        msg_log::g_more_str,
+        more_prompt,
         Panel::log,
         {more_x0, (int)line_nr},
         colors::msg_more(),
@@ -330,6 +338,11 @@ static void on_msg_not_fit_on_line(
 // -----------------------------------------------------------------------------
 namespace msg_log
 {
+std::string more_prompt_text()
+{
+    return i18n::get("msg_log.more_prompt", "[space]");
+}
+
 void init()
 {
     for (auto& line : s_lines) {

@@ -34,6 +34,7 @@
 #include "panel.hpp"
 #include "paths.hpp"
 #include "pos.hpp"
+#include "property_data.hpp"
 #include "query.hpp"
 #include "random.hpp"
 #include "rect.hpp"
@@ -1639,7 +1640,7 @@ std::string AnyKeyConfirmMoreOption::descr() const
 {
     return i18n::get(
         "option.any_key_confirm_more.descr",
-        "Any key confirms \"" + msg_log::g_more_str + "\" prompts in the message log (which can happen for example when a monster appears as a warning to the player), otherwise only space (and a few other keys) confirms these prompts. Keeping the option disabled is safer.");
+        "Any key confirms \"" + msg_log::more_prompt_text() + "\" prompts in the message log (which can happen for example when a monster appears as a warning to the player), otherwise only space (and a few other keys) confirms these prompts. Keeping the option disabled is safer.");
 }
 
 std::string AnyKeyConfirmMoreOption::value_str() const
@@ -2057,6 +2058,8 @@ void LanguageOption::change(OptionChangeCommand command) const
     }
     common_text::init();
     messages::init();
+    terrain::init();
+    prop::init();
 }
 
 // std::string ResetDefaultsOption::name() const
