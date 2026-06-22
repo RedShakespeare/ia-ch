@@ -1,0 +1,4 @@
+interface:
+  display_name: "Paratranz CSV to text.ini"
+  short_description: "Convert Paratranz CSV into locale text.ini"
+  default_prompt: "Use $paratranz-csv-to-text-ini to convert this Paratranz CSV into an Infra Arcana locale text.ini."
