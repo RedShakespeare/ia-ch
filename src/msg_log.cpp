@@ -13,11 +13,13 @@
 
 #include "actor.hpp"
 #include "colors.hpp"
+#include "config.hpp"
 #include "debug.hpp"
 #include "game_time.hpp"
 #include "global.hpp"
 #include "i18n.hpp"
 #include "io.hpp"
+#include "io_internal.hpp"
 #include "map.hpp"
 #include "panel.hpp"
 #include "pos.hpp"
@@ -26,7 +28,6 @@
 #include "query.hpp"
 #include "saving.hpp"
 #include "text_format.hpp"
-#include "utf8.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -114,6 +115,14 @@ static size_t find_next_empty_line_nr()
     return 0;
 }
 
+static int msg_text_w_in_cols(const std::string& str)
+{
+    const int cell_px_w = std::max(1, config::gui_cell_px_w());
+    const int text_px_w = io::text_advance_px(str);
+
+    return (text_px_w + cell_px_w - 1) / cell_px_w;
+}
+
 static int x_after_msg(const Msg* const msg)
 {
     if (!msg) {
@@ -122,7 +131,7 @@ static int x_after_msg(const Msg* const msg)
 
     const std::string str = msg->text_with_repeats();
 
-    return msg->x_pos() + (int)utf8::display_width(str) + 1;
+    return msg->x_pos() + msg_text_w_in_cols(str) + 1;
 }
 
 static int worst_case_msg_w_for_line_nr(
@@ -135,7 +144,7 @@ static int worst_case_msg_w_for_line_nr(
         : 0;
 
     const int max_w =
-        (int)utf8::display_width(text) +
+        msg_text_w_in_cols(text) +
         s_repeat_str_len +
         space_reserved_for_more_prompt_this_line;
 

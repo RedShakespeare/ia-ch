@@ -21,6 +21,7 @@
 #include "panel.hpp"
 #include "pos.hpp"
 #include "rect.hpp"
+#include "test_utils.hpp"
 #include "utf8.hpp"
 
 namespace actor
@@ -31,6 +32,41 @@ class Actor;
 // -----------------------------------------------------------------------------
 // io
 // -----------------------------------------------------------------------------
+namespace
+{
+bool s_is_wide_cjk_text_stub_enabled = false;
+std::vector<test_utils::CapturedTextDraw> s_captured_text_draws;
+
+bool is_cjk_codepoint_for_test(const uint32_t codepoint)
+{
+    return codepoint >= 0x4e00U && codepoint <= 0x9fffU;
+}
+
+int stub_glyph_advance_px(const uint32_t codepoint)
+{
+    const int cell_px_w = std::max(1, config::gui_cell_px_w());
+
+    if (s_is_wide_cjk_text_stub_enabled && is_cjk_codepoint_for_test(codepoint)) {
+        return cell_px_w * 2;
+    }
+
+    return cell_px_w;
+}
+
+std::string text_to_string(Text text)
+{
+    std::string result;
+
+    for (const auto& action : text.actions()) {
+        if (action.id == TextActionId::write_str) {
+            result += action.str;
+        }
+    }
+
+    return result;
+}
+}  // namespace
+
 namespace io
 {
 bool g_allow_render = true;
@@ -150,12 +186,15 @@ void draw_tile(const TileDrawObj&) {}
 void draw_character(const CharacterDrawObj&) {}
 
 void draw_text(
-    Text,
-    Panel,
-    P,
+    Text text,
+    Panel panel,
+    P pos,
     Color,
     const DrawBg,
-    const Color&) {}
+    const Color&)
+{
+    s_captured_text_draws.push_back({text_to_string(text), panel, pos});
+}
 
 void draw_text_center(
     const std::string&,
@@ -176,8 +215,19 @@ void draw_text_right(
 
 int text_advance_px(const std::string& str)
 {
-    return (int)utf8::display_width(str) *
-           std::max(1, config::gui_cell_px_w());
+    int result = 0;
+
+    for (size_t pos = 0; pos < str.size();) {
+        const size_t cp_size = utf8::codepoint_size(str, pos);
+        if ((cp_size == 0) || ((pos + cp_size) > str.size())) {
+            break;
+        }
+
+        result += stub_glyph_advance_px(utf8::codepoint_at(str, pos).value_or('?'));
+        pos += cp_size;
+    }
+
+    return result;
 }
 
 void clear_text_width_cache() {}
@@ -260,6 +310,24 @@ std::string sdl_pref_dir()
 void sleep(const Uint32) {}
 
 }  // namespace io
+
+namespace test_utils
+{
+void enable_wide_cjk_text_stub(const bool is_enabled)
+{
+    s_is_wide_cjk_text_stub_enabled = is_enabled;
+}
+
+void clear_captured_text_draws()
+{
+    s_captured_text_draws.clear();
+}
+
+const std::vector<CapturedTextDraw>& captured_text_draws()
+{
+    return s_captured_text_draws;
+}
+}  // namespace test_utils
 
 // -----------------------------------------------------------------------------
 // audio
