@@ -19,6 +19,7 @@
 #include "SDL_rect.h"
 #include "SDL_render.h"
 #include "SDL_surface.h"
+#include "SDL_version.h"
 #include "colors.hpp"
 #include "config.hpp"
 #include "io.hpp"
@@ -210,8 +211,6 @@ SDL_Surface* make_text_surface(
         return nullptr;
     }
 
-    SDL_SetSurfaceBlendMode(surface, SDL_BLENDMODE_BLEND);
-
     const Uint32 transparent =
         SDL_MapRGBA(surface->format, 0, 0, 0, 0);
     SDL_FillRect(surface, nullptr, transparent);
@@ -370,6 +369,10 @@ const RenderedText* make_rendered_text(
     }
 
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+
+#if SDL_VERSION_ATLEAST(2, 0, 12)
+    SDL_SetTextureScaleMode(texture, SDL_ScaleModeNearest);
+#endif
 
     const RenderedTextKey key {
         str,

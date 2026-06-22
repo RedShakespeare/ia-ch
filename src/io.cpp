@@ -24,6 +24,7 @@
 #include "SDL_error.h"
 #include "SDL_events.h"
 #include "SDL_filesystem.h"
+#include "SDL_hints.h"
 #include "SDL_image.h"
 #include "SDL_mixer.h"
 #include "SDL_rect.h"
@@ -1279,6 +1280,8 @@ void init_sdl()
     TRACE_FUNC_BEGIN;
 
     cleanup_sdl();
+
+    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0");
 
     const uint32_t sdl_init_flags =
         SDL_INIT_VIDEO |
