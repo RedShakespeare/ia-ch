@@ -30,6 +30,7 @@
 #include "debug.hpp"
 #include "direction.hpp"
 #include "io_internal.hpp"
+#include "map_render_batch.hpp"
 #include "paths.hpp"
 #include "state.hpp"
 #include "text_format.hpp"
@@ -706,13 +707,19 @@ void draw_character_at_px(
 
     const Color color_adapted = color.with_brightness(config::brightness_pct());
 
-    SDL_SetTextureColorMod(
-        texture,
-        color_adapted.r(),
-        color_adapted.g(),
-        color_adapted.b());
+    // Use batch rendering if active, otherwise render immediately
+    if (map_render_batch::is_active()) {
+        map_render_batch::add_character(texture, clip_rect, render_rect, color_adapted);
+    }
+    else {
+        SDL_SetTextureColorMod(
+            texture,
+            color_adapted.r(),
+            color_adapted.g(),
+            color_adapted.b());
 
-    SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
+        SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
+    }
 }
 
 void draw_character(const CharacterDrawObj& obj)
@@ -776,9 +783,15 @@ void draw_tile(const TileDrawObj& obj)
 
     const Color color = obj.color.with_brightness(config::brightness_pct());
 
-    SDL_SetTextureColorMod(texture, color.r(), color.g(), color.b());
+    // Use batch rendering if active, otherwise render immediately
+    if (map_render_batch::is_active()) {
+        map_render_batch::add_tile(texture, nullptr, render_rect, color);
+    }
+    else {
+        SDL_SetTextureColorMod(texture, color.r(), color.g(), color.b());
 
-    SDL_RenderCopy(g_sdl_renderer, texture, nullptr, &render_rect);
+        SDL_RenderCopy(g_sdl_renderer, texture, nullptr, &render_rect);
+    }
 }
 
 void cover_panel(const Panel panel, const Color& color)
