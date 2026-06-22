@@ -39,6 +39,19 @@ static size_t token_w_px(const std::string& str)
     return io::text_advance_px(str);
 }
 
+static bool can_merge_write_actions(
+    const TextAction& a,
+    const TextAction& b)
+{
+    if ((a.id != TextActionId::write_str) ||
+        (b.id != TextActionId::write_str)) {
+        return false;
+    }
+
+    return (a.str.find(' ') == std::string::npos) &&
+        (b.str.find(' ') == std::string::npos);
+}
+
 // -----------------------------------------------------------------------------
 // Text
 // -----------------------------------------------------------------------------
@@ -68,7 +81,7 @@ int Text::nr_lines()
     return (int)n;
 }
 
-std::vector<TextAction> Text::actions()
+const std::vector<TextAction>& Text::actions()
 {
     compile();
 
@@ -132,7 +145,7 @@ std::vector<TextAction> TextCompiler::compile()
             m_line_w = 0;
         }
 
-        actions.push_back(action);
+        append_action(actions, action);
 
         if (action.id == TextActionId::write_str) {
             m_line_w += token_w_px(action.str);
@@ -193,6 +206,19 @@ bool TextCompiler::should_add_newline_before_write_action(
     }
 
     return new_line_w > max_text_w_px(m_max_w);
+}
+
+void TextCompiler::append_action(
+    std::vector<TextAction>& actions,
+    const TextAction& action) const
+{
+    if (!actions.empty() &&
+        can_merge_write_actions(actions.back(), action)) {
+        actions.back().str += action.str;
+        return;
+    }
+
+    actions.push_back(action);
 }
 
 TextAction TextCompiler::token_to_action(const std::string& token) const

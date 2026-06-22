@@ -1056,6 +1056,7 @@ static void init_renderer()
     TRACE_FUNC_BEGIN;
 
     if (io::g_sdl_renderer) {
+        io::clear_texture_color_mod_cache();
         SDL_DestroyRenderer(io::g_sdl_renderer);
     }
 
@@ -1166,6 +1167,37 @@ SDL_Texture* g_tile_textures_with_contours[(size_t)gfx::TileId::END] = {};
 SDL_Texture* g_logo_texture = nullptr;
 
 P g_rendering_px_offset = {};
+
+namespace
+{
+SDL_Texture* s_current_color_mod_texture = nullptr;
+Color s_current_color_mod_color = colors::black();
+bool s_has_current_color_mod = false;
+}  // namespace
+
+void clear_texture_color_mod_cache()
+{
+    s_current_color_mod_texture = nullptr;
+    s_current_color_mod_color = colors::black();
+    s_has_current_color_mod = false;
+}
+
+void set_texture_color_mod_if_needed(
+    SDL_Texture* const texture,
+    const Color& color)
+{
+    if (s_has_current_color_mod &&
+        (texture == s_current_color_mod_texture) &&
+        (color == s_current_color_mod_color)) {
+        return;
+    }
+
+    SDL_SetTextureColorMod(texture, color.r(), color.g(), color.b());
+
+    s_current_color_mod_texture = texture;
+    s_current_color_mod_color = color;
+    s_has_current_color_mod = true;
+}
 
 void init_sdl()
 {
@@ -1281,6 +1313,7 @@ void cleanup_other()
     TRACE_FUNC_BEGIN;
 
     if (g_sdl_renderer) {
+        clear_texture_color_mod_cache();
         SDL_DestroyRenderer(g_sdl_renderer);
         g_sdl_renderer = nullptr;
     }
@@ -1413,12 +1446,7 @@ static void draw_glyph_index_at_px(
         map_render_batch::add_character(texture, clip_rect, render_rect, color_adapted);
     }
     else {
-        SDL_SetTextureColorMod(
-            texture,
-            color_adapted.r(),
-            color_adapted.g(),
-            color_adapted.b());
-
+        set_texture_color_mod_if_needed(texture, color_adapted);
         SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
     }
 }
@@ -1466,13 +1494,13 @@ static void draw_glyph_metadata_at_px(
 
     const Color color_adapted = color.with_brightness(config::brightness_pct());
 
-    SDL_SetTextureColorMod(
-        texture,
-        color_adapted.r(),
-        color_adapted.g(),
-        color_adapted.b());
-
-    SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
+    if (map_render_batch::is_active()) {
+        map_render_batch::add_character(texture, clip_rect, render_rect, color_adapted);
+    }
+    else {
+        set_texture_color_mod_if_needed(texture, color_adapted);
+        SDL_RenderCopy(g_sdl_renderer, texture, &clip_rect, &render_rect);
+    }
 }
 
 void draw_character_at_px(
@@ -1606,8 +1634,7 @@ void draw_tile(const TileDrawObj& obj)
         map_render_batch::add_tile(texture, nullptr, render_rect, color);
     }
     else {
-        SDL_SetTextureColorMod(texture, color.r(), color.g(), color.b());
-
+        set_texture_color_mod_if_needed(texture, color);
         SDL_RenderCopy(g_sdl_renderer, texture, nullptr, &render_rect);
     }
 }
@@ -1687,14 +1714,14 @@ void draw_logo(Color color)
 
     color = color.with_brightness(config::brightness_pct());
 
-    SDL_SetTextureColorMod(g_logo_texture, color.r(), color.g(), color.b());
-
+    set_texture_color_mod_if_needed(g_logo_texture, color);
     SDL_RenderCopy(g_sdl_renderer, g_logo_texture, nullptr, &render_rect);
 }
 
 void reload_logo()
 {
     if (g_logo_texture) {
+        clear_texture_color_mod_cache();
         SDL_DestroyTexture(g_logo_texture);
         g_logo_texture = nullptr;
     }

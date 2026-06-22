@@ -11,6 +11,8 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
 
 #include "colors.hpp"
 #include "config.hpp"
@@ -25,12 +27,57 @@
 // -----------------------------------------------------------------------------
 namespace
 {
-std::unordered_map<std::string, int> s_text_width_cache;
-constexpr size_t max_text_width_cache_entries = 1024;
+struct TextGlyph
+{
+    uint32_t codepoint {};
+    int advance_px {};
+};
+
+struct TextRun
+{
+    int advance_px {};
+    std::vector<TextGlyph> glyphs;
+};
+
+std::unordered_map<std::string, TextRun> s_text_run_cache;
+constexpr size_t max_text_run_cache_entries = 4096;
 
 uint32_t codepoint_at_or_fallback(const std::string& str, const size_t pos)
 {
     return utf8::codepoint_at(str, pos).value_or('?');
+}
+
+const TextRun& text_run(const std::string& str)
+{
+    if (const auto it = s_text_run_cache.find(str);
+        it != s_text_run_cache.end()) {
+        return it->second;
+    }
+
+    if (s_text_run_cache.size() >= max_text_run_cache_entries) {
+        s_text_run_cache.clear();
+    }
+
+    TextRun run;
+    run.glyphs.reserve(str.size());
+
+    for (size_t i = 0; i < str.size();) {
+        const size_t cp_size = utf8::codepoint_size(str, i);
+        if (cp_size == 0) {
+            break;
+        }
+
+        const uint32_t codepoint = codepoint_at_or_fallback(str, i);
+        const int advance_px = io::glyph_advance_px(codepoint);
+
+        run.advance_px += advance_px;
+        run.glyphs.push_back({codepoint, advance_px});
+
+        i += cp_size;
+    }
+
+    const auto inserted = s_text_run_cache.emplace(str, std::move(run));
+    return inserted.first->second;
 }
 }  // namespace
 
@@ -41,35 +88,12 @@ namespace io
 {
 int text_advance_px(const std::string& str)
 {
-    if (const auto it = s_text_width_cache.find(str);
-        it != s_text_width_cache.end()) {
-        return it->second;
-    }
-
-    int w = 0;
-
-    for (size_t i = 0; i < str.size();) {
-        const size_t cp_size = utf8::codepoint_size(str, i);
-        if (cp_size == 0) {
-            break;
-        }
-
-        w += glyph_advance_px(codepoint_at_or_fallback(str, i));
-        i += cp_size;
-    }
-
-    if (s_text_width_cache.size() >= max_text_width_cache_entries) {
-        s_text_width_cache.clear();
-    }
-
-    s_text_width_cache[str] = w;
-
-    return w;
+    return text_run(str).advance_px;
 }
 
 void clear_text_width_cache()
 {
-    s_text_width_cache.clear();
+    s_text_run_cache.clear();
 }
 
 void draw_text_at_px(
@@ -84,7 +108,8 @@ void draw_text_at_px(
     }
 
     const int cell_px_w = config::gui_cell_px_w();
-    const int msg_px_w = text_advance_px(str);
+    const TextRun& run = text_run(str);
+    const int msg_px_w = run.advance_px;
 
     const SDL_Color sdl_color = color.sdl_color();
     const SDL_Color sdl_bg_color = bg_color.sdl_color();
@@ -101,7 +126,7 @@ void draw_text_at_px(
     size_t dots_idx = 0;
     const int px_x_dots = screen_px_w - (cell_px_w * 5);
 
-    for (size_t i = 0; i < str.size();) {
+    for (const TextGlyph& glyph : run.glyphs) {
         if (px_pos.x < 0 || px_pos.x >= screen_px_w) {
             return;
         }
@@ -109,12 +134,6 @@ void draw_text_at_px(
         const bool draw_dots =
             !msg_w_fit_on_screen &&
             (px_pos.x >= px_x_dots);
-
-        const size_t cp_size = utf8::codepoint_size(str, i);
-
-        if (cp_size == 0) {
-            break;
-        }
 
         if (draw_dots) {
             draw_character_at_px(
@@ -129,19 +148,15 @@ void draw_text_at_px(
         }
         else {
             // Whole message fits, or we are not yet near the edge
-            const uint32_t codepoint = codepoint_at_or_fallback(str, i);
-
             draw_glyph_at_px(
-                codepoint,
+                glyph.codepoint,
                 px_pos,
                 sdl_color,
                 draw_bg,
                 sdl_bg_color);
 
-            px_pos.x += glyph_advance_px(codepoint);
+            px_pos.x += glyph.advance_px;
         }
-
-        i += cp_size;
     }
 }
 

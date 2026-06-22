@@ -397,22 +397,14 @@ TEST_CASE("Text with Chinese UTF-8 characters wraps by character")
     size_t idx = 0;
 
     REQUIRE(actions[idx].id == TextActionId::write_str);
-    REQUIRE(actions[idx].str == "玩");
-
-    ++idx;
-    REQUIRE(actions[idx].id == TextActionId::write_str);
-    REQUIRE(actions[idx].str == "家");
+    REQUIRE(actions[idx].str == "玩家");
 
     ++idx;
     REQUIRE(actions[idx].id == TextActionId::newline);
 
     ++idx;
     REQUIRE(actions[idx].id == TextActionId::write_str);
-    REQUIRE(actions[idx].str == "角");
-
-    ++idx;
-    REQUIRE(actions[idx].id == TextActionId::write_str);
-    REQUIRE(actions[idx].str == "色");
+    REQUIRE(actions[idx].str == "角色");
 }
 
 TEST_CASE("Text with ASCII before Chinese UTF-8 characters wraps after ASCII")
@@ -429,11 +421,7 @@ TEST_CASE("Text with ASCII before Chinese UTF-8 characters wraps after ASCII")
     size_t idx = 0;
 
     REQUIRE(actions[idx].id == TextActionId::write_str);
-    REQUIRE(actions[idx].str == "降");
-
-    ++idx;
-    REQUIRE(actions[idx].id == TextActionId::write_str);
-    REQUIRE(actions[idx].str == "低");
+    REQUIRE(actions[idx].str == "降低");
 
     ++idx;
     REQUIRE(actions[idx].id == TextActionId::write_str);
@@ -448,13 +436,38 @@ TEST_CASE("Text with ASCII before Chinese UTF-8 characters wraps after ASCII")
 
     ++idx;
     REQUIRE(actions[idx].id == TextActionId::write_str);
-    REQUIRE(actions[idx].str == "。");
+    REQUIRE(actions[idx].str == "。然而");
+}
+
+TEST_CASE("Text coalesces Chinese UTF-8 runs without crossing color changes")
+{
+    std::string str = "玩家{COLOR_LIGHT_MAGENTA}角色{color_reset}探索";
+
+    Text text(str);
+
+    text.set_w(20);
+    text.set_color(colors::white());
+
+    const auto& actions = text.actions();
+
+    size_t idx = 0;
+
+    REQUIRE(actions[idx].id == TextActionId::write_str);
+    REQUIRE(actions[idx].str == "玩家");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::change_color);
+    REQUIRE(actions[idx].color == colors::light_magenta());
 
     ++idx;
     REQUIRE(actions[idx].id == TextActionId::write_str);
-    REQUIRE(actions[idx].str == "然");
+    REQUIRE(actions[idx].str == "角色");
+
+    ++idx;
+    REQUIRE(actions[idx].id == TextActionId::change_color);
+    REQUIRE(actions[idx].color == colors::white());
 
     ++idx;
     REQUIRE(actions[idx].id == TextActionId::write_str);
-    REQUIRE(actions[idx].str == "而");
+    REQUIRE(actions[idx].str == "探索");
 }

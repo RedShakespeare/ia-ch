@@ -136,11 +136,7 @@ void flush()
     for (const auto& cmd : s_draw_commands) {
         // Set texture color mod only when texture or color changes
         if (cmd.texture != current_texture || cmd.color != current_color) {
-            SDL_SetTextureColorMod(
-                cmd.texture,
-                cmd.color.r(),
-                cmd.color.g(),
-                cmd.color.b());
+            io::set_texture_color_mod_if_needed(cmd.texture, cmd.color);
 
             current_texture = cmd.texture;
             current_color = cmd.color;

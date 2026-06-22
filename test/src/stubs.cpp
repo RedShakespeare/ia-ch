@@ -182,6 +182,12 @@ int text_advance_px(const std::string& str)
 
 void clear_text_width_cache() {}
 
+void clear_texture_color_mod_cache() {}
+
+void set_texture_color_mod_if_needed(
+    SDL_Texture*,
+    const Color&) {}
+
 void cover_cell(const Panel, const P&) {}
 
 void cover_panel(

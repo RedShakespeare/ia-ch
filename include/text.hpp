@@ -68,7 +68,7 @@ public:
 
     int nr_lines();
 
-    std::vector<TextAction> actions();
+    const std::vector<TextAction>& actions();
 
 private:
     void compile();
@@ -100,6 +100,10 @@ private:
     std::pair<std::string, size_t> next_token(size_t pos) const;
 
     TextAction token_to_action(const std::string& token) const;
+
+    void append_action(
+        std::vector<TextAction>& actions,
+        const TextAction& action) const;
 
     const std::string& m_raw_str;
     const size_t m_max_w;
