@@ -478,12 +478,21 @@ if(WIN32)
 endif()
 
 # ------------------------------------------------------------------------------
-# On Windows, statically link libgcc and libstdc++
+# On Windows, statically link MinGW runtime support libraries
 # ------------------------------------------------------------------------------
 if(WIN32)
         if(CMAKE_COMPILER_IS_GNUCXX)
-                target_link_libraries(ia -static-libgcc -static-libstdc++)
-                target_link_libraries(ia-debug -static-libgcc -static-libstdc++)
+                target_link_libraries(
+                        ia
+                        -static
+                        -static-libgcc
+                        -static-libstdc++)
+
+                target_link_libraries(
+                        ia-debug
+                        -static
+                        -static-libgcc
+                        -static-libstdc++)
         endif()
 endif()
 
