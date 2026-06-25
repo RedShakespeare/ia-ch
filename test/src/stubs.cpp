@@ -35,6 +35,7 @@ class Actor;
 namespace
 {
 bool s_is_wide_cjk_text_stub_enabled = false;
+std::string s_sdl_base_dir_stub = "./";
 std::vector<test_utils::CapturedTextDraw> s_captured_text_draws;
 
 bool is_cjk_codepoint_for_test(const uint32_t codepoint)
@@ -342,6 +343,11 @@ std::string sdl_pref_dir()
     return "./";
 }
 
+std::string sdl_base_dir()
+{
+    return s_sdl_base_dir_stub;
+}
+
 void sleep(const Uint32) {}
 
 }  // namespace io
@@ -351,6 +357,16 @@ namespace test_utils
 void enable_wide_cjk_text_stub(const bool is_enabled)
 {
     s_is_wide_cjk_text_stub_enabled = is_enabled;
+}
+
+void set_sdl_base_dir_stub(const std::string& path)
+{
+    s_sdl_base_dir_stub = path;
+}
+
+void reset_sdl_path_stubs()
+{
+    s_sdl_base_dir_stub = "./";
 }
 
 void clear_captured_text_draws()

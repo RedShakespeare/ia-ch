@@ -6,8 +6,10 @@
 
 #include "paths.hpp"
 
+#include <algorithm>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 #include <optional>
 #include <ostream>
 #include <queue>
@@ -27,11 +29,57 @@
 // Private
 // -----------------------------------------------------------------------------
 static std::string s_user_dir;
+static std::string s_game_dir;
 
 static std::queue<std::string> s_pending_error_messages;
 
 // Can be used by the player for overriding the user data directory.
 const static std::string s_user_data_ini_file_name = "user_data.ini";
+
+static std::string path_with_trailing_separator(const std::filesystem::path& path)
+{
+    std::string result = path.lexically_normal().generic_string();
+
+    if (result.empty()) {
+        result = ".";
+    }
+
+    if (result.back() != '/') {
+        result += "/";
+    }
+
+    return result;
+}
+
+static std::filesystem::path game_dir_path()
+{
+    if (s_game_dir.empty()) {
+        return ".";
+    }
+
+    return s_game_dir;
+}
+
+static std::string game_file_path(const std::string& relative_path)
+{
+    return (game_dir_path() / relative_path).lexically_normal().generic_string();
+}
+
+static std::string game_dir_path(const std::string& relative_path)
+{
+    return path_with_trailing_separator(game_dir_path() / relative_path);
+}
+
+static std::string resolved_user_dir_path(const std::string& path)
+{
+    std::filesystem::path user_dir(path);
+
+    if (user_dir.is_relative()) {
+        user_dir = game_dir_path() / user_dir;
+    }
+
+    return path_with_trailing_separator(user_dir);
+}
 
 static std::optional<std::string> numbered_logo_variant_path(
     const std::string& directory,
@@ -151,7 +199,7 @@ static std::string read_user_dir_from_ini_file()
     // exists files are placed in it. Why is the SDL_GetPrefPath directory automatically created
     // but not e.g. "~/foo" specified in user_data.ini?
 
-    const mINI::INIFile user_data_ini(s_user_data_ini_file_name);
+    const mINI::INIFile user_data_ini(game_file_path(s_user_data_ini_file_name));
     mINI::INIStructure ini;
     user_data_ini.read(ini);
 
@@ -201,6 +249,10 @@ void init()
         s_pending_error_messages.pop();
     }
 
+    s_game_dir = path_with_trailing_separator(io::sdl_base_dir());
+
+    TRACE << "Using game directory '" << s_game_dir << "'" << "\n";
+
     // Attempt to decide a directory for user data (config highscore, etc) according to the
     // following prioritization:
     //
@@ -235,6 +287,8 @@ void init()
         TRACE << "Path from " << s_user_data_ini_file_name << " is empty" << "\n";
     }
     else {
+        user_dir = resolved_user_dir_path(user_dir);
+
         const bool is_writable = ensure_writable_location(user_dir);
 
         if (is_writable) {
@@ -244,8 +298,6 @@ void init()
                 << " for user data"
                 << "\n";
 
-            // TODO: This is hacky, but will not be needed if using std::filesystem.
-            user_dir += "/";
         }
         else {
             TRACE
@@ -289,7 +341,7 @@ void init()
             << "Attempting to use path in game directory for user data"
             << "\n";
 
-        user_dir = "user_data/";
+        user_dir = game_dir_path("user_data");
 
         const bool is_writable = ensure_writable_location(user_dir);
 
@@ -340,7 +392,7 @@ std::string highscores_file_path()
 
 std::string gfx_dir()
 {
-    return "gfx/";
+    return game_dir_path("gfx");
 }
 
 std::string fonts_dir()
@@ -377,12 +429,12 @@ std::string logo_img_path()
 
 std::string audio_dir()
 {
-    return "audio/";
+    return game_dir_path("audio");
 }
 
 std::string data_dir()
 {
-    return "data/";
+    return game_dir_path("data");
 }
 
 std::string messages_dir()

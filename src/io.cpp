@@ -1846,6 +1846,34 @@ std::string sdl_pref_dir()
     return path_str;
 }
 
+std::string sdl_base_dir()
+{
+    TRACE_FUNC_BEGIN;
+
+    char* const path_ptr = SDL_GetBasePath();
+
+    if (!path_ptr) {
+        TRACE_ERROR_RELEASE
+            << "SDL_GetBasePath failed: "
+            << SDL_GetError()
+            << "\n";
+
+        TRACE_FUNC_END;
+
+        return "./";
+    }
+
+    std::string path_str = path_ptr;
+
+    SDL_free(path_ptr);
+
+    TRACE << "SDL_GetBasePath returned path '" << path_str << "'" << "\n";
+
+    TRACE_FUNC_END;
+
+    return path_str;
+}
+
 void sleep(const uint32_t duration)
 {
     if ((duration == 0) || config::is_bot_playing()) {
