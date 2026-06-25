@@ -316,7 +316,21 @@ void MainMenuState::update()
 
                 init::init_session();
 
-                saving::load_game();
+                if (!saving::load_game()) {
+                    init::cleanup_session();
+
+                    popup::Popup(popup::AddToMsgHistory::no)
+                        .set_title(i18n::get("main_menu.load_failed_title", "Load failed"))
+                        .set_msg(
+                            saving::last_load_error().empty()
+                                ? i18n::get(
+                                      "main_menu.load_failed_msg",
+                                      "Could not load the saved game.")
+                                : saving::last_load_error())
+                        .run();
+
+                    return;
+                }
 
                 auto game_state = std::make_unique<GameState>(
                     GameEntryMode::load_game);

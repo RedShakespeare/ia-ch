@@ -7,10 +7,13 @@
 #include "saving.hpp"
 
 #include <algorithm>
+#include <charconv>
 #include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <iterator>
+#include <stdexcept>
+#include <system_error>
 #include <vector>
 
 #include "actor.hpp"
@@ -29,7 +32,6 @@
 #include "map.hpp"
 #include "map_templates.hpp"
 #include "map_travel.hpp"
-#include "misc.hpp"
 #include "paths.hpp"
 #include "player_bon.hpp"
 #include "player_spells.hpp"
@@ -50,6 +52,40 @@ enum class SaveLoadState
 static SaveLoadState s_state;
 
 static std::vector<std::string> s_lines;
+
+static std::string s_last_load_error;
+
+class LoadError : public std::runtime_error
+{
+public:
+    explicit LoadError(const std::string& msg) :
+        std::runtime_error(msg)
+    {
+    }
+};
+
+[[noreturn]] static void fail_load(const std::string& msg)
+{
+    if (s_last_load_error.empty()) {
+        s_last_load_error = msg;
+    }
+
+    TRACE_ERROR_RELEASE << msg << "\n";
+
+    throw LoadError(msg);
+}
+
+static bool parse_int(const std::string& str, int& result)
+{
+    const char* const begin = str.data();
+    const char* const end = begin + str.size();
+
+    const auto parse_result = std::from_chars(begin, end, result);
+
+    return (
+        parse_result.ec == std::errc() &&
+        parse_result.ptr == end);
+}
 
 static void write_save_insanity_file()
 {
@@ -95,11 +131,11 @@ static void load_modules()
 {
     TRACE_FUNC_BEGIN;
 
-    ASSERT(!s_lines.empty());
-
     const std::string player_name = saving::get_str();
 
-    ASSERT(!player_name.empty());
+    if (player_name.empty()) {
+        fail_load("Failed to load save file: player name is empty");
+    }
 
     map::g_player->m_data->name_a = player_name;
 
@@ -128,6 +164,17 @@ static void load_modules()
     TRACE_FUNC_END;
 }
 
+static void validate_loaded_state()
+{
+    if (!map::g_player) {
+        fail_load("Failed to load save file: missing player");
+    }
+
+    if (!map::is_pos_inside_map(map::g_player->m_pos)) {
+        fail_load("Failed to load save file: player position is outside the map");
+    }
+}
+
 static void write_file()
 {
     std::ofstream file;
@@ -148,7 +195,7 @@ static void write_file()
     }
 }
 
-static void read_file()
+static bool read_file()
 {
     std::ifstream file(paths::save_file_path());
 
@@ -160,10 +207,16 @@ static void read_file()
         }
 
         file.close();
+
+        return true;
     }
     else {
-        // Could not open save file
-        ASSERT(false && "Failed to open save file");
+        TRACE_ERROR_RELEASE
+            << "Failed to open save file: "
+            << paths::save_file_path()
+            << "\n";
+
+        return false;
     }
 }
 
@@ -175,6 +228,7 @@ namespace saving
 void init()
 {
     s_lines.clear();
+    s_last_load_error.clear();
 
     s_state = SaveLoadState::stopped;
 }
@@ -199,25 +253,67 @@ void save_game()
     s_lines.clear();
 }
 
-void load_game()
+bool load_game()
 {
     ASSERT(s_state == SaveLoadState::stopped);
     ASSERT(s_lines.empty());
 
     s_state = SaveLoadState::loading;
+    s_last_load_error.clear();
 
-    // Read the save file to the save lines
-    read_file();
+    try {
+        // Read the save file to the save lines
+        if (!read_file()) {
+            fail_load("Failed to load save file: could not open file");
+        }
 
-    ASSERT(!s_lines.empty());
+        if (s_lines.empty()) {
+            fail_load("Failed to load save file: file is empty");
+        }
 
-    // Tell all modules to set up their state from the save lines (via the
-    // read functions of this module)
-    load_modules();
+        // Tell all modules to set up their state from the save lines (via the
+        // read functions of this module)
+        load_modules();
+        validate_loaded_state();
 
-    s_state = SaveLoadState::stopped;
+        s_state = SaveLoadState::stopped;
 
-    ASSERT(s_lines.empty());
+        if (!s_lines.empty()) {
+            TRACE_ERROR_RELEASE
+                << "Save file contained "
+                << s_lines.size()
+                << " unread trailing line(s)"
+                << "\n";
+        }
+
+        s_lines.clear();
+
+        return true;
+    } catch (const LoadError&) {
+        s_state = SaveLoadState::stopped;
+        s_lines.clear();
+
+        if (s_last_load_error.empty()) {
+            s_last_load_error = "Failed to load save file";
+        }
+
+        return false;
+    } catch (const std::exception& e) {
+        s_state = SaveLoadState::stopped;
+        s_lines.clear();
+
+        s_last_load_error =
+            std::string("Failed to load save file: ") + e.what();
+
+        TRACE_ERROR_RELEASE << s_last_load_error << "\n";
+
+        return false;
+    }
+}
+
+const std::string& last_load_error()
+{
+    return s_last_load_error;
 }
 
 void erase_save()
@@ -292,7 +388,14 @@ void put_bool(const bool v)
 std::string get_str()
 {
     ASSERT(s_state == SaveLoadState::loading);
-    ASSERT(!s_lines.empty());
+
+    if (s_state != SaveLoadState::loading) {
+        fail_load("Failed to load save file: attempted to read outside load state");
+    }
+
+    if (s_lines.empty()) {
+        fail_load("Failed to load save file: unexpected end of file");
+    }
 
     auto str = s_lines.front();
 
@@ -303,12 +406,30 @@ std::string get_str()
 
 int get_int()
 {
-    return to_int(get_str());
+    const std::string str = get_str();
+
+    int result = 0;
+
+    if (!parse_int(str, result)) {
+        fail_load("Failed to load save file: invalid integer value '" + str + "'");
+    }
+
+    return result;
 }
 
 bool get_bool()
 {
-    return get_str() == "T";
+    const std::string str = get_str();
+
+    if (str == "T") {
+        return true;
+    }
+
+    if (str == "F") {
+        return false;
+    }
+
+    fail_load("Failed to load save file: invalid boolean value '" + str + "'");
 }
 
 }  // namespace saving

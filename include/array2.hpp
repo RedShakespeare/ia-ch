@@ -7,8 +7,12 @@
 #ifndef ARRAY2_HPP
 #define ARRAY2_HPP
 
+#include <algorithm>
+#include <cstddef>
+#include <cstring>
 #include <functional>
 
+#include "debug.hpp"
 #include "pos.hpp"
 #include "rect.hpp"
 
@@ -121,11 +125,15 @@ public:
 
     T& at(const size_t idx)
     {
+        assert_idx_inside(idx);
+
         return m_data[idx];
     }
 
     const T& at(const size_t idx) const
     {
+        assert_idx_inside(idx);
+
         return m_data[idx];
     }
 
@@ -141,6 +149,8 @@ public:
 
     void resize(const P& dims)
     {
+        assert_dims_valid(dims);
+
         m_dims = dims;
 
         const size_t len = length();
@@ -173,6 +183,8 @@ public:
 
     void resize_no_init(const P& dims)
     {
+        assert_dims_valid(dims);
+
         m_dims = dims;
 
         const size_t len = length();
@@ -294,6 +306,8 @@ public:
 
     size_t pos_to_idx(const P& p) const
     {
+        assert_pos_inside(p);
+
         return (p.x * m_dims.y) + p.y;
     }
 
@@ -304,10 +318,67 @@ public:
 
     P idx_to_pos(const size_t idx)
     {
+        assert_idx_inside(idx);
+
         return {(int)idx / m_dims.y, (int)idx % m_dims.y};
     }
 
 private:
+    static void assert_dims_valid(const P& dims)
+    {
+        if ((dims.x < 0) || (dims.y < 0)) {
+            TRACE_ERROR_RELEASE
+                << "Invalid Array2 dimensions: "
+                << dims.x
+                << "x"
+                << dims.y
+                << "\n";
+
+            PANIC;
+        }
+    }
+
+    bool is_pos_inside(const P& p) const
+    {
+        return (
+            p.x >= 0 &&
+            p.x < m_dims.x &&
+            p.y >= 0 &&
+            p.y < m_dims.y);
+    }
+
+    void assert_pos_inside(const P& p) const
+    {
+        if (!is_pos_inside(p)) {
+            TRACE_ERROR_RELEASE
+                << "Array2 position out of bounds: "
+                << p.x
+                << ","
+                << p.y
+                << " in "
+                << m_dims.x
+                << "x"
+                << m_dims.y
+                << "\n";
+
+            PANIC;
+        }
+    }
+
+    void assert_idx_inside(const size_t idx) const
+    {
+        if (idx >= length()) {
+            TRACE_ERROR_RELEASE
+                << "Array2 index out of bounds: "
+                << idx
+                << " in length "
+                << length()
+                << "\n";
+
+            PANIC;
+        }
+    }
+
     T& get_element_ref(const P& p) const
     {
         const size_t idx = pos_to_idx(p);

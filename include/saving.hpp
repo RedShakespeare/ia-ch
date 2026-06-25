@@ -15,7 +15,9 @@ void init();
 
 void save_game();
 
-void load_game();
+bool load_game();
+
+const std::string& last_load_error();
 
 void erase_save();
 
