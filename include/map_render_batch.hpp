@@ -7,6 +7,8 @@
 #ifndef MAP_RENDER_BATCH_HPP
 #define MAP_RENDER_BATCH_HPP
 
+#include <cstdint>
+
 #include "SDL_rect.h"
 
 // Forward declarations
@@ -16,11 +18,8 @@ struct Color;
 // -----------------------------------------------------------------------------
 // Map render batch system
 // -----------------------------------------------------------------------------
-// This system batches map rendering calls to minimize GPU state changes.
-// Instead of calling SDL_SetTextureColorMod for every tile, we collect all
-// draw commands during draw_map::run() and then sort by (texture, color)
-// before rendering. This reduces state changes from ~1000+ per frame to
-// ~10-50 per frame.
+// This system batches map rendering calls. Commands are replayed in insertion
+// order because map rendering uses later layers to overwrite earlier layers.
 //
 // Usage:
 //   1. Call begin_frame() at start of draw_map::run()
@@ -45,7 +44,13 @@ void add_character(SDL_Texture* texture,
                    const SDL_Rect& dst_rect,
                    const Color& color);
 
-// Sort commands by (texture, color) and render all batches
+// Add a filled rectangle command to the batch
+void add_filled_rect(
+    const SDL_Rect& rect,
+    const Color& color,
+    uint8_t alpha);
+
+// Render all queued commands in insertion order.
 void flush();
 
 // Check if batching is currently active

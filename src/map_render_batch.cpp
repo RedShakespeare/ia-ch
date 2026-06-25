@@ -6,7 +6,6 @@
 
 #include "map_render_batch.hpp"
 
-#include <algorithm>
 #include <vector>
 
 #include "SDL.h"
@@ -20,31 +19,21 @@
 namespace
 {
 
+enum class DrawCommandType
+{
+    texture,
+    filled_rect,
+};
+
 struct DrawCommand
 {
-    SDL_Texture* texture;
-    SDL_Rect src_rect;
-    SDL_Rect dst_rect;
-    Color color;
-    bool has_src_rect;  // true if src_rect is valid, false if should be nullptr
-
-    // Sorting key: order by texture pointer first, then by color components
-    bool operator<(const DrawCommand& other) const
-    {
-        if (texture != other.texture) {
-            return texture < other.texture;
-        }
-
-        if (color.r() != other.color.r()) {
-            return color.r() < other.color.r();
-        }
-
-        if (color.g() != other.color.g()) {
-            return color.g() < other.color.g();
-        }
-
-        return color.b() < other.color.b();
-    }
+    DrawCommandType type {DrawCommandType::texture};
+    SDL_Texture* texture {};
+    SDL_Rect src_rect {};
+    SDL_Rect dst_rect {};
+    Color color {};
+    uint8_t alpha {SDL_ALPHA_OPAQUE};
+    bool has_src_rect {false};
 };
 
 static std::vector<DrawCommand> s_draw_commands;
@@ -79,6 +68,7 @@ void add_tile(SDL_Texture* texture,
     }
 
     DrawCommand cmd;
+    cmd.type = DrawCommandType::texture;
     cmd.texture = texture;
     cmd.has_src_rect = (src_rect != nullptr);
     cmd.src_rect = src_rect ? *src_rect : SDL_Rect{0, 0, 0, 0};
@@ -98,11 +88,30 @@ void add_character(SDL_Texture* texture,
     }
 
     DrawCommand cmd;
+    cmd.type = DrawCommandType::texture;
     cmd.texture = texture;
     cmd.has_src_rect = true;
     cmd.src_rect = src_rect;
     cmd.dst_rect = dst_rect;
     cmd.color = color;
+
+    s_draw_commands.push_back(cmd);
+}
+
+void add_filled_rect(
+    const SDL_Rect& rect,
+    const Color& color,
+    const uint8_t alpha)
+{
+    if (!s_is_batching_active) {
+        return;
+    }
+
+    DrawCommand cmd;
+    cmd.type = DrawCommandType::filled_rect;
+    cmd.dst_rect = rect;
+    cmd.color = color;
+    cmd.alpha = alpha;
 
     s_draw_commands.push_back(cmd);
 }
@@ -126,15 +135,28 @@ void flush()
         return;
     }
 
-    // Sort commands by (texture, color) to minimize state changes
-    std::sort(s_draw_commands.begin(), s_draw_commands.end());
-
-    // Render all commands in batches
+    // Preserve insertion order. Map cells depend on strict draw order: terrain, items,
+    // actors, and overlays intentionally overwrite earlier layers.
     SDL_Texture* current_texture = nullptr;
     Color current_color = colors::black();
 
+    io::set_clip_rect_to_panel(Panel::map);
+
     for (const auto& cmd : s_draw_commands) {
-        // Set texture color mod only when texture or color changes
+        if (cmd.type == DrawCommandType::filled_rect) {
+            SDL_SetRenderDrawColor(
+                io::g_sdl_renderer,
+                cmd.color.r(),
+                cmd.color.g(),
+                cmd.color.b(),
+                cmd.alpha);
+
+            SDL_RenderFillRect(io::g_sdl_renderer, &cmd.dst_rect);
+
+            continue;
+        }
+
+        // Set texture color mod only when texture or color changes.
         if (cmd.texture != current_texture || cmd.color != current_color) {
             io::set_texture_color_mod_if_needed(cmd.texture, cmd.color);
 
@@ -147,6 +169,8 @@ void flush()
 
         SDL_RenderCopy(io::g_sdl_renderer, cmd.texture, src_ptr, &cmd.dst_rect);
     }
+
+    io::disable_clip_rect();
 
     s_draw_commands.clear();
 }
