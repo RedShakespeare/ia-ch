@@ -70,6 +70,9 @@ static std::string game_dir_path(const std::string& relative_path)
     return path_with_trailing_separator(game_dir_path() / relative_path);
 }
 
+// NOTE: game_file_path returns a path WITHOUT a trailing separator (for
+// files), while game_dir_path(relative) returns one WITH a trailing
+// separator (for directories). game_dir_path() returns the bare base dir.
 static std::string resolved_user_dir_path(const std::string& path)
 {
     std::filesystem::path user_dir(path);
@@ -397,17 +400,17 @@ std::string gfx_dir()
 
 std::string fonts_dir()
 {
-    return gfx_dir() + "/fonts/";
+    return gfx_dir() + "fonts/";
 }
 
 std::string tiles_dir()
 {
-    return gfx_dir() + "/tiles/20x20/";
+    return gfx_dir() + "tiles/20x20/";
 }
 
 std::string images_dir()
 {
-    return gfx_dir() + "/images/";
+    return gfx_dir() + "images/";
 }
 
 std::string logo_img_path()
@@ -439,12 +442,12 @@ std::string data_dir()
 
 std::string messages_dir()
 {
-    return data_dir() + "/messages/";
+    return data_dir() + "messages/";
 }
 
 std::string locale_dir()
 {
-    return data_dir() + "/locale/";
+    return data_dir() + "locale/";
 }
 
 }  // namespace paths
