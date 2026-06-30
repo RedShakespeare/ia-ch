@@ -24,7 +24,7 @@ struct Color;
 // Usage:
 //   1. Call begin_frame() at start of draw_map::run()
 //   2. Replace immediate SDL_RenderCopy calls with add_tile()/add_character()
-//   3. Call flush() at end of draw_map::run() to sort and render all batches
+//   3. Call flush() at end of draw_map::run() to render all batches
 // -----------------------------------------------------------------------------
 namespace map_render_batch
 {
