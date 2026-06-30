@@ -9,6 +9,7 @@
 #include "actor.hpp"
 #include "actor_move.hpp"
 #include "config.hpp"
+#include "i18n.hpp"
 #include "init.hpp"
 #include "map.hpp"
 #include "pos.hpp"
@@ -45,6 +46,12 @@ void init_all()
     rnd::seed();
 
     init::init_io();
+
+    // Force English so tests assert against deterministic message text,
+    // independent of the configured default language.
+    config::set_language("en");
+    i18n::reload();
+
     init::init_game();
     init::init_session();
 
