@@ -27,6 +27,11 @@ void add_character(SDL_Texture*, const SDL_Rect&, const SDL_Rect&, const Color&)
     // No-op for tests
 }
 
+void add_filled_rect(const SDL_Rect&, const Color&, uint8_t)
+{
+    // No-op for tests
+}
+
 void flush()
 {
     // No-op for tests
