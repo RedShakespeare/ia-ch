@@ -14,6 +14,7 @@
 #include "colors.hpp"
 #include "config.hpp"
 #include "io_internal.hpp"
+#include "map_render_batch.hpp"
 #include "pos.hpp"
 #include "rect.hpp"
 
@@ -79,6 +80,12 @@ void draw_rectangle_filled(
         px_rect.h()};
 
     const Color color_adapted = color.with_brightness(config::brightness_pct());
+
+    if (map_render_batch::is_active()) {
+        map_render_batch::add_filled_rect(rect, color_adapted, alpha);
+
+        return;
+    }
 
     SDL_SetRenderDrawColor(
         g_sdl_renderer,
