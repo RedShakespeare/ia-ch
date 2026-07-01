@@ -1131,7 +1131,7 @@ bool PropHandler::is_resisting_dmg(
                 const std::string mon_name =
                     can_player_see_mon
                     ? text_format::first_to_upper(actor::name_the(*m_owner))
-                    : "It";
+                    : i18n::get("attack_ranged.it", "It");
 
                 std::string msg = res_data.msg_resist_mon;
 

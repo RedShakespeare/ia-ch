@@ -2835,6 +2835,8 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
     REQUIRE(i18n::get("spells.little_to_offer", "I feel like I have very little to offer.") == "我觉得自己几乎无物可献。");
     REQUIRE(i18n::get("spells.nothing_more_to_shed", "There is nothing more to shed.") == "已经没有更多可以舍弃的了。");
     REQUIRE(i18n::get("bash.attack_middle", " ") == "");
+    REQUIRE(i18n::get("bash.a_corpse", "a corpse") == "一具尸体");
+    REQUIRE(i18n::get("bash.corpse_period", ".") == "。");
     REQUIRE(i18n::get("item_explosive.hear_explosion", "I hear an explosion!") == "我听到了一声爆炸！");
     REQUIRE(i18n::get("terrain_pylon.space", " ") == "");
     REQUIRE(i18n::get("terrain_pylon.destroyed_suffix", " is destroyed.") == "被摧毁了。");

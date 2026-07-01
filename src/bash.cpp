@@ -378,16 +378,18 @@ void attack_corpse(actor::Actor& mon, const item::Item& wpn)
         ? actor::localized_text(
               mon.m_data->corpse_name_the_i18n_key,
               mon.m_data->corpse_name_the)
-        : "a corpse";
+        : i18n::get("bash.a_corpse", "a corpse");
 
     corpse_name = text_format::first_to_lower(corpse_name);
 
     const std::string melee_att_msg = wpn.data().melee.attack_msgs.player;
 
     const std::string msg =
-        "I " +
-        melee_att_msg + " " +
-        corpse_name + ".";
+        i18n::get("attack_melee.player_prefix", "I ") +
+        melee_att_msg +
+        i18n::get("attack_melee.word_separator", " ") +
+        corpse_name +
+        i18n::get("bash.corpse_period", ".");
 
     msg_log::add(msg);
 
