@@ -231,7 +231,7 @@ TEST_CASE("Saving and loading the game")
 
         REQUIRE(saving::is_save_available());
 
-        saving::load_game();
+        REQUIRE(saving::load_game());
 
         // Item data
         REQUIRE(item::g_data[(size_t)item::Id::scroll_teleport]
@@ -467,4 +467,16 @@ TEST_CASE("Saving and loading the game")
 
         test_utils::cleanup_all();
     }
+}
+
+TEST_CASE("Loading an empty save fails gracefully")
+{
+    saving::init();
+    saving::erase_save();
+
+    REQUIRE_FALSE(saving::is_save_available());
+    REQUIRE_FALSE(saving::load_game());
+    REQUIRE(!saving::last_load_error().empty());
+
+    saving::erase_save();
 }
