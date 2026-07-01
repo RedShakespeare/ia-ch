@@ -29,6 +29,9 @@ void cleanup_all();
 
 void enable_wide_cjk_text_stub(bool is_enabled);
 
+void set_sdl_base_dir_stub(const std::string& path);
+void reset_sdl_path_stubs();
+
 void clear_captured_text_draws();
 
 const std::vector<CapturedTextDraw>& captured_text_draws();

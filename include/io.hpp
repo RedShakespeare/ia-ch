@@ -111,6 +111,7 @@ void update_screen();
 void clear_screen();
 
 std::string sdl_pref_dir();
+std::string sdl_base_dir();
 
 // Actual user resolution (i.e. not logical size)
 P get_native_resolution();
