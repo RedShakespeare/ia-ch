@@ -35,6 +35,7 @@ class Actor;
 namespace
 {
 bool s_is_wide_cjk_text_stub_enabled = false;
+int s_cjk_advance_override_px = 0;
 std::string s_sdl_base_dir_stub = "./";
 std::vector<test_utils::CapturedTextDraw> s_captured_text_draws;
 
@@ -46,6 +47,10 @@ bool is_cjk_codepoint_for_test(const uint32_t codepoint)
 int stub_glyph_advance_px(const uint32_t codepoint)
 {
     const int cell_px_w = std::max(1, config::gui_cell_px_w());
+
+    if (s_cjk_advance_override_px > 0 && is_cjk_codepoint_for_test(codepoint)) {
+        return s_cjk_advance_override_px;
+    }
 
     if (s_is_wide_cjk_text_stub_enabled && is_cjk_codepoint_for_test(codepoint)) {
         return cell_px_w * 2;
@@ -209,11 +214,15 @@ void draw_text_plain(
 }
 
 void draw_text_plain_at_px(
-    const std::string&,
-    P,
+    const std::string& str,
+    const P pos,
     const Color&,
     const DrawBg,
-    const Color&) {}
+    const Color&)
+{
+    // The message log renders at pixel positions relative to the log panel.
+    s_captured_text_draws.push_back({str, Panel::log, pos});
+}
 
 void draw_text_plain_center(
     const std::string&,
@@ -357,6 +366,11 @@ namespace test_utils
 void enable_wide_cjk_text_stub(const bool is_enabled)
 {
     s_is_wide_cjk_text_stub_enabled = is_enabled;
+}
+
+void set_cjk_advance_override_px(const int px)
+{
+    s_cjk_advance_override_px = px;
 }
 
 void set_sdl_base_dir_stub(const std::string& path)

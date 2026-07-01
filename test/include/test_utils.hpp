@@ -28,6 +28,7 @@ void init_all();
 void cleanup_all();
 
 void enable_wide_cjk_text_stub(bool is_enabled);
+void set_cjk_advance_override_px(int px);
 
 void set_sdl_base_dir_stub(const std::string& path);
 void reset_sdl_path_stubs();

@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "catch.hpp"
+#include "config.hpp"
 #include "msg_log.hpp"
 #include "panel.hpp"
 #include "test_utils.hpp"
@@ -44,8 +45,14 @@ TEST_CASE("Message log uses rendered width for adjacent CJK messages")
     REQUIRE(draws.size() == 2);
     REQUIRE(draws[0].text == "你好");
     REQUIRE(draws[1].text == "世界");
-    REQUIRE(draws[0].pos == P(0, 0));
-    REQUIRE(draws[1].pos == P(5, 0));
+
+    // Layout is now pixel-based. Each CJK glyph renders at 2*cell px with the wide-CJK
+    // stub, so "你好" occupies 4*cell px, plus a 1-cell gap -> the second message starts
+    // at 5*cell px. Only the x component is layout-derived; y is the panel pixel origin.
+    const int cell = config::gui_cell_px_w();
+
+    REQUIRE(draws[0].pos.x == 0);
+    REQUIRE(draws[1].pos.x == 5 * cell);
 
     test_utils::enable_wide_cjk_text_stub(false);
     test_utils::cleanup_all();
@@ -68,8 +75,11 @@ TEST_CASE("Message log spacing for ASCII messages is unchanged")
     REQUIRE(draws.size() == 2);
     REQUIRE(draws[0].text == "ab");
     REQUIRE(draws[1].text == "cd");
-    REQUIRE(draws[0].pos == P(0, 0));
-    REQUIRE(draws[1].pos == P(3, 0));
+
+    const int cell = config::gui_cell_px_w();
+
+    REQUIRE(draws[0].pos.x == 0);
+    REQUIRE(draws[1].pos.x == 3 * cell);
 
     test_utils::cleanup_all();
 }

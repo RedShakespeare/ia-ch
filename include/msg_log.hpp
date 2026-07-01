@@ -44,11 +44,11 @@ class Msg
 public:
     Msg(std::string text,
         const Color& color,
-        const int x_pos,
+        const int x_pos_px,
         CopyToMsgHistory copy_to_history) :
         m_text(std::move(text)),
         m_color(color),
-        m_x_pos(x_pos),
+        m_x_pos_px(x_pos_px),
         m_copy_to_history(copy_to_history) {}
 
     Msg() = default;
@@ -81,9 +81,10 @@ public:
         m_repeats_str = "(x" + std::to_string(m_nr_repeats) + ")";
     }
 
-    int x_pos() const
+    // Horizontal pixel offset from the left edge of the log panel.
+    int x_pos_px() const
     {
-        return m_x_pos;
+        return m_x_pos_px;
     }
 
     Color color() const
@@ -101,7 +102,7 @@ private:
     std::string m_repeats_str {};
     Color m_color {colors::white()};
     int m_nr_repeats {1};
-    int m_x_pos {0};
+    int m_x_pos_px {0};
     CopyToMsgHistory m_copy_to_history {CopyToMsgHistory::yes};
 };
 

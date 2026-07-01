@@ -41,12 +41,27 @@ static size_t s_history_count = 0;
 static Msg s_history[s_history_cap];
 
 // We only allow grouping up to 9 identical messages into a repeated message (e.g. "Bla. (x3)"), so
-// that the repeat number is always a single digit (this simplifies calculation of required space
-// for messages).
+// that the repeat number is always a single digit.
 static const int s_max_nr_repeats = 9;
 
-// "(xN)" where N is guaranteed to be a single digit, see above.
-static const int s_repeat_str_len = 4;
+// Horizontal pixel gap left between adjacent messages on the same log line. This matches the
+// previous one-column gap for ASCII text.
+static int msg_gap_px()
+{
+    return std::max(1, config::gui_cell_px_w());
+}
+
+// Pixel width of the worst-case repeat suffix "(x9)" (single-digit, see s_max_nr_repeats).
+static int repeat_str_px()
+{
+    return io::text_advance_px("(x9)");
+}
+
+// Total width in pixels of the log panel.
+static int log_w_px()
+{
+    return panels::w(Panel::log) * std::max(1, config::gui_cell_px_w());
+}
 
 static bool s_is_waiting_more_pompt = false;
 
@@ -113,20 +128,20 @@ static size_t find_next_empty_line_nr()
     return 0;
 }
 
-static int msg_text_w_in_cols(const std::string& str)
+// Pixel width of a string as it would be rendered in the log.
+static int msg_text_w_px(const std::string& str)
 {
-    const int cell_px_w = std::max(1, config::gui_cell_px_w());
-    const int text_px_w = io::text_advance_px(str);
-
-    return (text_px_w + cell_px_w - 1) / cell_px_w;
+    return io::text_advance_px(str);
 }
 
-static int space_reserved_for_more_prompt()
+// Pixels to reserve on the last log line so the "more" prompt always fits.
+static int space_reserved_for_more_prompt_px()
 {
-    return msg_text_w_in_cols(msg_log::more_prompt_text()) + 1;
+    return msg_text_w_px(msg_log::more_prompt_text()) + msg_gap_px();
 }
 
-static int x_after_msg(const Msg* const msg)
+// Pixel x-position immediately after the given message (including the inter-message gap).
+static int x_after_msg_px(const Msg* const msg)
 {
     if (!msg) {
         return 0;
@@ -134,32 +149,35 @@ static int x_after_msg(const Msg* const msg)
 
     const std::string str = msg->text_with_repeats();
 
-    return msg->x_pos() + msg_text_w_in_cols(str) + 1;
+    return msg->x_pos_px() + msg_text_w_px(str) + msg_gap_px();
 }
 
-static int worst_case_msg_w_for_line_nr(
+// Worst-case pixel width a message may occupy on the given line, including the repeat suffix
+// and (on the last line) the "more" prompt reservation.
+static int worst_case_msg_w_px_for_line_nr(
     const int line_nr,
     const std::string& text)
 {
     const int space_reserved_for_more_prompt_this_line =
         (line_nr == (msg_log::g_nr_log_lines - 1))
-        ? space_reserved_for_more_prompt()
+        ? space_reserved_for_more_prompt_px()
         : 0;
 
     const int max_w =
-        msg_text_w_in_cols(text) +
-        s_repeat_str_len +
+        msg_text_w_px(text) +
+        repeat_str_px() +
         space_reserved_for_more_prompt_this_line;
 
     return max_w;
 }
 
-static int msg_area_w_avail_for_text_part()
+// Available pixel width for the text part of a message that needs to be split across lines.
+static int msg_area_w_avail_for_text_part_px()
 {
     const int w_avail =
-        panels::w(Panel::log) -
-        s_repeat_str_len -
-        space_reserved_for_more_prompt();
+        log_w_px() -
+        repeat_str_px() -
+        space_reserved_for_more_prompt_px();
 
     return w_avail;
 }
@@ -210,11 +228,12 @@ static void draw_line(const std::vector<Msg>& line, const Panel panel, const P& 
         ? (100 - s_msg_fade_pct)
         : 0;
 
+    const P line_origin_px = io::gui_to_px_coords(panel, pos);
+
     for (const Msg& msg : line) {
-        io::draw_text_plain(
+        io::draw_text_plain_at_px(
             msg.text_with_repeats(),
-            panel,
-            pos.with_x_offset(msg.x_pos()),
+            line_origin_px.with_x_offset(msg.x_pos_px()),
             msg.color().shaded(shade_pct),
             io::DrawBg::no);
     }
@@ -224,7 +243,7 @@ static void draw_more_prompt()
 {
     const std::string more_prompt = msg_log::more_prompt_text();
 
-    int more_x0 = 0;
+    int more_x0_px = 0;
 
     size_t line_nr = find_current_line_nr();
 
@@ -233,31 +252,30 @@ static void draw_more_prompt()
     if (!line.messages.empty()) {
         const auto& last_msg = line.messages.back();
 
-        more_x0 = x_after_msg(&last_msg);
+        more_x0_px = x_after_msg_px(&last_msg);
 
         // If this is not the last line, the "more" prompt text may be moved to the
         // beginning of the next line if it does not fit on the current line. For the last
         // line however, the "more" text MUST fit on the line (handled when adding
         // messages).
         if (line_nr != (msg_log::g_nr_log_lines - 1)) {
-            const int more_x1 =
-                more_x0 + msg_text_w_in_cols(more_prompt) - 1;
+            const int more_x1_px =
+                more_x0_px + msg_text_w_px(more_prompt) - 1;
 
-            if (more_x1 >= panels::w(Panel::log)) {
-                more_x0 = 0;
+            if (more_x1_px >= log_w_px()) {
+                more_x0_px = 0;
                 ++line_nr;
             }
         }
     }
 
     ASSERT(
-        (more_x0 + msg_text_w_in_cols(more_prompt)) <=
-        (panels::w(Panel::log)));
+        (more_x0_px + msg_text_w_px(more_prompt)) <=
+        (log_w_px()));
 
-    io::draw_text_plain(
+    io::draw_text_plain_at_px(
         more_prompt,
-        Panel::log,
-        {more_x0, (int)line_nr},
+        io::gui_to_px_coords(Panel::log, {0, (int)line_nr}).with_x_offset(more_x0_px),
         colors::msg_more(),
         io::DrawBg::no);
 }
@@ -289,7 +307,7 @@ static void on_msg_not_fit_on_line(
         return;
     }
 
-    int w_avail = msg_area_w_avail_for_text_part();
+    int w_avail_px = msg_area_w_avail_for_text_part_px();
 
     // Since we split the message, we do not have to reserve space for the repeat string
     // (e.g. "x4").
@@ -305,9 +323,14 @@ static void on_msg_not_fit_on_line(
     //
     // But this seems extremely unlikely in practice...
     //
-    w_avail -= s_repeat_str_len;
+    w_avail_px -= repeat_str_px();
 
-    const auto lines = text_format::split(str, w_avail);
+    // text_format::split expects a column budget; it converts to pixels internally. Use the
+    // pixel budget converted to whole columns so the split stays pixel-accurate.
+    const int cell_px_w = std::max(1, config::gui_cell_px_w());
+    const int w_avail_cols = w_avail_px / cell_px_w;
+
+    const auto lines = text_format::split(str, w_avail_cols);
 
     for (size_t i = 0; i < lines.size(); ++i) {
         const bool is_last_msg = (i == (lines.size() - 1));
@@ -534,8 +557,8 @@ void add(
     const size_t next_empty_line_nr = find_next_empty_line_nr();
 
     const bool is_msg_fit_on_line =
-        worst_case_msg_w_for_line_nr((int)next_empty_line_nr, str) <=
-        panels::w(Panel::log);
+        worst_case_msg_w_px_for_line_nr((int)next_empty_line_nr, str) <=
+        log_w_px();
 
     if (!is_msg_fit_on_line) {
         on_msg_not_fit_on_line(
@@ -567,13 +590,15 @@ void add(
     if ((current_line_nr < (g_nr_log_lines - 1)) &&
         !s_lines[current_line_nr].messages.empty()) {
         // Does the new message fit?
-        const int worst_case_w = worst_case_msg_w_for_line_nr((int)current_line_nr, str);
+        const int worst_case_w_px =
+            worst_case_msg_w_px_for_line_nr((int)current_line_nr, str);
 
-        const int new_x = x_after_msg(&s_lines[current_line_nr].messages.back());
+        const int new_x_px =
+            x_after_msg_px(&s_lines[current_line_nr].messages.back());
 
-        const int worst_case_x1 = new_x + worst_case_w - 1;
+        const int worst_case_x1_px = new_x_px + worst_case_w_px - 1;
 
-        if (worst_case_x1 >= panels::w(Panel::log)) {
+        if (worst_case_x1_px >= log_w_px()) {
             ++current_line_nr;
         }
     }
@@ -598,16 +623,16 @@ void add(
     }
 
     if (!is_repeated) {
-        int msg_x0 = x_after_msg(prev_msg);
+        int msg_x0_px = x_after_msg_px(prev_msg);
 
-        const int worst_case_msg_w =
-            worst_case_msg_w_for_line_nr(
+        const int worst_case_msg_w_px =
+            worst_case_msg_w_px_for_line_nr(
                 (int)current_line_nr,
                 str);
 
-        const int worst_case_msg_x1 = msg_x0 + worst_case_msg_w - 1;
+        const int worst_case_msg_x1_px = msg_x0_px + worst_case_msg_w_px - 1;
 
-        if (worst_case_msg_x1 >= panels::w(Panel::log)) {
+        if (worst_case_msg_x1_px >= log_w_px()) {
             if (current_line_nr < (g_nr_log_lines - 1)) {
                 ++current_line_nr;
             }
@@ -617,7 +642,7 @@ void add(
                 current_line_nr = 0;
             }
 
-            msg_x0 = 0;
+            msg_x0_px = 0;
         }
 
         s_lines[current_line_nr]
@@ -625,7 +650,7 @@ void add(
             .emplace_back(
                 str,
                 color,
-                msg_x0,
+                msg_x0_px,
                 copy_to_history);
     }
 
