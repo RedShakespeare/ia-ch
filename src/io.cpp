@@ -1374,6 +1374,16 @@ void init_other()
     init_window();
     init_renderer();
 
+    // Now that the window and renderer exist, the OS DPI scale factor can be
+    // read and the default video scale factor recomputed. If the value
+    // changed (e.g. from the placeholder used during first window creation),
+    // re-create the window and renderer so that panel layout and rendering
+    // offsets reflect the corrected scale.
+    if (config::apply_default_video_scale_factor_if_unset()) {
+        init_window();
+        init_renderer();
+    }
+
     SDL_SetRenderDrawBlendMode(io::g_sdl_renderer, SDL_BLENDMODE_BLEND);
 
     load_font();

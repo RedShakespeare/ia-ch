@@ -65,6 +65,7 @@ static bool s_is_tiles_mode = false;
 static RendererType s_renderer_type = RendererType::auto_select;
 static bool s_is_fullscreen = false;
 static int s_video_scale_factor = 1;
+static bool s_video_scale_factor_was_read_from_config = false;
 static int s_brightness_pct = 100;
 static bool s_text_mode_filled_walls = true;
 static bool s_display_health_bars = true;
@@ -267,14 +268,21 @@ static void update_render_dims()
 
 static int calc_default_video_scale_factor(const P& native_res)
 {
-    // Set the video scale factor based on the user's native resolution.
     // Examples:
-    // 1920 x 1080  : 2
-    // 2560 x 1440  : 3
-    // 3840 x 2160  : 4
+    // 1920 x 1080  : 1
+    // 2560 x 1440  : 1
+    // 3840 x 2160  : 2
     // 7680 x 4320  : 4
+    //
+    // NOTE: native_res must be the PHYSICAL (DPI-aware) resolution, as the
+    // examples assume (at OS scale 100% physical == logical). The divisor is
+    // 2000 (not 1000) because the default 14x24 CJK font cell is twice as
+    // wide as the upstream 7x13 font the original formula was tuned for. The
+    // caller is responsible for dividing this baseline by the OS DPI scale
+    // to obtain the actual factor used at runtime (see
+    // apply_default_video_scale_factor_if_unset).
 
-    int f = (native_res.x + 500) / 1000;
+    int f = (native_res.x + 500) / 2000;
 
     f = std::clamp(f, 1, s_video_scale_factor_max);
 
@@ -327,7 +335,12 @@ static void set_default_variables()
     s_audio_buffer_size = 512;
     s_renderer_type = RendererType::auto_select;
     s_is_fullscreen = true;
-    s_video_scale_factor = calc_default_video_scale_factor(native_res);
+    // NOTE: The real default is computed later in
+    // apply_default_video_scale_factor_if_unset(), once the SDL window and
+    // renderer exist (which is required to read the OS DPI scale factor).
+    // Use a safe placeholder here so the window can be created.
+    s_video_scale_factor_was_read_from_config = false;
+    s_video_scale_factor = 1;
     s_brightness_pct = 100;
     s_text_mode_filled_walls = true;
     s_display_health_bars = true;
@@ -382,6 +395,8 @@ static bool read_config_file()
 
     std::string video_scale_str = config["video_scale_factor"];
     TRACE << "Read video_scale_factor: '" << video_scale_str << "'" << "\n";
+
+    s_video_scale_factor_was_read_from_config = !video_scale_str.empty();
 
     s_brightness_pct = to_int(config["brightness_pct"]);
     s_renderer_type = (RendererType)to_int(config["renderer_type"]);
@@ -636,6 +651,61 @@ bool is_fullscreen()
 int video_scale_factor()
 {
     return s_video_scale_factor;
+}
+
+bool apply_default_video_scale_factor_if_unset()
+{
+    TRACE_FUNC_BEGIN;
+
+    if (s_video_scale_factor_was_read_from_config) {
+        TRACE << "video_scale_factor was read from config, keeping value "
+               << s_video_scale_factor << "\n";
+        TRACE_FUNC_END;
+        return false;
+    }
+
+    // The app is DPI-unaware, so get_native_resolution() returns the logical
+    // (DPI-scaled) resolution on Windows, while on X11 it returns physical
+    // pixels. The OS also bitmap-stretches a DPI-unaware window by the DPI
+    // scale, so the on-screen glyph size is proportional to (scale * f).
+    // To keep glyphs from growing too large as the OS scale rises, the
+    // baseline factor (computed from the physical resolution) is divided by
+    // the OS DPI scale and floored.
+    const float dpi_scale = io::get_dpi_scale_factor();
+
+    const P native_res = io::get_native_resolution();
+
+    const P physical_res {
+        (int)((float)native_res.x * dpi_scale + 0.5f),
+        (int)((float)native_res.y * dpi_scale + 0.5f)};
+
+    const int baseline = calc_default_video_scale_factor(physical_res);
+
+    int f = 1;
+
+    if (dpi_scale > 0.0f) {
+        f = (int)((float)baseline / dpi_scale);
+    }
+
+    f = std::clamp(f, 1, s_video_scale_factor_max);
+
+    const int factor_before = s_video_scale_factor;
+
+    s_video_scale_factor = f;
+
+    const bool changed = (s_video_scale_factor != factor_before);
+
+    if (changed) {
+        write_config_file();
+    }
+
+    TRACE << "Applied default video scale factor " << s_video_scale_factor
+          << " (baseline " << baseline << ", dpi_scale " << dpi_scale
+          << ", physical " << physical_res.x << "x" << physical_res.y
+          << ")" << "\n";
+
+    TRACE_FUNC_END;
+    return changed;
 }
 
 int brightness_pct()

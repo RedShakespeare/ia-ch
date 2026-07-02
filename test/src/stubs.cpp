@@ -112,6 +112,11 @@ P get_native_resolution()
     return {};
 }
 
+float get_dpi_scale_factor()
+{
+    return 1.0f;
+}
+
 void on_user_toggle_fullscreen() {}
 void on_user_toggle_scaling() {}
 

@@ -116,6 +116,11 @@ std::string sdl_base_dir();
 // Actual user resolution (i.e. not logical size)
 P get_native_resolution();
 
+// Ratio of the renderer's physical (drawable) pixel size to the window's
+// logical size, i.e. the OS DPI scaling factor. Returns 1.0f when the
+// window/renderer is not ready or the ratio cannot be determined.
+float get_dpi_scale_factor();
+
 void on_user_toggle_fullscreen();
 void on_user_toggle_scaling();
 

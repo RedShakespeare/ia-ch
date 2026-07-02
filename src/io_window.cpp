@@ -364,4 +364,37 @@ P get_native_resolution()
     return {bounds.w, bounds.h};
 }
 
+float get_dpi_scale_factor()
+{
+    if (!g_sdl_window || !g_sdl_renderer) {
+        TRACE << "Cannot read DPI scale factor: window or renderer is null"
+              << "\n";
+        return 1.0f;
+    }
+
+    int window_w = 0;
+    int window_h = 0;
+    int output_w = 0;
+    int output_h = 0;
+
+    SDL_GetWindowSize(g_sdl_window, &window_w, &window_h);
+    SDL_GetRendererOutputSize(g_sdl_renderer, &output_w, &output_h);
+
+    if (window_w <= 0 || output_w <= 0) {
+        TRACE << "Cannot read DPI scale factor: invalid sizes (window "
+              << window_w << ", output " << output_w << ")"
+              << "\n";
+        return 1.0f;
+    }
+
+    const float scale = (float)output_w / (float)window_w;
+
+    TRACE << "DPI scale factor: " << scale
+          << " (window " << window_w << "x" << window_h
+          << ", output " << output_w << "x" << output_h << ")"
+          << "\n";
+
+    return scale;
+}
+
 }  // namespace io
