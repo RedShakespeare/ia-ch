@@ -2064,7 +2064,7 @@ TEST_CASE("I18n loads Chinese UI strings and localized message files")
         "item_data.necronomicon.base_descr_2",
         "施放法术受到的所有精神震惊加倍，并且查阅这类知识者的存在会被强烈感知（-20%潜行，每回合2%几率惊动附近生物）。");
     require_translation("item_data.zombie_dust.name", "僵尸尘");
-    require_translation("item_data.zombie_dust.name_plural", "一把把僵尸尘");
+    require_translation("item_data.zombie_dust.name_plural", "把僵尸尘");
     require_translation("item_data.zombie_dust.name_a", "一把僵尸尘");
     require_translation("item_data.zombie_dust.base_descr", "投向活着的（非不死）生物时，这种粉末会导致麻痹。");
     require_translation("item_data.witch_eye.name", "女巫之眼");
