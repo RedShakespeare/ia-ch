@@ -170,9 +170,12 @@ static void validate_loaded_state()
         fail_load("Failed to load save file: missing player");
     }
 
-    if (!map::is_pos_inside_map(map::g_player->m_pos)) {
-        fail_load("Failed to load save file: player position is outside the map");
-    }
+    // NOTE: The player position is intentionally not bounds-checked here.
+    // The map is not yet built at this point in the load flow (map::s_dims is
+    // still {0, 0}); it is constructed later by map_travel::go_to_nxt() inside
+    // GameState::on_start(), which also assigns the player a fresh position on
+    // the new level. The saved position describes the previous (discarded)
+    // level and is overwritten before any Array2 access uses it.
 }
 
 static void write_file()
