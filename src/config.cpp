@@ -16,6 +16,7 @@
 #include <string>
 #include <vector>
 
+#include "actor.hpp"
 #include "audio.hpp"
 #include "audio_data.hpp"
 #include "browser.hpp"
@@ -28,6 +29,11 @@
 #include "ini.h"
 #include "i18n.hpp"
 #include "io.hpp"
+#include "item_data.hpp"
+#include "item_potion.hpp"
+#include "item_rod.hpp"
+#include "item_scroll.hpp"
+#include "map.hpp"
 #include "misc.hpp"
 #include "messages.hpp"
 #include "msg_log.hpp"
@@ -2130,6 +2136,25 @@ void LanguageOption::change(OptionChangeCommand command) const
     messages::init();
     terrain::init();
     prop::init();
+
+    // Re-localize item text cached at startup. item::reinit_text() re-runs
+    // item::init() (rebuilding names/descriptions/device fake names) while
+    // preserving session state; the three sub-inits then rebuild
+    // scroll/potion/rod fake appearances from recorded indices without
+    // re-randomizing. Actor (monster) names are already resolved live via
+    // i18n::get() at display time, so no actor reinit is needed (and
+    // actor::init() would destructively reset kill/seen session data).
+    item::reinit_text();
+    scroll::reinit_text();
+    potion::reinit_text();
+    rod::reinit_text();
+
+    // Re-localize inventory slot labels (cached as std::string in InvSlot::name
+    // at Inventory construction time). Guarded: the options menu can be reached
+    // from the main menu before a game has started.
+    if (map::g_player) {
+        map::g_player->m_inv.reinit_slot_names();
+    }
 }
 
 // std::string ResetDefaultsOption::name() const

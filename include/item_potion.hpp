@@ -33,6 +33,7 @@ enum class PotionAlignment
 };
 
 void init();
+void reinit_text();
 
 void save();
 void load();

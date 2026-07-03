@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 #include "colors.hpp"
 #include "debug.hpp"
@@ -2800,6 +2801,58 @@ void init()
     d.native_containers.push_back(terrain::Id::cabinet);
     d.native_containers.push_back(terrain::Id::cocoon);
     g_data[(size_t)d.id] = d;
+
+    TRACE_FUNC_END;
+}
+
+// Re-localize all text cached in g_data by re-running init(), while preserving
+// the session-state fields (identification/found/spawn flags, fake-name index)
+// that init() would otherwise wipe. Called on language change.
+void reinit_text()
+{
+    TRACE_FUNC_BEGIN;
+
+    struct SavedState
+    {
+        bool is_identified;
+        bool is_alignment_known;
+        bool is_spell_domain_known;
+        bool is_tried;
+        bool is_found;
+        bool allow_spawn;
+        int chance_to_incl_in_spawn_list;
+        int fake_appearance_idx;
+    };
+
+    std::vector<SavedState> saved((size_t)Id::END);
+
+    for (size_t i = 0; i < (size_t)Id::END; ++i) {
+        const ItemData& d = g_data[i];
+        saved[i] = {
+            d.is_identified,
+            d.is_alignment_known,
+            d.is_spell_domain_known,
+            d.is_tried,
+            d.is_found,
+            d.allow_spawn,
+            d.chance_to_incl_in_spawn_list,
+            d.fake_appearance_idx};
+    }
+
+    init();
+
+    for (size_t i = 0; i < (size_t)Id::END; ++i) {
+        ItemData& d = g_data[i];
+        const SavedState& s = saved[i];
+        d.is_identified = s.is_identified;
+        d.is_alignment_known = s.is_alignment_known;
+        d.is_spell_domain_known = s.is_spell_domain_known;
+        d.is_tried = s.is_tried;
+        d.is_found = s.is_found;
+        d.allow_spawn = s.allow_spawn;
+        d.chance_to_incl_in_spawn_list = s.chance_to_incl_in_spawn_list;
+        d.fake_appearance_idx = s.fake_appearance_idx;
+    }
 
     TRACE_FUNC_END;
 }

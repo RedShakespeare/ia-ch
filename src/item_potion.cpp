@@ -112,12 +112,11 @@ static void apply_properties_with_equal_duration(
 // -----------------------------------------------------------------------------
 namespace potion
 {
-void init()
+// Build the potion appearance pool. Construction order must be deterministic and
+// match between init() and reinit_text() so fake_appearance_idx values align.
+static void build_appearance_pool(std::vector<PotionAppearance>& pool)
 {
-    TRACE_FUNC_BEGIN;
-
-    // Init possible potion colors and fake names
-    s_potion_appearances.assign(
+    pool.assign(
         {{i18n::get("item_potion.appearance_golden", "Golden"),
           i18n::get("item_potion.article_a_space", "a ") +
               i18n::get("item_potion.appearance_golden", "Golden"),
@@ -206,6 +205,14 @@ void init()
           i18n::get("item_potion.article_a_space", "a ") +
               i18n::get("item_potion.appearance_frothy", "Frothy"),
           colors::white()}});
+}
+
+void init()
+{
+    TRACE_FUNC_BEGIN;
+
+    // Init possible potion colors and fake names
+    build_appearance_pool(s_potion_appearances);
 
     for (auto& d : item::g_data) {
         if (d.type != ItemType::potion) {
@@ -214,6 +221,8 @@ void init()
 
         // Color and false name
         const size_t idx = rnd::range(0, (int)s_potion_appearances.size() - 1);
+
+        d.fake_appearance_idx = (int)idx;
 
         auto& look = s_potion_appearances[idx];
 
@@ -255,6 +264,65 @@ void init()
         d.base_name.names[(size_t)ItemNameType::plain] = real_name;
         d.base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
         d.base_name.names[(size_t)ItemNameType::a] = real_name_a;
+    }
+
+    TRACE_FUNC_END;
+}
+
+void reinit_text()
+{
+    TRACE_FUNC_BEGIN;
+
+    // Rebuild the (now re-translated) appearance pool in the same deterministic
+    // order as init(), then re-apply each potion's recorded appearance index.
+    // No RNG — preserves the per-session potion<->appearance mapping.
+    std::vector<PotionAppearance> pool;
+    build_appearance_pool(pool);
+
+    for (item::ItemData& d : item::g_data) {
+        if (d.type != ItemType::potion) {
+            continue;
+        }
+
+        const int idx = d.fake_appearance_idx;
+
+        if ((idx < 0) || (idx >= (int)pool.size())) {
+            continue;
+        }
+
+        auto& look = pool[(size_t)idx];
+
+        d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+            look.name_plain +
+            i18n::get("item_potion.unidentified_suffix", " Potion");
+        d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+            look.name_plain +
+            i18n::get("item_potion.unidentified_plural_suffix", " Potions");
+        d.base_name_un_id.names[(size_t)ItemNameType::a] =
+            look.name_a +
+            i18n::get("item_potion.unidentified_suffix", " Potion");
+
+        d.color = look.color;
+
+        pool.erase(std::begin(pool) + idx);
+
+        // True name
+        const auto* const potion =
+            static_cast<const Potion*>(item::make(d.id, 1));
+
+        const std::string real_type_name = potion->real_name();
+
+        delete potion;
+
+        d.base_name.names[(size_t)ItemNameType::plain] =
+            i18n::get("item_potion.real_name_prefix", "Potion of ") +
+            real_type_name;
+        d.base_name.names[(size_t)ItemNameType::plural] =
+            i18n::get("item_potion.real_name_plural_prefix", "Potions of ") +
+            real_type_name;
+        d.base_name.names[(size_t)ItemNameType::a] =
+            i18n::get("item_potion.real_name_a_prefix", "a Potion of ") +
+            real_type_name;
     }
 
     TRACE_FUNC_END;

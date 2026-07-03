@@ -55,81 +55,88 @@ std::vector<rod::RodLook> s_rod_looks;
 // -----------------------------------------------------------------------------
 namespace rod
 {
+// Build the rod look pool. Construction order must be deterministic and match
+// between init() and reinit_text() so fake_appearance_idx values align.
+static void build_look_pool(std::vector<RodLook>& pool)
+{
+    pool.clear();
+
+    pool.push_back({
+        i18n::get("item_rod.look_iron", "Iron"),
+        i18n::get("item_rod.look_iron_a", "an Iron"),
+        colors::gray()});
+    pool.push_back({
+        i18n::get("item_rod.look_zinc", "Zinc"),
+        i18n::get("item_rod.look_zinc_a", "a Zinc"),
+        colors::light_white()});
+    pool.push_back({
+        i18n::get("item_rod.look_chromium", "Chromium"),
+        i18n::get("item_rod.look_chromium_a", "a Chromium"),
+        colors::light_white()});
+    pool.push_back({
+        i18n::get("item_rod.look_tin", "Tin"),
+        i18n::get("item_rod.look_tin_a", "a Tin"),
+        colors::light_white()});
+    pool.push_back({
+        i18n::get("item_rod.look_silver", "Silver"),
+        i18n::get("item_rod.look_silver_a", "a Silver"),
+        colors::light_white()});
+    pool.push_back({
+        i18n::get("item_rod.look_golden", "Golden"),
+        i18n::get("item_rod.look_golden_a", "a Golden"),
+        colors::yellow()});
+    pool.push_back({
+        i18n::get("item_rod.look_nickel", "Nickel"),
+        i18n::get("item_rod.look_nickel_a", "a Nickel"),
+        colors::light_white()});
+    pool.push_back({
+        i18n::get("item_rod.look_copper", "Copper"),
+        i18n::get("item_rod.look_copper_a", "a Copper"),
+        colors::brown()});
+    pool.push_back({
+        i18n::get("item_rod.look_lead", "Lead"),
+        i18n::get("item_rod.look_lead_a", "a Lead"),
+        colors::gray()});
+    pool.push_back({
+        i18n::get("item_rod.look_tungsten", "Tungsten"),
+        i18n::get("item_rod.look_tungsten_a", "a Tungsten"),
+        colors::white()});
+    pool.push_back({
+        i18n::get("item_rod.look_platinum", "Platinum"),
+        i18n::get("item_rod.look_platinum_a", "a Platinum"),
+        colors::light_white()});
+    pool.push_back({
+        i18n::get("item_rod.look_lithium", "Lithium"),
+        i18n::get("item_rod.look_lithium_a", "a Lithium"),
+        colors::white()});
+    pool.push_back({
+        i18n::get("item_rod.look_zirconium", "Zirconium"),
+        i18n::get("item_rod.look_zirconium_a", "a Zirconium"),
+        colors::white()});
+    pool.push_back({
+        i18n::get("item_rod.look_gallium", "Gallium"),
+        i18n::get("item_rod.look_gallium_a", "a Gallium"),
+        colors::light_white()});
+    pool.push_back({
+        i18n::get("item_rod.look_cobalt", "Cobalt"),
+        i18n::get("item_rod.look_cobalt_a", "a Cobalt"),
+        colors::light_blue()});
+    pool.push_back({
+        i18n::get("item_rod.look_titanium", "Titanium"),
+        i18n::get("item_rod.look_titanium_a", "a Titanium"),
+        colors::light_white()});
+    pool.push_back({
+        i18n::get("item_rod.look_magnesium", "Magnesium"),
+        i18n::get("item_rod.look_magnesium_a", "a Magnesium"),
+        colors::white()});
+}
+
 void init()
 {
     TRACE_FUNC_BEGIN;
 
     // Init possible rod colors and fake names
-    s_rod_looks.clear();
-
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_iron", "Iron"),
-        i18n::get("item_rod.look_iron_a", "an Iron"),
-        colors::gray()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_zinc", "Zinc"),
-        i18n::get("item_rod.look_zinc_a", "a Zinc"),
-        colors::light_white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_chromium", "Chromium"),
-        i18n::get("item_rod.look_chromium_a", "a Chromium"),
-        colors::light_white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_tin", "Tin"),
-        i18n::get("item_rod.look_tin_a", "a Tin"),
-        colors::light_white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_silver", "Silver"),
-        i18n::get("item_rod.look_silver_a", "a Silver"),
-        colors::light_white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_golden", "Golden"),
-        i18n::get("item_rod.look_golden_a", "a Golden"),
-        colors::yellow()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_nickel", "Nickel"),
-        i18n::get("item_rod.look_nickel_a", "a Nickel"),
-        colors::light_white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_copper", "Copper"),
-        i18n::get("item_rod.look_copper_a", "a Copper"),
-        colors::brown()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_lead", "Lead"),
-        i18n::get("item_rod.look_lead_a", "a Lead"),
-        colors::gray()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_tungsten", "Tungsten"),
-        i18n::get("item_rod.look_tungsten_a", "a Tungsten"),
-        colors::white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_platinum", "Platinum"),
-        i18n::get("item_rod.look_platinum_a", "a Platinum"),
-        colors::light_white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_lithium", "Lithium"),
-        i18n::get("item_rod.look_lithium_a", "a Lithium"),
-        colors::white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_zirconium", "Zirconium"),
-        i18n::get("item_rod.look_zirconium_a", "a Zirconium"),
-        colors::white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_gallium", "Gallium"),
-        i18n::get("item_rod.look_gallium_a", "a Gallium"),
-        colors::light_white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_cobalt", "Cobalt"),
-        i18n::get("item_rod.look_cobalt_a", "a Cobalt"),
-        colors::light_blue()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_titanium", "Titanium"),
-        i18n::get("item_rod.look_titanium_a", "a Titanium"),
-        colors::light_white()});
-    s_rod_looks.push_back({
-        i18n::get("item_rod.look_magnesium", "Magnesium"),
-        i18n::get("item_rod.look_magnesium_a", "a Magnesium"),
-        colors::white()});
+    build_look_pool(s_rod_looks);
 
     for (item::ItemData& d : item::g_data) {
         if (d.type != ItemType::rod) {
@@ -138,6 +145,8 @@ void init()
 
         // Color and false name
         const size_t idx = rnd::range(0, (int)s_rod_looks.size() - 1);
+
+        d.fake_appearance_idx = (int)idx;
 
         RodLook& look = s_rod_looks[idx];
 
@@ -175,6 +184,63 @@ void init()
         d.base_name.names[(size_t)ItemNameType::plain] = real_name;
         d.base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
         d.base_name.names[(size_t)ItemNameType::a] = real_name_a;
+    }
+
+    TRACE_FUNC_END;
+}
+
+void reinit_text()
+{
+    TRACE_FUNC_BEGIN;
+
+    // Rebuild the (now re-translated) look pool in the same deterministic order
+    // as init(), then re-apply each rod's recorded appearance index.
+    // No RNG — preserves the per-session rod<->look mapping.
+    std::vector<RodLook> pool;
+    build_look_pool(pool);
+
+    for (item::ItemData& d : item::g_data) {
+        if (d.type != ItemType::rod) {
+            continue;
+        }
+
+        const int idx = d.fake_appearance_idx;
+
+        if ((idx < 0) || (idx >= (int)pool.size())) {
+            continue;
+        }
+
+        RodLook& look = pool[(size_t)idx];
+
+        d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+            look.name_plain +
+            i18n::get("item_rod.rod_suffix", " Rod");
+        d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+            look.name_plain +
+            i18n::get("item_rod.rods_suffix", " Rods");
+        d.base_name_un_id.names[(size_t)ItemNameType::a] =
+            look.name_a +
+            i18n::get("item_rod.rod_suffix", " Rod");
+
+        d.color = look.color;
+
+        pool.erase(std::begin(pool) + idx);
+
+        // True name
+        std::unique_ptr<const Rod> tmp_rod(
+            static_cast<const Rod*>(item::make(d.id, 1)));
+
+        const std::string real_type_name = tmp_rod->real_name();
+
+        d.base_name.names[(size_t)ItemNameType::plain] =
+            i18n::get("item_rod.rod_of_prefix", "Rod of ") +
+            real_type_name;
+        d.base_name.names[(size_t)ItemNameType::plural] =
+            i18n::get("item_rod.rods_of_prefix", "Rods of ") +
+            real_type_name;
+        d.base_name.names[(size_t)ItemNameType::a] =
+            i18n::get("item_rod.a_rod_of_prefix", "a Rod of ") +
+            real_type_name;
     }
 
     TRACE_FUNC_END;

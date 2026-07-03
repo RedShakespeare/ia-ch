@@ -67,41 +67,40 @@ static SpellSkill player_skill_for_scroll(const SpellId spell_id)
 // -----------------------------------------------------------------------------
 namespace scroll
 {
-void init()
+// Build the scroll fake-name pool. Construction order must be deterministic and
+// match between init() and reinit_text() so that fake_appearance_idx values
+// recorded in init() resolve to the same logical name in reinit_text().
+static void build_fake_name_pool(std::vector<std::string>& pool)
 {
-    TRACE_FUNC_BEGIN;
-
-    // Randomize scroll fake names
-    s_fake_names.clear();
+    pool.clear();
 
     // Fixed fake names:
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.cruensseasrjit", "Cruensseasrjit"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.rudsceleratus", "Rudsceleratus"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.rudminuox", "Rudminuox"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.cruo_stragara_na", "Cruo stragara-na"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.praya_navita", "Praya navita"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.pretia_cruento", "Pretia Cruento"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.pestis_cruento", "Pestis Cruento"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.cruento_pestis", "Cruento Pestis"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.domus_bhaava", "Domus-bhaava"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.acerbus_shatruex", "Acerbus-shatruex"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.pretaanluxis", "Pretaanluxis"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.praansilenux", "Praansilenux"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.quodpipax", "Quodpipax"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.lokemundux", "Lokemundux"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.profanuxes", "Profanuxes"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.shaantitus", "Shaantitus"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.geropayati", "Geropayati"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.vilomaxus", "Vilomaxus"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.bhuudesco", "Bhuudesco"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.durbentia", "Durbentia"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.bhuuesco", "Bhuuesco"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.maravita", "Maravita"));
-    s_fake_names.emplace_back(i18n::get("item_scroll.fake_name.infirmux", "Infirmux"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.cruensseasrjit", "Cruensseasrjit"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.rudsceleratus", "Rudsceleratus"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.rudminuox", "Rudminuox"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.cruo_stragara_na", "Cruo stragara-na"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.praya_navita", "Praya navita"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.pretia_cruento", "Pretia Cruento"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.pestis_cruento", "Pestis Cruento"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.cruento_pestis", "Cruento Pestis"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.domus_bhaava", "Domus-bhaava"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.acerbus_shatruex", "Acerbus-shatruex"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.pretaanluxis", "Pretaanluxis"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.praansilenux", "Praansilenux"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.quodpipax", "Quodpipax"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.lokemundux", "Lokemundux"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.profanuxes", "Profanuxes"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.shaantitus", "Shaantitus"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.geropayati", "Geropayati"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.vilomaxus", "Vilomaxus"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.bhuudesco", "Bhuudesco"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.durbentia", "Durbentia"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.bhuuesco", "Bhuuesco"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.maravita", "Maravita"));
+    pool.emplace_back(i18n::get("item_scroll.fake_name.infirmux", "Infirmux"));
 
     // Words that can be combined into names:
     std::vector<std::string> combinable_names;
-    combinable_names.clear();
     combinable_names.emplace_back(i18n::get("item_scroll.fake_word.cruo", "Cruo"));
     combinable_names.emplace_back(i18n::get("item_scroll.fake_word.cruonit", "Cruonit"));
     combinable_names.emplace_back(i18n::get("item_scroll.fake_word.cruentu", "Cruentu"));
@@ -132,10 +131,18 @@ void init()
     for (size_t i = 0; i < nr_combinable_names; ++i) {
         for (size_t ii = 0; ii < nr_combinable_names; ii++) {
             if (i != ii) {
-                s_fake_names.push_back(combinable_names[i] + " " + combinable_names[ii]);
+                pool.push_back(combinable_names[i] + " " + combinable_names[ii]);
             }
         }
     }
+}
+
+void init()
+{
+    TRACE_FUNC_BEGIN;
+
+    // Randomize scroll fake names
+    build_fake_name_pool(s_fake_names);
 
     std::vector<item::ItemData*> scroll_data;
 
@@ -148,6 +155,8 @@ void init()
     for (item::ItemData* d : scroll_data) {
         // False name
         const size_t idx = rnd::idx(s_fake_names);
+
+        d->fake_appearance_idx = (int)idx;
 
         const std::string& title = s_fake_names[idx];
 
@@ -209,6 +218,67 @@ void init()
             (i < nr_high_chance)
             ? s_scroll_low_spawn_chance
             : s_scroll_high_spawn_chance;
+    }
+
+    TRACE_FUNC_END;
+}
+
+void reinit_text()
+{
+    TRACE_FUNC_BEGIN;
+
+    // Rebuild the (now re-translated) fake-name pool in the same deterministic
+    // order as init(), then re-apply each scroll's recorded appearance index.
+    // No RNG, no shuffle — preserves the per-session scroll<->fake-name mapping.
+    std::vector<std::string> pool;
+    build_fake_name_pool(pool);
+
+    for (item::ItemData& d : item::g_data) {
+        if (d.type != ItemType::scroll) {
+            continue;
+        }
+
+        const int idx = d.fake_appearance_idx;
+
+        if ((idx < 0) || (idx >= (int)pool.size())) {
+            continue;
+        }
+
+        const std::string& title = pool[(size_t)idx];
+
+        d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+            i18n::get("item_scroll.manuscript_titled_prefix", "Manuscript titled ") +
+            title +
+            i18n::get("item_scroll.manuscript_titled_suffix", "");
+        d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+            i18n::get("item_scroll.manuscripts_titled_prefix", "Manuscripts titled ") +
+            title +
+            i18n::get("item_scroll.manuscripts_titled_suffix", "");
+        d.base_name_un_id.names[(size_t)ItemNameType::a] =
+            i18n::get("item_scroll.a_manuscript_titled_prefix", "a Manuscript titled ") +
+            title +
+            i18n::get("item_scroll.a_manuscript_titled_suffix", "");
+
+        pool.erase(std::begin(pool) + idx);
+
+        // True name
+        const std::unique_ptr<const Scroll> scroll(
+            static_cast<const Scroll*>(item::make(d.id, 1)));
+
+        const std::string real_type_name = scroll->real_name();
+
+        d.base_name.names[(size_t)ItemNameType::plain] =
+            i18n::get("item_scroll.manuscript_of_prefix", "Manuscript of ") +
+            real_type_name +
+            i18n::get("item_scroll.manuscript_of_suffix", "");
+        d.base_name.names[(size_t)ItemNameType::plural] =
+            i18n::get("item_scroll.manuscripts_of_prefix", "Manuscripts of ") +
+            real_type_name +
+            i18n::get("item_scroll.manuscripts_of_suffix", "");
+        d.base_name.names[(size_t)ItemNameType::a] =
+            i18n::get("item_scroll.a_manuscript_of_prefix", "a Manuscript of ") +
+            real_type_name +
+            i18n::get("item_scroll.a_manuscript_of_suffix", "");
     }
 
     TRACE_FUNC_END;

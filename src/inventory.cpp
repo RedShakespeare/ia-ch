@@ -39,6 +39,18 @@ Inventory::Inventory(actor::Actor* const owning_actor) :
     set_slot(SlotId::head, i18n::get("inventory.slot.head", "Head"));
 }
 
+void Inventory::reinit_slot_names()
+{
+    m_slots[(size_t)SlotId::wpn].name =
+        i18n::get("inventory.slot.weapon", "Weapon");
+    m_slots[(size_t)SlotId::wpn_alt].name =
+        i18n::get("inventory.slot.ready", "Ready");
+    m_slots[(size_t)SlotId::body].name =
+        i18n::get("inventory.slot.body", "Body");
+    m_slots[(size_t)SlotId::head].name =
+        i18n::get("inventory.slot.head", "Head");
+}
+
 Inventory::~Inventory()
 {
     for (size_t i = 0; i < (size_t)SlotId::END; ++i) {

@@ -410,6 +410,7 @@ public:
     int xp_on_found;
     ItemName base_name;
     ItemName base_name_un_id;
+    int fake_appearance_idx {-1};
     std::vector<std::string> base_descr;
     char character;
     Color color;
@@ -436,6 +437,7 @@ public:
 extern ItemData g_data[(size_t)Id::END];
 
 void init();
+void reinit_text();
 void cleanup();
 
 void save();

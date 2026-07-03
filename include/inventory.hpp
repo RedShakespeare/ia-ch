@@ -60,6 +60,9 @@ public:
     void save() const;
     void load();
 
+    // Re-fetch slot labels from i18n (called on language change).
+    void reinit_slot_names();
+
     // Equip item from backpack
     void equip_backpack_item(
         size_t backpack_idx,

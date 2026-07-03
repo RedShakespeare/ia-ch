@@ -29,6 +29,7 @@ class Spell;
 namespace scroll
 {
 void init();
+void reinit_text();
 
 void save();
 void load();
