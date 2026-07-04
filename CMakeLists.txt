@@ -317,7 +317,15 @@ set(COMMON_SRC
         src/smell.cpp
         src/sound.cpp
         src/spells.cpp
+        src/spells/background.cpp
         src/spells/blood.cpp
+        src/spells/channeling.cpp
+        src/spells/corruption.cpp
+        src/spells/illusion.cpp
+        src/spells/mind.cpp
+        src/spells/monster.cpp
+        src/spells/time.cpp
+        src/spells/warding.cpp
         src/state.cpp
         src/study_inscription.cpp
         src/teleport.cpp
