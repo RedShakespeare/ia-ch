@@ -21,6 +21,7 @@
 #include "global.hpp"
 #include "inventory.hpp"
 #include "item_data.hpp"
+#include "item_appearance.hpp"
 #include "item_factory.hpp"
 #include "map.hpp"
 #include "msg_log.hpp"
@@ -230,56 +231,42 @@ void reinit_text()
     // Rebuild the (now re-translated) fake-name pool in the same deterministic
     // order as init(), then re-apply each scroll's recorded appearance index.
     // No RNG, no shuffle — preserves the per-session scroll<->fake-name mapping.
-    std::vector<std::string> pool;
-    build_fake_name_pool(pool);
+    item::rebuild_fake_appearances<std::string>(
+        ItemType::scroll,
+        [](std::vector<std::string>& pool) { build_fake_name_pool(pool); },
+        [](item::ItemData& d, const std::string& title) {
+            d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+                i18n::get("item_scroll.manuscript_titled_prefix", "Manuscript titled ") +
+                title +
+                i18n::get("item_scroll.manuscript_titled_suffix", "");
+            d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+                i18n::get("item_scroll.manuscripts_titled_prefix", "Manuscripts titled ") +
+                title +
+                i18n::get("item_scroll.manuscripts_titled_suffix", "");
+            d.base_name_un_id.names[(size_t)ItemNameType::a] =
+                i18n::get("item_scroll.a_manuscript_titled_prefix", "a Manuscript titled ") +
+                title +
+                i18n::get("item_scroll.a_manuscript_titled_suffix", "");
+        },
+        [](item::ItemData& d) {
+            const std::unique_ptr<const Scroll> scroll(
+                static_cast<const Scroll*>(item::make(d.id, 1)));
 
-    for (item::ItemData& d : item::g_data) {
-        if (d.type != ItemType::scroll) {
-            continue;
-        }
+            const std::string real_type_name = scroll->real_name();
 
-        const int idx = d.fake_appearance_idx;
-
-        if ((idx < 0) || (idx >= (int)pool.size())) {
-            continue;
-        }
-
-        const std::string& title = pool[(size_t)idx];
-
-        d.base_name_un_id.names[(size_t)ItemNameType::plain] =
-            i18n::get("item_scroll.manuscript_titled_prefix", "Manuscript titled ") +
-            title +
-            i18n::get("item_scroll.manuscript_titled_suffix", "");
-        d.base_name_un_id.names[(size_t)ItemNameType::plural] =
-            i18n::get("item_scroll.manuscripts_titled_prefix", "Manuscripts titled ") +
-            title +
-            i18n::get("item_scroll.manuscripts_titled_suffix", "");
-        d.base_name_un_id.names[(size_t)ItemNameType::a] =
-            i18n::get("item_scroll.a_manuscript_titled_prefix", "a Manuscript titled ") +
-            title +
-            i18n::get("item_scroll.a_manuscript_titled_suffix", "");
-
-        pool.erase(std::begin(pool) + idx);
-
-        // True name
-        const std::unique_ptr<const Scroll> scroll(
-            static_cast<const Scroll*>(item::make(d.id, 1)));
-
-        const std::string real_type_name = scroll->real_name();
-
-        d.base_name.names[(size_t)ItemNameType::plain] =
-            i18n::get("item_scroll.manuscript_of_prefix", "Manuscript of ") +
-            real_type_name +
-            i18n::get("item_scroll.manuscript_of_suffix", "");
-        d.base_name.names[(size_t)ItemNameType::plural] =
-            i18n::get("item_scroll.manuscripts_of_prefix", "Manuscripts of ") +
-            real_type_name +
-            i18n::get("item_scroll.manuscripts_of_suffix", "");
-        d.base_name.names[(size_t)ItemNameType::a] =
-            i18n::get("item_scroll.a_manuscript_of_prefix", "a Manuscript of ") +
-            real_type_name +
-            i18n::get("item_scroll.a_manuscript_of_suffix", "");
-    }
+            d.base_name.names[(size_t)ItemNameType::plain] =
+                i18n::get("item_scroll.manuscript_of_prefix", "Manuscript of ") +
+                real_type_name +
+                i18n::get("item_scroll.manuscript_of_suffix", "");
+            d.base_name.names[(size_t)ItemNameType::plural] =
+                i18n::get("item_scroll.manuscripts_of_prefix", "Manuscripts of ") +
+                real_type_name +
+                i18n::get("item_scroll.manuscripts_of_suffix", "");
+            d.base_name.names[(size_t)ItemNameType::a] =
+                i18n::get("item_scroll.a_manuscript_of_prefix", "a Manuscript of ") +
+                real_type_name +
+                i18n::get("item_scroll.a_manuscript_of_suffix", "");
+        });
 
     TRACE_FUNC_END;
 }

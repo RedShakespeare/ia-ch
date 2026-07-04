@@ -21,6 +21,7 @@
 #include "game.hpp"
 #include "game_time.hpp"
 #include "item_data.hpp"
+#include "item_appearance.hpp"
 #include "item_factory.hpp"
 #include "knockback.hpp"
 #include "map.hpp"
@@ -196,52 +197,38 @@ void reinit_text()
     // Rebuild the (now re-translated) look pool in the same deterministic order
     // as init(), then re-apply each rod's recorded appearance index.
     // No RNG — preserves the per-session rod<->look mapping.
-    std::vector<RodLook> pool;
-    build_look_pool(pool);
+    item::rebuild_fake_appearances<RodLook>(
+        ItemType::rod,
+        [](std::vector<RodLook>& pool) { build_look_pool(pool); },
+        [](item::ItemData& d, const RodLook& look) {
+            d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+                look.name_plain +
+                i18n::get("item_rod.rod_suffix", " Rod");
+            d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+                look.name_plain +
+                i18n::get("item_rod.rods_suffix", " Rods");
+            d.base_name_un_id.names[(size_t)ItemNameType::a] =
+                look.name_a +
+                i18n::get("item_rod.rod_suffix", " Rod");
 
-    for (item::ItemData& d : item::g_data) {
-        if (d.type != ItemType::rod) {
-            continue;
-        }
+            d.color = look.color;
+        },
+        [](item::ItemData& d) {
+            std::unique_ptr<const Rod> tmp_rod(
+                static_cast<const Rod*>(item::make(d.id, 1)));
 
-        const int idx = d.fake_appearance_idx;
+            const std::string real_type_name = tmp_rod->real_name();
 
-        if ((idx < 0) || (idx >= (int)pool.size())) {
-            continue;
-        }
-
-        RodLook& look = pool[(size_t)idx];
-
-        d.base_name_un_id.names[(size_t)ItemNameType::plain] =
-            look.name_plain +
-            i18n::get("item_rod.rod_suffix", " Rod");
-        d.base_name_un_id.names[(size_t)ItemNameType::plural] =
-            look.name_plain +
-            i18n::get("item_rod.rods_suffix", " Rods");
-        d.base_name_un_id.names[(size_t)ItemNameType::a] =
-            look.name_a +
-            i18n::get("item_rod.rod_suffix", " Rod");
-
-        d.color = look.color;
-
-        pool.erase(std::begin(pool) + idx);
-
-        // True name
-        std::unique_ptr<const Rod> tmp_rod(
-            static_cast<const Rod*>(item::make(d.id, 1)));
-
-        const std::string real_type_name = tmp_rod->real_name();
-
-        d.base_name.names[(size_t)ItemNameType::plain] =
-            i18n::get("item_rod.rod_of_prefix", "Rod of ") +
-            real_type_name;
-        d.base_name.names[(size_t)ItemNameType::plural] =
-            i18n::get("item_rod.rods_of_prefix", "Rods of ") +
-            real_type_name;
-        d.base_name.names[(size_t)ItemNameType::a] =
-            i18n::get("item_rod.a_rod_of_prefix", "a Rod of ") +
-            real_type_name;
-    }
+            d.base_name.names[(size_t)ItemNameType::plain] =
+                i18n::get("item_rod.rod_of_prefix", "Rod of ") +
+                real_type_name;
+            d.base_name.names[(size_t)ItemNameType::plural] =
+                i18n::get("item_rod.rods_of_prefix", "Rods of ") +
+                real_type_name;
+            d.base_name.names[(size_t)ItemNameType::a] =
+                i18n::get("item_rod.a_rod_of_prefix", "a Rod of ") +
+                real_type_name;
+        });
 
     TRACE_FUNC_END;
 }
