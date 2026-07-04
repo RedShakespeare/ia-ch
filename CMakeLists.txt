@@ -317,6 +317,7 @@ set(COMMON_SRC
         src/smell.cpp
         src/sound.cpp
         src/spells.cpp
+        src/spells/blood.cpp
         src/state.cpp
         src/study_inscription.cpp
         src/teleport.cpp
