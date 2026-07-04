@@ -89,17 +89,14 @@ enum class TerrainPlacement
 
 struct MoveRules
 {
-    void reset()
-    {
-        is_walkable = false;
-        props_allow_move.clear();
-    }
+    // Reset to defaults by assignment: rules = MoveRules{};
+    void reset() { *this = MoveRules{}; }
 
     bool can_move(const actor::Actor& actor) const;
 
     bool is_walkable {false};
-    std::vector<prop::Id> props_allow_move;
-    std::vector<prop::Id> props_prevent_move;
+    std::vector<prop::Id> props_allow_move {};
+    std::vector<prop::Id> props_prevent_move {};
 };
 
 struct TerrainData

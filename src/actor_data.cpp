@@ -772,92 +772,11 @@ std::string localized_text(
 // -----------------------------------------------------------------------------
 void ActorData::reset()
 {
-    id = "";
-    name_a = "";
-    name_a_i18n_key = "";
-    name_the = "";
-    name_the_i18n_key = "";
-    corpse_name_a = "";
-    corpse_name_a_i18n_key = "";
-    corpse_name_the = "";
-    corpse_name_the_i18n_key = "";
-    tile = gfx::TileId::END;
-    character = 'X';
-    color = colors::yellow();
-
-    group_sizes.assign({});
-
-    hp = 0;
-    item_sets.clear();
-    intr_attacks.clear();
-    spells.clear();
-    spi = 0;
-    speed = Speed::normal;
-
-    for (size_t i = 0; i < (size_t)prop::Id::END; ++i) {
-        natural_props[i] = false;
-    }
-
-    ability_values.reset();
-
-    for (size_t i = 0; i < (size_t)AiId::END; ++i) {
-        ai[i] = false;
-    }
-
-    ai[(size_t)AiId::moves_randomly_when_unaware] = true;
-
-    nr_turns_aware = 0;
-    ranged_cooldown_turns = 0;
-    spawn_min_dlvl = -1;
-    spawn_max_dlvl = -1;
-    spawn_weight = 100;
-    actor_size = Size::humanoid;
-    nr_kills = 0;
-    has_player_seen = false;
-    can_open_doors = can_bash_doors = false;
-    prevent_knockback = false;
-    nr_left_allowed_to_spawn = -1;
-    is_unique = false;
-    is_auto_spawn_allowed = true;
-    wary_msg = "";
-    wary_msg_i18n_key = "";
-    aware_msg_mon_seen = "";
-    aware_msg_mon_seen_i18n_key = "";
-    aware_msg_mon_hidden = "";
-    aware_msg_mon_hidden_i18n_key = "";
-    use_cultist_aware_msg_mon_seen = false;
-    use_cultist_aware_msg_mon_hidden = false;
-    smell_msg = "";
-    smell_msg_i18n_key = "";
-    aware_sfx_mon_seen = audio::SfxId::END;
-    aware_sfx_mon_hidden = audio::SfxId::END;
-    spell_msg_sound = "";
-    spell_msg_sound_i18n_key = "";
-    spell_msg_visual = "";
-    spell_msg_visual_i18n_key = "";
-    death_msg_override = "";
-    death_msg_override_i18n_key = "";
-    erratic_move_pct = 0;
-    mon_shock_lvl = MonShockLvl::none;
-    is_humanoid = false;
-    is_rat = false;
-    is_canine = false;
-    is_spider = false;
-    is_ghost = false;
-    is_ghoul = false;
-    is_snake = false;
-    is_reptile = false;
-    is_amphibian = false;
-    can_be_summoned_by_mon = false;
-    can_spawn_from_tomb = false;
-    can_be_shapeshifted_into = false;
-    can_bleed = true;
-    can_leave_corpse = true;
-    prio_corpse_bash = false;
-    native_rooms.clear();
-    starting_allies.clear();
-    descr = "";
-    descr_i18n_key = "";
+    // Default member initializers in the header express the reset state.
+    // Reconstruct from those defaults. Kept as a method only because some
+    // call sites reset an existing instance in place (e.g. before reading a
+    // fresh monster definition over an existing map slot).
+    *this = ActorData{};
 }
 
 std::unordered_map<std::string, ActorData> g_data;

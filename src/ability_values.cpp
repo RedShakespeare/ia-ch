@@ -156,12 +156,9 @@ int AbilityValues::val(
     return ret;
 }
 
-void AbilityValues::reset()
-{
-    for (size_t i = 0; i < (size_t)AbilityId::END; ++i) {
-        m_ability_list[i] = 0;
-    }
-}
+// AbilityValues::reset() is defined inline in the header (assigns a
+// default-constructed value, whose array default member initializer zeros
+// all entries).
 
 void AbilityValues::set_val(const AbilityId ability, const int val)
 {

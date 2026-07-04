@@ -46,14 +46,12 @@ enum class AbilityAffectedByProperties
 class AbilityValues
 {
 public:
-    AbilityValues()
-    {
-        reset();
-    }
+    AbilityValues() = default;
 
     AbilityValues& operator=(const AbilityValues& other) = default;
 
-    void reset();
+    // Reset to default-constructed state (kept for in-place reset call sites).
+    void reset() { *this = AbilityValues{}; }
 
     int val(
         AbilityId id,
@@ -70,7 +68,7 @@ public:
     void change_val(AbilityId ability, int change);
 
 private:
-    int m_ability_list[(size_t)AbilityId::END];
+    int m_ability_list[(size_t)AbilityId::END] {};
 };
 
 namespace ability_roll
