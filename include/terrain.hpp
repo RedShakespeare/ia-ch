@@ -345,6 +345,17 @@ protected:
 
     void try_start_burning(Verbose verbose);
 
+    // Replace this terrain with rubble_low at its position and update vision.
+    // If msg_key is non-empty, prints the localized destruction message when
+    // the position is currently seen by the player.
+    void destroyed_into_rubble(
+        const std::string& msg_key,
+        const std::string& msg_fallback) const;
+
+    // Exorcist bonus awarded when an altar-like terrain is destroyed by the
+    // exorcist background. No-op for other backgrounds.
+    void reward_exorcist_purge(int xp, int fervor) const;
+
     virtual void add_light_hook(Array2<bool>& light) const
     {
         (void)light;
@@ -723,12 +734,6 @@ public:
     std::string name(Article article) const override;
 
     Color color_default() const override;
-
-    void hit(
-        DmgType dmg_type,
-        actor::Actor* actor,
-        const P& from_pos,
-        int dmg) override;
 };
 
 class RubbleHigh : public Terrain
@@ -766,12 +771,6 @@ public:
     }
 
     void bump(actor::Actor& actor_bumping) override;
-
-    void hit(
-        DmgType dmg_type,
-        actor::Actor* actor,
-        const P& from_pos,
-        int dmg) override;
 
 private:
     std::string m_inscr {};
@@ -937,12 +936,6 @@ public:
 
     void add_light_hook(Array2<bool>& light) const override;
 
-    void hit(
-        DmgType dmg_type,
-        actor::Actor* actor,
-        const P& from_pos,
-        int dmg) override;
-
     void set_fake()
     {
         m_is_fake = true;
@@ -973,12 +966,6 @@ public:
     char character() const override;
     Color color_default() const override;
 
-    void hit(
-        DmgType dmg_type,
-        actor::Actor* actor,
-        const P& from_pos,
-        int dmg) override;
-
     void set_axis(const Axis axis)
     {
         m_axis = axis;
@@ -1002,12 +989,6 @@ public:
 
     void bump(actor::Actor& actor_bumping) override;
 
-    void hit(
-        DmgType dmg_type,
-        actor::Actor* actor,
-        const P& from_pos,
-        int dmg) override;
-
     LiquidType m_type;
 
 private:
@@ -1023,12 +1004,6 @@ public:
     std::string name(Article article) const override;
 
     Color color_default() const override;
-
-    void hit(
-        DmgType dmg_type,
-        actor::Actor* actor,
-        const P& from_pos,
-        int dmg) override;
 };
 
 class CrystalKey : public Terrain
@@ -1053,12 +1028,6 @@ public:
 
     // Only deactives the crystal (no messages etc).
     void deactivate();
-
-    void hit(
-        DmgType dmg_type,
-        actor::Actor* actor,
-        const P& from_pos,
-        int dmg) override;
 
     bool is_active() const
     {

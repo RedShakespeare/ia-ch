@@ -469,6 +469,39 @@ WasDestroyed Terrain::on_finished_burning()
     return WasDestroyed::no;
 }
 
+void Terrain::destroyed_into_rubble(
+    const std::string& msg_key,
+    const std::string& msg_fallback) const
+{
+    if (!msg_key.empty() && map::g_seen.at(m_pos)) {
+        msg_log::add(i18n::get(msg_key, msg_fallback));
+    }
+
+    map::update_terrain(make(Id::rubble_low, m_pos));
+    map::update_vision();
+}
+
+void Terrain::reward_exorcist_purge(int xp, int fervor) const
+{
+    if (!player_bon::is_bg(Bg::exorcist)) {
+        return;
+    }
+
+    const auto msg = rnd::element(common_text::g_exorcist_purge_phrases);
+
+    msg_log::add(msg);
+
+    game::incr_player_xp(xp);
+
+    actor::restore_sp(
+        *map::g_player,
+        999,
+        actor::AllowRestoreAboveMax::no,
+        Verbose::no);
+
+    actor::restore_exorcist_fervor(fervor);
+}
+
 int Terrain::shock_when_adj() const
 {
     int shock = base_shock_when_adj();
@@ -1281,18 +1314,6 @@ Color RubbleLow::color_default() const
 Bones::Bones(const P& p, const TerrainData* const data) :
     Terrain(p, data) {}
 
-void Bones::hit(
-    const DmgType dmg_type,
-    actor::Actor* const actor,
-    const P& from_pos,
-    int dmg)
-{
-    (void)dmg_type;
-    (void)actor;
-    (void)from_pos;
-    (void)dmg;
-}
-
 std::string Bones::name(const Article article) const
 {
     std::string str;
@@ -1318,18 +1339,6 @@ Color Bones::color_default() const
 // -----------------------------------------------------------------------------
 GraveStone::GraveStone(const P& p, const TerrainData* const data) :
     Terrain(p, data) {}
-
-void GraveStone::hit(
-    const DmgType dmg_type,
-    actor::Actor* const actor,
-    const P& from_pos,
-    int dmg)
-{
-    (void)dmg_type;
-    (void)actor;
-    (void)from_pos;
-    (void)dmg;
-}
 
 void GraveStone::bump(actor::Actor& actor_bumping)
 {
@@ -1374,14 +1383,9 @@ void ChurchBench::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get(
-                "terrain.church_bench_destroyed",
-                "The church bench is destroyed."));
-        }
-
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble(
+            "terrain.church_bench_destroyed",
+            "The church bench is destroyed.");
         break;
 
     case DmgType::fire:
@@ -1760,8 +1764,7 @@ void Stalagmite::hit(
     switch (dmg_type) {
     case DmgType::pure:
     case DmgType::explosion:
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble("", "");
         break;
 
     default:
@@ -1789,18 +1792,6 @@ Color Stalagmite::color_default() const
 // -----------------------------------------------------------------------------
 Stairs::Stairs(const P& p, const TerrainData* const data) :
     Terrain(p, data) {}
-
-void Stairs::hit(
-    const DmgType dmg_type,
-    actor::Actor* const actor,
-    const P& from_pos,
-    int dmg)
-{
-    (void)dmg_type;
-    (void)actor;
-    (void)from_pos;
-    (void)dmg;
-}
 
 void Stairs::on_new_turn_hook()
 {
@@ -1942,18 +1933,6 @@ gfx::TileId Bridge::tile() const
             : gfx::TileId::hangbridge_ver);
 }
 
-void Bridge::hit(
-    const DmgType dmg_type,
-    actor::Actor* const actor,
-    const P& from_pos,
-    int dmg)
-{
-    (void)dmg_type;
-    (void)actor;
-    (void)from_pos;
-    (void)dmg;
-}
-
 char Bridge::character() const
 {
     return (m_axis == Axis::hor)
@@ -1982,18 +1961,6 @@ Color Bridge::color_default() const
 Liquid::Liquid(const P& p, const TerrainData* const data) :
     Terrain(p, data),
     m_type(LiquidType::water) {}
-
-void Liquid::hit(
-    const DmgType dmg_type,
-    actor::Actor* const actor,
-    const P& from_pos,
-    int dmg)
-{
-    (void)dmg_type;
-    (void)actor;
-    (void)from_pos;
-    (void)dmg;
-}
 
 void Liquid::bump(actor::Actor& actor_bumping)
 {
@@ -2177,18 +2144,6 @@ std::optional<map::MinimapAppearance> Liquid::minimap_appearance() const
 Chasm::Chasm(const P& p, const TerrainData* const data) :
     Terrain(p, data) {}
 
-void Chasm::hit(
-    const DmgType dmg_type,
-    actor::Actor* const actor,
-    const P& from_pos,
-    int dmg)
-{
-    (void)dmg_type;
-    (void)actor;
-    (void)from_pos;
-    (void)dmg;
-}
-
 std::string Chasm::name(const Article article) const
 {
     std::string a =
@@ -2209,18 +2164,6 @@ Color Chasm::color_default() const
 // -----------------------------------------------------------------------------
 CrystalKey::CrystalKey(const P& p, const TerrainData* const data) :
     Terrain(p, data) {}
-
-void CrystalKey::hit(
-    const DmgType dmg_type,
-    actor::Actor* const actor,
-    const P& from_pos,
-    int dmg)
-{
-    (void)dmg_type;
-    (void)actor;
-    (void)from_pos;
-    (void)dmg;
-}
 
 std::string CrystalKey::name(const Article article) const
 {
@@ -2374,32 +2317,13 @@ void Altar::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get(
-                "terrain.altar_destroyed",
-                "The altar is destroyed."));
-        }
+        destroyed_into_rubble(
+            "terrain.altar_destroyed",
+            "The altar is destroyed.");
 
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
-
-        if (player_bon::is_bg(Bg::exorcist)) {
-            const auto msg =
-                rnd::element(
-                    common_text::g_exorcist_purge_phrases);
-
-            msg_log::add(msg);
-
-            game::incr_player_xp(g_xp_on_exorcist_destroy_altar);
-
-            actor::restore_sp(
-                *map::g_player,
-                999,
-                actor::AllowRestoreAboveMax::no,
-                Verbose::no);
-
-            actor::restore_exorcist_fervor(g_exorcist_fervor_destroy_altar);
-        }
+        reward_exorcist_purge(
+            g_xp_on_exorcist_destroy_altar,
+            g_exorcist_fervor_destroy_altar);
         break;
 
     default:
@@ -2717,10 +2641,9 @@ void Vines::hit(
     (void)dmg;
 
     switch (dmg_type) {
-    case DmgType::explosion:
     case DmgType::pure:
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+    case DmgType::explosion:
+        destroyed_into_rubble("", "");
         break;
 
     case DmgType::fire:
@@ -2840,8 +2763,7 @@ void Chains::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble("", "");
         break;
 
     default:
@@ -3514,14 +3436,9 @@ void Tomb::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get(
-                "terrain.tomb_destroyed",
-                "The tomb is destroyed."));
-        }
-
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble(
+            "terrain.tomb_destroyed",
+            "The tomb is destroyed.");
         break;
 
     default:
@@ -4444,14 +4361,9 @@ void Fountain::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get(
-                "terrain.fountain_destroyed",
-                "The fountain is destroyed."));
-        }
-
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble(
+            "terrain.fountain_destroyed",
+            "The fountain is destroyed.");
         break;
 
     default:
@@ -4916,14 +4828,9 @@ void Cabinet::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get(
-                "terrain.cabinet_destroyed",
-                "The cabinet is destroyed."));
-        }
-
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble(
+            "terrain.cabinet_destroyed",
+            "The cabinet is destroyed.");
         break;
 
     case DmgType::fire:
@@ -5129,14 +5036,9 @@ void Bookshelf::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get(
-                "terrain.bookshelf_destroyed",
-                "The bookshelf is destroyed."));
-        }
-
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble(
+            "terrain.bookshelf_destroyed",
+            "The bookshelf is destroyed.");
         break;
 
     case DmgType::fire:
@@ -5312,14 +5214,9 @@ void AlchemistBench::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get(
-                "terrain.alchemist_workbench_destroyed",
-                "The alchemist's workbench is destroyed."));
-        }
-
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble(
+            "terrain.alchemist_workbench_destroyed",
+            "The alchemist's workbench is destroyed.");
         break;
 
     case DmgType::fire:
@@ -5510,14 +5407,9 @@ void Cocoon::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get(
-                "terrain.cocoon_destroyed",
-                "The cocoon is destroyed."));
-        }
-
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble(
+            "terrain.cocoon_destroyed",
+            "The cocoon is destroyed.");
         break;
 
     case DmgType::fire:

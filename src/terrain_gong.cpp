@@ -868,31 +868,13 @@ void Gong::hit(
     switch (dmg_type) {
     case DmgType::explosion:
     case DmgType::pure:
-        if (map::g_seen.at(m_pos)) {
-            msg_log::add(i18n::get("terrain_gong.gong_destroyed", "The gong is destroyed."));
-        }
+        destroyed_into_rubble(
+            "terrain_gong.gong_destroyed",
+            "The gong is destroyed.");
 
-        map::update_terrain(terrain::make(terrain::Id::rubble_low, m_pos));
-
-        map::update_vision();
-
-        if (player_bon::is_bg(Bg::exorcist)) {
-            const std::string msg =
-                rnd::element(
-                    common_text::g_exorcist_purge_phrases);
-
-            msg_log::add(msg);
-
-            game::incr_player_xp(g_xp_on_exorcist_destroy_gong);
-
-            actor::restore_sp(
-                *map::g_player,
-                999,
-                actor::AllowRestoreAboveMax::no,
-                Verbose::no);
-
-            actor::restore_exorcist_fervor(g_exorcist_fervor_destroy_gong);
-        }
+        reward_exorcist_purge(
+            g_xp_on_exorcist_destroy_gong,
+            g_exorcist_fervor_destroy_gong);
         break;
 
     default:

@@ -111,12 +111,6 @@ public:
 
     std::string name(Article article) const override;
 
-    void hit(
-        DmgType dmg_type,
-        actor::Actor* actor,
-        const P& from_pos,
-        int dmg) override;
-
     bool disarm();
 
     // Quietly destroys the trap, and either places rubble, or replaces it with the mimic

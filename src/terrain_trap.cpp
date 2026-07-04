@@ -431,18 +431,6 @@ const terrain::Terrain* Trap::get_mimic_terrain() const
     return m_mimic_terrain;
 }
 
-void Trap::hit(
-    DmgType dmg_type,
-    actor::Actor* actor,
-    const P& from_pos,
-    int dmg)
-{
-    (void)dmg_type;
-    (void)actor;
-    (void)from_pos;
-    (void)dmg;
-}
-
 TrapId Trap::type() const
 {
     ASSERT(m_trap_impl);

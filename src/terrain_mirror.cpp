@@ -104,22 +104,9 @@ void Mirror::hit(
         map::update_terrain(make(Id::rubble_low, m_pos));
         map::update_vision();
 
-        if (player_bon::is_bg(Bg::exorcist)) {
-            const std::string msg =
-                rnd::element(common_text::g_exorcist_purge_phrases);
-
-            msg_log::add(msg);
-
-            game::incr_player_xp(g_xp_on_exorcist_destroy_mirror);
-
-            actor::restore_sp(
-                *map::g_player,
-                999,
-                actor::AllowRestoreAboveMax::no,
-                Verbose::no);
-
-            actor::restore_exorcist_fervor(g_exorcist_fervor_destroy_mirror);
-        }
+        reward_exorcist_purge(
+            g_xp_on_exorcist_destroy_mirror,
+            g_exorcist_fervor_destroy_mirror);
         break;
 
     default:
