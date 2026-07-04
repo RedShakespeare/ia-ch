@@ -319,7 +319,12 @@ std::string first_to_lower(const std::string& str)
     std::string result = str;
 
     if (!result.empty()) {
-        result[0] = (char)tolower(result[0]);
+        // See comment in first_to_upper.
+        auto& c = result[0];
+
+        if (c >= 'A' && c <= 'Z') {
+            c = c - 'A' + 'a';
+        }
     }
 
     return result;
@@ -330,7 +335,14 @@ std::string first_to_upper(const std::string& str)
     std::string result = str;
 
     if (!result.empty()) {
-        result[0] = (char)toupper(result[0]);
+        // Only uppercase ASCII lowercase letters. CJK lead/trail bytes are
+        // negative (signed char) and passing them to ::toupper is UB; it can
+        // corrupt the UTF-8 sequence on some platforms.
+        auto& c = result[0];
+
+        if (c >= 'a' && c <= 'z') {
+            c = c - 'a' + 'A';
+        }
     }
 
     return result;
@@ -340,11 +352,12 @@ std::string to_upper(const std::string& str)
 {
     std::string result = str;
 
-    transform(
-        std::begin(result),
-        std::end(result),
-        std::begin(result),
-        ::toupper);
+    // See comment in first_to_upper.
+    for (auto& c : result) {
+        if (c >= 'a' && c <= 'z') {
+            c = c - 'a' + 'A';
+        }
+    }
 
     return result;
 }

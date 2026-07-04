@@ -9,10 +9,11 @@
 #include <algorithm>
 #include <unordered_map>
 
+#include "config.hpp"
 #include "i18n.hpp"
+#include "io_internal.hpp"
 #include "panel.hpp"
 #include "property.hpp"
-#include "utf8.hpp"
 
 // -----------------------------------------------------------------------------
 // Private
@@ -117,18 +118,22 @@ static void add(prop::PropData& d)
 #ifndef NDEBUG
     const std::string worst_case_str = d.name_short + prop::property_ending_suffix();
 
-    const size_t worst_case_w = utf8::display_width(worst_case_str);
+    // Use pixel-accurate measurement: utf8::display_width counts codepoints
+    // (CJK=1), not display columns (CJK=2), so it underestimates CJK width.
+    const int worst_case_w_px = io::text_advance_px(worst_case_str);
 
-    const size_t panel_w = panels::w(Panel::map_gui_stats);
+    const int panel_w_px =
+        panels::w(Panel::map_gui_stats) *
+        config::gui_cell_px_w();
 
-    if (worst_case_w > panel_w) {
+    if (worst_case_w_px > panel_w_px) {
         TRACE
             << "The string '"
             << worst_case_str
-            << "' of display width '"
-            << worst_case_w
-            << "' will not fit in panel of width '"
-            << panel_w
+            << "' of pixel width '"
+            << worst_case_w_px
+            << "' will not fit in panel of pixel width '"
+            << panel_w_px
             << "'"
             << "\n";
 
