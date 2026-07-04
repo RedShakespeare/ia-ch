@@ -13,7 +13,11 @@ Paratranz-compatible CSV.
 The bundled exporter handles both direct calls like
 `i18n::get("key", "English fallback")` and the local insanity wrapper
 `insanity_i18n::get("suffix", "English fallback")`. The wrapper form exports
-as normal `insanity.*` keys because that is what `text.ini` stores.
+as normal `insanity.*` keys because that is what `text.ini` stores. It also
+scans `i18n::format("key", "English template with {placeholder}", args)`
+calls; those templates are stored in `installed_files/data/locale/<locale>/grammar.ini`
+rather than `text.ini`, so the exporter loads `grammar.ini` translations under
+`section.key` keys (mirroring the C++ parser in `src/i18n.cpp`).
 
 This is the inverse of raw-string extraction: it does not find untranslated
 strings. Use `scan-i18n-raw-strings` for candidates still missing i18n and
@@ -97,7 +101,10 @@ After exporting, inspect the script diagnostics:
   first two arguments are string literals after any supported wrapper expansion.
 - full `--output-dir --locale <locale>` exports fail if the main
   `ia-paratranz-<locale>.csv` catalog key set does not exactly match
-  `installed_files/data/locale/<locale>/text.ini`.
+  `installed_files/data/locale/<locale>/text.ini` plus `grammar.ini`.
+  Stale `text.ini` keys that are no longer referenced in C++ (for example
+  old fragment-based entries superseded by `i18n::format` templates) will
+  appear as "missing from catalog"; remove them from `text.ini` to clear.
 - missing locale translations when `--locale` is used: expected for newly added
   keys, but useful to review before upload.
 - manual chapter/paragraph count mismatch when `--locale` is used: inspect the
