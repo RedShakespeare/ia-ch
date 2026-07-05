@@ -117,7 +117,15 @@ bool InsScream::is_allowed() const
 
 void InsScream::on_start_hook()
 {
-    Snd snd("", audio::SfxId::END, IgnoreMsgIfOriginSeen::yes, map::g_player->m_pos, map::g_player, SndVol::high, AlertsMon::yes);
+    Snd snd(
+        "",
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(map::g_player->m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     snd_emit::run(snd);
 }
@@ -144,7 +152,15 @@ void InsBabbling::babble() const
         msg_log::add(player_name + ": " + actor::get_cultist_phrase());
     }
 
-    Snd snd("", audio::SfxId::END, IgnoreMsgIfOriginSeen::yes, map::g_player->m_pos, map::g_player, SndVol::low, AlertsMon::yes);
+    Snd snd(
+        "",
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(map::g_player->m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd_emit::run(snd);
 }
@@ -179,7 +195,15 @@ void InsFaint::on_start_hook()
 
 void InsLaugh::on_start_hook()
 {
-    Snd snd("", audio::SfxId::END, IgnoreMsgIfOriginSeen::yes, map::g_player->m_pos, map::g_player, SndVol::low, AlertsMon::yes);
+    Snd snd(
+        "",
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(map::g_player->m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd_emit::run(snd);
 }

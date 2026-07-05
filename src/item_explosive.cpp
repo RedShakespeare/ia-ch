@@ -240,12 +240,13 @@ void Molotov::on_std_turn_player_hold_ignited()
 
         Snd snd(
             i18n::get("item_explosive.hear_explosion", "I hear an explosion!"),
-            audio::SfxId::explosion_molotov,
-            IgnoreMsgIfOriginSeen::yes,
-            player_pos,
-            nullptr,
-            SndVol::high,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(audio::SfxId::explosion_molotov)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(player_pos)
+                .actor(nullptr)
+                .vol(SndVol::high)
+                .alerts(AlertsMon::yes));
 
         snd.run();
 
@@ -263,12 +264,13 @@ void Molotov::on_thrown_ignited_landing(const P& p)
 {
     Snd snd(
         i18n::get("item_explosive.hear_explosion", "I hear an explosion!"),
-        audio::SfxId::explosion_molotov,
-        IgnoreMsgIfOriginSeen::yes,
-        p,
-        nullptr,
-        SndVol::high,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::explosion_molotov)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(p)
+            .actor(nullptr)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 
@@ -295,12 +297,13 @@ void Molotov::on_player_paralyzed()
 
     Snd snd(
         i18n::get("item_explosive.hear_explosion", "I hear an explosion!"),
-        audio::SfxId::explosion_molotov,
-        IgnoreMsgIfOriginSeen::yes,
-        player_pos,
-        nullptr,
-        SndVol::high,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::explosion_molotov)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(player_pos)
+            .actor(nullptr)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 

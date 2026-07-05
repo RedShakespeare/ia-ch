@@ -776,13 +776,14 @@ ConsumeItem HornOfMalice::activate(actor::Actor* const actor)
         i18n::get(
             "item_misc.horn.malice_resounds",
             "The Horn of Malice resounds!"),
-        audio::SfxId::horn,
-        IgnoreMsgIfOriginSeen::no,
-        map::g_player->m_pos,
-        map::g_player,
-        SndVol::high,
-        AlertsMon::yes,
-        effect);
+        SndSpec{}
+            .sfx(audio::SfxId::horn)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(map::g_player->m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes)
+            .heard_effect(effect));
 
     snd.run();
 
@@ -854,13 +855,14 @@ ConsumeItem HornOfBanishment::activate(actor::Actor* const actor)
         i18n::get(
             "item_misc.horn.banishment_resounds",
             "The Horn of Banishment resounds!"),
-        audio::SfxId::horn,
-        IgnoreMsgIfOriginSeen::no,
-        map::g_player->m_pos,
-        map::g_player,
-        SndVol::high,
-        AlertsMon::yes,
-        effect);
+        SndSpec{}
+            .sfx(audio::SfxId::horn)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(map::g_player->m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes)
+            .heard_effect(effect));
 
     snd.run();
 
@@ -1127,12 +1129,13 @@ void Necronomicon::on_std_turn_in_inv_hook(const InvType inv_type)
     if (rnd::percent(2)) {
         Snd snd(
             "",
-            audio::SfxId::END,
-            IgnoreMsgIfOriginSeen::yes,
-            map::g_player->m_pos,
-            map::g_player,
-            SndVol::high,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(audio::SfxId::END)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(map::g_player->m_pos)
+                .actor(map::g_player)
+                .vol(SndVol::high)
+                .alerts(AlertsMon::yes));
 
         snd.run();
     }
