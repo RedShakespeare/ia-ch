@@ -1484,10 +1484,9 @@ void Statue::hit(
     } break;
 
     case DmgType::explosion:
-    case DmgType::pure:      {
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
-    } break;
+    case DmgType::pure:
+        destroyed_into_rubble("", "");
+        break;
 
     default: {
     } break;
@@ -1659,10 +1658,9 @@ void Urn::hit(
     } break;
 
     case DmgType::explosion:
-    case DmgType::pure:      {
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
-    } break;
+    case DmgType::pure:
+        destroyed_into_rubble("", "");
+        break;
 
     default: {
     } break;
@@ -2781,8 +2779,7 @@ void Grate::hit(
     case DmgType::pure:
     case DmgType::explosion:
         destr_all_adj_doors(m_pos);
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
+        destroyed_into_rubble("", "");
         break;
 
     default:
@@ -2988,10 +2985,9 @@ void Brazier::hit(
     } break;
 
     case DmgType::explosion:
-    case DmgType::pure:      {
-        map::update_terrain(make(Id::rubble_low, m_pos));
-        map::update_vision();
-    } break;
+    case DmgType::pure:
+        destroyed_into_rubble("", "");
+        break;
 
     default: {
     } break;
