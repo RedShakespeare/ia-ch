@@ -493,6 +493,26 @@ void Terrain::destroyed_stone_wall_or_rubble(const DmgType dmg_type)
     map::update_vision();
 }
 
+std::optional<Dir> Terrain::try_topple_from_hit(
+    const DmgType dmg_type,
+    const actor::Actor* const actor,
+    const P& from_pos) const
+{
+    if (!actor) {
+        ASSERT(false);
+        return std::nullopt;
+    }
+
+    if ((dmg_type == DmgType::kicking) &&
+        actor->m_properties.has(prop::Id::weakened)) {
+        msg_log::add(i18n::get("terrain.wiggles", "It wiggles a bit."));
+
+        return std::nullopt;
+    }
+
+    return dir_utils::dir(m_pos - from_pos);
+}
+
 void Terrain::reward_exorcist_purge(int xp, int fervor) const
 {
     if (!player_bon::is_bg(Bg::exorcist)) {
@@ -1466,21 +1486,14 @@ void Statue::hit(
     switch (dmg_type) {
     case DmgType::kicking:
     case DmgType::control_object_spell: {
-        ASSERT(actor);
+        const auto direction = try_topple_from_hit(dmg_type, actor, from_pos);
 
-        if ((dmg_type == DmgType::kicking) &&
-            actor->m_properties.has(prop::Id::weakened)) {
-            msg_log::add(i18n::get(
-                "terrain.wiggles",
-                "It wiggles a bit."));
-
+        if (!direction) {
             return;
         }
 
-        const auto direction = dir_utils::dir(m_pos - from_pos);
-
         // NOTE: This call deletes the object!
-        topple(direction, actor);
+        topple(*direction, actor);
     } break;
 
     case DmgType::explosion:
@@ -1640,21 +1653,14 @@ void Urn::hit(
     switch (dmg_type) {
     case DmgType::kicking:
     case DmgType::control_object_spell: {
-        ASSERT(actor);
+        const auto direction = try_topple_from_hit(dmg_type, actor, from_pos);
 
-        if ((dmg_type == DmgType::kicking) &&
-            actor->m_properties.has(prop::Id::weakened)) {
-            msg_log::add(i18n::get(
-                "terrain.wiggles",
-                "It wiggles a bit."));
-
+        if (!direction) {
             return;
         }
 
-        const auto direction = dir_utils::dir(m_pos - from_pos);
-
         // NOTE: This call deletes the object!
-        topple(direction, actor);
+        topple(*direction, actor);
     } break;
 
     case DmgType::explosion:
@@ -2964,24 +2970,14 @@ void Brazier::hit(
     switch (dmg_type) {
     case DmgType::kicking:
     case DmgType::control_object_spell: {
-        if (!actor) {
-            ASSERT(false);
+        const auto direction = try_topple_from_hit(dmg_type, actor, from_pos);
 
+        if (!direction) {
             return;
         }
 
-        if ((dmg_type == DmgType::kicking) &&
-            actor->m_properties.has(prop::Id::weakened)) {
-            msg_log::add(i18n::get(
-                "terrain.wiggles",
-                "It wiggles a bit."));
-
-            return;
-        }
-
-        const Dir direction = dir_utils::dir(m_pos - from_pos);
-
-        topple(direction, *actor);
+        // NOTE: This call deletes the object!
+        topple(*direction, *actor);
     } break;
 
     case DmgType::explosion:

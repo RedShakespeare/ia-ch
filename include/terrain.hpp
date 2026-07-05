@@ -359,6 +359,17 @@ protected:
     // Wall/Pillar/Petroglyph hit().
     void destroyed_stone_wall_or_rubble(DmgType dmg_type);
 
+    // Shared kicking/control_object_spell dispatch for topple-able terrain
+    // (Statue, Urn, Brazier). Returns the topple direction, or std::nullopt
+    // if the caller should early-return (no actor, or the actor is weakened
+    // on a kick — in which case the "wiggles" message is printed).
+    // NOTE: Does NOT call topple() — the caller is responsible for calling
+    // its own topple() overload, which may delete this object.
+    std::optional<Dir> try_topple_from_hit(
+        DmgType dmg_type,
+        const actor::Actor* actor,
+        const P& from_pos) const;
+
     // Exorcist bonus awarded when an altar-like terrain is destroyed by the
     // exorcist background. No-op for other backgrounds.
     void reward_exorcist_purge(int xp, int fervor) const;
