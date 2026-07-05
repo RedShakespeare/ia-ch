@@ -57,8 +57,8 @@ void set_fullscreen(bool value);
 bool is_fullscreen();
 int video_scale_factor();
 // Recomputes the default video scale factor from the physical (DPI-aware)
-// resolution and the OS DPI scale, but only when no value was loaded from
-// the config file. Returns true if the factor was changed.
+// resolution and the OS DPI scale, but only when the user has not configured
+// the value. Returns true if the factor was changed.
 bool apply_default_video_scale_factor_if_unset();
 int brightness_pct();
 

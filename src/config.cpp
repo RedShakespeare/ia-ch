@@ -71,7 +71,7 @@ static bool s_is_tiles_mode = false;
 static RendererType s_renderer_type = RendererType::auto_select;
 static bool s_is_fullscreen = false;
 static int s_video_scale_factor = 1;
-static bool s_video_scale_factor_was_read_from_config = false;
+static bool s_video_scale_factor_is_user_configured = false;
 static int s_brightness_pct = 100;
 static bool s_text_mode_filled_walls = true;
 static bool s_display_health_bars = true;
@@ -345,7 +345,7 @@ static void set_default_variables()
     // apply_default_video_scale_factor_if_unset(), once the SDL window and
     // renderer exist (which is required to read the OS DPI scale factor).
     // Use a safe placeholder here so the window can be created.
-    s_video_scale_factor_was_read_from_config = false;
+    s_video_scale_factor_is_user_configured = false;
     s_video_scale_factor = 1;
     s_brightness_pct = 100;
     s_text_mode_filled_walls = true;
@@ -402,7 +402,7 @@ static bool read_config_file()
     std::string video_scale_str = config["video_scale_factor"];
     TRACE << "Read video_scale_factor: '" << video_scale_str << "'" << "\n";
 
-    s_video_scale_factor_was_read_from_config = !video_scale_str.empty();
+    s_video_scale_factor_is_user_configured = !video_scale_str.empty();
 
     s_brightness_pct = to_int(config["brightness_pct"]);
     s_renderer_type = (RendererType)to_int(config["renderer_type"]);
@@ -663,8 +663,8 @@ bool apply_default_video_scale_factor_if_unset()
 {
     TRACE_FUNC_BEGIN;
 
-    if (s_video_scale_factor_was_read_from_config) {
-        TRACE << "video_scale_factor was read from config, keeping value "
+    if (s_video_scale_factor_is_user_configured) {
+        TRACE << "video_scale_factor is user-configured, keeping value "
                << s_video_scale_factor << "\n";
         TRACE_FUNC_END;
         return false;
@@ -1499,6 +1499,7 @@ void VideoScaleOption::change(OptionChangeCommand command) const
     }
 
     if (s_video_scale_factor != scale_factor_before) {
+        s_video_scale_factor_is_user_configured = true;
         io::on_user_toggle_scaling();
     }
 }
