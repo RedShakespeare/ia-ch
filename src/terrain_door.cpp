@@ -210,12 +210,13 @@ static void communicate_player_bash_futile(const audio::SfxId sfx)
 {
     Snd snd(
         "",
-        sfx,
-        IgnoreMsgIfOriginSeen::no,
-        map::g_player->m_pos,
-        map::g_player,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(map::g_player->m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 
@@ -231,12 +232,13 @@ static void communicate_player_bash_success(
 {
     Snd snd(
         "",
-        sfx,
-        IgnoreMsgIfOriginSeen::yes,
-        pos,
-        map::g_player,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 
@@ -280,12 +282,13 @@ static void communicate_mon_bash_success(
     // behavior (everyone near the door wants to run inside).
     Snd snd(
         snd_msg,
-        sfx,
-        IgnoreMsgIfOriginSeen::yes,
-        pos,
-        &mon,
-        SndVol::high,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(pos)
+            .actor(&mon)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 
@@ -315,12 +318,13 @@ static void communicate_player_bash_failed(
 {
     Snd snd(
         "",
-        sfx,
-        IgnoreMsgIfOriginSeen::no,
-        pos,
-        map::g_player,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 }
@@ -332,12 +336,13 @@ static void communicate_mon_bash_failed(
 {
     Snd snd(
         i18n::get("terrain_door.hear_loud_banging", "I hear a loud banging."),
-        sfx,
-        IgnoreMsgIfOriginSeen::yes,
-        pos,
-        &mon,
-        SndVol::high,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(pos)
+            .actor(&mon)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::no));
 
     snd.run();
 }
@@ -350,12 +355,13 @@ static void communicate_player_open(
     if (!player_bon::has_trait(TraitId::silent)) {
         Snd snd(
             "",
-            sfx,
-            IgnoreMsgIfOriginSeen::yes,
-            pos,
-            map::g_player,
-            SndVol::low,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(sfx)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(pos)
+                .actor(map::g_player)
+                .vol(SndVol::low)
+                .alerts(AlertsMon::yes));
 
         snd.run();
     }
@@ -382,12 +388,13 @@ static void communicate_mon_open(
 
     Snd snd(
         snd_msg,
-        sfx,
-        IgnoreMsgIfOriginSeen::no,
-        pos,
-        &mon,
-        SndVol::low,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(pos)
+            .actor(&mon)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::no));
 
     snd.run();
 
@@ -419,12 +426,13 @@ static void communicate_player_open_blind(
 {
     Snd snd(
         "",
-        sfx,
-        IgnoreMsgIfOriginSeen::yes,
-        pos,
-        map::g_player,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 
@@ -454,12 +462,13 @@ static void communicate_mon_open_blind(
 
     Snd snd(
         snd_msg,
-        sfx,
-        IgnoreMsgIfOriginSeen::no,
-        pos,
-        &mon,
-        SndVol::low,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(pos)
+            .actor(&mon)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::no));
 
     snd.run();
 
@@ -494,12 +503,13 @@ static void communicate_player_fail_open_blind(
 {
     Snd snd(
         "",
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::yes,
-        pos,
-        map::g_player,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 
@@ -522,12 +532,13 @@ static void communicate_mon_fail_open_blind(
         i18n::get(
             "terrain_door.hear_attempt_open_door",
             "I hear something attempting to open a door."),
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::yes,
-        pos,
-        &mon,
-        SndVol::low,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(pos)
+            .actor(&mon)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::no));
 
     snd.run();
 
@@ -556,12 +567,13 @@ static void communicate_player_close(
     if (!player_bon::has_trait(TraitId::silent)) {
         Snd snd(
             "",
-            sfx,
-            IgnoreMsgIfOriginSeen::yes,
-            pos,
-            map::g_player,
-            SndVol::low,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(sfx)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(pos)
+                .actor(map::g_player)
+                .vol(SndVol::low)
+                .alerts(AlertsMon::yes));
 
         snd.run();
     }
@@ -579,12 +591,13 @@ static void communicate_player_close_blind(
 {
     Snd snd(
         "",
-        sfx,
-        IgnoreMsgIfOriginSeen::yes,
-        pos,
-        map::g_player,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 
@@ -602,12 +615,13 @@ static void communicate_player_fail_close_blind(
 {
     Snd snd(
         "",
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::yes,
-        pos,
-        map::g_player,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 

@@ -249,12 +249,13 @@ static void topple_object(
 
     Snd snd(
         snd_msg,
-        audio::SfxId::statue_crash,
-        IgnoreMsgIfOriginSeen::no,
-        terrain.pos(),
-        actor_toppling,
-        SndVol::low,
-        alerts_mon);
+        SndSpec{}
+            .sfx(audio::SfxId::statue_crash)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(terrain.pos())
+            .actor(actor_toppling)
+            .vol(SndVol::low)
+            .alerts(alerts_mon));
 
     snd_emit::run(snd);
 
@@ -2023,12 +2024,13 @@ void Liquid::bump(actor::Actor& actor_bumping)
 
         Snd snd(
             msg,
-            audio::SfxId::wade,
-            IgnoreMsgIfOriginSeen::yes,
-            actor_bumping.m_pos,
-            &actor_bumping,
-            SndVol::low,
-            alerts_mon);
+            SndSpec{}
+                .sfx(audio::SfxId::wade)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(actor_bumping.m_pos)
+                .actor(&actor_bumping)
+                .vol(SndVol::low)
+                .alerts(alerts_mon));
 
         snd_emit::run(snd);
     }
@@ -2733,12 +2735,13 @@ void Chains::bump(actor::Actor& actor_bumping)
 
         Snd snd(
             msg,
-            audio::SfxId::chains,
-            IgnoreMsgIfOriginSeen::no,
-            actor_bumping.m_pos,
-            &actor_bumping,
-            SndVol::low,
-            alerts_mon);
+            SndSpec{}
+                .sfx(audio::SfxId::chains)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+                .origin(actor_bumping.m_pos)
+                .actor(&actor_bumping)
+                .vol(SndVol::low)
+                .alerts(alerts_mon));
 
         snd_emit::run(snd);
     }
@@ -3011,12 +3014,13 @@ void Brazier::topple(const Dir direction, actor::Actor& actor)
 
     Snd snd(
         snd_msg,
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::no,
-        m_pos,
-        &actor,
-        SndVol::low,
-        alerts_mon);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(m_pos)
+            .actor(&actor)
+            .vol(SndVol::low)
+            .alerts(alerts_mon));
 
     snd_emit::run(snd);
 
@@ -3657,15 +3661,16 @@ DidOpen Tomb::open(actor::Actor* const actor_opening)
         m_is_open = true;
 
         Snd snd(
-        i18n::get(
-            "terrain.heavy_stone_sliding",
-            "I hear heavy stone sliding."),
-            audio::SfxId::tomb_open,
-            IgnoreMsgIfOriginSeen::yes,
-            m_pos,
-            map::g_player,
-            SndVol::high,
-            AlertsMon::yes);
+            i18n::get(
+                "terrain.heavy_stone_sliding",
+                "I hear heavy stone sliding."),
+            SndSpec{}
+                .sfx(audio::SfxId::tomb_open)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(m_pos)
+                .actor(map::g_player)
+                .vol(SndVol::high)
+                .alerts(AlertsMon::yes));
 
         snd.run();
 
@@ -3940,12 +3945,13 @@ void Tomb::trigger_trap_fumes() const
 
     Snd snd(
         i18n::get("terrain.gas_burst", "I hear a burst of gas."),
-        audio::SfxId::gas,
-        IgnoreMsgIfOriginSeen::yes,
-        m_pos,
-        nullptr,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::gas)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(m_pos)
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd_emit::run(snd);
 
@@ -4177,12 +4183,13 @@ void Chest::on_player_kick()
 
     Snd snd(
         "",
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::yes,
-        m_pos,
-        map::g_player,
-        SndVol::high,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     // Is seen and closed
 
@@ -4879,12 +4886,13 @@ void Cabinet::bump(actor::Actor& actor_bumping)
     if (m_is_open) {
         Snd snd(
             "",
-            audio::SfxId::bookshelf_rummage,
-            IgnoreMsgIfOriginSeen::yes,
-            m_pos,
-            &actor_bumping,
-            SndVol::high,
-            AlertsMon::no);
+            SndSpec{}
+                .sfx(audio::SfxId::bookshelf_rummage)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(m_pos)
+                .actor(&actor_bumping)
+                .vol(SndVol::high)
+                .alerts(AlertsMon::no));
 
         snd.run();
         player_loot();
@@ -4926,12 +4934,13 @@ DidOpen Cabinet::open(actor::Actor* const actor_opening)
         // Was not already open
         Snd snd(
             "",
-            audio::SfxId::cabinet_open,
-            IgnoreMsgIfOriginSeen::yes,
-            m_pos,
-            actor_opening,
-            SndVol::high,
-            AlertsMon::no);
+            SndSpec{}
+                .sfx(audio::SfxId::cabinet_open)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(m_pos)
+                .actor(actor_opening)
+                .vol(SndVol::high)
+                .alerts(AlertsMon::no));
 
         snd.run();
         m_is_open = true;
@@ -5089,12 +5098,13 @@ void Bookshelf::bump(actor::Actor& actor_bumping)
     if (!m_is_looted) {
         Snd snd(
             "",
-            audio::SfxId::bookshelf_rummage,
-            IgnoreMsgIfOriginSeen::yes,
-            m_pos,
-            &actor_bumping,
-            SndVol::high,
-            AlertsMon::no);
+            SndSpec{}
+                .sfx(audio::SfxId::bookshelf_rummage)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(m_pos)
+                .actor(&actor_bumping)
+                .vol(SndVol::high)
+                .alerts(AlertsMon::no));
 
         snd.run();
         player_loot();
@@ -5267,12 +5277,13 @@ void AlchemistBench::bump(actor::Actor& actor_bumping)
     if (!m_is_looted) {
         Snd snd(
             "",
-            audio::SfxId::alchemy_rummage,
-            IgnoreMsgIfOriginSeen::yes,
-            m_pos,
-            &actor_bumping,
-            SndVol::high,
-            AlertsMon::no);
+            SndSpec{}
+                .sfx(audio::SfxId::alchemy_rummage)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(m_pos)
+                .actor(&actor_bumping)
+                .vol(SndVol::high)
+                .alerts(AlertsMon::no));
 
         snd.run();
         player_loot();
