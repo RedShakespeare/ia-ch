@@ -118,12 +118,13 @@ static void hit_corpse_destroy_success(
         (dmg_type == DmgType::piercing)) {
         Snd snd(
             i18n::get("actor_hit.crack", "*Crack!*"),
-            audio::SfxId::hit_corpse_break,
-            IgnoreMsgIfOriginSeen::yes,
-            actor.m_pos,
-            nullptr,
-            SndVol::low,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(audio::SfxId::hit_corpse_break)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(actor.m_pos)
+                .actor(nullptr)
+                .vol(SndVol::low)
+                .alerts(AlertsMon::yes));
 
         snd.run();
     }
@@ -172,12 +173,13 @@ static void hit_corpse_destroy_fail(
 
         Snd snd(
             msg,
-            audio::SfxId::hit_medium,
-            IgnoreMsgIfOriginSeen::yes,
-            actor.m_pos,
-            nullptr,
-            SndVol::low,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(audio::SfxId::hit_medium)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(actor.m_pos)
+                .actor(nullptr)
+                .vol(SndVol::low)
+                .alerts(AlertsMon::yes));
 
         snd.run();
     }

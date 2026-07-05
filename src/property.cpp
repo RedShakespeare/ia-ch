@@ -3491,12 +3491,13 @@ PropActResult MajorClaphamSummon::on_act()
         i18n::get(
             "property.tomb_legions_sound",
             "A voice is calling forth Tomb-Legions!"),
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::yes,
-        m_owner->m_pos,
-        m_owner,
-        SndVol::high,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(m_owner->m_pos)
+            .actor(m_owner)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::no));
 
     snd.run();
 
@@ -3827,12 +3828,13 @@ PropActResult FrenziesFollowers::on_act()
         i18n::get(
             "property.great_frenzy_sound",
             "A voice is stirring up a great frenzy!"),
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::yes,
-        m_owner->m_pos,
-        m_owner,
-        SndVol::high,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(m_owner->m_pos)
+            .actor(m_owner)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::no));
 
     snd.run();
 

@@ -324,7 +324,15 @@ static void run_explosion_with_lingering_terrain_at(
             blocked);
 
     // TODO: Sound message?
-    Snd snd("", audio::SfxId::END, IgnoreMsgIfOriginSeen::yes, origin, nullptr, SndVol::low, AlertsMon::yes);
+    Snd snd(
+        "",
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(origin)
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd_emit::run(snd);
 
@@ -398,12 +406,13 @@ void run(
     if (emit_expl_snd == EmitExplSnd::yes) {
         Snd snd(
             i18n::get("explosion.hear", "I hear an explosion!"),
-            audio::SfxId::explosion,
-            IgnoreMsgIfOriginSeen::yes,
-            origin,
-            nullptr,
-            SndVol::high,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(audio::SfxId::explosion)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(origin)
+                .actor(nullptr)
+                .vol(SndVol::high)
+                .alerts(AlertsMon::yes));
 
         snd_emit::run(snd);
     }

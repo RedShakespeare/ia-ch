@@ -319,12 +319,13 @@ void throw_item(
 
                 Snd snd(
                     i18n::get("throwing.creature_hit", "A creature is hit."),
-                    audio::SfxId::hit_small,
-                    IgnoreMsgIfOriginSeen::yes,
-                    pos,
-                    nullptr,
-                    SndVol::low,
-                    AlertsMon::no);
+                    SndSpec{}
+                        .sfx(audio::SfxId::hit_small)
+                        .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                        .origin(pos)
+                        .actor(nullptr)
+                        .vol(SndVol::low)
+                        .alerts(AlertsMon::no));
 
                 snd.run();
 
@@ -434,12 +435,13 @@ void throw_item(
 
     Snd snd(
         item_thrown_data.text.land_on_hard_snd_msg,
-        item_thrown_data.land_on_hard_sfx,
-        IgnoreMsgIfOriginSeen::yes,
-        drop_pos,
-        nullptr,
-        SndVol::low,
-        alerts);
+        SndSpec{}
+            .sfx(item_thrown_data.land_on_hard_sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(drop_pos)
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(alerts));
 
     if (item_thrown.data().ranged.always_break_on_throw ||
         ((break_item_one_in_n != -1) &&

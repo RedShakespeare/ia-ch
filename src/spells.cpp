@@ -1293,12 +1293,13 @@ void Spell::cast(
         if (is_noisy(skill) || (spell_src == SpellSrc::manuscript)) {
             Snd snd(
                 "",
-                audio::SfxId::END,
-                IgnoreMsgIfOriginSeen::yes,
-                caster->m_pos,
-                caster,
-                SndVol::low,
-                AlertsMon::yes);
+                SndSpec{}
+                    .sfx(audio::SfxId::END)
+                    .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                    .origin(caster->m_pos)
+                    .actor(caster)
+                    .vol(SndVol::low)
+                    .alerts(AlertsMon::yes));
 
             snd.run();
         }
@@ -1315,12 +1316,13 @@ void Spell::cast(
         if (is_noisy(skill)) {
             Snd snd(
                 generate_mon_cast_sound_msg(*caster),
-                audio::SfxId::END,
-                IgnoreMsgIfOriginSeen::no,
-                caster->m_pos,
-                caster,
-                SndVol::low,
-                AlertsMon::no);
+                SndSpec{}
+                    .sfx(audio::SfxId::END)
+                    .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+                    .origin(caster->m_pos)
+                    .actor(caster)
+                    .vol(SndVol::low)
+                    .alerts(AlertsMon::no));
 
             snd.run();
 
