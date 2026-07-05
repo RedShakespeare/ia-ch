@@ -129,3 +129,75 @@ TEST_CASE("Monster wading does not alert monsters")
 
     test_utils::cleanup_all();
 }
+
+// Characterization tests pinning the current 7-argument Snd constructor's
+// behavior, written before the SndSpec parameter-object refactor (Smell 7).
+// These guard the migration: they must keep passing unchanged through every
+// step until the legacy ctor is deleted, at which point they are removed.
+
+TEST_CASE("Snd 7-arg ctor stores all fields")
+{
+    test_utils::init_all();
+
+    const P origin(3, 5);
+    auto* const actor = map::g_player;
+
+    Snd snd(
+        "hello",
+        audio::SfxId::horn,
+        IgnoreMsgIfOriginSeen::yes,
+        origin,
+        actor,
+        SndVol::high,
+        AlertsMon::yes);
+
+    REQUIRE(snd.msg() == "hello");
+    REQUIRE(snd.sfx() == audio::SfxId::horn);
+    REQUIRE(snd.is_msg_ignored_if_origin_seen());
+    REQUIRE(snd.origin() == origin);
+    REQUIRE(snd.actor_who_made_sound() == actor);
+    REQUIRE(snd.volume() == SndVol::high);
+    REQUIRE(snd.is_alerting_mon());
+    REQUIRE(!snd.did_player_hear_sound());
+
+    test_utils::cleanup_all();
+}
+
+TEST_CASE("Snd 7-arg ctor treats defaulted and explicit-null snd_heard_effect identically")
+{
+    test_utils::init_all();
+
+    const P origin(3, 5);
+    auto* const player = map::g_player;
+
+    // Form used by 68 of 70 call sites: 8th arg omitted, defaults to nullptr.
+    Snd snd_defaulted(
+        "",
+        audio::SfxId::END,
+        IgnoreMsgIfOriginSeen::no,
+        origin,
+        nullptr,
+        SndVol::low,
+        AlertsMon::no);
+
+    // Form with explicit nullptr for the 8th arg.
+    Snd snd_explicit_null(
+        "",
+        audio::SfxId::END,
+        IgnoreMsgIfOriginSeen::no,
+        origin,
+        nullptr,
+        SndVol::low,
+        AlertsMon::no,
+        nullptr);
+
+    // on_heard must behave identically for both: calling on the player sets
+    // did_player_hear_sound, and a null effect must not be invoked.
+    snd_defaulted.on_heard(*player);
+    snd_explicit_null.on_heard(*player);
+
+    REQUIRE(snd_defaulted.did_player_hear_sound());
+    REQUIRE(snd_explicit_null.did_player_hear_sound());
+
+    test_utils::cleanup_all();
+}
