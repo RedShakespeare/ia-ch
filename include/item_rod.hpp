@@ -34,7 +34,7 @@ struct RodLook
 };
 
 void init();
-void reinit_text();
+void refresh_localized_text();
 
 void save();
 void load();

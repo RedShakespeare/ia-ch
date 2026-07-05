@@ -74,14 +74,14 @@ static std::vector<const item::Item*> get_all_unknown_items()
     for (const item::Item* const item : map::g_player->m_inv.m_backpack) {
         const item::ItemData& d = item->data();
 
-        if (d.is_identified) {
+        if (d.session.is_identified) {
             continue;
         }
 
-        if ((d.type == ItemType::potion) && (!d.is_alignment_known)) {
+        if ((d.type == ItemType::potion) && (!d.session.is_alignment_known)) {
             result.push_back(item);
         }
-        else if ((d.type == ItemType::scroll) && (!d.is_spell_domain_known)) {
+        else if ((d.type == ItemType::scroll) && (!d.session.is_spell_domain_known)) {
             result.push_back(item);
         }
     }
@@ -101,7 +101,7 @@ static void reveal_random_item(const std::vector<const item::Item*>& items)
 
     const item::Item* const item = rnd::element(items);
 
-    ASSERT(!item->data().is_identified);
+    ASSERT(!item->data().session.is_identified);
 
     TRACE << "Revealing info about '" << item->name(ItemNameType::plain) << "'" << "\n";
 
@@ -111,7 +111,7 @@ static void reveal_random_item(const std::vector<const item::Item*>& items)
     case ItemType::scroll: {
         TRACE << "Item type is 'scroll'" << "\n";
 
-        ASSERT(!item->data().is_spell_domain_known);
+        ASSERT(!item->data().session.is_spell_domain_known);
 
         static_cast<const scroll::Scroll*>(item)->reveal_domain();
     } break;
@@ -119,7 +119,7 @@ static void reveal_random_item(const std::vector<const item::Item*>& items)
     case ItemType::potion: {
         TRACE << "Item type is 'potion'" << "\n";
 
-        ASSERT(!item->data().is_alignment_known);
+        ASSERT(!item->data().session.is_alignment_known);
 
         static_cast<const potion::Potion*>(item)->reveal_alignment();
     } break;

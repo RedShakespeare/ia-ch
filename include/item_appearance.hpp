@@ -22,12 +22,12 @@ namespace item
 // Rebuild the fake-appearance text cached on each ItemData entry of the
 // given type, using a deterministic pool rebuilt by `build_pool`. The
 // caller-supplied `apply_un_id` writes the unidentified names (and color,
-// if applicable) from the pool entry at d.fake_appearance_idx, then erases
-// that entry from the pool so the next matching item takes the next slot.
+// if applicable) from the pool entry at d.session.fake_appearance_idx, then
+// erases that entry from the pool so the next matching item takes the next slot.
 // `apply_real_name` constructs the typed item and writes the identified
-// names onto d.base_name.
+// names onto d.text.base_name.
 //
-// Used by scroll/potion/rod reinit_text() to re-localize the cached
+// Used by scroll/potion/rod refresh_localized_text() to re-localize the cached
 // appearance text without disturbing session state (the fake_appearance_idx
 // is preserved across the rebuild, so the per-session item<->appearance
 // mapping is stable).
@@ -48,7 +48,7 @@ void rebuild_fake_appearances(
             continue;
         }
 
-        const int idx = d.fake_appearance_idx;
+        const int idx = d.session.fake_appearance_idx;
 
         if ((idx < 0) || (idx >= (int)pool.size())) {
             continue;

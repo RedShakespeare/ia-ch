@@ -118,7 +118,7 @@ static void player_walk_on_item(item::Item* const item)
     // Only print the item name if the item will not be "found" by stepping
     // on it, otherwise there would be redundant messages, e.g. "A Muddy
     // Potion." --> "I have found a Muddy Potion!"
-    if ((item->data().xp_on_found <= 0) || item->data().is_found) {
+    if ((item->data().xp_on_found <= 0) || item->data().session.is_found) {
         std::string item_name =
             item->name(
                 ItemNameType::plural,

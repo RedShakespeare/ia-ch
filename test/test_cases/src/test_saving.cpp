@@ -47,10 +47,10 @@ TEST_CASE("Saving and loading the game")
 
         // Item data
         item::g_data[(size_t)item::Id::scroll_teleport]
-            .is_spell_domain_known = true;
+            .session.is_spell_domain_known = true;
 
         item::g_data[(size_t)item::Id::scroll_control_object]
-            .is_identified = true;
+            .session.is_identified = true;
 
         // Background
         player_bon::pick_bg(Bg::rogue);
@@ -235,22 +235,22 @@ TEST_CASE("Saving and loading the game")
 
         // Item data
         REQUIRE(item::g_data[(size_t)item::Id::scroll_teleport]
-                    .is_spell_domain_known);
+                    .session.is_spell_domain_known);
 
         REQUIRE(!item::g_data[(size_t)item::Id::scroll_teleport]
-                     .is_identified);
+                     .session.is_identified);
 
         REQUIRE(item::g_data[(size_t)item::Id::scroll_control_object]
-                    .is_identified);
+                    .session.is_identified);
 
         REQUIRE(!item::g_data[(size_t)item::Id::scroll_control_object]
-                     .is_spell_domain_known);
+                     .session.is_spell_domain_known);
 
         REQUIRE(!item::g_data[(size_t)item::Id::scroll_light]
-                     .is_spell_domain_known);
+                     .session.is_spell_domain_known);
 
         REQUIRE(!item::g_data[(size_t)item::Id::scroll_light]
-                     .is_identified);
+                     .session.is_identified);
 
         // Player
         REQUIRE(map::g_player->m_data->name_a == "TEST PLAYER");

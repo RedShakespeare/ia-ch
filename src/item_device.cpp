@@ -74,11 +74,11 @@ Device::Device(item::ItemData* const item_data) :
 
 void Device::identify(const Verbose verbose)
 {
-    if (m_data->is_identified) {
+    if (m_data->session.is_identified) {
         return;
     }
 
-    m_data->is_identified = true;
+    m_data->session.is_identified = true;
 
     if (verbose == Verbose::yes) {
         const std::string name_after =
@@ -115,7 +115,7 @@ void Device::load_hook()
 
 std::vector<std::string> Device::descr_hook() const
 {
-    if (m_data->is_identified) {
+    if (m_data->session.is_identified) {
         const std::string descr = descr_identified();
 
         std::vector<std::string> out = {descr};
@@ -149,7 +149,7 @@ std::vector<std::string> Device::descr_hook() const
     }
     else {
         // Not identified
-        return m_data->base_descr;
+        return m_data->text.base_descr;
     }
 }
 
@@ -157,7 +157,7 @@ ConsumeItem Device::activate(actor::Actor* const actor)
 {
     ASSERT(actor);
 
-    if (!m_data->is_identified) {
+    if (!m_data->session.is_identified) {
         msg_log::add(i18n::get(
             "item_device.alien",
             "This device is completely alien to me, I could never understand it through normal means."));
@@ -290,7 +290,7 @@ ConsumeItem Device::activate(actor::Actor* const actor)
 
 std::string Device::name_info_str(const ItemNameIdentified id_type) const
 {
-    if (m_data->is_identified || (id_type == ItemNameIdentified::force_identified)) {
+    if (m_data->session.is_identified || (id_type == ItemNameIdentified::force_identified)) {
         switch (m_condition) {
         case Condition::breaking:
             return i18n::get("item_device.name_info_breaking", "(breaking)");

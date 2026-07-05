@@ -1921,7 +1921,7 @@ void SelectIdentify::on_start()
 
         const item::ItemData& d = item->data();
 
-        if (!d.is_identified &&
+        if (!d.session.is_identified &&
             is_allowed_item_type(d.type, m_item_types_allowed)) {
             FilteredInvEntry entry;
             entry.relative_idx = (size_t)slot.id;
@@ -1938,7 +1938,7 @@ void SelectIdentify::on_start()
 
         const item::ItemData& d = item->data();
 
-        if (!d.is_identified &&
+        if (!d.session.is_identified &&
             is_allowed_item_type(d.type, m_item_types_allowed)) {
             FilteredInvEntry entry;
             entry.relative_idx = i;

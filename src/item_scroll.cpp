@@ -69,8 +69,8 @@ static SpellSkill player_skill_for_scroll(const SpellId spell_id)
 namespace scroll
 {
 // Build the scroll fake-name pool. Construction order must be deterministic and
-// match between init() and reinit_text() so that fake_appearance_idx values
-// recorded in init() resolve to the same logical name in reinit_text().
+// match between init() and refresh_localized_text() so that fake_appearance_idx values
+// recorded in init() resolve to the same logical name in refresh_localized_text().
 static void build_fake_name_pool(std::vector<std::string>& pool)
 {
     pool.clear();
@@ -157,23 +157,23 @@ void init()
         // False name
         const size_t idx = rnd::idx(s_fake_names);
 
-        d->fake_appearance_idx = (int)idx;
+        d->session.fake_appearance_idx = (int)idx;
 
         const std::string& title = s_fake_names[idx];
 
-        d->base_name_un_id.names[(size_t)ItemNameType::plain] =
+        d->text.base_name_un_id.names[(size_t)ItemNameType::plain] =
             i18n::get(
                 "item_scroll.manuscript_titled_prefix",
                 "Manuscript titled ") +
             title +
             i18n::get("item_scroll.manuscript_titled_suffix", "");
-        d->base_name_un_id.names[(size_t)ItemNameType::plural] =
+        d->text.base_name_un_id.names[(size_t)ItemNameType::plural] =
             i18n::get(
                 "item_scroll.manuscripts_titled_prefix",
                 "Manuscripts titled ") +
             title +
             i18n::get("item_scroll.manuscripts_titled_suffix", "");
-        d->base_name_un_id.names[(size_t)ItemNameType::a] =
+        d->text.base_name_un_id.names[(size_t)ItemNameType::a] =
             i18n::get(
                 "item_scroll.a_manuscript_titled_prefix",
                 "a Manuscript titled ") +
@@ -201,9 +201,9 @@ void init()
             real_type_name +
             i18n::get("item_scroll.a_manuscript_of_suffix", "");
 
-        d->base_name.names[(size_t)ItemNameType::plain] = real_name;
-        d->base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
-        d->base_name.names[(size_t)ItemNameType::a] = real_name_a;
+        d->text.base_name.names[(size_t)ItemNameType::plain] = real_name;
+        d->text.base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
+        d->text.base_name.names[(size_t)ItemNameType::a] = real_name_a;
     }
 
     // Randomize scroll spawning chances - some scrolls have a "high" chance of spawning, and some
@@ -215,7 +215,7 @@ void init()
     const size_t nr_high_chance = nr_scrolls / 2;
 
     for (size_t i = 0; i < nr_scrolls; ++i) {
-        scroll_data[i]->chance_to_incl_in_spawn_list =
+        scroll_data[i]->session.chance_to_incl_in_spawn_list =
             (i < nr_high_chance)
             ? s_scroll_low_spawn_chance
             : s_scroll_high_spawn_chance;
@@ -224,7 +224,7 @@ void init()
     TRACE_FUNC_END;
 }
 
-void reinit_text()
+void refresh_localized_text()
 {
     TRACE_FUNC_BEGIN;
 
@@ -235,15 +235,15 @@ void reinit_text()
         ItemType::scroll,
         [](std::vector<std::string>& pool) { build_fake_name_pool(pool); },
         [](item::ItemData& d, const std::string& title) {
-            d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+            d.text.base_name_un_id.names[(size_t)ItemNameType::plain] =
                 i18n::get("item_scroll.manuscript_titled_prefix", "Manuscript titled ") +
                 title +
                 i18n::get("item_scroll.manuscript_titled_suffix", "");
-            d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+            d.text.base_name_un_id.names[(size_t)ItemNameType::plural] =
                 i18n::get("item_scroll.manuscripts_titled_prefix", "Manuscripts titled ") +
                 title +
                 i18n::get("item_scroll.manuscripts_titled_suffix", "");
-            d.base_name_un_id.names[(size_t)ItemNameType::a] =
+            d.text.base_name_un_id.names[(size_t)ItemNameType::a] =
                 i18n::get("item_scroll.a_manuscript_titled_prefix", "a Manuscript titled ") +
                 title +
                 i18n::get("item_scroll.a_manuscript_titled_suffix", "");
@@ -254,15 +254,15 @@ void reinit_text()
 
             const std::string real_type_name = scroll->real_name();
 
-            d.base_name.names[(size_t)ItemNameType::plain] =
+            d.text.base_name.names[(size_t)ItemNameType::plain] =
                 i18n::get("item_scroll.manuscript_of_prefix", "Manuscript of ") +
                 real_type_name +
                 i18n::get("item_scroll.manuscript_of_suffix", "");
-            d.base_name.names[(size_t)ItemNameType::plural] =
+            d.text.base_name.names[(size_t)ItemNameType::plural] =
                 i18n::get("item_scroll.manuscripts_of_prefix", "Manuscripts of ") +
                 real_type_name +
                 i18n::get("item_scroll.manuscripts_of_suffix", "");
-            d.base_name.names[(size_t)ItemNameType::a] =
+            d.text.base_name.names[(size_t)ItemNameType::a] =
                 i18n::get("item_scroll.a_manuscript_of_prefix", "a Manuscript of ") +
                 real_type_name +
                 i18n::get("item_scroll.a_manuscript_of_suffix", "");
@@ -278,7 +278,7 @@ void save()
             continue;
         }
 
-        auto& names = item::g_data[i].base_name_un_id.names;
+        auto& names = item::g_data[i].text.base_name_un_id.names;
 
         saving::put_str(names[(size_t)ItemNameType::plain]);
         saving::put_str(names[(size_t)ItemNameType::plural]);
@@ -293,7 +293,7 @@ void load()
             continue;
         }
 
-        auto& names = item::g_data[i].base_name_un_id.names;
+        auto& names = item::g_data[i].text.base_name_un_id.names;
 
         names[(size_t)ItemNameType::plain] = saving::get_str();
         names[(size_t)ItemNameType::plural] = saving::get_str();
@@ -317,16 +317,16 @@ std::vector<std::string> Scroll::descr_hook() const
 {
     const std::unique_ptr<const Spell> spell(make_spell());
 
-    if (m_data->is_identified) {
+    if (m_data->session.is_identified) {
         const auto skill = player_skill_for_scroll(spell->id());
 
         return spell->descr(skill, SpellSrc::manuscript);
     }
     else {
         // Not identified
-        auto lines = m_data->base_descr;
+        auto lines = m_data->text.base_descr;
 
-        if (m_data->is_spell_domain_known) {
+        if (m_data->session.is_spell_domain_known) {
             const std::string domain_str = spell->domain_descr();
 
             if (!domain_str.empty()) {
@@ -347,14 +347,14 @@ std::vector<std::string> Scroll::descr_hook() const
 
 void Scroll::reveal_domain() const
 {
-    if (m_data->is_spell_domain_known || m_data->is_identified) {
+    if (m_data->session.is_spell_domain_known || m_data->session.is_identified) {
         return;
     }
 
     TRACE << "Scroll domain discovered" << "\n";
 
     const std::string name_plural =
-        m_data->base_name_un_id.names[(size_t)ItemNameType::plural];
+        m_data->text.base_name_un_id.names[(size_t)ItemNameType::plural];
 
     const std::unique_ptr<const Spell> spell(make_spell());
 
@@ -377,7 +377,7 @@ void Scroll::reveal_domain() const
         }
     }
 
-    m_data->is_spell_domain_known = true;
+    m_data->session.is_spell_domain_known = true;
 }
 
 ItemPrePickResult Scroll::pre_pickup_hook()
@@ -436,7 +436,7 @@ ConsumeItem Scroll::activate(actor::Actor* const actor)
 
     // OK, we can try to cast
 
-    const bool is_identified_before = m_data->is_identified;
+    const bool is_identified_before = m_data->session.is_identified;
 
     if (is_identified_before) {
         const std::string scroll_name = name(ItemNameType::a, ItemNameInfo::none);
@@ -500,11 +500,11 @@ Spell* Scroll::make_spell() const
 
 void Scroll::identify(const Verbose verbose)
 {
-    if (m_data->is_identified) {
+    if (m_data->session.is_identified) {
         return;
     }
 
-    m_data->is_identified = true;
+    m_data->session.is_identified = true;
 
     if (verbose == Verbose::yes) {
         const std::string name_after =
@@ -538,7 +538,7 @@ std::string Scroll::domain_str() const
 
 std::string Scroll::name_info_str(const ItemNameIdentified id_type) const
 {
-    if ((m_data->is_spell_domain_known && !m_data->is_identified) ||
+    if ((m_data->session.is_spell_domain_known && !m_data->session.is_identified) ||
         (id_type == ItemNameIdentified::force_identified)) {
         const std::string str = domain_str();
 

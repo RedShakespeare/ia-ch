@@ -75,7 +75,7 @@ static void print_player_attack_seen_terrain_msg(
     const item::Item& wpn)
 {
     const std::string terrain_name = terrain.name(Article::the);
-    const std::string melee_att_msg = wpn.data().melee.attack_msgs.player;
+    const std::string melee_att_msg = wpn.data().text.melee_attack_msgs.player;
 
     msg_log::add(
         i18n::get("bash.attack_prefix", "I ") +
@@ -87,7 +87,7 @@ static void print_player_attack_seen_terrain_msg(
 
 static void print_player_attack_unseen_terrain_msg(const item::Item& wpn)
 {
-    const std::string melee_att_msg = wpn.data().melee.attack_msgs.player;
+    const std::string melee_att_msg = wpn.data().text.melee_attack_msgs.player;
 
     msg_log::add(
         i18n::get("bash.attack_prefix", "I ") +
@@ -382,7 +382,7 @@ void attack_corpse(actor::Actor& mon, const item::Item& wpn)
 
     corpse_name = text_format::first_to_lower(corpse_name);
 
-    const std::string melee_att_msg = wpn.data().melee.attack_msgs.player;
+    const std::string melee_att_msg = wpn.data().text.melee_attack_msgs.player;
 
     const std::string msg =
         i18n::get("attack_melee.player_prefix", "I ") +

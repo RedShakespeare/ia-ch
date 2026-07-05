@@ -482,7 +482,7 @@ std::vector<item::Id> GainItem::find_allowed_item_ids() const
     for (size_t i = 0; i < (size_t)item::Id::END; ++i) {
         const auto& d = item::g_data[i];
 
-        if (d.allow_spawn && d.value >= item::Value::supreme_treasure) {
+        if (d.session.allow_spawn && d.value >= item::Value::supreme_treasure) {
             ids.push_back((item::Id)i);
         }
     }

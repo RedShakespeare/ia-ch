@@ -57,7 +57,7 @@ std::vector<rod::RodLook> s_rod_looks;
 namespace rod
 {
 // Build the rod look pool. Construction order must be deterministic and match
-// between init() and reinit_text() so fake_appearance_idx values align.
+// between init() and refresh_localized_text() so fake_appearance_idx values align.
 static void build_look_pool(std::vector<RodLook>& pool)
 {
     pool.clear();
@@ -147,17 +147,17 @@ void init()
         // Color and false name
         const size_t idx = rnd::range(0, (int)s_rod_looks.size() - 1);
 
-        d.fake_appearance_idx = (int)idx;
+        d.session.fake_appearance_idx = (int)idx;
 
         RodLook& look = s_rod_looks[idx];
 
-        d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+        d.text.base_name_un_id.names[(size_t)ItemNameType::plain] =
             look.name_plain +
             i18n::get("item_rod.rod_suffix", " Rod");
-        d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+        d.text.base_name_un_id.names[(size_t)ItemNameType::plural] =
             look.name_plain +
             i18n::get("item_rod.rods_suffix", " Rods");
-        d.base_name_un_id.names[(size_t)ItemNameType::a] =
+        d.text.base_name_un_id.names[(size_t)ItemNameType::a] =
             look.name_a +
             i18n::get("item_rod.rod_suffix", " Rod");
 
@@ -182,15 +182,15 @@ void init()
             i18n::get("item_rod.a_rod_of_prefix", "a Rod of ") +
             real_type_name;
 
-        d.base_name.names[(size_t)ItemNameType::plain] = real_name;
-        d.base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
-        d.base_name.names[(size_t)ItemNameType::a] = real_name_a;
+        d.text.base_name.names[(size_t)ItemNameType::plain] = real_name;
+        d.text.base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
+        d.text.base_name.names[(size_t)ItemNameType::a] = real_name_a;
     }
 
     TRACE_FUNC_END;
 }
 
-void reinit_text()
+void refresh_localized_text()
 {
     TRACE_FUNC_BEGIN;
 
@@ -201,13 +201,13 @@ void reinit_text()
         ItemType::rod,
         [](std::vector<RodLook>& pool) { build_look_pool(pool); },
         [](item::ItemData& d, const RodLook& look) {
-            d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+            d.text.base_name_un_id.names[(size_t)ItemNameType::plain] =
                 look.name_plain +
                 i18n::get("item_rod.rod_suffix", " Rod");
-            d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+            d.text.base_name_un_id.names[(size_t)ItemNameType::plural] =
                 look.name_plain +
                 i18n::get("item_rod.rods_suffix", " Rods");
-            d.base_name_un_id.names[(size_t)ItemNameType::a] =
+            d.text.base_name_un_id.names[(size_t)ItemNameType::a] =
                 look.name_a +
                 i18n::get("item_rod.rod_suffix", " Rod");
 
@@ -219,13 +219,13 @@ void reinit_text()
 
             const std::string real_type_name = tmp_rod->real_name();
 
-            d.base_name.names[(size_t)ItemNameType::plain] =
+            d.text.base_name.names[(size_t)ItemNameType::plain] =
                 i18n::get("item_rod.rod_of_prefix", "Rod of ") +
                 real_type_name;
-            d.base_name.names[(size_t)ItemNameType::plural] =
+            d.text.base_name.names[(size_t)ItemNameType::plural] =
                 i18n::get("item_rod.rods_of_prefix", "Rods of ") +
                 real_type_name;
-            d.base_name.names[(size_t)ItemNameType::a] =
+            d.text.base_name.names[(size_t)ItemNameType::a] =
                 i18n::get("item_rod.a_rod_of_prefix", "a Rod of ") +
                 real_type_name;
         });
@@ -242,9 +242,9 @@ void save()
             continue;
         }
 
-        saving::put_str(d.base_name_un_id.names[(size_t)ItemNameType::plain]);
-        saving::put_str(d.base_name_un_id.names[(size_t)ItemNameType::plural]);
-        saving::put_str(d.base_name_un_id.names[(size_t)ItemNameType::a]);
+        saving::put_str(d.text.base_name_un_id.names[(size_t)ItemNameType::plain]);
+        saving::put_str(d.text.base_name_un_id.names[(size_t)ItemNameType::plural]);
+        saving::put_str(d.text.base_name_un_id.names[(size_t)ItemNameType::a]);
         saving::put_str(colors::color_to_name(d.color));
     }
 }
@@ -258,9 +258,9 @@ void load()
             continue;
         }
 
-        d.base_name_un_id.names[(size_t)ItemNameType::plain] = saving::get_str();
-        d.base_name_un_id.names[(size_t)ItemNameType::plural] = saving::get_str();
-        d.base_name_un_id.names[(size_t)ItemNameType::a] = saving::get_str();
+        d.text.base_name_un_id.names[(size_t)ItemNameType::plain] = saving::get_str();
+        d.text.base_name_un_id.names[(size_t)ItemNameType::plural] = saving::get_str();
+        d.text.base_name_un_id.names[(size_t)ItemNameType::a] = saving::get_str();
         d.color = colors::name_to_color(saving::get_str());
     }
 }
@@ -300,7 +300,7 @@ ConsumeItem Rod::activate(actor::Actor* const actor)
 
     // Prevent using it if still charging, and identified (player character knows that it's
     // useless)
-    if ((m_nr_charge_turns_left > 0) && m_data->is_identified) {
+    if ((m_nr_charge_turns_left > 0) && m_data->session.is_identified) {
         const std::string rod_name = name(ItemNameType::plain, ItemNameInfo::none);
 
         msg_log::add(
@@ -311,7 +311,7 @@ ConsumeItem Rod::activate(actor::Actor* const actor)
         return ConsumeItem::no;
     }
 
-    m_data->is_tried = true;
+    m_data->session.is_tried = true;
 
     // TODO: Sfx
 
@@ -328,7 +328,7 @@ ConsumeItem Rod::activate(actor::Actor* const actor)
         set_max_charge_turns_left();
     }
 
-    if (m_data->is_identified) {
+    if (m_data->session.is_identified) {
         map::g_player->incr_shock(8.0, ShockSrc::use_strange_item);
     }
     else {
@@ -358,7 +358,7 @@ void Rod::on_std_turn_in_inv_hook(const InvType inv_type)
 
     --m_nr_charge_turns_left;
 
-    if ((m_nr_charge_turns_left == 0) && m_data->is_identified) {
+    if ((m_nr_charge_turns_left == 0) && m_data->session.is_identified) {
         const std::string my_name = name(ItemNameType::plain, ItemNameInfo::none);
 
         msg_log::add(
@@ -370,22 +370,22 @@ void Rod::on_std_turn_in_inv_hook(const InvType inv_type)
 
 std::vector<std::string> Rod::descr_hook() const
 {
-    if (m_data->is_identified) {
+    if (m_data->session.is_identified) {
         return {descr_identified()};
     }
     else {
         // Not identified
-        return m_data->base_descr;
+        return m_data->text.base_descr;
     }
 }
 
 void Rod::identify(const Verbose verbose)
 {
-    if (m_data->is_identified) {
+    if (m_data->session.is_identified) {
         return;
     }
 
-    m_data->is_identified = true;
+    m_data->session.is_identified = true;
 
     if (verbose == Verbose::yes) {
         const std::string name_after = name(ItemNameType::a, ItemNameInfo::none);
@@ -403,7 +403,7 @@ void Rod::identify(const Verbose verbose)
 
 std::string Rod::name_info_str(const ItemNameIdentified id_type) const
 {
-    if (m_data->is_identified || (id_type == ItemNameIdentified::force_identified)) {
+    if (m_data->session.is_identified || (id_type == ItemNameIdentified::force_identified)) {
         if (m_nr_charge_turns_left > 0) {
             const std::string turns_left_str = std::to_string(m_nr_charge_turns_left);
 
@@ -417,7 +417,7 @@ std::string Rod::name_info_str(const ItemNameIdentified id_type) const
     }
     else {
         // Not identified
-        return m_data->is_tried ? i18n::get("item_rod.tried", "(Tried)") : "";
+        return m_data->session.is_tried ? i18n::get("item_rod.tried", "(Tried)") : "";
     }
 }
 

@@ -238,7 +238,7 @@ void try_reload(actor::Actor& actor, item::Item* const item_to_reload)
             const auto idx = (size_t)ItemNameType::plain;
 
             const std::string mag_name =
-                ammo_data.base_name.names[idx];
+                ammo_data.text.base_name.names[idx];
 
             msg_log::add(
                 i18n::get("reload.no_better_mag_prefix", "I carry no ") +

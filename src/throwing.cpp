@@ -433,7 +433,7 @@ void throw_item(
         : AlertsMon::no;
 
     Snd snd(
-        item_thrown_data.land_on_hard_snd_msg,
+        item_thrown_data.text.land_on_hard_snd_msg,
         item_thrown_data.land_on_hard_sfx,
         IgnoreMsgIfOriginSeen::yes,
         drop_pos,

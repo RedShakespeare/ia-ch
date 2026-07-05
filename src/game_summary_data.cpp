@@ -95,7 +95,7 @@ sorted_item_list_to_item_knowledge_list(
 
         e.name = compare_element.name;
         e.item_color = item_data.color;
-        e.is_identified = item_data.is_identified;
+        e.is_identified = item_data.session.is_identified;
 
         item_knowledge_list.push_back(e);
     }
@@ -315,7 +315,7 @@ static void collect_inventory(game_summary_data::GameSummaryData& d)
         if (slot.item) {
             item_data.item_name = get_item_name(*slot.item);
 
-            item_data.is_identified = slot.item->data().is_identified;
+            item_data.is_identified = slot.item->data().session.is_identified;
         }
 
         d.inventory.push_back(item_data);
@@ -326,7 +326,7 @@ static void collect_inventory(game_summary_data::GameSummaryData& d)
 
         item_data.item_name = get_item_name(*item);
 
-        item_data.is_identified = item->data().is_identified;
+        item_data.is_identified = item->data().session.is_identified;
 
         d.inventory.push_back(item_data);
     }

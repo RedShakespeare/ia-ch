@@ -46,7 +46,7 @@ static std::vector<item::Item*> find_identifiable_items()
         std::begin(inv.m_slots),
         std::end(inv.m_slots),
         [&result](const InvSlot& slot) {
-            if (slot.item && !slot.item->data().is_identified) {
+            if (slot.item && !slot.item->data().session.is_identified) {
                 result.push_back(slot.item);
             }
         });
@@ -56,7 +56,7 @@ static std::vector<item::Item*> find_identifiable_items()
         std::end(inv.m_backpack),
         std::back_inserter(result),
         [](const item::Item* const item) {
-            return !item->data().is_identified;
+            return !item->data().session.is_identified;
         });
 
     return result;

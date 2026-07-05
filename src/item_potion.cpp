@@ -114,7 +114,7 @@ static void apply_properties_with_equal_duration(
 namespace potion
 {
 // Build the potion appearance pool. Construction order must be deterministic and
-// match between init() and reinit_text() so fake_appearance_idx values align.
+// match between init() and refresh_localized_text() so fake_appearance_idx values align.
 static void build_appearance_pool(std::vector<PotionAppearance>& pool)
 {
     pool.assign(
@@ -223,19 +223,19 @@ void init()
         // Color and false name
         const size_t idx = rnd::range(0, (int)s_potion_appearances.size() - 1);
 
-        d.fake_appearance_idx = (int)idx;
+        d.session.fake_appearance_idx = (int)idx;
 
         auto& look = s_potion_appearances[idx];
 
-        d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+        d.text.base_name_un_id.names[(size_t)ItemNameType::plain] =
             look.name_plain +
             i18n::get("item_potion.unidentified_suffix", " Potion");
 
-        d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+        d.text.base_name_un_id.names[(size_t)ItemNameType::plural] =
             look.name_plain +
             i18n::get("item_potion.unidentified_plural_suffix", " Potions");
 
-        d.base_name_un_id.names[(size_t)ItemNameType::a] =
+        d.text.base_name_un_id.names[(size_t)ItemNameType::a] =
             look.name_a +
             i18n::get("item_potion.unidentified_suffix", " Potion");
 
@@ -262,15 +262,15 @@ void init()
             i18n::get("item_potion.real_name_a_prefix", "a Potion of ") +
             real_type_name;
 
-        d.base_name.names[(size_t)ItemNameType::plain] = real_name;
-        d.base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
-        d.base_name.names[(size_t)ItemNameType::a] = real_name_a;
+        d.text.base_name.names[(size_t)ItemNameType::plain] = real_name;
+        d.text.base_name.names[(size_t)ItemNameType::plural] = real_name_plural;
+        d.text.base_name.names[(size_t)ItemNameType::a] = real_name_a;
     }
 
     TRACE_FUNC_END;
 }
 
-void reinit_text()
+void refresh_localized_text()
 {
     TRACE_FUNC_BEGIN;
 
@@ -281,13 +281,13 @@ void reinit_text()
         ItemType::potion,
         [](std::vector<PotionAppearance>& pool) { build_appearance_pool(pool); },
         [](item::ItemData& d, const PotionAppearance& look) {
-            d.base_name_un_id.names[(size_t)ItemNameType::plain] =
+            d.text.base_name_un_id.names[(size_t)ItemNameType::plain] =
                 look.name_plain +
                 i18n::get("item_potion.unidentified_suffix", " Potion");
-            d.base_name_un_id.names[(size_t)ItemNameType::plural] =
+            d.text.base_name_un_id.names[(size_t)ItemNameType::plural] =
                 look.name_plain +
                 i18n::get("item_potion.unidentified_plural_suffix", " Potions");
-            d.base_name_un_id.names[(size_t)ItemNameType::a] =
+            d.text.base_name_un_id.names[(size_t)ItemNameType::a] =
                 look.name_a +
                 i18n::get("item_potion.unidentified_suffix", " Potion");
 
@@ -301,13 +301,13 @@ void reinit_text()
 
             delete potion;
 
-            d.base_name.names[(size_t)ItemNameType::plain] =
+            d.text.base_name.names[(size_t)ItemNameType::plain] =
                 i18n::get("item_potion.real_name_prefix", "Potion of ") +
                 real_type_name;
-            d.base_name.names[(size_t)ItemNameType::plural] =
+            d.text.base_name.names[(size_t)ItemNameType::plural] =
                 i18n::get("item_potion.real_name_plural_prefix", "Potions of ") +
                 real_type_name;
-            d.base_name.names[(size_t)ItemNameType::a] =
+            d.text.base_name.names[(size_t)ItemNameType::a] =
                 i18n::get("item_potion.real_name_a_prefix", "a Potion of ") +
                 real_type_name;
         });
@@ -324,9 +324,9 @@ void save()
             continue;
         }
 
-        saving::put_str(d.base_name_un_id.names[(size_t)ItemNameType::plain]);
-        saving::put_str(d.base_name_un_id.names[(size_t)ItemNameType::plural]);
-        saving::put_str(d.base_name_un_id.names[(size_t)ItemNameType::a]);
+        saving::put_str(d.text.base_name_un_id.names[(size_t)ItemNameType::plain]);
+        saving::put_str(d.text.base_name_un_id.names[(size_t)ItemNameType::plural]);
+        saving::put_str(d.text.base_name_un_id.names[(size_t)ItemNameType::a]);
         saving::put_str(colors::color_to_name(d.color));
     }
 }
@@ -340,9 +340,9 @@ void load()
             continue;
         }
 
-        d.base_name_un_id.names[(size_t)ItemNameType::plain] = saving::get_str();
-        d.base_name_un_id.names[(size_t)ItemNameType::plural] = saving::get_str();
-        d.base_name_un_id.names[(size_t)ItemNameType::a] = saving::get_str();
+        d.text.base_name_un_id.names[(size_t)ItemNameType::plain] = saving::get_str();
+        d.text.base_name_un_id.names[(size_t)ItemNameType::plural] = saving::get_str();
+        d.text.base_name_un_id.names[(size_t)ItemNameType::a] = saving::get_str();
         d.color = colors::name_to_color(saving::get_str());
     }
 }
@@ -363,7 +363,7 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
     if (actor::is_player(actor)) {
         // Really quaff a known malign potion?
         if ((alignment() == PotionAlignment::bad) &&
-            m_data->is_alignment_known &&
+            m_data->session.is_alignment_known &&
             config::warn_on_drink_malign_potion()) {
             const std::string name = this->name(ItemNameType::a);
 
@@ -389,11 +389,11 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
             }
         }
 
-        m_data->is_tried = true;
+        m_data->session.is_tried = true;
 
         audio::play(audio::SfxId::potion_quaff);
 
-        if (m_data->is_identified) {
+        if (m_data->session.is_identified) {
             const std::string potion_name =
                 name(ItemNameType::a, ItemNameInfo::none);
 
@@ -441,13 +441,13 @@ ConsumeItem Potion::activate(actor::Actor* const actor)
 
 void Potion::identify(const Verbose verbose)
 {
-    if (m_data->is_identified) {
+    if (m_data->session.is_identified) {
         return;
     }
 
-    m_data->is_identified = true;
+    m_data->session.is_identified = true;
 
-    m_data->is_alignment_known = true;
+    m_data->session.is_alignment_known = true;
 
     if (verbose == Verbose::yes) {
         const std::string name_after =
@@ -466,13 +466,13 @@ void Potion::identify(const Verbose verbose)
 
 std::vector<std::string> Potion::descr_hook() const
 {
-    if (m_data->is_identified) {
+    if (m_data->session.is_identified) {
         return {descr_identified()};
     }
     else {
-        auto lines = m_data->base_descr;
+        auto lines = m_data->text.base_descr;
 
-        if (m_data->is_alignment_known) {
+        if (m_data->session.is_alignment_known) {
             lines.push_back(
                 i18n::get("item_potion.this_potion_is", "This potion is ") +
                 text_format::first_to_lower(alignment_str()) +
@@ -498,14 +498,14 @@ std::string Potion::alignment_str() const
 
 void Potion::reveal_alignment() const
 {
-    if (m_data->is_alignment_known || m_data->is_identified) {
+    if (m_data->session.is_alignment_known || m_data->session.is_identified) {
         return;
     }
 
     TRACE << "Potion alignment discovered" << "\n";
 
     const std::string name_plural =
-        m_data->base_name_un_id.names[(size_t)ItemNameType::plural];
+        m_data->text.base_name_un_id.names[(size_t)ItemNameType::plural];
 
     const std::string align_str =
         text_format::first_to_lower(alignment_str());
@@ -518,7 +518,7 @@ void Potion::reveal_alignment() const
             align_str +
             i18n::get("item_potion.period", ".")));
 
-    m_data->is_alignment_known = true;
+    m_data->session.is_alignment_known = true;
 }
 
 void Potion::on_collide(const P& pos, actor::Actor* const actor)
@@ -564,8 +564,8 @@ std::string Potion::name_info_str(const ItemNameIdentified id_type) const
 
     // Only display benign/malign status if alignment is known, and the
     // potion is unidentified.
-    if (data().is_alignment_known &&
-        (!data().is_identified && (id_type != ItemNameIdentified::force_identified))) {
+    if (data().session.is_alignment_known &&
+        (!data().session.is_identified && (id_type != ItemNameIdentified::force_identified))) {
         str = "(" + alignment_str() + ")";
     }
 

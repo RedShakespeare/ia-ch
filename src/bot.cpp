@@ -405,7 +405,7 @@ static void bot_act()
             // TODO: Handle force field as well.
             if ((d.type == ItemType::device) &&
                 (d.id != item::Id::device_force_field)) {
-                d.is_identified = true;
+                d.session.is_identified = true;
                 id_bucket.push_back((item::Id)i);
             }
         }

@@ -78,8 +78,8 @@ static std::vector<item::Id> make_item_bucket()
 
         if (data.type < ItemType::END_OF_EXTRINSIC_ITEMS &&
             data.spawn_std_range.is_in_range(map::g_dlvl) &&
-            data.allow_spawn &&
-            rnd::percent(data.chance_to_incl_in_spawn_list)) {
+            data.session.allow_spawn &&
+            rnd::percent(data.session.chance_to_incl_in_spawn_list)) {
             item_bucket.push_back(item::Id(i));
         }
     }
@@ -142,7 +142,7 @@ void make_items_on_floor()
 
         const item::Id id = item_bucket[item_idx];
 
-        if (item::g_data[(size_t)id].allow_spawn) {
+        if (item::g_data[(size_t)id].session.allow_spawn) {
             item::make_item_on_floor(id, p);
 
             positions.erase(std::begin(positions) + p_idx);

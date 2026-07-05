@@ -168,7 +168,7 @@ std::vector<std::string> Item::descr() const
 
 std::vector<std::string> Item::descr_hook() const
 {
-    return m_data->base_descr;
+    return m_data->text.base_descr;
 }
 
 WpnDmg Item::melee_dmg(const actor::Actor* const attacker) const
@@ -434,7 +434,7 @@ void Item::on_removed_from_inv()
 
 void Item::discover()
 {
-    if ((m_data->xp_on_found > 0) && !m_data->is_found) {
+    if ((m_data->xp_on_found > 0) && !m_data->session.is_found) {
         const std::string item_name = name(ItemNameType::a, ItemNameInfo::yes);
 
         msg_log::add(
@@ -449,7 +449,7 @@ void Item::discover()
             item_name);
     }
 
-    m_data->is_found = true;
+    m_data->session.is_found = true;
 }
 
 void Item::on_player_reached_new_dlvl()
@@ -490,9 +490,9 @@ std::string Item::name(
     }
 
     const ItemName& names_used =
-        (m_data->is_identified || (id_type == ItemNameIdentified::force_identified))
-        ? m_data->base_name
-        : m_data->base_name_un_id;
+        (m_data->session.is_identified || (id_type == ItemNameIdentified::force_identified))
+        ? m_data->text.base_name
+        : m_data->text.base_name_un_id;
 
     const std::string base_name = names_used.names[(size_t)name_type_used];
 

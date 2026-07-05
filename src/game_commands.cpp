@@ -687,7 +687,7 @@ static void handle_debug_shift_f7_command()
     for (size_t idx = 0; idx < (size_t)item::Id::END; ++idx) {
         const item::ItemData& d = item::g_data[idx];
 
-        if (!d.melee.is_melee_wpn || d.is_intr || !d.allow_spawn) {
+        if (!d.melee.is_melee_wpn || d.is_intr || !d.session.allow_spawn) {
             continue;
         }
 
@@ -752,7 +752,7 @@ static void handle_debug_shift_f7_command()
 
             const std::string name =
                 text_format::pad_after(
-                    d.base_name.names[0],
+                    d.text.base_name.names[0],
                     30);
 
             const double avg_dmg = (double)dmg / (double)nr_iterations;

@@ -48,7 +48,7 @@ static void learn_spell_player(const SpellId spell)
 
         game::incr_player_xp(temp_scroll->data().xp_on_found, Verbose::no);
 
-        temp_scroll->data().is_found = true;
+        temp_scroll->data().session.is_found = true;
 
         break;
     }
@@ -105,7 +105,7 @@ static void make_for_player_flagellant()
 
     game::incr_player_xp(vitality_pot->data().xp_on_found, Verbose::no);
 
-    vitality_pot->data().is_found = true;
+    vitality_pot->data().session.is_found = true;
 
     inv.put_in_backpack(vitality_pot);
 
@@ -141,7 +141,7 @@ static void make_for_player_occultist()
 
     game::incr_player_xp(spirit_pot->data().xp_on_found, Verbose::no);
 
-    spirit_pot->data().is_found = true;
+    spirit_pot->data().session.is_found = true;
 
     inv.put_in_backpack(spirit_pot);
 
@@ -188,7 +188,7 @@ static void make_for_player_rogue()
 
     game::incr_player_xp(rod_cloud_minds->data().xp_on_found, Verbose::no);
 
-    rod_cloud_minds->data().is_found = true;
+    rod_cloud_minds->data().session.is_found = true;
 
     inv.put_in_backpack(rod_cloud_minds);
 
@@ -299,7 +299,7 @@ static void make_random_item_to_backpack(
         // weighted choice, instead of randomly discarding items from
         // the list (actor spawning already uses weights instead)
 
-        const int weight = item::g_data[(size_t)id].chance_to_incl_in_spawn_list;
+        const int weight = item::g_data[(size_t)id].session.chance_to_incl_in_spawn_list;
 
         ASSERT(weight != 0);
 
@@ -324,7 +324,7 @@ static void make_item_set_treasure(
     for (int i = 0; i < (int)item::Id::END; ++i) {
         const item::ItemData& d = item::g_data[i];
 
-        if ((d.chance_to_incl_in_spawn_list > 0) &&
+        if ((d.session.chance_to_incl_in_spawn_list > 0) &&
             (d.value == value)) {
             item_bucket.push_back((item::Id)i);
         }

@@ -1743,7 +1743,7 @@ void pick_bg(const Bg bg)
         // Mark all scrolls as found, so that they do not yield XP.
         for (auto& d : item::g_data) {
             if (d.type == ItemType::scroll) {
-                d.is_found = true;
+                d.session.is_found = true;
             }
         }
     } break;

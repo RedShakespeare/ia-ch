@@ -3155,7 +3155,7 @@ void ItemContainer::init(
         for (size_t i = 0; i < (size_t)item::Id::END; ++i) {
             auto& item_d = item::g_data[i];
 
-            if (!item_d.allow_spawn) {
+            if (!item_d.session.allow_spawn) {
                 // Item not allowed to spawn - next item!
                 continue;
             }
@@ -3173,7 +3173,7 @@ void ItemContainer::init(
                 continue;
             }
 
-            if (rnd::percent(item_d.chance_to_incl_in_spawn_list)) {
+            if (rnd::percent(item_d.session.chance_to_incl_in_spawn_list)) {
                 item_bucket.push_back(item::Id(i));
             }
         }
@@ -3189,7 +3189,7 @@ void ItemContainer::init(
             const auto id = item_bucket[idx];
 
             // Is this item still allowed to spawn (perhaps unique)?
-            if (item::g_data[(size_t)id].allow_spawn) {
+            if (item::g_data[(size_t)id].session.allow_spawn) {
                 auto* item = item::make(item_bucket[idx]);
 
                 item::randomize_item_properties(*item);

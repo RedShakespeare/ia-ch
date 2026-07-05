@@ -191,7 +191,7 @@ static size_t nr_projectiles_for_ranged_weapon(const item::Wpn& wpn)
 
 static void print_player_fire_ranged_msg(const item::Wpn& wpn)
 {
-    const std::string attack_verb = wpn.data().ranged.attack_msgs.player;
+    const std::string attack_verb = wpn.data().text.ranged_attack_msgs.player;
 
     msg_log::add(
         i18n::get("attack_ranged.player_prefix", "I ") +
@@ -211,7 +211,7 @@ static void print_mon_fire_ranged_msg(const RangedAttData& att_data)
                 *att_data.attacker));
 
     const std::string attack_verb =
-        att_data.att_item->data().ranged.attack_msgs.other;
+        att_data.att_item->data().text.ranged_attack_msgs.other;
 
     std::string wpn_used_str;
 
@@ -324,7 +324,7 @@ static std::unique_ptr<Snd> ranged_fire_snd(
 {
     std::unique_ptr<Snd> snd;
 
-    const std::string snd_msg = wpn.data().ranged.snd_msg;
+    const std::string snd_msg = wpn.data().text.ranged_snd_msg;
 
     if (snd_msg.empty()) {
         return snd;

@@ -545,7 +545,7 @@ Item* make(const Id item_id, const int nr_items)
     r->m_nr_items = nr_items;
 
     if (d->is_unique) {
-        d->allow_spawn = false;
+        d->session.allow_spawn = false;
     }
 
     return r;

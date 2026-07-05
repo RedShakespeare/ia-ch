@@ -116,7 +116,7 @@ static void print_player_melee_hit_actor_msg(
     const int dmg,
     const MeleeAttData& att_data)
 {
-    const std::string wpn_verb = att_data.att_item->data().melee.attack_msgs.player;
+    const std::string wpn_verb = att_data.att_item->data().text.melee_attack_msgs.player;
 
     std::string other_name;
 
@@ -213,7 +213,7 @@ static void print_mon_melee_hit_actor_msg(const int dmg, const MeleeAttData& att
         attacker_name = i18n::get("attack_melee.it_upper", "It");
     }
 
-    std::string wpn_verb = att_data.att_item->data().melee.attack_msgs.other;
+    std::string wpn_verb = att_data.att_item->data().text.melee_attack_msgs.other;
 
     std::string defender_name;
 

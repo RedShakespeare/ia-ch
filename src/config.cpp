@@ -2137,17 +2137,16 @@ void LanguageOption::change(OptionChangeCommand command) const
     terrain::init();
     prop::init();
 
-    // Re-localize item text cached at startup. item::reinit_text() re-runs
-    // item::init() (rebuilding names/descriptions/device fake names) while
-    // preserving session state; the three sub-inits then rebuild
-    // scroll/potion/rod fake appearances from recorded indices without
-    // re-randomizing. Actor (monster) names are already resolved live via
-    // i18n::get() at display time, so no actor reinit is needed (and
-    // actor::init() would destructively reset kill/seen session data).
-    item::reinit_text();
-    scroll::reinit_text();
-    potion::reinit_text();
-    rod::reinit_text();
+    // Re-localize item text cached at startup without resetting item session
+    // state. The three sub-inits then rebuild scroll/potion/rod fake
+    // appearances from recorded indices without re-randomizing. Actor
+    // (monster) names are already resolved live via i18n::get() at display
+    // time, so no actor reinit is needed (and actor::init() would
+    // destructively reset kill/seen session data).
+    item::refresh_localized_text();
+    scroll::refresh_localized_text();
+    potion::refresh_localized_text();
+    rod::refresh_localized_text();
 
     // Re-localize inventory slot labels (cached as std::string in InvSlot::name
     // at Inventory construction time). Guarded: the options menu can be reached

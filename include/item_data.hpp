@@ -326,7 +326,6 @@ struct MeleeData
     WpnDmg dmg;
     int hit_chance_mod;
     bool is_noisy;
-    ItemAttackMsgs attack_msgs;
     ItemAttackProp prop_applied;
     DmgType dmg_type;
     int reach;
@@ -366,8 +365,6 @@ struct RangedData
     gfx::TileId projectile_tile;
     Color projectile_color;
     bool projectile_leaves_trail;
-    ItemAttackMsgs attack_msgs;
-    std::string snd_msg;
     SndVol snd_vol;
     bool makes_ricochet_snd;
     audio::SfxId attack_sfx;
@@ -381,6 +378,29 @@ struct ArmorData
 
     int armor_points;
     double dmg_to_durability_factor;
+};
+
+struct ItemText
+{
+    ItemName base_name;
+    ItemName base_name_un_id;
+    std::vector<std::string> base_descr;
+    std::string land_on_hard_snd_msg;
+    ItemAttackMsgs melee_attack_msgs;
+    ItemAttackMsgs ranged_attack_msgs;
+    std::string ranged_snd_msg;
+};
+
+struct ItemSessionState
+{
+    bool allow_spawn {true};
+    int chance_to_incl_in_spawn_list {100};
+    bool is_identified {true};
+    bool is_alignment_known {true};     // Used for Potions
+    bool is_spell_domain_known {true};  // Used for Scrolls
+    bool is_tried {false};
+    bool is_found {false};  // Was seen on map or in inventory
+    int fake_appearance_idx {-1};
 };
 
 struct ItemData
@@ -397,27 +417,17 @@ public:
     bool allow_cursed;
     int weight;
     bool is_unique;
-    bool allow_spawn;
     Range spawn_std_range;
     int max_stack_at_spawn;
-    int chance_to_incl_in_spawn_list;
     bool is_stackable;
-    bool is_identified;
-    bool is_alignment_known;     // Used for Potions
-    bool is_spell_domain_known;  // Used for Scrolls
-    bool is_tried;
-    bool is_found;  // Was seen on map or in inventory
     int xp_on_found;
-    ItemName base_name;
-    ItemName base_name_un_id;
-    int fake_appearance_idx {-1};
-    std::vector<std::string> base_descr;
+    ItemText text;
+    ItemSessionState session;
     char character;
     Color color;
     gfx::TileId tile;
     AttackMode main_attack_mode;
     SpellId spell_cast_from_scroll;
-    std::string land_on_hard_snd_msg;
     audio::SfxId land_on_hard_sfx;
 
     std::vector<room::RoomType> native_rooms;
@@ -437,7 +447,7 @@ public:
 extern ItemData g_data[(size_t)Id::END];
 
 void init();
-void reinit_text();
+void refresh_localized_text();
 void cleanup();
 
 void save();
