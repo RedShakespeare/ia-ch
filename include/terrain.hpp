@@ -352,6 +352,13 @@ protected:
         const std::string& msg_key,
         const std::string& msg_fallback) const;
 
+    // Stone-wall family destruction: on pure damage (or 50% on explosion)
+    // destroys the stone wall at this position, otherwise replaces this
+    // terrain with rubble_high. Updates vision. Caller is responsible for
+    // any adjacent-door destruction (Wall only). Shared by
+    // Wall/Pillar/Petroglyph hit().
+    void destroyed_stone_wall_or_rubble(DmgType dmg_type);
+
     // Exorcist bonus awarded when an altar-like terrain is destroyed by the
     // exorcist background. No-op for other backgrounds.
     void reward_exorcist_purge(int xp, int fervor) const;

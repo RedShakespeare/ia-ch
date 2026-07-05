@@ -180,6 +180,18 @@ private:
     void player_bash(DmgType dmg_type, int dmg);
     void mon_bash(actor::Actor& mon);
 
+    // Triggers any ward trap on this door, then replaces the door with
+    // rubble_low and updates vision. Captures m_pos locally because the door
+    // terrain is destroyed during the call. Used by pure/explosion/shotgun
+    // destruction arms of hit().
+    void destroy_to_rubble();
+
+    // Shotgun-arm dispatch by door material. Wood and gate are blown to
+    // pieces (prints message if seen, then destroy_to_rubble); metal is
+    // unaffected.
+    void apply_shotgun_wood_or_gate();
+    void apply_shotgun_metal();
+
     Terrain* m_mimic_terrain {nullptr};
 
     bool m_is_open {false};

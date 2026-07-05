@@ -481,6 +481,18 @@ void Terrain::destroyed_into_rubble(
     map::update_vision();
 }
 
+void Terrain::destroyed_stone_wall_or_rubble(const DmgType dmg_type)
+{
+    if ((dmg_type == DmgType::pure) || rnd::coin_toss()) {
+        destr_stone_wall(m_pos);
+    }
+    else {
+        map::update_terrain(make(Id::rubble_high, m_pos));
+    }
+
+    map::update_vision();
+}
+
 void Terrain::reward_exorcist_purge(int xp, int fervor) const
 {
     if (!player_bon::is_bg(Bg::exorcist)) {
@@ -803,15 +815,7 @@ void Wall::hit(
     case DmgType::pure:
     case DmgType::explosion: {
         destr_all_adj_doors(m_pos);
-
-        if ((dmg_type == DmgType::pure) || rnd::coin_toss()) {
-            destr_stone_wall(m_pos);
-        }
-        else {
-            map::update_terrain(make(Id::rubble_high, m_pos));
-        }
-
-        map::update_vision();
+        destroyed_stone_wall_or_rubble(dmg_type);
     } break;
 
     default: {
@@ -1022,14 +1026,7 @@ void Pillar::hit(
     switch (dmg_type) {
     case DmgType::pure:
     case DmgType::explosion: {
-        if ((dmg_type == DmgType::pure) || rnd::coin_toss()) {
-            destr_stone_wall(m_pos);
-        }
-        else {
-            map::update_terrain(make(Id::rubble_high, m_pos));
-        }
-
-        map::update_vision();
+        destroyed_stone_wall_or_rubble(dmg_type);
     } break;
 
     default: {
@@ -1150,14 +1147,7 @@ void Petroglyph::hit(
     switch (dmg_type) {
     case DmgType::pure:
     case DmgType::explosion: {
-        if ((dmg_type == DmgType::pure) || rnd::coin_toss()) {
-            destr_stone_wall(m_pos);
-        }
-        else {
-            map::update_terrain(make(Id::rubble_high, m_pos));
-        }
-
-        map::update_vision();
+        destroyed_stone_wall_or_rubble(dmg_type);
     } break;
 
     default: {

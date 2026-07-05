@@ -812,6 +812,41 @@ bool Door::allow_player_melee_attack(
     }
 }
 
+void Door::destroy_to_rubble()
+{
+    const P pos = m_pos;
+
+    // NOTE: This might destroy the door:
+    try_trigger_ward_trap();
+
+    map::update_terrain(make(Id::rubble_low, pos));
+    map::update_vision();
+}
+
+void Door::apply_shotgun_wood_or_gate()
+{
+    if (map::g_seen.at(m_pos)) {
+        const std::string a =
+            m_is_hidden
+            ? i18n::get("terrain_door.door_crashes_a", "A ")
+            : i18n::get("terrain_door.the", "The ");
+
+        msg_log::add(
+            a +
+            base_name_short() +
+            i18n::get(
+                "terrain_door.shotgun_blown_to_pieces_suffix",
+                " is blown to pieces!"));
+    }
+
+    destroy_to_rubble();
+}
+
+void Door::apply_shotgun_metal()
+{
+    // Metal doors are unaffected by shotgun blasts.
+}
+
 void Door::hit(
     DmgType dmg_type,
     actor::Actor* actor,
@@ -822,14 +857,7 @@ void Door::hit(
 
     switch (dmg_type) {
     case DmgType::pure: {
-        const P pos = m_pos;
-
-        // NOTE: This might destroy the door:
-        try_trigger_ward_trap();
-
-        map::update_terrain(make(Id::rubble_low, pos));
-        map::update_vision();
-
+        destroy_to_rubble();
         return;
     } break;
 
@@ -837,47 +865,19 @@ void Door::hit(
         if (!m_is_open) {
             switch (m_type) {
             case DoorType::wood:
-            case DoorType::gate: {
-                if (map::g_seen.at(m_pos)) {
-                    const std::string a =
-                        m_is_hidden
-                        ? i18n::get("terrain_door.door_crashes_a", "A ")
-                        : i18n::get("terrain_door.the", "The ");
-
-                    msg_log::add(
-                        a +
-                        base_name_short() +
-                        i18n::get(
-                            "terrain_door.shotgun_blown_to_pieces_suffix",
-                            " is blown to pieces!"));
-                }
-
-                const P pos = m_pos;
-
-                // NOTE: This might destroy the door:
-                try_trigger_ward_trap();
-
-                map::update_terrain(make(Id::rubble_low, pos));
-                map::update_vision();
-
+            case DoorType::gate:
+                apply_shotgun_wood_or_gate();
                 return;
-            } break;
 
             case DoorType::metal:
+                apply_shotgun_metal();
                 break;
             }
         }
     } break;
 
     case DmgType::explosion: {
-        const P pos = m_pos;
-
-        // NOTE: This might destroy the door:
-        try_trigger_ward_trap();
-
-        map::update_terrain(terrain::make(terrain::Id::rubble_low, pos));
-
-        map::update_vision();
+        destroy_to_rubble();
     } break;
 
     // Kicking, blunt (sledgehammers), slashing (axes), or the control
