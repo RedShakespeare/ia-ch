@@ -5,9 +5,12 @@
 // =============================================================================
 
 #include "actor.hpp"
+#include "actor_factory.hpp"
 #include "catch.hpp"
 #include "global.hpp"
 #include "map.hpp"
+#include "property.hpp"
+#include "property_factory.hpp"
 #include "random.hpp"
 #include "terrain.hpp"
 #include "terrain_door.hpp"
@@ -373,6 +376,186 @@ TEST_CASE("Terrain hit() Door fire leaves warded wood door intact")
 
     REQUIRE(!map::g_terrain.at(pos)->is_burning());
     REQUIRE(map::g_terrain.at(pos)->id() == terrain::Id::door);
+
+    test_utils::cleanup_all();
+}
+
+// -----------------------------------------------------------------------------
+// Characterization tests for Statue/Urn/Brazier/Grate hit() refactor.
+// Pin down current behavior of (a) inline rubble replacement arms on
+// pure/explosion and (b) shared kicking/control_object_spell topple dispatch
+// in Statue/Urn/Brazier, so the planned Extract Method refactor can be
+// verified to preserve it.
+// -----------------------------------------------------------------------------
+
+TEST_CASE("Terrain hit() destroys Statue into rubble on pure damage")
+{
+    test_utils::init_all();
+
+    const P pos(5, 5);
+
+    map::update_terrain(terrain::make(terrain::Id::floor, pos));
+    map::update_terrain(terrain::make(terrain::Id::statue, pos));
+
+    map::g_terrain.at(pos)->hit(DmgType::pure, map::g_player);
+
+    REQUIRE(map::g_terrain.at(pos)->id() == terrain::Id::rubble_low);
+
+    test_utils::cleanup_all();
+}
+
+TEST_CASE("Terrain hit() destroys Urn into rubble on pure damage")
+{
+    test_utils::init_all();
+
+    const P pos(5, 5);
+
+    map::update_terrain(terrain::make(terrain::Id::floor, pos));
+    map::update_terrain(terrain::make(terrain::Id::urn, pos));
+
+    map::g_terrain.at(pos)->hit(DmgType::pure, map::g_player);
+
+    REQUIRE(map::g_terrain.at(pos)->id() == terrain::Id::rubble_low);
+
+    test_utils::cleanup_all();
+}
+
+TEST_CASE("Terrain hit() destroys Brazier into rubble on pure damage")
+{
+    test_utils::init_all();
+
+    const P pos(5, 5);
+
+    map::update_terrain(terrain::make(terrain::Id::floor, pos));
+    map::update_terrain(terrain::make(terrain::Id::brazier, pos));
+
+    map::g_terrain.at(pos)->hit(DmgType::pure, map::g_player);
+
+    REQUIRE(map::g_terrain.at(pos)->id() == terrain::Id::rubble_low);
+
+    test_utils::cleanup_all();
+}
+
+TEST_CASE("Terrain hit() destroys Grate into rubble on pure damage and destroys adjacent doors")
+{
+    test_utils::init_all();
+
+    const P pos(5, 5);
+    const P door_pos(4, 5);
+
+    map::update_terrain(terrain::make(terrain::Id::floor, pos));
+    map::update_terrain(terrain::make(terrain::Id::floor, door_pos));
+
+    auto* const door = static_cast<terrain::Door*>(
+        terrain::make(terrain::Id::door, door_pos));
+    door->init_type_and_state(
+        terrain::DoorType::wood,
+        terrain::DoorSpawnState::closed);
+    map::update_terrain(door);
+
+    REQUIRE(map::g_terrain.at(door_pos)->id() == terrain::Id::door);
+
+    map::update_terrain(terrain::make(terrain::Id::grate, pos));
+
+    map::g_terrain.at(pos)->hit(DmgType::pure, map::g_player);
+
+    REQUIRE(map::g_terrain.at(pos)->id() == terrain::Id::rubble_low);
+    REQUIRE(map::g_terrain.at(door_pos)->id() != terrain::Id::door);
+
+    test_utils::cleanup_all();
+}
+
+TEST_CASE("Terrain hit() Statue topples on kicking toward open floor")
+{
+    test_utils::init_all();
+
+    const P pos(5, 5);
+
+    map::update_terrain(terrain::make(terrain::Id::floor, pos));
+    map::update_terrain(terrain::make(terrain::Id::statue, pos));
+
+    // Player stands east of the statue; kick direction resolves to west,
+    // toward open floor at {4,5}.
+    map::g_player->m_pos.set(6, 5);
+
+    map::g_terrain.at(pos)->hit(
+        DmgType::kicking,
+        map::g_player,
+        map::g_player->m_pos);
+
+    REQUIRE(map::g_terrain.at(pos)->id() == terrain::Id::rubble_low);
+
+    test_utils::cleanup_all();
+}
+
+TEST_CASE("Terrain hit() Statue wiggles instead of toppling when player is weakened")
+{
+    test_utils::init_all();
+
+    const P pos(5, 5);
+
+    map::update_terrain(terrain::make(terrain::Id::floor, pos));
+    map::update_terrain(terrain::make(terrain::Id::statue, pos));
+
+    map::g_player->m_pos.set(6, 5);
+    map::g_player->m_properties.apply(prop::make(prop::Id::weakened));
+
+    map::g_terrain.at(pos)->hit(
+        DmgType::kicking,
+        map::g_player,
+        map::g_player->m_pos);
+
+    REQUIRE(map::g_terrain.at(pos)->id() == terrain::Id::statue);
+
+    test_utils::cleanup_all();
+}
+
+TEST_CASE("Terrain hit() Brazier topples and emits burning explosion on kicking")
+{
+    test_utils::init_all();
+
+    const P pos(5, 5);
+    const P dst_pos(4, 5);
+
+    map::update_terrain(terrain::make(terrain::Id::floor, pos));
+    map::update_terrain(terrain::make(terrain::Id::floor, dst_pos));
+    map::update_terrain(terrain::make(terrain::Id::brazier, pos));
+
+    auto* const rat = actor::make("MON_RAT", dst_pos);
+
+    REQUIRE(!rat->m_properties.has(prop::Id::burning));
+
+    map::g_player->m_pos.set(6, 5);
+
+    map::g_terrain.at(pos)->hit(
+        DmgType::kicking,
+        map::g_player,
+        map::g_player->m_pos);
+
+    REQUIRE(map::g_terrain.at(pos)->id() == terrain::Id::rubble_low);
+    REQUIRE(rat->m_properties.has(prop::Id::burning));
+
+    test_utils::cleanup_all();
+}
+
+TEST_CASE("Terrain hit() Brazier wiggles instead of toppling when player is weakened")
+{
+    test_utils::init_all();
+
+    const P pos(5, 5);
+
+    map::update_terrain(terrain::make(terrain::Id::floor, pos));
+    map::update_terrain(terrain::make(terrain::Id::brazier, pos));
+
+    map::g_player->m_pos.set(6, 5);
+    map::g_player->m_properties.apply(prop::make(prop::Id::weakened));
+
+    map::g_terrain.at(pos)->hit(
+        DmgType::kicking,
+        map::g_player,
+        map::g_player->m_pos);
+
+    REQUIRE(map::g_terrain.at(pos)->id() == terrain::Id::brazier);
 
     test_utils::cleanup_all();
 }
