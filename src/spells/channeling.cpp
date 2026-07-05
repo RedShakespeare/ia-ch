@@ -769,12 +769,13 @@ void SpellAzaGaze::run_effect(
         i18n::get(
             "spells.aza_gaze_sound",
             "An insane cacophony resounds through the air!"),
-        audio::SfxId::aza_gaze,
-        IgnoreMsgIfOriginSeen::no,
-        caster->m_pos,
-        caster,
-        SndVol::high,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(audio::SfxId::aza_gaze)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(caster->m_pos)
+            .actor(caster)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::no));
 
     snd.run();
 
@@ -849,12 +850,13 @@ void SpellAzaGaze::run_effect_on_target(
 
     Snd snd(
         "",
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::yes,
-        target.m_pos,
-        nullptr,
-        SndVol::high,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(target.m_pos)
+            .actor(nullptr)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 }
@@ -1070,12 +1072,13 @@ void SpellCataclysm::run_effect(
                 i18n::get(
                     "spells.explosion_sound",
                     "I hear an explosion!"),
-                audio::SfxId::explosion_molotov,
-                IgnoreMsgIfOriginSeen::yes,
-                p,
-                nullptr,
-                SndVol::high,
-                AlertsMon::yes);
+                SndSpec{}
+                    .sfx(audio::SfxId::explosion_molotov)
+                    .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                    .origin(p)
+                    .actor(nullptr)
+                    .vol(SndVol::high)
+                    .alerts(AlertsMon::yes));
 
             snd.run();
 
@@ -1137,12 +1140,13 @@ void SpellCataclysm::run_effect(
 
     Snd snd(
         "",
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::yes,
-        caster_pos,
-        nullptr,
-        SndVol::high,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(caster_pos)
+            .actor(nullptr)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 }

@@ -122,12 +122,13 @@ static void communicate_sigil_trigger(const terrain::Trap& trap, const actor::Ac
         i18n::get(
             "terrain_trap.hear_otherworldly_blaze",
             "I hear an otherworldly blaze."),
-        audio::SfxId::sigil_trigger,
-        IgnoreMsgIfOriginSeen::yes,
-        trap.pos(),
-        nullptr,
-        SndVol::low,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(audio::SfxId::sigil_trigger)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(trap.pos())
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::no));
 
     snd.run();
 
@@ -167,12 +168,13 @@ static void communicate_sigil_destroyed(const terrain::Trap& trap)
     if (map::g_seen.at(trap.pos()) && !trap.is_hidden()) {
         Snd snd(
             "",
-            audio::SfxId::sigil_fade,
-            IgnoreMsgIfOriginSeen::yes,
-            trap.pos(),
-            nullptr,
-            SndVol::low,
-            AlertsMon::no);
+            SndSpec{}
+                .sfx(audio::SfxId::sigil_fade)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(trap.pos())
+                .actor(nullptr)
+                .vol(SndVol::low)
+                .alerts(AlertsMon::no));
 
         snd.run();
 
@@ -199,12 +201,13 @@ static void communicate_mechanical_trap_trigger(const actor::Actor& actor, const
 
     Snd snd(
         msg,
-        audio::SfxId::mechanical_trap_trigger,
-        IgnoreMsgIfOriginSeen::no,
-        pos,
-        nullptr,
-        SndVol::low,
-        alerts);
+        SndSpec{}
+            .sfx(audio::SfxId::mechanical_trap_trigger)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(pos)
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(alerts));
 
     snd.run();
 
@@ -1193,12 +1196,13 @@ void TrapSmoke::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
 
     Snd snd(
         i18n::get("terrain_trap.hear_burst_gas", "I hear a burst of gas."),
-        audio::SfxId::gas,
-        IgnoreMsgIfOriginSeen::yes,
-        m_pos,
-        nullptr,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::gas)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(m_pos)
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 
@@ -1235,12 +1239,13 @@ void TrapAlarm::run_trigger_effect(const WasKnownBeforeTrigger was_known_before)
 
     Snd snd(
         i18n::get("terrain_trap.alarm_sounds", "An alarm sounds!"),
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::no,
-        m_pos,
-        nullptr,
-        SndVol::global,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(m_pos)
+            .actor(nullptr)
+            .vol(SndVol::global)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 

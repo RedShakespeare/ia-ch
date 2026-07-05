@@ -342,12 +342,13 @@ static std::unique_ptr<Snd> ranged_fire_snd(
     snd =
         std::make_unique<Snd>(
             snd_msg_used,
-            sfx,
-            IgnoreMsgIfOriginSeen::yes,
-            origin,
-            att_data.attacker,
-            vol,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(sfx)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(origin)
+                .actor(att_data.attacker)
+                .vol(vol)
+                .alerts(AlertsMon::yes));
 
     return snd;
 }
@@ -356,12 +357,13 @@ static void emit_projectile_hit_actor_snd(const P& pos)
 {
     Snd snd(
         i18n::get("attack_ranged.creature_hit", "A creature is hit."),
-        audio::SfxId::hit_small,
-        IgnoreMsgIfOriginSeen::yes,
-        pos,
-        nullptr,
-        SndVol::low,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(audio::SfxId::hit_small)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(pos)
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::no));
 
     snd.run();
 }
@@ -375,12 +377,13 @@ static void emit_projectile_hit_terrain_snd(
         // a ricochet sound
         Snd snd(
             i18n::get("attack_ranged.ricochet", "I hear a ricochet."),
-            audio::SfxId::ricochet,
-            IgnoreMsgIfOriginSeen::yes,
-            pos,
-            nullptr,
-            SndVol::low,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(audio::SfxId::ricochet)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(pos)
+                .actor(nullptr)
+                .vol(SndVol::low)
+                .alerts(AlertsMon::yes));
 
         snd_emit::run(snd);
     }
