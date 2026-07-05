@@ -172,6 +172,19 @@ Snd::Snd(
 {
 }
 
+Snd::Snd(std::string msg, const SndSpec& spec) :
+    Snd(
+        std::move(msg),
+        spec.sfx(),
+        spec.ignore_msg_if_origin_seen(),
+        spec.origin(),
+        spec.actor(),
+        spec.vol(),
+        spec.alerts(),
+        spec.heard_effect())
+{
+}
+
 Snd::~Snd() = default;
 
 void Snd::run()

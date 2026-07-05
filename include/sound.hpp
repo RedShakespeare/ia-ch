@@ -56,6 +56,70 @@ public:
 };
 
 // -----------------------------------------------------------------------------
+// SndSpec
+// -----------------------------------------------------------------------------
+// Parameter object for constructing a Snd without a long positional argument
+// list. Build via chainable setters, then pass to Snd(std::string, SndSpec).
+// Defaults mirror the in-class defaults on Snd's private members, so a
+// default-constructed SndSpec matches a default-constructed Snd.
+class SndSpec
+{
+public:
+    SndSpec() = default;
+
+    SndSpec& sfx(audio::SfxId v) { m_sfx = v; return *this; }
+
+    SndSpec& ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen v)
+    {
+        m_is_msg_ignored_if_origin_seen = v;
+        return *this;
+    }
+
+    SndSpec& origin(const P& v) { m_origin = v; return *this; }
+
+    SndSpec& actor(actor::Actor* v) { m_actor_who_made_sound = v; return *this; }
+
+    SndSpec& vol(SndVol v) { m_vol = v; return *this; }
+
+    SndSpec& alerts(AlertsMon v) { m_is_alerting_mon = v; return *this; }
+
+    SndSpec& heard_effect(std::shared_ptr<SndHeardEffect> v)
+    {
+        m_snd_heard_effect = std::move(v);
+        return *this;
+    }
+
+    audio::SfxId sfx() const { return m_sfx; }
+
+    IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen() const
+    {
+        return m_is_msg_ignored_if_origin_seen;
+    }
+
+    const P& origin() const { return m_origin; }
+
+    actor::Actor* actor() const { return m_actor_who_made_sound; }
+
+    SndVol vol() const { return m_vol; }
+
+    AlertsMon alerts() const { return m_is_alerting_mon; }
+
+    const std::shared_ptr<SndHeardEffect>& heard_effect() const
+    {
+        return m_snd_heard_effect;
+    }
+
+private:
+    audio::SfxId m_sfx = audio::SfxId::END;
+    IgnoreMsgIfOriginSeen m_is_msg_ignored_if_origin_seen = IgnoreMsgIfOriginSeen::no;
+    P m_origin {};
+    actor::Actor* m_actor_who_made_sound = nullptr;
+    SndVol m_vol = SndVol::low;
+    AlertsMon m_is_alerting_mon = AlertsMon::no;
+    std::shared_ptr<SndHeardEffect> m_snd_heard_effect;
+};
+
+// -----------------------------------------------------------------------------
 // Sound
 // -----------------------------------------------------------------------------
 class Snd
@@ -72,6 +136,9 @@ public:
         SndVol vol,
         AlertsMon alerting_mon,
         std::shared_ptr<SndHeardEffect> snd_heard_effect = nullptr);
+
+    // Construct from a SndSpec parameter object. Delegates to the ctor above.
+    Snd(std::string msg, const SndSpec& spec);
 
     Snd() = default;
 

@@ -201,3 +201,44 @@ TEST_CASE("Snd 7-arg ctor treats defaulted and explicit-null snd_heard_effect id
 
     test_utils::cleanup_all();
 }
+
+TEST_CASE("Snd constructed via SndSpec matches 7-arg ctor")
+{
+    test_utils::init_all();
+
+    const P origin(3, 5);
+    auto* const actor = map::g_player;
+
+    Snd legacy(
+        "hello",
+        audio::SfxId::horn,
+        IgnoreMsgIfOriginSeen::yes,
+        origin,
+        actor,
+        SndVol::high,
+        AlertsMon::yes);
+
+    Snd via_spec(
+        "hello",
+        SndSpec{}
+            .sfx(audio::SfxId::horn)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(origin)
+            .actor(actor)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
+
+    REQUIRE(legacy.msg() == via_spec.msg());
+    REQUIRE(legacy.sfx() == via_spec.sfx());
+    REQUIRE(
+        legacy.is_msg_ignored_if_origin_seen() ==
+        via_spec.is_msg_ignored_if_origin_seen());
+    REQUIRE(legacy.origin() == via_spec.origin());
+    REQUIRE(
+        legacy.actor_who_made_sound() ==
+        via_spec.actor_who_made_sound());
+    REQUIRE(legacy.volume() == via_spec.volume());
+    REQUIRE(legacy.is_alerting_mon() == via_spec.is_alerting_mon());
+
+    test_utils::cleanup_all();
+}
