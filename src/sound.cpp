@@ -151,37 +151,15 @@ static void send_sound_to_actor(
 // -----------------------------------------------------------------------------
 // Sound
 // -----------------------------------------------------------------------------
-Snd::Snd(
-    std::string msg,
-    const audio::SfxId sfx,
-    const IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
-    const P& origin,
-    actor::Actor* const actor_who_made_sound,
-    const SndVol vol,
-    const AlertsMon alerting_mon,
-    std::shared_ptr<SndHeardEffect> snd_heard_effect) :
-
-    m_msg(std::move(msg)),
-    m_sfx(sfx),
-    m_is_msg_ignored_if_origin_seen(ignore_msg_if_origin_seen),
-    m_origin(origin),
-    m_actor_who_made_sound(actor_who_made_sound),
-    m_vol(vol),
-    m_is_alerting_mon(alerting_mon),
-    m_snd_heard_effect(std::move(snd_heard_effect))
-{
-}
-
 Snd::Snd(std::string msg, const SndSpec& spec) :
-    Snd(
-        std::move(msg),
-        spec.sfx(),
-        spec.ignore_msg_if_origin_seen(),
-        spec.origin(),
-        spec.actor(),
-        spec.vol(),
-        spec.alerts(),
-        spec.heard_effect())
+    m_msg(std::move(msg)),
+    m_sfx(spec.sfx()),
+    m_is_msg_ignored_if_origin_seen(spec.ignore_msg_if_origin_seen()),
+    m_origin(spec.origin()),
+    m_actor_who_made_sound(spec.actor()),
+    m_vol(spec.vol()),
+    m_is_alerting_mon(spec.alerts()),
+    m_snd_heard_effect(spec.heard_effect())
 {
 }
 

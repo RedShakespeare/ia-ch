@@ -56,12 +56,13 @@ TEST_CASE("Sound alerts monster")
     // First run a sound that does NOT alert monsters
     Snd snd(
         "",
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::no,
-        snd_origin,
-        nullptr,
-        SndVol::low,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(snd_origin)
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::no));
 
     snd.run();
 
@@ -130,12 +131,11 @@ TEST_CASE("Monster wading does not alert monsters")
     test_utils::cleanup_all();
 }
 
-// Characterization tests pinning the current 7-argument Snd constructor's
-// behavior, written before the SndSpec parameter-object refactor (Smell 7).
-// These guard the migration: they must keep passing unchanged through every
-// step until the legacy ctor is deleted, at which point they are removed.
+// Characterization test for the SndSpec-based Snd constructor, kept after the
+// legacy 7-arg ctor was removed. Pins field storage and the default
+// snd_heard_effect (nullptr) behavior.
 
-TEST_CASE("Snd 7-arg ctor stores all fields")
+TEST_CASE("Snd constructed via SndSpec stores all fields")
 {
     test_utils::init_all();
 
@@ -144,12 +144,13 @@ TEST_CASE("Snd 7-arg ctor stores all fields")
 
     Snd snd(
         "hello",
-        audio::SfxId::horn,
-        IgnoreMsgIfOriginSeen::yes,
-        origin,
-        actor,
-        SndVol::high,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::horn)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(origin)
+            .actor(actor)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     REQUIRE(snd.msg() == "hello");
     REQUIRE(snd.sfx() == audio::SfxId::horn);
@@ -163,82 +164,29 @@ TEST_CASE("Snd 7-arg ctor stores all fields")
     test_utils::cleanup_all();
 }
 
-TEST_CASE("Snd 7-arg ctor treats defaulted and explicit-null snd_heard_effect identically")
+TEST_CASE("Snd via SndSpec with no heard_effect behaves as if null")
 {
     test_utils::init_all();
 
     const P origin(3, 5);
     auto* const player = map::g_player;
 
-    // Form used by 68 of 70 call sites: 8th arg omitted, defaults to nullptr.
-    Snd snd_defaulted(
+    // Omitting .heard_effect(...) leaves it as nullptr (the default).
+    Snd snd(
         "",
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::no,
-        origin,
-        nullptr,
-        SndVol::low,
-        AlertsMon::no);
-
-    // Form with explicit nullptr for the 8th arg.
-    Snd snd_explicit_null(
-        "",
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::no,
-        origin,
-        nullptr,
-        SndVol::low,
-        AlertsMon::no,
-        nullptr);
-
-    // on_heard must behave identically for both: calling on the player sets
-    // did_player_hear_sound, and a null effect must not be invoked.
-    snd_defaulted.on_heard(*player);
-    snd_explicit_null.on_heard(*player);
-
-    REQUIRE(snd_defaulted.did_player_hear_sound());
-    REQUIRE(snd_explicit_null.did_player_hear_sound());
-
-    test_utils::cleanup_all();
-}
-
-TEST_CASE("Snd constructed via SndSpec matches 7-arg ctor")
-{
-    test_utils::init_all();
-
-    const P origin(3, 5);
-    auto* const actor = map::g_player;
-
-    Snd legacy(
-        "hello",
-        audio::SfxId::horn,
-        IgnoreMsgIfOriginSeen::yes,
-        origin,
-        actor,
-        SndVol::high,
-        AlertsMon::yes);
-
-    Snd via_spec(
-        "hello",
         SndSpec{}
-            .sfx(audio::SfxId::horn)
-            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
             .origin(origin)
-            .actor(actor)
-            .vol(SndVol::high)
-            .alerts(AlertsMon::yes));
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::no));
 
-    REQUIRE(legacy.msg() == via_spec.msg());
-    REQUIRE(legacy.sfx() == via_spec.sfx());
-    REQUIRE(
-        legacy.is_msg_ignored_if_origin_seen() ==
-        via_spec.is_msg_ignored_if_origin_seen());
-    REQUIRE(legacy.origin() == via_spec.origin());
-    REQUIRE(
-        legacy.actor_who_made_sound() ==
-        via_spec.actor_who_made_sound());
-    REQUIRE(legacy.volume() == via_spec.volume());
-    REQUIRE(legacy.is_alerting_mon() == via_spec.is_alerting_mon());
+    // on_heard on the player sets did_player_hear_sound; a null effect must
+    // not be invoked.
+    snd.on_heard(*player);
+
+    REQUIRE(snd.did_player_hear_sound());
 
     test_utils::cleanup_all();
 }

@@ -125,19 +125,7 @@ private:
 class Snd
 {
 public:
-    // TODO: This constructor is terrible, consider just using a default
-    // constructor and require configuration by separate function calls.
-    Snd(
-        std::string msg,
-        audio::SfxId sfx,
-        IgnoreMsgIfOriginSeen ignore_msg_if_origin_seen,
-        const P& origin,
-        actor::Actor* actor_who_made_sound,
-        SndVol vol,
-        AlertsMon alerting_mon,
-        std::shared_ptr<SndHeardEffect> snd_heard_effect = nullptr);
-
-    // Construct from a SndSpec parameter object. Delegates to the ctor above.
+    // Construct from a message and a SndSpec parameter object.
     Snd(std::string msg, const SndSpec& spec);
 
     Snd() = default;
