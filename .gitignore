@@ -31,6 +31,9 @@ tmp/
 # Native test build directory (generated)
 build-linux-tests/
 
+# Native build directory (generated)
+build-native/
+
 # Upstream font source packages (used for atlas generation, not linked)
 *.deb
 

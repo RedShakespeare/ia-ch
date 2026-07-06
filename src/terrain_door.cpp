@@ -1971,6 +1971,31 @@ DidClose Door::close(actor::Actor* const actor_closing)
     return DidClose::yes;
 }
 
+bool Door::can_open(SpellSkill skill) const
+{
+    (void)skill;
+    return !is_open() && !is_hidden() && !is_known_stuck();
+}
+
+bool Door::can_close_door(SpellSkill skill) const
+{
+    return is_open() && !is_hidden() &&
+        !(m_type == DoorType::metal && skill == SpellSkill::basic);
+}
+
+bool Door::can_jam_door(SpellSkill skill) const
+{
+    (void)skill;
+    return !is_open() && !is_hidden() && !is_known_stuck() &&
+        m_type != DoorType::metal;
+}
+
+bool Door::can_strike(SpellSkill skill) const
+{
+    (void)skill;
+    return !is_open() && !is_hidden() && m_type != DoorType::metal;
+}
+
 void Door::jam(actor::Actor* const actor_jamming)
 {
     if (m_is_open || (m_type == DoorType::metal)) {

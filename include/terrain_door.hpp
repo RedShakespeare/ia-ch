@@ -153,6 +153,11 @@ public:
     DidOpen open(actor::Actor* actor_opening) override;
     DidClose close(actor::Actor* actor_closing) override;
 
+    bool can_open(SpellSkill skill) const override;
+    bool can_close_door(SpellSkill skill) const override;
+    bool can_jam_door(SpellSkill skill) const override;
+    bool can_strike(SpellSkill skill) const override;
+
     void jam(actor::Actor* actor_jamming);
 
     actor::Actor* actor_currently_opening() const

@@ -844,6 +844,11 @@ void Wall::hit(
     }
 }
 
+bool Wall::can_destroy_wall(SpellSkill skill) const
+{
+    return skill == SpellSkill::transcendent;
+}
+
 gfx::TileId Wall::tile() const
 {
     const P p_below = m_pos.with_y_offset(1);
@@ -1252,6 +1257,11 @@ void RubbleHigh::hit(
     }
 }
 
+bool RubbleHigh::can_destroy_wall(SpellSkill skill) const
+{
+    return skill == SpellSkill::transcendent;
+}
+
 std::string RubbleHigh::name(const Article article) const
 {
     const std::string a =
@@ -1507,6 +1517,17 @@ void Statue::hit(
     }
 }
 
+bool Statue::can_strike(SpellSkill skill) const
+{
+    (void)skill;
+    return true;
+}
+
+bool Statue::needs_strike_direction() const
+{
+    return true;
+}
+
 void Statue::bump(actor::Actor& actor_bumping)
 {
     if (!actor::is_player(&actor_bumping)) {
@@ -1672,6 +1693,17 @@ void Urn::hit(
     default: {
     } break;
     }
+}
+
+bool Urn::can_strike(SpellSkill skill) const
+{
+    (void)skill;
+    return true;
+}
+
+bool Urn::needs_strike_direction() const
+{
+    return true;
 }
 
 void Urn::on_new_turn()
@@ -2254,6 +2286,12 @@ void CrystalKey::bump(actor::Actor& actor_bumping)
     game_time::tick();
 
     TRACE_FUNC_END;
+}
+
+bool CrystalKey::can_deactivate_crystal(SpellSkill skill) const
+{
+    (void)skill;
+    return is_active();
 }
 
 void CrystalKey::player_deactivate()
@@ -2993,6 +3031,17 @@ void Brazier::hit(
     }
 }
 
+bool Brazier::can_strike(SpellSkill skill) const
+{
+    (void)skill;
+    return true;
+}
+
+bool Brazier::needs_strike_direction() const
+{
+    return true;
+}
+
 void Brazier::topple(const Dir direction, actor::Actor& actor)
 {
     const auto alerts_mon =
@@ -3692,6 +3741,12 @@ DidOpen Tomb::open(actor::Actor* const actor_opening)
     }
 }
 
+bool Tomb::can_open(SpellSkill skill) const
+{
+    (void)skill;
+    return !m_is_open;
+}
+
 void Tomb::trigger_trap()
 {
     TRACE_FUNC_BEGIN;
@@ -4123,6 +4178,12 @@ DidOpen Chest::open(actor::Actor* const actor_opening)
 
         return DidOpen::yes;
     }
+}
+
+bool Chest::can_open(SpellSkill skill) const
+{
+    (void)skill;
+    return !m_is_open;
 }
 
 bool Chest::allow_player_melee_attack(
@@ -4953,6 +5014,12 @@ DidOpen Cabinet::open(actor::Actor* const actor_opening)
 
         return DidOpen::yes;
     }
+}
+
+bool Cabinet::can_open(SpellSkill skill) const
+{
+    (void)skill;
+    return !m_is_open;
 }
 
 std::string Cabinet::name(const Article article) const

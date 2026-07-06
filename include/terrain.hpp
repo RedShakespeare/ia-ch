@@ -50,6 +50,7 @@ enum class Article;
 enum class DmgType;
 enum class Material;
 enum class Verbose;
+enum class SpellSkill;
 
 namespace terrain
 {
@@ -335,6 +336,51 @@ public:
         return false;
     }
 
+    // Control Object spell capability queries. Default: terrain cannot be
+    // affected by this action. Override on relevant subclasses.
+    virtual bool can_open(SpellSkill skill) const
+    {
+        (void)skill;
+        return false;
+    }
+
+    virtual bool can_close_door(SpellSkill skill) const
+    {
+        (void)skill;
+        return false;
+    }
+
+    virtual bool can_jam_door(SpellSkill skill) const
+    {
+        (void)skill;
+        return false;
+    }
+
+    virtual bool can_deactivate_crystal(SpellSkill skill) const
+    {
+        (void)skill;
+        return false;
+    }
+
+    virtual bool can_strike(SpellSkill skill) const
+    {
+        (void)skill;
+        return false;
+    }
+
+    virtual bool can_destroy_wall(SpellSkill skill) const
+    {
+        (void)skill;
+        return false;
+    }
+
+    // Whether Strike should prompt for a direction (topple-able terrain).
+    // Default: false (hit in place). Override true on Brazier, Statue, Urn.
+    virtual bool needs_strike_direction() const
+    {
+        return false;
+    }
+
     const TerrainData* m_data {nullptr};
     ItemContainer m_item_container {};
     BurnState m_burn_state {BurnState::not_burned};
@@ -580,6 +626,10 @@ public:
         const P& from_pos,
         int dmg) override;
 
+    bool can_strike(SpellSkill skill) const override;
+
+    bool needs_strike_direction() const override;
+
     void on_new_turn() override;
 
 private:
@@ -626,6 +676,8 @@ public:
         actor::Actor* actor,
         const P& from_pos,
         int dmg) override;
+
+    bool can_destroy_wall(SpellSkill skill) const override;
 
     WallType m_type {WallType::common};
     bool m_is_mossy {false};
@@ -770,6 +822,8 @@ public:
         actor::Actor* actor,
         const P& from_pos,
         int dmg) override;
+
+    bool can_destroy_wall(SpellSkill skill) const override;
 };
 
 class GraveStone : public Terrain
@@ -860,6 +914,10 @@ public:
         const P& from_pos,
         int dmg) override;
 
+    bool can_strike(SpellSkill skill) const override;
+
+    bool needs_strike_direction() const override;
+
 private:
     int base_shock_when_adj() const override;
 
@@ -897,6 +955,10 @@ public:
         actor::Actor* actor,
         const P& from_pos,
         int dmg) override;
+
+    bool can_strike(SpellSkill skill) const override;
+
+    bool needs_strike_direction() const override;
 
     void set_inscribed() override
     {
@@ -1041,6 +1103,8 @@ public:
 
     void bump(actor::Actor& actor_bumping) override;
 
+    bool can_deactivate_crystal(SpellSkill skill) const override;
+
     // Prints message, gives XP etc, and deactivates the crystal.
     void player_deactivate();
 
@@ -1175,6 +1239,8 @@ public:
 
     DidOpen open(actor::Actor* actor_opening) override;
 
+    bool can_open(SpellSkill skill) const override;
+
     void hit(
         DmgType dmg_type,
         actor::Actor* actor,
@@ -1230,6 +1296,8 @@ public:
 
     DidOpen open(actor::Actor* actor_opening) override;
 
+    bool can_open(SpellSkill skill) const override;
+
     bool allow_player_melee_attack(
         DmgType dmg_type,
         const item::Item& wpn) const override;
@@ -1271,6 +1339,8 @@ public:
     }
 
     DidOpen open(actor::Actor* actor_opening) override;
+
+    bool can_open(SpellSkill skill) const override;
 
     WasDestroyed on_finished_burning() override;
 
