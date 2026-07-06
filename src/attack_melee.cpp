@@ -477,12 +477,13 @@ static void emit_melee_snd(
 
     Snd snd(
         snd_msg,
-        sfx,
-        ignore_msg_if_origin_seeen,
-        origin,
-        att_data.attacker,
-        SndVol::low,
-        snd_alerts_mon);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(ignore_msg_if_origin_seeen)
+            .origin(origin)
+            .actor(att_data.attacker)
+            .vol(SndVol::low)
+            .alerts(snd_alerts_mon));
 
     snd.run();
 }

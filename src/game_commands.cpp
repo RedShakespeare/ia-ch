@@ -467,12 +467,13 @@ static void handle_make_noise_command()
 
     Snd snd(
         "",
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::yes,
-        map::g_player->m_pos,
-        map::g_player,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(map::g_player->m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     snd_emit::run(snd);
 

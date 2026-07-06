@@ -128,12 +128,13 @@ void EventWallCrumble::on_new_turn()
 
     Snd snd(
         sound_message,
-        audio::SfxId::wall_collapse,
-        IgnoreMsgIfOriginSeen::no,
-        m_pos,
-        nullptr,
-        SndVol::high,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(audio::SfxId::wall_collapse)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(m_pos)
+            .actor(nullptr)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::no));
 
     snd.run();
 

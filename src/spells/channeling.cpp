@@ -178,12 +178,13 @@ void SpellBolt::run_bolt_on_target(
         i18n::get(
             "spells.darkbolt_release_sound",
             "I hear something rushing through the air."),
-        audio::SfxId::darkbolt_release,
-        IgnoreMsgIfOriginSeen::yes,
-        caster.m_pos,
-        &caster,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::darkbolt_release)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(caster.m_pos)
+            .actor(&caster)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     release_snd.run();
 
@@ -216,12 +217,13 @@ void SpellBolt::run_bolt_on_target(
         i18n::get(
             "spells.impact_sound",
             "I hear an impact."),
-        m_impl->impact_sfx(),
-        IgnoreMsgIfOriginSeen::yes,
-        target.m_pos,
-        nullptr,
-        SndVol::low,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(m_impl->impact_sfx())
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(target.m_pos)
+            .actor(nullptr)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::yes));
 
     impact_snd.run();
 

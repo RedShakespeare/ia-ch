@@ -827,12 +827,13 @@ void Gong::bump(actor::Actor& actor_bumping)
 
     Snd snd(
         i18n::get("terrain_gong.crash_resonates", "The crash resonates through the air!"),
-        audio::SfxId::gong,
-        IgnoreMsgIfOriginSeen::no,
-        m_pos,
-        map::g_player,
-        SndVol::high,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::gong)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     snd.run();
 

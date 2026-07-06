@@ -625,12 +625,13 @@ void Shriek::shriek(const item::Item& item) const
 
     Snd snd(
         phrase,
-        audio::SfxId::END,
-        IgnoreMsgIfOriginSeen::no,
-        map::g_player->m_pos,
-        map::g_player,
-        SndVol::high,
-        AlertsMon::yes);
+        SndSpec{}
+            .sfx(audio::SfxId::END)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(map::g_player->m_pos)
+            .actor(map::g_player)
+            .vol(SndVol::high)
+            .alerts(AlertsMon::yes));
 
     snd_emit::run(snd);
 

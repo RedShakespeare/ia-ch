@@ -80,12 +80,13 @@ static void run_feed_snd(actor::Actor& actor)
         i18n::get(
             "actor_eat.ripping_and_chewing",
             "I hear ripping and chewing."),
-        audio::SfxId::bite,
-        IgnoreMsgIfOriginSeen::yes,
-        actor.m_pos,
-        &actor,
-        SndVol::low,
-        AlertsMon::no);
+        SndSpec{}
+            .sfx(audio::SfxId::bite)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+            .origin(actor.m_pos)
+            .actor(&actor)
+            .vol(SndVol::low)
+            .alerts(AlertsMon::no));
 
     snd.run();
 }

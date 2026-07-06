@@ -126,12 +126,13 @@ void PlayerGhoulClaw::on_melee_hit(actor::Actor& actor_hit, const int dmg)
         rnd::one_in(6)) {
         Snd snd(
             "",
-            audio::SfxId::bite,
-            IgnoreMsgIfOriginSeen::yes,
-            actor_hit.m_pos,
-            map::g_player,
-            SndVol::low,
-            AlertsMon::yes);
+            SndSpec{}
+                .sfx(audio::SfxId::bite)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(actor_hit.m_pos)
+                .actor(map::g_player)
+                .vol(SndVol::low)
+                .alerts(AlertsMon::yes));
 
         snd.run();
 

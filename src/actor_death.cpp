@@ -160,12 +160,13 @@ void kill(
             i18n::get(
                 "actor_death.agonized_screaming",
                 "I hear agonized screaming."),
-            audio::SfxId::END,
-            IgnoreMsgIfOriginSeen::yes,
-            actor.m_pos,
-            &actor,
-            SndVol::high,
-            AlertsMon::no);
+            SndSpec{}
+                .sfx(audio::SfxId::END)
+                .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                .origin(actor.m_pos)
+                .actor(&actor)
+                .vol(SndVol::high)
+                .alerts(AlertsMon::no));
 
         snd.run();
     }

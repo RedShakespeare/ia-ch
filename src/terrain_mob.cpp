@@ -162,12 +162,13 @@ void Smoke::on_new_turn()
 
             Snd snd(
                 snd_msg,
-                audio::SfxId::END,
-                IgnoreMsgIfOriginSeen::yes,
-                actor->m_pos,
-                actor,
-                SndVol::low,
-                alerts);
+                SndSpec{}
+                    .sfx(audio::SfxId::END)
+                    .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::yes)
+                    .origin(actor->m_pos)
+                    .actor(actor)
+                    .vol(SndVol::low)
+                    .alerts(alerts));
 
             snd.run();
         }

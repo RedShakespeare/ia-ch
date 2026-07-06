@@ -324,12 +324,13 @@ void Actor::speak_phrase(AlertsMon alerts_others)
 
     Snd snd(
         msg,
-        sfx,
-        IgnoreMsgIfOriginSeen::no,
-        m_pos,
-        this,
-        SndVol::low,
-        alerts_others);
+        SndSpec{}
+            .sfx(sfx)
+            .ignore_msg_if_origin_seen(IgnoreMsgIfOriginSeen::no)
+            .origin(m_pos)
+            .actor(this)
+            .vol(SndVol::low)
+            .alerts(alerts_others));
 
     snd_emit::run(snd);
 }
