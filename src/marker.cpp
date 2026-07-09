@@ -1065,37 +1065,7 @@ bool CtrlObjOpen::can_control(
     const terrain::Terrain& terrain,
     const SpellSkill skill) const
 {
-    (void)skill;
-
-    switch (terrain.id()) {
-    case terrain::Id::chest: {
-        return !static_cast<const terrain::Chest&>(terrain).is_open();
-    } break;
-
-    case terrain::Id::cabinet: {
-        return !static_cast<const terrain::Cabinet&>(terrain).is_open();
-    } break;
-
-    case terrain::Id::tomb: {
-        return !static_cast<const terrain::Tomb&>(terrain).is_open();
-    } break;
-
-    case terrain::Id::door: {
-        const auto& door = static_cast<const terrain::Door&>(terrain);
-
-        if (door.is_open() || door.is_hidden()) {
-            return false;
-        }
-        else {
-            return !door.is_known_stuck();
-        }
-    } break;
-
-    default: {
-    } break;
-    }
-
-    return false;
+    return terrain.can_open(skill);
 }
 
 DidAction CtrlObjOpen::run(
@@ -1138,28 +1108,7 @@ bool CtrlObjCloseDoor::can_control(
     const terrain::Terrain& terrain,
     const SpellSkill skill) const
 {
-    if (terrain.id() != terrain::Id::door) {
-        return false;
-    }
-
-    const auto& door = static_cast<const terrain::Door&>(terrain);
-
-    if (!door.is_open()) {
-        return false;
-    }
-
-    if (door.is_hidden()) {
-        return false;
-    }
-
-    const bool is_metal = (door.type() == terrain::DoorType::metal);
-    const bool is_basic_skill = (skill == SpellSkill::basic);
-
-    if (is_metal && is_basic_skill) {
-        return false;
-    }
-
-    return true;
+    return terrain.can_close_door(skill);
 }
 
 DidAction CtrlObjCloseDoor::run(
@@ -1220,20 +1169,7 @@ bool CtrlObjJamDoor::can_control(
     const terrain::Terrain& terrain,
     const SpellSkill skill) const
 {
-    (void)skill;
-
-    if (terrain.id() != terrain::Id::door) {
-        return false;
-    }
-
-    const auto& door = static_cast<const terrain::Door&>(terrain);
-    const bool is_metal = door.type() == terrain::DoorType::metal;
-
-    return (
-        !door.is_open() &&
-        !door.is_hidden() &&
-        !door.is_known_stuck() &&
-        !is_metal);
+    return terrain.can_jam_door(skill);
 }
 
 DidAction CtrlObjJamDoor::run(
@@ -1278,15 +1214,7 @@ bool CtrlObjDeactivateCrystal::can_control(
     const terrain::Terrain& terrain,
     const SpellSkill skill) const
 {
-    (void)skill;
-
-    if (terrain.id() != terrain::Id::crystal_key) {
-        return false;
-    }
-
-    const auto& crystal = static_cast<const terrain::CrystalKey&>(terrain);
-
-    return crystal.is_active();
+    return terrain.can_deactivate_crystal(skill);
 }
 
 DidAction CtrlObjDeactivateCrystal::run(
@@ -1331,30 +1259,7 @@ bool CtrlObjStrike::can_control(
     const terrain::Terrain& terrain,
     const SpellSkill skill) const
 {
-    (void)skill;
-
-    switch (terrain.id()) {
-    case terrain::Id::door: {
-        const auto& door = static_cast<const terrain::Door&>(terrain);
-        const bool is_metal = (door.type() == terrain::DoorType::metal);
-
-        return (
-            !door.is_open() &&
-            !door.is_hidden() &&
-            !is_metal);
-    } break;
-
-    case terrain::Id::brazier:
-    case terrain::Id::statue:
-    case terrain::Id::urn:     {
-        return true;
-    } break;
-
-    default: {
-    } break;
-    }
-
-    return false;
+    return terrain.can_strike(skill);
 }
 
 DidAction CtrlObjStrike::run(
@@ -1440,21 +1345,7 @@ bool CtrlObjDestrWall::can_control(
     const terrain::Terrain& terrain,
     const SpellSkill skill) const
 {
-    if (skill != SpellSkill::transcendent) {
-        return false;
-    }
-
-    switch (terrain.id()) {
-    case terrain::Id::wall:
-    case terrain::Id::rubble_high: {
-        return true;
-    } break;
-
-    default: {
-    } break;
-    }
-
-    return false;
+    return terrain.can_destroy_wall(skill);
 }
 
 DidAction CtrlObjDestrWall::run(
