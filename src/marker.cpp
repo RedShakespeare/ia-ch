@@ -1268,22 +1268,9 @@ DidAction CtrlObjStrike::run(
 {
     (void)skill;
 
-    switch (terrain.id()) {
-    case terrain::Id::door: {
-        const int dmg = 15;
+    const int dmg = 15;
 
-        terrain.hit(
-            DmgType::control_object_spell,
-            map::g_player,
-            terrain.pos(),
-            dmg);
-
-        return DidAction::yes;
-    } break;
-
-    case terrain::Id::brazier:
-    case terrain::Id::statue:
-    case terrain::Id::urn:     {
+    if (terrain.needs_strike_direction()) {
         const std::string query_msg =
             common_text::g_direction_query +
             " " +
@@ -1306,24 +1293,21 @@ DidAction CtrlObjStrike::run(
 
         const auto from_pos = terrain.pos() - input_dir;
 
-        const int dmg = 15;
-
         terrain.hit(
             DmgType::control_object_spell,
             map::g_player,
             from_pos,
             dmg);
-
-        return DidAction::yes;
-    } break;
-
-    default: {
-    } break;
+    }
+    else {
+        terrain.hit(
+            DmgType::control_object_spell,
+            map::g_player,
+            terrain.pos(),
+            dmg);
     }
 
-    ASSERT(false);
-
-    return DidAction::no;
+    return DidAction::yes;
 }
 
 std::string CtrlObjStrike::menu_label(const terrain::Terrain& terrain) const
@@ -1362,30 +1346,9 @@ DidAction CtrlObjDestrWall::run(
         return DidAction::yes;
     }
 
-    switch (terrain.id()) {
-    case terrain::Id::door: {
-        // NOTE: The door is hidden.
-        msg_log::add(i18n::get(
-            "marker.control_object.nothing_happens",
-            "Nothing happens."));
+    terrain.hit(DmgType::pure, map::g_player);
 
-        return DidAction::yes;
-    } break;
-
-    case terrain::Id::wall:
-    case terrain::Id::rubble_high: {
-        terrain.hit(DmgType::pure, map::g_player);
-
-        return DidAction::yes;
-    };
-
-    default: {
-    } break;
-    }
-
-    ASSERT(false);
-
-    return DidAction::no;
+    return DidAction::yes;
 }
 
 std::string CtrlObjDestrWall::menu_label(const terrain::Terrain& terrain) const
