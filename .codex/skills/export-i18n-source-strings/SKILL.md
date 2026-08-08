@@ -13,7 +13,13 @@ Paratranz-compatible CSV.
 The bundled exporter handles both direct calls like
 `i18n::get("key", "English fallback")` and the local insanity wrapper
 `insanity_i18n::get("suffix", "English fallback")`. The wrapper form exports
-as normal `insanity.*` keys because that is what `text.ini` stores.
+as normal `insanity.*` keys because that is what `text.ini` stores. It also
+scans `i18n::format("key", "English template with {placeholder}", args)`
+calls; those templates are stored in `installed_files/data/locale/<locale>/grammar.ini`
+rather than `text.ini`, so the exporter loads `grammar.ini` translations under
+`section.key` keys (mirroring the C++ parser in `src/i18n.cpp`). Literal
+`destroyed_into_rubble("key", "English fallback")` calls in terrain source
+files are exported as well.
 
 This is the inverse of raw-string extraction: it does not find untranslated
 strings. Use `scan-i18n-raw-strings` for candidates still missing i18n and
@@ -52,8 +58,7 @@ whitespace-only source. The catalog key remains unchanged.
 Useful variants:
 
 ```sh
-# Fill the translation column from installed_files/data/locale/zh_CN/text.ini
-# and installed_files/data/locale/zh_CN/manual.txt
+# Fill the translation column from text.ini, grammar.ini, and manual.txt
 python3 .codex/skills/export-i18n-source-strings/scripts/export_i18n_source_strings.py --locale zh_CN --output /tmp/ia-paratranz-zh_CN.csv
 
 # Restrict to a file or subtree
@@ -72,8 +77,8 @@ python3 .codex/skills/export-i18n-source-strings/scripts/export_i18n_source_stri
 `--output-dir` writes separate Paratranz CSV files:
 
 - `ia-paratranz.csv`, or `ia-paratranz-<locale>.csv` when `--locale` is used:
-  C++ `i18n::get`/wrapper entries and XML `i18n_key` entries intended for
-  `text.ini`.
+  C++ i18n/helper entries and XML `i18n_key` entries intended for `text.ini`
+  or `grammar.ini`.
 - `manual.csv`: `installed_files/manual.txt` chapter and paragraph entries.
 - `<message-file-stem>.csv`: one CSV for each `installed_files/data/messages/*.txt`.
 
@@ -97,7 +102,9 @@ After exporting, inspect the script diagnostics:
   first two arguments are string literals after any supported wrapper expansion.
 - full `--output-dir --locale <locale>` exports fail if the main
   `ia-paratranz-<locale>.csv` catalog key set does not exactly match
-  `installed_files/data/locale/<locale>/text.ini`.
+  `installed_files/data/locale/<locale>/text.ini` plus `grammar.ini`.
+  Stale locale keys that are no longer referenced in C++ appear as "missing
+  from catalog" and should be reviewed or removed.
 - missing locale translations when `--locale` is used: expected for newly added
   keys, but useful to review before upload.
 - manual chapter/paragraph count mismatch when `--locale` is used: inspect the
@@ -114,9 +121,11 @@ Keep `index` stable. Translators should edit only the `translation` column.
 The bundled script is a small C++ token scanner, not a full compiler parser. It
 handles multiline calls and escaped string literals, and it concatenates adjacent
 C++ string literal tokens in the key or fallback argument. It also recognizes
-the `insanity_i18n::get()` wrapper and exports those entries with the
-`insanity.` prefix. It intentionally skips dynamic keys or dynamic fallbacks
-because translation platforms need stable source text.
+the `insanity_i18n::get()` wrapper and terrain `destroyed_into_rubble()` helper.
+The latter is scanned only in terrain source files and only when its key and
+fallback are literals; empty and dynamic helper calls are ignored. Other dynamic
+keys or dynamic fallbacks are reported as skipped because translation platforms
+need stable source text.
 
 Manual parsing is delimiter-based: each chapter starts with an 80-character
 dash line, followed by the title line and another 80-character dash line.

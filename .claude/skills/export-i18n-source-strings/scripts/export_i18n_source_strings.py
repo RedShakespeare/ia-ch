@@ -26,6 +26,7 @@ BASE_CALL_SPECS = (
     ("i18n::format", ""),
     ("insanity_i18n::get", "insanity."),
 )
+LITERAL_ONLY_CALLS = {"destroyed_into_rubble"}
 EMPTY_SOURCE_PLACEHOLDER = "__EMPTY__"
 SPACE_SOURCE_PLACEHOLDER = "__SPACE__"
 
@@ -273,6 +274,9 @@ def call_specs_for_path(path: Path) -> list[tuple[str, str]]:
         specs.append(("tr", "map_mode_gui."))
     elif path.name == "i18n.cpp":
         specs.append(("get", ""))
+
+    if path.stem.startswith("terrain"):
+        specs.append(("destroyed_into_rubble", ""))
 
     return specs
 
@@ -711,12 +715,14 @@ def scan_file(path: Path) -> tuple[list[Entry], list[Skipped]]:
     while True:
         call_pos = -1
         open_pos = -1
+        call_name = ""
         key_prefix = ""
         for candidate, candidate_prefix in call_specs:
             pos, candidate_open_pos = find_next_call(text, candidate, search_pos)
             if pos >= 0 and (call_pos < 0 or pos < call_pos):
                 call_pos = pos
                 open_pos = candidate_open_pos
+                call_name = candidate
                 key_prefix = candidate_prefix
         if call_pos < 0:
             break
@@ -740,7 +746,19 @@ def scan_file(path: Path) -> tuple[list[Entry], list[Skipped]]:
         key = literal_value(args[0])
         source = literal_value(args[1])
         if key is None or source is None:
-            skipped.append(Skipped(str(path), line, "nonliteral key or source", text[call_pos : close_pos + 1].strip()))
+            if call_name not in LITERAL_ONLY_CALLS:
+                skipped.append(
+                    Skipped(
+                        str(path),
+                        line,
+                        "nonliteral key or source",
+                        text[call_pos : close_pos + 1].strip(),
+                    )
+                )
+            search_pos = close_pos + 1
+            continue
+
+        if call_name in LITERAL_ONLY_CALLS and not key:
             search_pos = close_pos + 1
             continue
 
@@ -1063,7 +1081,10 @@ def main() -> int:
     )
     parser.add_argument(
         "--locale",
-        help="Populate translation from installed_files/data/locale/<locale>/text.ini and manual.txt.",
+        help=(
+            "Populate translation from installed_files/data/locale/<locale>/"
+            "text.ini, grammar.ini, and manual.txt."
+        ),
     )
     parser.add_argument(
         "--manual",

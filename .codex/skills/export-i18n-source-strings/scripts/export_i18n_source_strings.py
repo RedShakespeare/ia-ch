@@ -23,8 +23,10 @@ MESSAGES_REL_DIR = Path("installed_files") / "data" / "messages"
 XML_REL_DIR = Path("installed_files") / "data"
 BASE_CALL_SPECS = (
     ("i18n::get", ""),
+    ("i18n::format", ""),
     ("insanity_i18n::get", "insanity."),
 )
+LITERAL_ONLY_CALLS = {"destroyed_into_rubble"}
 EMPTY_SOURCE_PLACEHOLDER = "__EMPTY__"
 SPACE_SOURCE_PLACEHOLDER = "__SPACE__"
 
@@ -272,6 +274,9 @@ def call_specs_for_path(path: Path) -> list[tuple[str, str]]:
         specs.append(("tr", "map_mode_gui."))
     elif path.name == "i18n.cpp":
         specs.append(("get", ""))
+
+    if path.stem.startswith("terrain"):
+        specs.append(("destroyed_into_rubble", ""))
 
     return specs
 
@@ -651,14 +656,19 @@ def scan_config_file(raw_text: str, path: Path) -> list[Entry]:
     if "option.any_key_confirm_more.descr" not in raw_text:
         return []
 
-    msg_more_match = re.search(
-        r'const std::string g_more_str = ("(?:(?:\\.)|[^"\\])*");',
-        (path.parent.parent / "include" / "msg_log.hpp").read_text(encoding="utf-8"),
-    )
-    if not msg_more_match:
-        return []
+    # The "[space]" (or whatever) more-prompt text is defined as the fallback of
+    # the msg_log.more_prompt i18n::get call in src/msg_log.cpp.
+    msg_log_path = path.parent / "msg_log.cpp"
+    more_str = "[space]"
+    if msg_log_path.exists():
+        msg_log_text = msg_log_path.read_text(encoding="utf-8")
+        msg_more_match = re.search(
+            r'i18n::get\s*\(\s*"msg_log\.more_prompt"\s*,\s*("(?:(?:\\.)|[^"\\])*")',
+            msg_log_text,
+        )
+        if msg_more_match:
+            more_str = decode_cpp_string(msg_more_match.group(1))
 
-    more_str = decode_cpp_string(msg_more_match.group(1))
     source = (
         f'Any key confirms "{more_str}" prompts in the message log '
         "(which can happen for example when a monster appears as a warning to the player), "
@@ -705,12 +715,14 @@ def scan_file(path: Path) -> tuple[list[Entry], list[Skipped]]:
     while True:
         call_pos = -1
         open_pos = -1
+        call_name = ""
         key_prefix = ""
         for candidate, candidate_prefix in call_specs:
             pos, candidate_open_pos = find_next_call(text, candidate, search_pos)
             if pos >= 0 and (call_pos < 0 or pos < call_pos):
                 call_pos = pos
                 open_pos = candidate_open_pos
+                call_name = candidate
                 key_prefix = candidate_prefix
         if call_pos < 0:
             break
@@ -734,7 +746,19 @@ def scan_file(path: Path) -> tuple[list[Entry], list[Skipped]]:
         key = literal_value(args[0])
         source = literal_value(args[1])
         if key is None or source is None:
-            skipped.append(Skipped(str(path), line, "nonliteral key or source", text[call_pos : close_pos + 1].strip()))
+            if call_name not in LITERAL_ONLY_CALLS:
+                skipped.append(
+                    Skipped(
+                        str(path),
+                        line,
+                        "nonliteral key or source",
+                        text[call_pos : close_pos + 1].strip(),
+                    )
+                )
+            search_pos = close_pos + 1
+            continue
+
+        if call_name in LITERAL_ONLY_CALLS and not key:
             search_pos = close_pos + 1
             continue
 
@@ -771,6 +795,35 @@ def decode_text_ini_value(value: str) -> str:
         idx += 2
 
     return "".join(out)
+
+
+def load_grammar_locale(repo: Path, locale: str) -> dict[str, str]:
+    """Load grammar.ini templates as section.key -> value.
+
+    Mirrors the C++ parser in src/i18n.cpp: the INI section name becomes the
+    key prefix, and the key within the section is the part after the first dot
+    of the i18n::format() call's key argument.
+    """
+    path = repo / "installed_files" / "data" / "locale" / locale / "grammar.ini"
+    if not path.exists():
+        return {}
+
+    translations: dict[str, str] = {}
+    section = ""
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#") or line.startswith(";"):
+            continue
+        if line.startswith("[") and line.endswith("]"):
+            section = line[1:-1].strip()
+            continue
+        if "=" not in raw_line or not section:
+            continue
+
+        key_name, value = raw_line.split("=", 1)
+        translations[f"{section}.{key_name.strip()}"] = decode_text_ini_value(value.strip())
+
+    return translations
 
 
 def load_locale(repo: Path, locale: str) -> dict[str, str]:
@@ -919,6 +972,12 @@ def catalog_translations_for_args(
         return {}
 
     translations = load_locale(repo, locale)
+
+    # grammar.ini templates: text.ini wins on key overlap (an i18n::get call
+    # should keep its text.ini translation, not be shadowed by grammar.ini).
+    for key, value in load_grammar_locale(repo, locale).items():
+        translations.setdefault(key, value)
+
     if should_include_manual(repo, paths, manual_mode):
         translations.update(manual_translation_entries(repo, locale, quiet))
 
@@ -945,7 +1004,7 @@ def validate_catalog_keys_match_locale(
 
     if mismatch_count and not quiet:
         print(
-            f"error: catalog key set does not match installed_files/data/locale/{locale}/text.ini: "
+            f"error: catalog key set does not match installed_files/data/locale/{locale}/text.ini or grammar.ini: "
             f"{len(missing_from_catalog)} missing from catalog, "
             f"{len(extra_in_catalog)} extra in catalog",
             file=sys.stderr,
@@ -1022,7 +1081,10 @@ def main() -> int:
     )
     parser.add_argument(
         "--locale",
-        help="Populate translation from installed_files/data/locale/<locale>/text.ini and manual.txt.",
+        help=(
+            "Populate translation from installed_files/data/locale/<locale>/"
+            "text.ini, grammar.ini, and manual.txt."
+        ),
     )
     parser.add_argument(
         "--manual",
